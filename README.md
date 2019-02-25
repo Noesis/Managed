@@ -1,0 +1,2 @@
+# Managed
+NoesisGUI Managed SDK
