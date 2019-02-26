@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <ItemGroup Condition="'$(TargetFrameworkIdentifier)' == 'xamarinios'">
+
+    <NativeReference Include="$(MSBuildThisFileDirectory)..\..\runtimes\ios\native\libNoesis.a">
+      <Kind>Static</Kind>
+      <ForceLoad>True</ForceLoad>
+      <SmartLink>False</SmartLink>
+      <IsCxx>True</IsCxx>
+    </NativeReference>
+
+    <None Include="$(MSBuildThisFileDirectory)..\..\runtimes\ios\native\Symbols.cpp">
+      <Link>Symbols.cpp</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+
+  </ItemGroup>
+
+  <PropertyGroup Condition="'$(TargetFrameworkIdentifier)' == 'xamarinios'">
+
+    <MtouchExtraArgs Condition=" '$(OS)' == 'Windows_NT' ">
+      $(MtouchExtraArgs) --dynamic-symbol-mode=ignore -gcc_flags "${ProjectDir}/Symbols.cpp -framework CoreText -framework Metal"
+    </MtouchExtraArgs>
+
+    <MtouchExtraArgs Condition=" '$(OS)' == 'Unix' ">
+      $(MtouchExtraArgs) --dynamic-symbol-mode=ignore -gcc_flags "${TargetDir}/Symbols.cpp -framework CoreText -framework Metal"
+    </MtouchExtraArgs>
+
+  </PropertyGroup>
+
+</Project>

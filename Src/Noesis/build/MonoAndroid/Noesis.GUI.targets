@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <ItemGroup Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid'">
+    <AndroidNativeLibrary Include="$(MSBuildThisFileDirectory)..\..\runtimes\android-arm\native\libNoesis.so">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Abi>armeabi-v7a</Abi>
+    </AndroidNativeLibrary>
+
+    <AndroidNativeLibrary Include="$(MSBuildThisFileDirectory)..\..\runtimes\android-arm64\native\libNoesis.so">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Abi>arm64-v8a</Abi>
+    </AndroidNativeLibrary>
+
+    <AndroidNativeLibrary Include="$(MSBuildThisFileDirectory)..\..\runtimes\android-x86\native\libNoesis.so">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Abi>x86</Abi>
+    </AndroidNativeLibrary>
+  </ItemGroup>
+
+</Project>
