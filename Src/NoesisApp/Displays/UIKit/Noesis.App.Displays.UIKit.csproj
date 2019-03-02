@@ -4,7 +4,7 @@
     <TargetFramework>xamarinios10</TargetFramework>
     <TargetFrameworkIdentifier>Xamarin.iOS</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v1.0</TargetFrameworkVersion>
-    <LanguageTargets>$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets</LanguageTargets>
+    <LanguageTargets Condition="'$(OS)' != 'Unix'">$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets</LanguageTargets>
     <Version>2.2.0</Version>
     <Authors>Noesis Technologies</Authors>
     <Description>NoesisGUI UIKit Display</Description>
@@ -12,15 +12,18 @@
     <PackageLicenseUrl>https://www.noesisengine.com/licensing.php</PackageLicenseUrl>
     <PackageProjectUrl>https://www.noesisengine.com</PackageProjectUrl>
     <PackageIconUrl>https://www.noesisengine.com/images/logos/Icon-256.png</PackageIconUrl>
-    <RepositoryUrl>https://github.com/Noesis/Managed/Src/NoesisApp/Displays/UIKit</RepositoryUrl>
+    <RepositoryUrl>https://github.com/Noesis/Managed/tree/master/Src/NoesisApp/Displays/UIKit</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>NoesisGUI XAML GUI C# iOS Xamarin</PackageTags>
     <PackageReleaseNotes>https://www.noesisengine.com/docs/Gui.Core.Changelog.html</PackageReleaseNotes>
     <RootNamespace>NoesisApp</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <AssemblyName>Noesis.App.Displays.UIKit</AssemblyName>
+    <PackageOutputPath>$(SolutionDir)NuGet\</PackageOutputPath>
+    <OutputPath Condition="'$(OS)' == 'Unix'">bin/$(Configuration)/$(TargetFramework)</OutputPath>
   </PropertyGroup>
+
+  <Import Condition="'$(OS)' == 'Unix'" Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 
   <ItemGroup>
     <Reference Include="System" />
@@ -34,13 +37,5 @@
       <PrivateAssets>contentfiles;analyzers</PrivateAssets>
     </ProjectReference>
   </ItemGroup>
-
-  <PropertyGroup>
-    <PackageDistPath>$(SolutionDir)NuGet\</PackageDistPath>
-  </PropertyGroup>
-
-  <Target Name="CopyPackage" AfterTargets="Pack">
-    <Copy SourceFiles="$(OutputPath)..\$(PackageId).$(PackageVersion).nupkg" DestinationFolder="$(PackageDistPath)" />
-  </Target>
 
 </Project>

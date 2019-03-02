@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Displays", "Displays", "{97
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Noesis.App.Displays.Android", "Src\NoesisApp\Displays\Android\Noesis.App.Displays.Android.csproj", "{E943F2FB-13C3-437A-A92D-829F908749BE}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Noesis.App.Displays.AppKit", "Src\NoesisApp\Displays\AppKit\Noesis.App.Displays.AppKit.csproj", "{504294B1-F6C6-460D-8911-884CD48B4DE8}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Noesis.App.Displays.UIKit", "Src\NoesisApp\Displays\UIKit\Noesis.App.Displays.UIKit.csproj", "{83473176-E20C-49BF-9398-F090070A602D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Noesis.App.Displays.Win32", "Src\NoesisApp\Displays\Win32\Noesis.App.Displays.Win32.csproj", "{2D1F01C7-4DBA-4583-9CD1-3328FA5DECF7}"
@@ -32,6 +34,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Noesis.App.RenderContexts.GLX", "Src\NoesisApp\RenderContexts\GLX\Noesis.App.RenderContexts.GLX.csproj", "{4472D27E-7273-46E2-A107-451939B05171}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Noesis.App.RenderContexts.MTL", "Src\NoesisApp\RenderContexts\MTL\Noesis.App.RenderContexts.MTL.csproj", "{715C59D1-62F9-446D-8322-E8303AFC7297}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Noesis.App.RenderContexts.NSGL", "Src\NoesisApp\RenderContexts\NSGL\Noesis.App.RenderContexts.NSGL.csproj", "{4C11CFCE-7400-4FD0-866B-3998051DE0BC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Noesis.App.RenderContexts.WGL", "Src\NoesisApp\RenderContexts\WGL\Noesis.App.RenderContexts.WGL.csproj", "{C5B2B1DC-8B60-400C-9C49-7783BE7B1B3E}"
 EndProject
@@ -89,6 +93,14 @@ Global
 		{C5B2B1DC-8B60-400C-9C49-7783BE7B1B3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C5B2B1DC-8B60-400C-9C49-7783BE7B1B3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C5B2B1DC-8B60-400C-9C49-7783BE7B1B3E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{504294B1-F6C6-460D-8911-884CD48B4DE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{504294B1-F6C6-460D-8911-884CD48B4DE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{504294B1-F6C6-460D-8911-884CD48B4DE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{504294B1-F6C6-460D-8911-884CD48B4DE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C11CFCE-7400-4FD0-866B-3998051DE0BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C11CFCE-7400-4FD0-866B-3998051DE0BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C11CFCE-7400-4FD0-866B-3998051DE0BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C11CFCE-7400-4FD0-866B-3998051DE0BC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -108,6 +120,8 @@ Global
 		{4472D27E-7273-46E2-A107-451939B05171} = {A8DA0357-2A4E-4E81-B7F1-1B46F916FAE3}
 		{715C59D1-62F9-446D-8322-E8303AFC7297} = {A8DA0357-2A4E-4E81-B7F1-1B46F916FAE3}
 		{C5B2B1DC-8B60-400C-9C49-7783BE7B1B3E} = {A8DA0357-2A4E-4E81-B7F1-1B46F916FAE3}
+		{504294B1-F6C6-460D-8911-884CD48B4DE8} = {97980808-A5F4-4A9F-AA9B-EE44B5CB477B}
+		{4C11CFCE-7400-4FD0-866B-3998051DE0BC} = {A8DA0357-2A4E-4E81-B7F1-1B46F916FAE3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DE273914-7EB6-44E9-876F-F964C04DE483}

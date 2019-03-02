@@ -4,7 +4,7 @@
     <TargetFramework>monoandroid81</TargetFramework>
     <TargetFrameworkIdentifier>MonoAndroid</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v8.1</TargetFrameworkVersion>
-    <LanguageTargets>$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets</LanguageTargets>
+    <LanguageTargets Condition="'$(OS)' != 'Unix'">$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets</LanguageTargets>
     <Version>2.2.0</Version>
     <Authors>Noesis Technologies</Authors>
     <Description>NoesisGUI Android Display</Description>
@@ -12,14 +12,18 @@
     <PackageLicenseUrl>https://www.noesisengine.com/licensing.php</PackageLicenseUrl>
     <PackageProjectUrl>https://www.noesisengine.com</PackageProjectUrl>
     <PackageIconUrl>https://www.noesisengine.com/images/logos/Icon-256.png</PackageIconUrl>
-    <RepositoryUrl>https://github.com/Noesis/Managed/Src/NoesisApp/Displays/Android</RepositoryUrl>
+    <RepositoryUrl>https://github.com/Noesis/Managed/tree/master/Src/NoesisApp/Displays/Android</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>NoesisGUI XAML GUI C# Android Xamarin</PackageTags>
     <PackageReleaseNotes>https://www.noesisengine.com/docs/Gui.Core.Changelog.html</PackageReleaseNotes>
     <RootNamespace>NoesisApp</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageOutputPath>$(SolutionDir)NuGet\</PackageOutputPath>
+    <OutputPath Condition="'$(OS)' == 'Unix'">bin/$(Configuration)/$(TargetFramework)</OutputPath>
   </PropertyGroup>
+
+  <Import Condition="'$(OS)' == 'Unix'" Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets"/>
 
   <ItemGroup>
     <Reference Include="System" />
@@ -34,13 +38,5 @@
       <PrivateAssets>contentfiles;analyzers</PrivateAssets>
     </ProjectReference>
   </ItemGroup>
-
-  <PropertyGroup>
-    <PackageDistPath>$(SolutionDir)NuGet\</PackageDistPath>
-  </PropertyGroup>
-  
-  <Target Name="CopyPackage" AfterTargets="Pack">
-    <Copy SourceFiles="$(OutputPath)..\..\$(PackageId).$(PackageVersion).nupkg" DestinationFolder="$(PackageDistPath)" />
-  </Target>
 
 </Project>

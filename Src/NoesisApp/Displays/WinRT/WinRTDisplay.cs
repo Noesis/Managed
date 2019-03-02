@@ -7,14 +7,6 @@ using Windows.Devices.Input;
 
 namespace NoesisApp
 {
-    [ComImport, Guid("45D64A29-A63E-4CB6-B498-5781D298CB4F")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    interface ICoreWindowInterop
-    {
-        IntPtr WindowHandle { get; }
-        bool MessageHandled { set; }
-    }
-
     public class WinRTDisplay : Display
     {
         public WinRTDisplay()
@@ -32,6 +24,13 @@ namespace NoesisApp
             window.PointerPressed += OnPointerPressed;
             window.PointerReleased += OnPointerReleased;
             window.PointerWheelChanged += OnPointerWheel;
+
+            _window = GCHandle.Alloc(window);
+        }
+
+        ~WinRTDisplay()
+        {
+            _window.Free();
         }
 
         #region Display overrides
@@ -44,9 +43,7 @@ namespace NoesisApp
         {
             get
             {
-                dynamic window = CoreWindow.GetForCurrentThread();
-                var interop = (ICoreWindowInterop)window;
-                return interop.WindowHandle;
+                return (IntPtr)_window;
             }
         }
 
@@ -414,5 +411,7 @@ namespace NoesisApp
             return keys;
         }
         #endregion
+
+        GCHandle _window;
     }
 }

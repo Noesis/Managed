@@ -4,435 +4,8 @@ using Noesis;
 
 namespace NoesisApp
 {
-    public enum Window : ulong
-    {
-        None = 0,
-    }
-
-    public enum WindowClass : uint
-    {
-        InputOutput = 1,
-        InputOnly = 2
-    }
-
-    public enum AttributeMask : ulong
-    {
-        CWBackPixmap = (1L<<0),
-        CWBackPixel = (1L<<1),
-        CWBorderPixmap = (1L<<2),
-        CWBorderPixel = (1L<<3),
-        CWBitGravity = (1L<<4),
-        CWWinGravity = (1L<<5),
-        CWBackingStore = (1L<<6),
-        CWBackingPlanes = (1L<<7),
-        CWBackingPixel = (1L<<8),
-        CWOverrideRedirect = (1L<<9),
-        CWSaveUnder = (1L<<10),
-        CWEventMask = (1L<<11),
-        CWDontPropagate = (1L<<12),
-        CWColormap = (1L<<13),
-        CWCursor = (1L<<14),
-    }
-
-    public enum Status : int
-    {
-        Failure = 0,
-    }
-
-    public enum Event : int
-    {
-        KeyPress = 2,
-        KeyRelease = 3,
-        ButtonPress = 4,
-        ButtonRelease = 5,
-        MotionNotify = 6,
-        EnterNotify = 7,
-        LeaveNotify = 8,
-        FocusIn = 9,
-        FocusOut = 10,
-        KeymapNotify = 11,
-        Expose = 12,
-        GraphicsExpose = 13,
-        NoExpose = 14,
-        VisibilityNotify = 15,
-        CreateNotify = 16,
-        DestroyNotify = 17,
-        UnmapNotify = 18,
-        MapNotify = 19,
-        MapRequest = 20,
-        ReparentNotify = 21,
-        ConfigureNotify = 22,
-        ConfigureRequest = 23,
-        GravityNotify = 24,
-        ResizeRequest = 25,
-        CirculateNotify = 26,
-        CirculateRequest = 27,
-        PropertyNotify = 28,
-        SelectionClear = 29,
-        SelectionRequest = 30,
-        SelectionNotify = 31,
-        ColormapNotify = 32,
-        ClientMessage = 33,
-        MappingNotify = 34,
-        GenericEvent = 35,
-        LASTEvent = 36
-    }
-
-    public enum EventMask : long
-    {
-        NoEventMask = 0L,
-        KeyPressMask = (1L << 0),
-        KeyReleaseMask = (1L << 1),
-        ButtonPressMask = (1L << 2),
-        ButtonReleaseMask = (1L << 3),
-        EnterWindowMask = (1L << 4),
-        LeaveWindowMask = (1L << 5),
-        PointerMotionMask = (1L << 6),
-        PointerMotionHintMask = (1L << 7),
-        Button1MotionMask = (1L << 8),
-        Button2MotionMask = (1L << 9),
-        Button3MotionMask = (1L << 10),
-        Button4MotionMask = (1L << 11),
-        Button5MotionMask = (1L << 12),
-        ButtonMotionMask = (1L << 13),
-        KeymapStateMask = (1L << 14),
-        ExposureMask = (1L << 15),
-        VisibilityChangeMask = (1L << 16),
-        StructureNotifyMask = (1L << 17),
-        ResizeRedirectMask = (1L << 18),
-        SubstructureNotifyMask = (1L << 19),
-        SubstructureRedirectMask = (1L << 20),
-        FocusChangeMask = (1L << 21),
-        PropertyChangeMask = (1L << 22),
-        ColormapChangeMask = (1L << 23),
-        OwnerGrabButtonMask = (1L << 24),
-    }
-
-    public enum Button : uint
-    {
-        Button1 = 1,
-        Button2 = 2,
-        Button3 = 3,
-        Button4 = 4,
-        Button5 = 5
-    }
-
-    public enum Colormap : ulong { }
-
-    public enum Pixmap : ulong { }
-
-    public enum KeySym : ulong
-    {
-        XK_Cancel                       = 0xff69,
-        XK_BackSpace                    = 0xff08,
-        XK_Tab                          = 0xff09,
-        XK_Linefeed                     = 0xff0a,
-        XK_Clear                        = 0xff0b,
-        XK_Return                       = 0xff0d,
-        XK_Pause                        = 0xff13,
-        XK_Caps_Lock                    = 0xffe5,
-        XK_Escape                       = 0xff1b,
-        XK_space                        = 0x0020,
-        XK_Page_Up                      = 0xff55,
-        XK_Page_Down                    = 0xff56,
-        XK_End                          = 0xff57,
-        XK_Home                         = 0xff50,
-        XK_Left                         = 0xff51,
-        XK_Up                           = 0xff52,
-        XK_Right                        = 0xff53,
-        XK_Down                         = 0xff54,
-        XK_Select                       = 0xff60,
-        XK_Execute                      = 0xff62,
-        XK_Print                        = 0xff61,
-        XK_Insert                       = 0xff63,
-        XK_Delete                       = 0xffff,
-        XK_Help                         = 0xff6a,
-        XK_0                            = 0x0030,
-        XK_1                            = 0x0031,
-        XK_2                            = 0x0032,
-        XK_3                            = 0x0033,
-        XK_4                            = 0x0034,
-        XK_5                            = 0x0035,
-        XK_6                            = 0x0036,
-        XK_7                            = 0x0037,
-        XK_8                            = 0x0038,
-        XK_9                            = 0x0039,
-        XK_a                            = 0x0061,
-        XK_b                            = 0x0062,
-        XK_c                            = 0x0063,
-        XK_d                            = 0x0064,
-        XK_e                            = 0x0065,
-        XK_f                            = 0x0066,
-        XK_g                            = 0x0067,
-        XK_h                            = 0x0068,
-        XK_i                            = 0x0069,
-        XK_j                            = 0x006a,
-        XK_k                            = 0x006b,
-        XK_l                            = 0x006c,
-        XK_m                            = 0x006d,
-        XK_n                            = 0x006e,
-        XK_o                            = 0x006f,
-        XK_p                            = 0x0070,
-        XK_q                            = 0x0071,
-        XK_r                            = 0x0072,
-        XK_s                            = 0x0073,
-        XK_t                            = 0x0074,
-        XK_u                            = 0x0075,
-        XK_v                            = 0x0076,
-        XK_w                            = 0x0077,
-        XK_x                            = 0x0078,
-        XK_y                            = 0x0079,
-        XK_z                            = 0x007a,
-        XK_KP_0                         = 0xffb0,
-        XK_KP_1                         = 0xffb1,
-        XK_KP_2                         = 0xffb2,
-        XK_KP_3                         = 0xffb3,
-        XK_KP_4                         = 0xffb4,
-        XK_KP_5                         = 0xffb5,
-        XK_KP_6                         = 0xffb6,
-        XK_KP_7                         = 0xffb7,
-        XK_KP_8                         = 0xffb8,
-        XK_KP_9                         = 0xffb9,
-        XK_KP_Multiply                  = 0xffaa,
-        XK_KP_Add                       = 0xffab,
-        XK_KP_Separator                 = 0xffac,
-        XK_KP_Subtract                  = 0xffad,
-        XK_KP_Decimal                   = 0xffae,
-        XK_KP_Divide                    = 0xffaf,
-        XK_F1                           = 0xffbe,
-        XK_F2                           = 0xffbf,
-        XK_F3                           = 0xffc0,
-        XK_F4                           = 0xffc1,
-        XK_F5                           = 0xffc2,
-        XK_F6                           = 0xffc3,
-        XK_F7                           = 0xffc4,
-        XK_F8                           = 0xffc5,
-        XK_F9                           = 0xffc6,
-        XK_F10                          = 0xffc7,
-        XK_F11                          = 0xffc8,
-        XK_F12                          = 0xffc9,
-        XK_F13                          = 0xffca,
-        XK_F14                          = 0xffcb,
-        XK_F15                          = 0xffcc,
-        XK_F16                          = 0xffcd,
-        XK_F17                          = 0xffce,
-        XK_F18                          = 0xffcf,
-        XK_F19                          = 0xffd0,
-        XK_F20                          = 0xffd1,
-        XK_F21                          = 0xffd2,
-        XK_F22                          = 0xffd3,
-        XK_F23                          = 0xffd4,
-        XK_F24                          = 0xffd5,
-        XK_Num_Lock                     = 0xff7f,
-        XK_Scroll_Lock                  = 0xff14,
-        XK_Shift_L                      = 0xffe1,
-        XK_Shift_R                      = 0xffe2,
-        XK_Control_L                    = 0xffe3,
-        XK_Control_R                    = 0xffe4,
-        XK_Alt_L                        = 0xffe9,
-        XK_Alt_R                        = 0xffea,
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    public struct Screen
-    {
-        public IntPtr ext_data;
-        public IntPtr display;
-        public Window root;
-        public int width, height;
-        public int mwidth, mheight;
-        public int ndepths;
-        public IntPtr depths;
-        public int root_depth;
-        public IntPtr root_visual;
-        public IntPtr default_gc;
-        public Colormap cmap;
-        public ulong white_pixel;
-        public ulong black_pixel;
-        public int max_maps, min_maps;
-        public int backing_store;
-        public bool save_unders;
-        public long root_input_mask;
-    }
-
-    [StructLayout(LayoutKind.Sequential, Size = (24 * sizeof(long)))]
-    public struct XAnyEvent
-    {
-        public int type;
-        public ulong serial;
-        public bool send_event;
-        public IntPtr display;
-        public Window window;
-    }
-
-    [StructLayout(LayoutKind.Sequential, Size = (24 * sizeof(long)))]
-    public struct XConfigureEvent
-    {
-        public int type;
-        public ulong serial;
-        public bool send_event;
-        public IntPtr display;
-        public Window parent;
-        public Window window;
-        public int x;
-        public int y;
-        public int width;
-        public int height;
-        public int border_width;
-        public Window above;
-        public bool override_redirect;
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    public struct XMotionEvent
-    {
-        public int type;
-        public ulong serial;
-        public bool send_event;
-        public IntPtr display;
-        public Window window;
-        public Window root;
-        public Window subwindow;
-        public ulong time;
-        public int x, y;
-        public int x_root, y_root;
-        public uint state;
-        public byte is_hint;
-        public bool same_screen;
-    }
-
-    [StructLayout(LayoutKind.Sequential, Size = (24 * sizeof(long)))]
-    public struct XButtonEvent
-    {
-        public int type;
-        public ulong serial;
-        public bool send_event;
-        public IntPtr display;
-        public Window window;
-        public Window root;
-        public Window subwindow;
-        public ulong time;
-        public int x, y;
-        public int x_root, y_root;
-        public uint state;
-        public uint button;
-        public bool same_screen;
-    }
-
-    [StructLayout(LayoutKind.Sequential, Size = (24 * sizeof(long)))]
-    public struct XKeyEvent
-    {
-        public int type;
-        public ulong serial;
-        public bool send_event;
-        public IntPtr display;
-        public Window window;
-        public Window root;
-        public Window subwindow;
-        public ulong time;
-        public int x, y;
-        public int x_root, y_root;
-        public uint state;
-        public uint keycode;
-        public bool same_screen;
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    public struct XSetWindowAttributes
-    {
-        public Pixmap background_pixmap;
-        public ulong background_pixel;
-        public Pixmap border_pixmap;
-        public ulong border_pixel;
-        public int bit_gravity;
-        public int win_gravity;
-        public int backing_store;
-        public ulong backing_planes;
-        public ulong backing_pixel;
-        public bool save_under;
-        public EventMask event_mask;
-        public EventMask do_not_propagate_mask;
-        public bool override_redirect;
-        public Colormap colormap;
-        public Cursor cursor;
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    public struct XWindowAttributes
-    {
-        public int x, y;
-        public uint width, height;
-        public int border_width;
-        public int depth;
-        public IntPtr visual;
-        public Window root;
-        public int @class;
-        public int bit_gravity;
-        public int win_gravity;
-        public int backing_store;
-        public ulong backing_planes;
-        public ulong backing_pixel;
-        public bool save_under;
-        public Colormap colormap;
-        public bool map_installed;
-        public int map_state;
-        public long all_event_masks;
-        public long your_event_masks;
-        public long do_not_propagate_mask;
-        public bool override_redirect;
-        public IntPtr screen;
-    }
-
     public class XDisplay : Display
     {
-        [DllImport("libX11.so.6")]
-        public static extern IntPtr XOpenDisplay(string display);
-
-        [DllImport("libX11.so.6")]
-        public static extern int XDefaultScreen(IntPtr display);
-
-        [DllImport("libX11.so.6")]
-        public static extern int XDefaultDepth(IntPtr display, int screen_number);
-
-        [DllImport("libX11.so.6")]
-        public static extern IntPtr XDefaultVisual(IntPtr display, int screen_number);
-
-        [DllImport("libX11.so.6")]
-        public static extern IntPtr XScreenOfDisplay(IntPtr display, int screen_number);
-
-        [DllImport("libX11.so.6")]
-        public static extern Window XRootWindow(IntPtr display, int screen_number);
-
-        [DllImport("libX11.so.6")]
-        public static extern Window XCreateWindow(IntPtr display, Window parent, int x, int y, uint width, uint height, uint border_width, int depth, uint @class, IntPtr visual, ulong valuemask, ref XSetWindowAttributes attributes);
-
-        [DllImport("libX11.so.6")]
-        public static extern int XMapWindow(IntPtr display, Window window);
-
-        [DllImport("libX11.so.6")]
-        public static extern Status XRaiseWindow(IntPtr display, Window window);
-
-        [DllImport("libX11.so.6")]
-        public static extern int XPending(IntPtr display);
-
-        [DllImport("libX11.so.6")]
-        public static extern Status XNextEvent(IntPtr display, IntPtr event_return);
-
-        [DllImport("libX11.so.6")]
-        public static extern bool XFilterEvent(IntPtr @event, Window window);
-
-        [DllImport("libX11.so.6")]
-        public static extern Status XGetWindowAttributes(IntPtr display, Window window, out XWindowAttributes attributes);
-
-        [DllImport("libX11.so.6")]
-        public static extern Status XResizeWindow(IntPtr display, Window window, uint width, uint height);
-
-        [DllImport("libX11.so.6")]
-        public static extern KeySym XLookupKeysym(ref XKeyEvent key_event, int index);
-
-        private IntPtr _display;
-        private Window _window;
-
         public XDisplay()
         {
             _display = XOpenDisplay("");
@@ -455,6 +28,7 @@ namespace NoesisApp
         {
         }
 
+        #region Display overrides
         public override IntPtr NativeHandle
         {
             get { return _display; }
@@ -641,7 +215,389 @@ namespace NoesisApp
             XMapWindow(_display, _window);
             XRaiseWindow(_display, _window);
         }
+        #endregion
 
+        #region Constants
+        public enum WindowClass : uint
+        {
+            InputOutput = 1,
+            InputOnly = 2
+        }
+
+        public enum AttributeMask : ulong
+        {
+            CWBackPixmap = (1L << 0),
+            CWBackPixel = (1L << 1),
+            CWBorderPixmap = (1L << 2),
+            CWBorderPixel = (1L << 3),
+            CWBitGravity = (1L << 4),
+            CWWinGravity = (1L << 5),
+            CWBackingStore = (1L << 6),
+            CWBackingPlanes = (1L << 7),
+            CWBackingPixel = (1L << 8),
+            CWOverrideRedirect = (1L << 9),
+            CWSaveUnder = (1L << 10),
+            CWEventMask = (1L << 11),
+            CWDontPropagate = (1L << 12),
+            CWColormap = (1L << 13),
+            CWCursor = (1L << 14),
+        }
+
+        public enum Status : int
+        {
+            Failure = 0,
+        }
+
+        public enum Event : int
+        {
+            KeyPress = 2,
+            KeyRelease = 3,
+            ButtonPress = 4,
+            ButtonRelease = 5,
+            MotionNotify = 6,
+            EnterNotify = 7,
+            LeaveNotify = 8,
+            FocusIn = 9,
+            FocusOut = 10,
+            KeymapNotify = 11,
+            Expose = 12,
+            GraphicsExpose = 13,
+            NoExpose = 14,
+            VisibilityNotify = 15,
+            CreateNotify = 16,
+            DestroyNotify = 17,
+            UnmapNotify = 18,
+            MapNotify = 19,
+            MapRequest = 20,
+            ReparentNotify = 21,
+            ConfigureNotify = 22,
+            ConfigureRequest = 23,
+            GravityNotify = 24,
+            ResizeRequest = 25,
+            CirculateNotify = 26,
+            CirculateRequest = 27,
+            PropertyNotify = 28,
+            SelectionClear = 29,
+            SelectionRequest = 30,
+            SelectionNotify = 31,
+            ColormapNotify = 32,
+            ClientMessage = 33,
+            MappingNotify = 34,
+            GenericEvent = 35,
+            LASTEvent = 36
+        }
+
+        public enum EventMask : long
+        {
+            NoEventMask = 0L,
+            KeyPressMask = (1L << 0),
+            KeyReleaseMask = (1L << 1),
+            ButtonPressMask = (1L << 2),
+            ButtonReleaseMask = (1L << 3),
+            EnterWindowMask = (1L << 4),
+            LeaveWindowMask = (1L << 5),
+            PointerMotionMask = (1L << 6),
+            PointerMotionHintMask = (1L << 7),
+            Button1MotionMask = (1L << 8),
+            Button2MotionMask = (1L << 9),
+            Button3MotionMask = (1L << 10),
+            Button4MotionMask = (1L << 11),
+            Button5MotionMask = (1L << 12),
+            ButtonMotionMask = (1L << 13),
+            KeymapStateMask = (1L << 14),
+            ExposureMask = (1L << 15),
+            VisibilityChangeMask = (1L << 16),
+            StructureNotifyMask = (1L << 17),
+            ResizeRedirectMask = (1L << 18),
+            SubstructureNotifyMask = (1L << 19),
+            SubstructureRedirectMask = (1L << 20),
+            FocusChangeMask = (1L << 21),
+            PropertyChangeMask = (1L << 22),
+            ColormapChangeMask = (1L << 23),
+            OwnerGrabButtonMask = (1L << 24),
+        }
+
+        public enum Button : uint
+        {
+            Button1 = 1,
+            Button2 = 2,
+            Button3 = 3,
+            Button4 = 4,
+            Button5 = 5
+        }
+
+        public enum KeySym : ulong
+        {
+            XK_Cancel = 0xff69,
+            XK_BackSpace = 0xff08,
+            XK_Tab = 0xff09,
+            XK_Linefeed = 0xff0a,
+            XK_Clear = 0xff0b,
+            XK_Return = 0xff0d,
+            XK_Pause = 0xff13,
+            XK_Caps_Lock = 0xffe5,
+            XK_Escape = 0xff1b,
+            XK_space = 0x0020,
+            XK_Page_Up = 0xff55,
+            XK_Page_Down = 0xff56,
+            XK_End = 0xff57,
+            XK_Home = 0xff50,
+            XK_Left = 0xff51,
+            XK_Up = 0xff52,
+            XK_Right = 0xff53,
+            XK_Down = 0xff54,
+            XK_Select = 0xff60,
+            XK_Execute = 0xff62,
+            XK_Print = 0xff61,
+            XK_Insert = 0xff63,
+            XK_Delete = 0xffff,
+            XK_Help = 0xff6a,
+            XK_0 = 0x0030,
+            XK_1 = 0x0031,
+            XK_2 = 0x0032,
+            XK_3 = 0x0033,
+            XK_4 = 0x0034,
+            XK_5 = 0x0035,
+            XK_6 = 0x0036,
+            XK_7 = 0x0037,
+            XK_8 = 0x0038,
+            XK_9 = 0x0039,
+            XK_a = 0x0061,
+            XK_b = 0x0062,
+            XK_c = 0x0063,
+            XK_d = 0x0064,
+            XK_e = 0x0065,
+            XK_f = 0x0066,
+            XK_g = 0x0067,
+            XK_h = 0x0068,
+            XK_i = 0x0069,
+            XK_j = 0x006a,
+            XK_k = 0x006b,
+            XK_l = 0x006c,
+            XK_m = 0x006d,
+            XK_n = 0x006e,
+            XK_o = 0x006f,
+            XK_p = 0x0070,
+            XK_q = 0x0071,
+            XK_r = 0x0072,
+            XK_s = 0x0073,
+            XK_t = 0x0074,
+            XK_u = 0x0075,
+            XK_v = 0x0076,
+            XK_w = 0x0077,
+            XK_x = 0x0078,
+            XK_y = 0x0079,
+            XK_z = 0x007a,
+            XK_KP_0 = 0xffb0,
+            XK_KP_1 = 0xffb1,
+            XK_KP_2 = 0xffb2,
+            XK_KP_3 = 0xffb3,
+            XK_KP_4 = 0xffb4,
+            XK_KP_5 = 0xffb5,
+            XK_KP_6 = 0xffb6,
+            XK_KP_7 = 0xffb7,
+            XK_KP_8 = 0xffb8,
+            XK_KP_9 = 0xffb9,
+            XK_KP_Multiply = 0xffaa,
+            XK_KP_Add = 0xffab,
+            XK_KP_Separator = 0xffac,
+            XK_KP_Subtract = 0xffad,
+            XK_KP_Decimal = 0xffae,
+            XK_KP_Divide = 0xffaf,
+            XK_F1 = 0xffbe,
+            XK_F2 = 0xffbf,
+            XK_F3 = 0xffc0,
+            XK_F4 = 0xffc1,
+            XK_F5 = 0xffc2,
+            XK_F6 = 0xffc3,
+            XK_F7 = 0xffc4,
+            XK_F8 = 0xffc5,
+            XK_F9 = 0xffc6,
+            XK_F10 = 0xffc7,
+            XK_F11 = 0xffc8,
+            XK_F12 = 0xffc9,
+            XK_F13 = 0xffca,
+            XK_F14 = 0xffcb,
+            XK_F15 = 0xffcc,
+            XK_F16 = 0xffcd,
+            XK_F17 = 0xffce,
+            XK_F18 = 0xffcf,
+            XK_F19 = 0xffd0,
+            XK_F20 = 0xffd1,
+            XK_F21 = 0xffd2,
+            XK_F22 = 0xffd3,
+            XK_F23 = 0xffd4,
+            XK_F24 = 0xffd5,
+            XK_Num_Lock = 0xff7f,
+            XK_Scroll_Lock = 0xff14,
+            XK_Shift_L = 0xffe1,
+            XK_Shift_R = 0xffe2,
+            XK_Control_L = 0xffe3,
+            XK_Control_R = 0xffe4,
+            XK_Alt_L = 0xffe9,
+            XK_Alt_R = 0xffea,
+        }
+        #endregion
+
+        #region Types
+        public enum Window : ulong { None = 0 }
+
+        public enum Colormap : ulong { }
+
+        public enum Pixmap : ulong { }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct Screen
+        {
+            public IntPtr ext_data;
+            public IntPtr display;
+            public Window root;
+            public int width, height;
+            public int mwidth, mheight;
+            public int ndepths;
+            public IntPtr depths;
+            public int root_depth;
+            public IntPtr root_visual;
+            public IntPtr default_gc;
+            public Colormap cmap;
+            public ulong white_pixel;
+            public ulong black_pixel;
+            public int max_maps, min_maps;
+            public int backing_store;
+            public bool save_unders;
+            public long root_input_mask;
+        }
+
+        [StructLayout(LayoutKind.Sequential, Size = (24 * sizeof(long)))]
+        public struct XAnyEvent
+        {
+            public int type;
+            public ulong serial;
+            public bool send_event;
+            public IntPtr display;
+            public Window window;
+        }
+
+        [StructLayout(LayoutKind.Sequential, Size = (24 * sizeof(long)))]
+        public struct XConfigureEvent
+        {
+            public int type;
+            public ulong serial;
+            public bool send_event;
+            public IntPtr display;
+            public Window parent;
+            public Window window;
+            public int x;
+            public int y;
+            public int width;
+            public int height;
+            public int border_width;
+            public Window above;
+            public bool override_redirect;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct XMotionEvent
+        {
+            public int type;
+            public ulong serial;
+            public bool send_event;
+            public IntPtr display;
+            public Window window;
+            public Window root;
+            public Window subwindow;
+            public ulong time;
+            public int x, y;
+            public int x_root, y_root;
+            public uint state;
+            public byte is_hint;
+            public bool same_screen;
+        }
+
+        [StructLayout(LayoutKind.Sequential, Size = (24 * sizeof(long)))]
+        public struct XButtonEvent
+        {
+            public int type;
+            public ulong serial;
+            public bool send_event;
+            public IntPtr display;
+            public Window window;
+            public Window root;
+            public Window subwindow;
+            public ulong time;
+            public int x, y;
+            public int x_root, y_root;
+            public uint state;
+            public uint button;
+            public bool same_screen;
+        }
+
+        [StructLayout(LayoutKind.Sequential, Size = (24 * sizeof(long)))]
+        public struct XKeyEvent
+        {
+            public int type;
+            public ulong serial;
+            public bool send_event;
+            public IntPtr display;
+            public Window window;
+            public Window root;
+            public Window subwindow;
+            public ulong time;
+            public int x, y;
+            public int x_root, y_root;
+            public uint state;
+            public uint keycode;
+            public bool same_screen;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct XSetWindowAttributes
+        {
+            public Pixmap background_pixmap;
+            public ulong background_pixel;
+            public Pixmap border_pixmap;
+            public ulong border_pixel;
+            public int bit_gravity;
+            public int win_gravity;
+            public int backing_store;
+            public ulong backing_planes;
+            public ulong backing_pixel;
+            public bool save_under;
+            public EventMask event_mask;
+            public EventMask do_not_propagate_mask;
+            public bool override_redirect;
+            public Colormap colormap;
+            public Cursor cursor;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct XWindowAttributes
+        {
+            public int x, y;
+            public uint width, height;
+            public int border_width;
+            public int depth;
+            public IntPtr visual;
+            public Window root;
+            public int @class;
+            public int bit_gravity;
+            public int win_gravity;
+            public int backing_store;
+            public ulong backing_planes;
+            public ulong backing_pixel;
+            public bool save_under;
+            public Colormap colormap;
+            public bool map_installed;
+            public int map_state;
+            public long all_event_masks;
+            public long your_event_masks;
+            public long do_not_propagate_mask;
+            public bool override_redirect;
+            public IntPtr screen;
+        }
+        #endregion
+
+        #region Key mapping
         private static Key NoesisKey(KeySym k)
         {
             switch (k)
@@ -758,5 +714,56 @@ namespace NoesisApp
 
             return Key.None;
         }
+        #endregion
+
+        #region Imports
+        [DllImport("libX11.so.6")]
+        public static extern IntPtr XOpenDisplay(string display);
+
+        [DllImport("libX11.so.6")]
+        public static extern int XDefaultScreen(IntPtr display);
+
+        [DllImport("libX11.so.6")]
+        public static extern int XDefaultDepth(IntPtr display, int screen_number);
+
+        [DllImport("libX11.so.6")]
+        public static extern IntPtr XDefaultVisual(IntPtr display, int screen_number);
+
+        [DllImport("libX11.so.6")]
+        public static extern IntPtr XScreenOfDisplay(IntPtr display, int screen_number);
+
+        [DllImport("libX11.so.6")]
+        public static extern Window XRootWindow(IntPtr display, int screen_number);
+
+        [DllImport("libX11.so.6")]
+        public static extern Window XCreateWindow(IntPtr display, Window parent, int x, int y, uint width, uint height, uint border_width, int depth, uint @class, IntPtr visual, ulong valuemask, ref XSetWindowAttributes attributes);
+
+        [DllImport("libX11.so.6")]
+        public static extern int XMapWindow(IntPtr display, Window window);
+
+        [DllImport("libX11.so.6")]
+        public static extern Status XRaiseWindow(IntPtr display, Window window);
+
+        [DllImport("libX11.so.6")]
+        public static extern int XPending(IntPtr display);
+
+        [DllImport("libX11.so.6")]
+        public static extern Status XNextEvent(IntPtr display, IntPtr event_return);
+
+        [DllImport("libX11.so.6")]
+        public static extern bool XFilterEvent(IntPtr @event, Window window);
+
+        [DllImport("libX11.so.6")]
+        public static extern Status XGetWindowAttributes(IntPtr display, Window window, out XWindowAttributes attributes);
+
+        [DllImport("libX11.so.6")]
+        public static extern Status XResizeWindow(IntPtr display, Window window, uint width, uint height);
+
+        [DllImport("libX11.so.6")]
+        public static extern KeySym XLookupKeysym(ref XKeyEvent key_event, int index);
+        #endregion
+
+        private IntPtr _display;
+        private Window _window;
     }
 }

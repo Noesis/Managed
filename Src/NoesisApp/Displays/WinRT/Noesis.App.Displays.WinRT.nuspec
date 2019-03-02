@@ -13,10 +13,10 @@
     <releaseNotes>https://www.noesisengine.com/docs/Gui.Core.Changelog.html</releaseNotes>
     <copyright>Copyright (c) 2013 Noesis Technologies S.L.</copyright>
     <tags>NoesisGUI XAML GUI C# UWP</tags>
-    <repository type="git" url="https://github.com/Noesis/Managed/Src/NoesisApp/Displays/WinRT" />
+    <repository type="git" url="https://github.com/Noesis/Managed/tree/master/Src/NoesisApp/Displays/WinRT" />
     <dependencies>
       <group targetFramework=".NETStandard2.0">
-        <dependency id="Noesis.App" version="2.2.0" exclude="Analyzers" />
+        <dependency id="Noesis.App" version="2.2.0-beta" exclude="Analyzers" />
       </group>
     </dependencies>
   </metadata>

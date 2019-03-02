@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Windows.Input;
 
 namespace Noesis
 {
@@ -1220,7 +1221,7 @@ namespace Noesis
             {
                 nativeType = Noesis.ExtendStream.Extend(TypeFullName(type));
             }
-            else if (typeof(System.Windows.Input.ICommand).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
+            else if (typeof(ICommand).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
             {
                 nativeType = Noesis.ExtendCommand.Extend(TypeFullName(type));
             }
@@ -1376,7 +1377,7 @@ namespace Noesis
                 typeData.typeConverter = Marshal.StringToHGlobalAnsi(typeConverter.ConverterTypeName).ToInt64();
             }
 
-            var contentProperty = type.GetTypeInfo().GetCustomAttribute<System.Windows.Markup.ContentPropertyAttribute>();
+            var contentProperty = type.GetTypeInfo().GetCustomAttribute<ContentPropertyAttribute>();
             if (contentProperty != null)
             {
                 typeData.contentProperty = Marshal.StringToHGlobalAnsi(contentProperty.Name).ToInt64();
@@ -1832,12 +1833,12 @@ namespace Noesis
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
         private delegate void Callback_FrameworkElementMeasure(IntPtr cPtr,
-            IntPtr availableSizePtr, IntPtr desiredSizePtr);
+            IntPtr availableSizePtr, IntPtr desiredSizePtr, [MarshalAs(UnmanagedType.U1)]ref bool callBase);
         private static Callback_FrameworkElementMeasure _frameworkElementMeasure = FrameworkElementMeasure;
 
         [MonoPInvokeCallback(typeof(Callback_FrameworkElementMeasure))]
         private static void FrameworkElementMeasure(IntPtr cPtr,
-            IntPtr availableSizePtr, IntPtr desiredSizePtr)
+            IntPtr availableSizePtr, IntPtr desiredSizePtr, ref bool callBase)
         {
             try
             {
@@ -1845,7 +1846,8 @@ namespace Noesis
                 if (element != null)
                 {
                     Size availableSize = Marshal.PtrToStructure<Size>(availableSizePtr);
-                    Size desiredSize = element.CallMeasureOverride(availableSize);
+                    Size desiredSize = element.CallMeasureOverride(availableSize, out callBase);
+                    if (desiredSize.IsEmpty) desiredSize = new Size(0, 0);
                     Marshal.StructureToPtr(desiredSize, desiredSizePtr, false);
                 }
             }
@@ -1857,12 +1859,12 @@ namespace Noesis
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
         private delegate void Callback_FrameworkElementArrange(IntPtr cPtr,
-            IntPtr finalSizePtr, IntPtr renderSizePtr);
+            IntPtr finalSizePtr, IntPtr renderSizePtr, [MarshalAs(UnmanagedType.U1)]ref bool callBase);
         private static Callback_FrameworkElementArrange _frameworkElementArrange = FrameworkElementArrange;
 
         [MonoPInvokeCallback(typeof(Callback_FrameworkElementArrange))]
         private static void FrameworkElementArrange(IntPtr cPtr,
-            IntPtr finalSizePtr, IntPtr renderSizePtr)
+            IntPtr finalSizePtr, IntPtr renderSizePtr, ref bool callBase)
         {
             try
             {
@@ -1870,7 +1872,8 @@ namespace Noesis
                 if (element != null)
                 {
                     Size finalSize = Marshal.PtrToStructure<Size>(finalSizePtr);
-                    Size renderSize = element.CallArrangeOverride(finalSize);
+                    Size renderSize = element.CallArrangeOverride(finalSize, out callBase);
+                    if (renderSize.IsEmpty) renderSize = new Size(0, 0);
                     Marshal.StructureToPtr(renderSize, renderSizePtr, false);
                 }
             }
@@ -1939,7 +1942,7 @@ namespace Noesis
         {
             try
             {
-                var command = (System.Windows.Input.ICommand)GetExtendInstance(cPtr);
+                var command = (ICommand)GetExtendInstance(cPtr);
                 return command != null ? command.CanExecute(GetProxy(paramType, paramPtr, false)) : false;
             }
             catch (Exception e)
@@ -1959,7 +1962,7 @@ namespace Noesis
         {
             try
             {
-                var command = (System.Windows.Input.ICommand)GetExtendInstance(cPtr);
+                var command = (ICommand)GetExtendInstance(cPtr);
                 if (command != null)
                 {
                     command.Execute(GetProxy(paramType, paramPtr, false));
@@ -4268,7 +4271,7 @@ namespace Noesis
 
             // For ICommand objects, we need to hook to the CanExecuteChanged event so we can
             // notify C++ side when command.CanExecute has changed in Mono
-            System.Windows.Input.ICommand command = instance as System.Windows.Input.ICommand;
+            ICommand command = instance as ICommand;
             if (command != null)
             {
                 command.CanExecuteChanged += NotifyCanExecuteChanged;
@@ -4276,7 +4279,8 @@ namespace Noesis
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-        private static void NotifyPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private static void NotifyPropertyChanged(object sender,
+            System.ComponentModel.PropertyChangedEventArgs e)
         {
             // We don't want to raise more property change notifications after shutdown is called
             if (Initialized)
@@ -4288,7 +4292,8 @@ namespace Noesis
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-        private static void NotifyCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private static void NotifyCollectionChanged(object sender,
+            System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             // We don't want to raise more property change notifications after shutdown is called
             if (Initialized)

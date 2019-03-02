@@ -1,11 +1,13 @@
 using System;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
 using Noesis;
 using CoreAnimation;
 using CoreGraphics;
-using UIKit;
 using Metal;
+#if __IOS__
+using UIKit;
+#else
+using AppKit;
+#endif
 
 namespace NoesisApp
 {
@@ -16,14 +18,14 @@ namespace NoesisApp
             _dev = MTLDevice.SystemDefault;
         }
 
-        public override Noesis.RenderDevice Device
+        public override RenderDevice Device
         {
             get { return _device; }
         }
 
         private IntPtr _display;
         private IntPtr _window;
-        private Noesis.RenderDeviceMTL _device;
+        private RenderDeviceMTL _device;
         private IMTLDevice _dev;
         private CAMetalLayer _layer;
         private ICAMetalDrawable _drawable;
@@ -55,7 +57,7 @@ namespace NoesisApp
 #else
             // Mac
             NSView view = (NSView)ObjCRuntime.Runtime.GetNSObject(window);
-            view.Setlayer(_layer);
+            view.Layer.AddSublayer(_layer);
 #endif
             _cmdQueue = _dev.CreateCommandQueue();
 
@@ -75,8 +77,7 @@ namespace NoesisApp
             _descriptor.StencilAttachment.LoadAction = MTLLoadAction.Clear;
             _descriptor.StencilAttachment.StoreAction = MTLStoreAction.DontCare;
 
-            _device = new Noesis.RenderDeviceMTL(_dev.Handle,
-                (ulong)_layer.PixelFormat, (ulong)MTLPixelFormat.Invalid, (ulong)MTLPixelFormat.Stencil8, samples);
+            _device = new Noesis.RenderDeviceMTL(_dev.Handle, sRGB);
         }
 
         public override void SetWindow(IntPtr window) { }
@@ -111,7 +112,7 @@ namespace NoesisApp
 
             _cmdEncoder = _cmdBuffer.CreateRenderCommandEncoder(_descriptor);
 
-            _device.SetOnScreenEncoder(_cmdEncoder.Handle);
+            _device.SetOnScreenEncoder(_cmdEncoder.Handle, (uint)_layer.PixelFormat, (uint)MTLPixelFormat.Stencil8, _samples);
         }
 
         public override void Swap()

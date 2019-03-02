@@ -37,16 +37,14 @@ namespace Noesis
 
         protected virtual Size MeasureOverride(Size availableSize)
         {
-            // Negative desired size is not allowed but we use it here to indicate we have to call
-            // base class implementation in native code
-            return Size.Empty;
+            _callBaseMeasure = true;
+            return new Size(0f, 0f);
         }
 
         protected virtual Size ArrangeOverride(Size finalSize)
         {
-            // Negative render size is not allowed but we use it here to indicate we have to call
-            // base class implementation in native code
-            return Size.Empty;
+            _callBaseArrange = true;
+            return new Size(0f, 0f);
         }
 
         protected virtual bool ConnectEvent(object source, string eventName, string handlerName)
@@ -85,14 +83,22 @@ namespace Noesis
 
         #region Extend overrides implementation
 
-        internal Size CallMeasureOverride(Size availableSize)
+        private bool _callBaseMeasure;
+        internal Size CallMeasureOverride(Size availableSize, out bool callBase)
         {
-            return MeasureOverride(availableSize);
+            _callBaseMeasure = false;
+            Size desiredSize = MeasureOverride(availableSize);
+            callBase = _callBaseMeasure;
+            return desiredSize;
         }
 
-        internal Size CallArrangeOverride(Size finalSize)
+        private bool _callBaseArrange;
+        internal Size CallArrangeOverride(Size finalSize, out bool callBase)
         {
-            return ArrangeOverride(finalSize);
+            _callBaseArrange = false;
+            Size renderSize = ArrangeOverride(finalSize);
+            callBase = _callBaseArrange;
+            return renderSize;
         }
 
         internal bool CallConnectEvent(object source, string eventName, string handlerName)

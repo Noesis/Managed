@@ -21,8 +21,8 @@ namespace NoesisApp
         private IntPtr _display;
         private IntPtr _window;
         private RenderDeviceD3D11 _device;
-        private SharpDX.Direct3D11.Device _dev;
-        private SwapChain _swapChain;
+        private SharpDX.Direct3D11.Device1 _dev;
+        private SwapChain1 _swapChain;
         private RenderTargetView _renderTarget;
         private DepthStencilView _depthStencil;
         private SharpDX.Mathematics.Interop.RawViewportF _viewport;
@@ -36,15 +36,12 @@ namespace NoesisApp
 
             FeatureLevel[] features =
             {
-                FeatureLevel.Level_11_0,
-                FeatureLevel.Level_10_1,
-                FeatureLevel.Level_10_0,
-                FeatureLevel.Level_9_3,
-                FeatureLevel.Level_9_2,
-                FeatureLevel.Level_9_1
+                FeatureLevel.Level_11_1,
+                FeatureLevel.Level_11_0
             };
 
-            _dev = new SharpDX.Direct3D11.Device(DriverType.Hardware, DeviceCreationFlags.None, features);
+            SharpDX.Direct3D11.Device dev11 = new SharpDX.Direct3D11.Device(DriverType.Hardware, DeviceCreationFlags.None, features);
+            _dev = dev11.QueryInterfaceOrNull<SharpDX.Direct3D11.Device1>();
 
             SampleDescription sampleDesc = new SampleDescription();
             do
@@ -61,27 +58,30 @@ namespace NoesisApp
                 }
             } while (samples > 0);
 
-            SwapChainDescription desc = new SwapChainDescription();
-            desc.ModeDescription = new ModeDescription();
-            desc.ModeDescription.Width = 0;
-            desc.ModeDescription.Height = 0;
-            desc.ModeDescription.RefreshRate.Numerator = 0;
-            desc.ModeDescription.RefreshRate.Denominator = 0;
-            desc.ModeDescription.Format = sRGB ? Format.R8G8B8A8_UNorm_SRgb : Format.R8G8B8A8_UNorm;
-            desc.ModeDescription.ScanlineOrdering = DisplayModeScanlineOrder.Unspecified;
-            desc.ModeDescription.Scaling = DisplayModeScaling.Unspecified;
+            SwapChainDescription1 desc = new SwapChainDescription1();
+            desc.Width = 0;
+            desc.Height = 0;
+            desc.Format = sRGB ? Format.R8G8B8A8_UNorm_SRgb : Format.R8G8B8A8_UNorm;
+            desc.Scaling = Scaling.None;
             desc.SampleDescription = sampleDesc;
             desc.Usage = Usage.RenderTargetOutput;
-            desc.BufferCount = 1;
-            desc.OutputHandle = window;
-            desc.IsWindowed = true;
-            desc.SwapEffect = SwapEffect.Discard;
+            desc.BufferCount = 2;
+            desc.SwapEffect = SwapEffect.FlipSequential;
             desc.Flags = SwapChainFlags.None;
 
-            SharpDX.DXGI.Device dev = _dev.QueryInterface<SharpDX.DXGI.Device>();
+            SharpDX.DXGI.Device2 dev = _dev.QueryInterface<SharpDX.DXGI.Device2>();
             Adapter adapter = dev.Adapter;
-            Factory factory = adapter.GetParent<Factory>();
-            _swapChain = new SwapChain(factory, _dev, desc);
+            Factory2 factory = adapter.GetParent<Factory2>();
+            if (display == IntPtr.Zero)
+            {
+                GCHandle handle = (GCHandle)window;
+                SharpDX.ComObject coreWindow = new SharpDX.ComObject(handle.Target as object);
+                _swapChain = new SwapChain1(factory, _dev, coreWindow, ref desc);
+            }
+            else
+            {
+                _swapChain = new SwapChain1(factory, _dev, window, ref desc);
+            }
 
             _device = new RenderDeviceD3D11(_dev.ImmediateContext.NativePointer, sRGB);
         }
@@ -112,15 +112,18 @@ namespace NoesisApp
         public override void Resize()
         {
             _dev.ImmediateContext.OutputMerger.SetRenderTargets(null, (RenderTargetView)null);
+            _renderTarget?.Dispose();
+            _depthStencil?.Dispose();
             _swapChain.ResizeBuffers(0, 0, 0, Format.Unknown, SwapChainFlags.None);
 
-            SwapChainDescription desc = _swapChain.Description;
+            SwapChainDescription1 desc = _swapChain.Description1;
             Texture2D color = _swapChain.GetBackBuffer<Texture2D>(0);
             _renderTarget = new RenderTargetView(_dev, color);
+            color.Dispose();
 
             Texture2DDescription textureDesc = new Texture2DDescription();
-            textureDesc.Width = desc.ModeDescription.Width;
-            textureDesc.Height = desc.ModeDescription.Height;
+            textureDesc.Width = desc.Width;
+            textureDesc.Height = desc.Height;
             textureDesc.MipLevels = 1;
             textureDesc.ArraySize = 1;
             textureDesc.SampleDescription = desc.SampleDescription;
@@ -132,11 +135,12 @@ namespace NoesisApp
 
             Texture2D depthStencil = new Texture2D(_dev, textureDesc);
             _depthStencil = new DepthStencilView(_dev, depthStencil);
+            depthStencil.Dispose();
 
             _viewport.X = 0.0f;
             _viewport.Y = 0.0f;
-            _viewport.Width = (float)desc.ModeDescription.Width;
-            _viewport.Height = (float)desc.ModeDescription.Height;
+            _viewport.Width = (float)desc.Width;
+            _viewport.Height = (float)desc.Height;
             _viewport.MinDepth = 0.0f;
             _viewport.MaxDepth = 1.0f;
         }

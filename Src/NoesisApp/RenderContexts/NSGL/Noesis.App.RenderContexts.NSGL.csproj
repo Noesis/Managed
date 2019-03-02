@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>xamarinmac20</TargetFramework>
+    <TargetFrameworkIdentifier>Xamarin.Mac</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <LanguageTargets Condition="'$(OS)' != 'Unix'">$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets</LanguageTargets>
+    <Version>2.2.0</Version>
+    <Authors>Noesis Technologies</Authors>
+    <Description>NoesisGUI NSOpenGL Render Context</Description>
+    <Copyright>Copyright (c) 2013 Noesis Technologies S.L.</Copyright>
+    <PackageLicenseUrl>https://www.noesisengine.com/licensing.php</PackageLicenseUrl>
+    <PackageProjectUrl>https://www.noesisengine.com</PackageProjectUrl>
+    <PackageIconUrl>https://www.noesisengine.com/images/logos/Icon-256.png</PackageIconUrl>
+    <RepositoryUrl>https://github.com/Noesis/Managed/tree/master/Src/NoesisApp/RenderContexts/NSGL</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>NoesisGUI XAML GUI C# macOS Xamarin</PackageTags>
+    <PackageReleaseNotes>https://www.noesisengine.com/docs/Gui.Core.Changelog.html</PackageReleaseNotes>
+    <RootNamespace>NoesisApp</RootNamespace>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageOutputPath>$(SolutionDir)NuGet\</PackageOutputPath>
+    <OutputPath Condition="'$(OS)' == 'Unix'">bin/$(Configuration)/$(TargetFramework)</OutputPath>
+  </PropertyGroup>
+
+  <Import Condition="'$(OS)' == 'Unix'" Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets"/>
+
+  <ItemGroup>
+    <Reference Include="netstandard" />
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="Xamarin.Mac" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Noesis.App.csproj">
+      <PrivateAssets>contentfiles;analyzers</PrivateAssets>
+    </ProjectReference>
+    <PackageReference Include="OpenGL.Net" Version="0.7.1" />
+  </ItemGroup>
+
+</Project>

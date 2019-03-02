@@ -1,6 +1,5 @@
 ﻿using Noesis;
 using System;
-using System.Windows.Markup;
 
 namespace NoesisApp
 {

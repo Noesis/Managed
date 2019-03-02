@@ -9,7 +9,7 @@
     <PackageLicenseUrl>https://www.noesisengine.com/licensing.php</PackageLicenseUrl>
     <PackageProjectUrl>https://www.noesisengine.com</PackageProjectUrl>
     <PackageIconUrl>https://www.noesisengine.com/images/logos/Icon-256.png</PackageIconUrl>
-    <RepositoryUrl>https://github.com/Noesis/Managed/Src/NoesisApp/Core</RepositoryUrl>
+    <RepositoryUrl>https://github.com/Noesis/Managed/tree/master/Src/NoesisApp/Core</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>NoesisGUI XAML GUI C#</PackageTags>
     <PackageReleaseNotes>https://www.noesisengine.com/docs/Gui.Core.Changelog.html</PackageReleaseNotes>
@@ -17,6 +17,7 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageOutputPath>$(SolutionDir)NuGet\</PackageOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,13 +25,5 @@
       <PrivateAssets>contentfiles;analyzers</PrivateAssets>
     </ProjectReference>
   </ItemGroup>
-
-  <PropertyGroup>
-    <PackageDistPath>$(SolutionDir)NuGet\</PackageDistPath>
-  </PropertyGroup>
-
-  <Target Name="CopyPackage" AfterTargets="Pack">
-    <Copy SourceFiles="$(OutputPath)..\$(PackageId).$(PackageVersion).nupkg" DestinationFolder="$(PackageDistPath)" />
-  </Target>
 
 </Project>

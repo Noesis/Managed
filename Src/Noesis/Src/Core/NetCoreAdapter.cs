@@ -21,18 +21,12 @@ namespace System.Runtime.InteropServices
 
         public Object Wrapper
         {
-            get
-            {
-                return _wrapper;
-            }
+            get { return _wrapper; }
         }
 
         public IntPtr Handle
         {
-            get
-            {
-                return _handle;
-            }
+            get { return _handle; }
         }
     }
 }
@@ -79,27 +73,10 @@ namespace System.ComponentModel
     }
 }
 
-namespace System.Windows.Markup
-{
-    // There is no [ContentProperty] attribute in WinRT
-    [AttributeUsage (AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
-    public sealed class ContentPropertyAttribute: Attribute
-    {
-        public ContentPropertyAttribute() {}
-        
-        public ContentPropertyAttribute(string name)
-        {
-            Name = name;
-        }
-        
-        public string Name { get; private set; }
-    }
-}
-
 namespace System.Security
 {
     // There is no [SuppressUnmanagedCodeSecurity] attribute in WinRT
-    [AttributeUsageAttribute(AttributeTargets.Class|AttributeTargets.Method|AttributeTargets.Interface|
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method | AttributeTargets.Interface |
         AttributeTargets.Delegate, AllowMultiple = true, Inherited = false)]
     public sealed class SuppressUnmanagedCodeSecurityAttribute: Attribute {}
 }
@@ -108,20 +85,20 @@ namespace System
 {
     // SWIG uses (incorrectly) System.SystemException instead of System.Exception and there is no
     // SystemException class in WinRT
-    public class SystemException: Exception
+    public class SystemException : Exception
     {
         public SystemException(string message, Exception innerException) : base(message, innerException) { }
     }
 
     // Unity already defines this in WinRTLegacy assembly
     #if !UNITY_WSA_10_0 && !UNITY_WSA_8_1
-        // SWIG uses System.ApplicationException and there is no such class in .NETCore
-        public class ApplicationException : Exception
-        {
-            public ApplicationException() { }
-            public ApplicationException(string message) : base(message) { }
-            public ApplicationException(string message, Exception innerException) : base(message, innerException) { }
-        }
+    // SWIG uses System.ApplicationException and there is no such class in .NETCore
+    public class ApplicationException : Exception
+    {
+        public ApplicationException() { }
+        public ApplicationException(string message) : base(message) { }
+        public ApplicationException(string message, Exception innerException) : base(message, innerException) { }
+    }
     #endif
 }
 
@@ -206,32 +183,6 @@ namespace Noesis
 }
 
 #else
-
-namespace System.Windows.Markup
-{
-    /// <summary>Indicates which property of a type is the XAML content property. A XAML processor
-    /// uses this information when processing XAML child elements of XAML representations of the
-    /// attributed type.</summary>
-    [AttributeUsageAttribute(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
-    public sealed class ContentPropertyAttribute : Attribute
-    {
-        private string _name;
-
-        /// <summary>Gets the name of the property that is the content property.</summary>
-        /// <returns>The name of the property that is the content property.</returns>
-        public string Name { get{ return this._name; }
-        }
-
-        /// <summary>Initializes a new instance of the ContentPropertyAttribute class.</summary>
-        public ContentPropertyAttribute() { }
-
-        /// <summary>Initializes a new instance of the ContentPropertyAttribute class, by using the
-        /// specified name.</summary>
-        /// <param name="name">The property name for the property that is the content
-        /// property.</param>
-        public ContentPropertyAttribute(string name) { this._name = name; }
-    }
-}
 
 namespace Noesis
 {

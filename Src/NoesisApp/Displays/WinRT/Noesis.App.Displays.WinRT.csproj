@@ -72,10 +72,10 @@
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
   <PropertyGroup>
-    <PackageOutputPath>$(ProjectDir)bin\$(ConfigurationName)</PackageOutputPath>
-    <PackageDistPath>$(SolutionDir)NuGet\</PackageDistPath>
-    <PostBuildEvent>NuGet pack $(ProjectDir)$(ProjectFileName) -OutputDirectory $(PackageOutputPath)
-xcopy /Y $(PackageOutputPath)\Noesis.App.Displays.WinRT.2.2.0.nupkg $(PackageDistPath)</PostBuildEvent>
+    <PackageOutputPath>$(SolutionDir)NuGet\</PackageOutputPath>
+    <PackageVersion>2.2.0</PackageVersion>
+    <NuGetTool>$(NuGetPackageRoot)nuget.commandline\4.9.3\tools\NuGet.exe</NuGetTool>
+    <PostBuildEvent>$(NuGetTool) pack $(ProjectDir)$(ProjectFileName) -OutputDirectory $(PackageOutputPath) -Version $(PackageVersion) -Prop Configuration=$(Configuration)</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
