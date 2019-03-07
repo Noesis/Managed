@@ -1,25 +1,38 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>xamarinmac20</TargetFramework>
+    <TargetFrameworkIdentifier>Xamarin.Mac</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <LanguageTargets Condition="'$(OS)' != 'Unix'">$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets</LanguageTargets>
     <Version>2.2.0</Version>
     <Authors>Noesis Technologies</Authors>
-    <Description>NoesisGUI Application Framework</Description>
+    <Description>NoesisGUI AppKit Display</Description>
     <Copyright>Copyright (c) 2013 Noesis Technologies S.L.</Copyright>
     <PackageProjectUrl>https://www.noesisengine.com</PackageProjectUrl>
     <PackageIconUrl>https://www.noesisengine.com/images/logos/Icon-256.png</PackageIconUrl>
-    <RepositoryUrl>https://github.com/Noesis/Managed/tree/master/Src/NoesisApp/Core</RepositoryUrl>
+    <RepositoryUrl>https://github.com/Noesis//Managed/tree/master/Src/NoesisApp/Displays/AppKit</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>NoesisGUI XAML GUI C#</PackageTags>
+    <PackageTags>NoesisGUI XAML GUI C# macOS Xamarin</PackageTags>
     <PackageReleaseNotes>https://www.noesisengine.com/docs/Gui.Core.Changelog.html</PackageReleaseNotes>
     <RootNamespace>NoesisApp</RootNamespace>
-    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageOutputPath>$(SolutionDir)NuGet\</PackageOutputPath>
+    <OutputPath Condition="'$(OS)' == 'Unix'">bin/$(Configuration)/$(TargetFramework)</OutputPath>
   </PropertyGroup>
 
+  <Import Condition="'$(OS)' == 'Unix'" Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
+
   <ItemGroup>
-    <ProjectReference Include="..\..\Noesis\Core\Noesis.GUI.csproj">
+    <Reference Include="netstandard" />
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="Xamarin.Mac" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Noesis.App.csproj">
       <PrivateAssets>contentfiles;analyzers</PrivateAssets>
     </ProjectReference>
   </ItemGroup>

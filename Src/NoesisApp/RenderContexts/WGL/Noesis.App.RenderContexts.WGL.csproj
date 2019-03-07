@@ -6,7 +6,6 @@
     <Authors>Noesis Technologies</Authors>
     <Description>NoesisGUI WGL Render Context</Description>
     <Copyright>Copyright (c) 2013 Noesis Technologies S.L.</Copyright>
-    <PackageLicenseUrl>https://www.noesisengine.com/licensing.php</PackageLicenseUrl>
     <PackageProjectUrl>https://www.noesisengine.com</PackageProjectUrl>
     <PackageIconUrl>https://www.noesisengine.com/images/logos/Icon-256.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/Noesis/Managed/tree/master/Src/NoesisApp/RenderContexts/WGL</RepositoryUrl>
@@ -15,7 +14,6 @@
     <PackageReleaseNotes>https://www.noesisengine.com/docs/Gui.Core.Changelog.html</PackageReleaseNotes>
     <RootNamespace>NoesisApp</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageOutputPath>$(SolutionDir)NuGet\</PackageOutputPath>
   </PropertyGroup>
 
@@ -24,6 +22,14 @@
       <PrivateAssets>contentfiles;analyzers</PrivateAssets>
     </ProjectReference>
     <PackageReference Include="OpenGL.Net" Version="0.7.1" />
+  </ItemGroup>
+
+  <PropertyGroup Condition="Exists('$(SolutionDir)LICENSE.txt')">
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+  </PropertyGroup>
+  <ItemGroup Condition="Exists('$(SolutionDir)LICENSE.txt')">
+    <Content Include="$(SolutionDir)LICENSE.txt" PackagePath="" Pack="true"/>
   </ItemGroup>
 
 </Project>

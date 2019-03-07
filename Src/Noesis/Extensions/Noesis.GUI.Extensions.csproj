@@ -1,35 +1,37 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net45</TargetFramework>
     <Version>2.2.0</Version>
     <Authors>Noesis Technologies</Authors>
-    <Description>NoesisGUI Application Framework</Description>
+    <Description>Extends Blend with new attached properties and types that expose features included in NoesisGUI.</Description>
     <Copyright>Copyright (c) 2013 Noesis Technologies S.L.</Copyright>
     <PackageProjectUrl>https://www.noesisengine.com</PackageProjectUrl>
     <PackageIconUrl>https://www.noesisengine.com/images/logos/Icon-256.png</PackageIconUrl>
-    <RepositoryUrl>https://github.com/Noesis/Managed/tree/master/Src/NoesisApp/Core</RepositoryUrl>
+    <RepositoryUrl>https://github.com/Noesis/Managed/tree/master/Src/Noesis/Extensions</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>NoesisGUI XAML GUI C#</PackageTags>
     <PackageReleaseNotes>https://www.noesisengine.com/docs/Gui.Core.Changelog.html</PackageReleaseNotes>
-    <RootNamespace>NoesisApp</RootNamespace>
+    <RootNamespace>NoesisGUIExtensions</RootNamespace>
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageOutputPath>$(SolutionDir)NuGet\</PackageOutputPath>
   </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\Noesis\Core\Noesis.GUI.csproj">
-      <PrivateAssets>contentfiles;analyzers</PrivateAssets>
-    </ProjectReference>
-  </ItemGroup>
 
   <PropertyGroup Condition="Exists('$(SolutionDir)LICENSE.txt')">
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
   </PropertyGroup>
   <ItemGroup Condition="Exists('$(SolutionDir)LICENSE.txt')">
-    <Content Include="$(SolutionDir)LICENSE.txt" PackagePath="" Pack="true"/>
+    <Content Include="$(SolutionDir)LICENSE.txt" PackagePath="" Pack="true" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Expression.Blend.Sdk" Version="1.0.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
 
 </Project>

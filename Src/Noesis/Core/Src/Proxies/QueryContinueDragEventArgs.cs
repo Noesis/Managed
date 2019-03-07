@@ -51,16 +51,13 @@ public class QueryContinueDragEventArgs : RoutedEventArgs {
     }
   }
 
+  public DragDropKeyStates KeyStates {
+    get { return GetKeyStatesHelper(); }
+  }
+
   public bool EscapePressed {
     get {
       bool ret = NoesisGUI_PINVOKE.QueryContinueDragEventArgs_EscapePressed_get(swigCPtr);
-      return ret;
-    } 
-  }
-
-  public uint KeyStates {
-    get {
-      uint ret = NoesisGUI_PINVOKE.QueryContinueDragEventArgs_KeyStates_get(swigCPtr);
       return ret;
     } 
   }
@@ -75,7 +72,9 @@ public class QueryContinueDragEventArgs : RoutedEventArgs {
     } 
   }
 
-  public QueryContinueDragEventArgs(object source, RoutedEvent arg1, bool escapePressed, uint dragDropKeyStates) : this(NoesisGUI_PINVOKE.new_QueryContinueDragEventArgs(Noesis.Extend.GetInstanceHandle(source), RoutedEvent.getCPtr(arg1), escapePressed, dragDropKeyStates), true) {
+  private DragDropKeyStates GetKeyStatesHelper() {
+    DragDropKeyStates ret = (DragDropKeyStates)NoesisGUI_PINVOKE.QueryContinueDragEventArgs_GetKeyStatesHelper(swigCPtr);
+    return ret;
   }
 
 }

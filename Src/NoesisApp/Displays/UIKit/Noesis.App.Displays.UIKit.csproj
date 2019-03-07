@@ -9,7 +9,6 @@
     <Authors>Noesis Technologies</Authors>
     <Description>NoesisGUI UIKit Display</Description>
     <Copyright>Copyright (c) 2013 Noesis Technologies S.L.</Copyright>
-    <PackageLicenseUrl>https://www.noesisengine.com/licensing.php</PackageLicenseUrl>
     <PackageProjectUrl>https://www.noesisengine.com</PackageProjectUrl>
     <PackageIconUrl>https://www.noesisengine.com/images/logos/Icon-256.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/Noesis/Managed/tree/master/Src/NoesisApp/Displays/UIKit</RepositoryUrl>
@@ -18,7 +17,6 @@
     <PackageReleaseNotes>https://www.noesisengine.com/docs/Gui.Core.Changelog.html</PackageReleaseNotes>
     <RootNamespace>NoesisApp</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageOutputPath>$(SolutionDir)NuGet\</PackageOutputPath>
     <OutputPath Condition="'$(OS)' == 'Unix'">bin/$(Configuration)/$(TargetFramework)</OutputPath>
   </PropertyGroup>
@@ -36,6 +34,14 @@
     <ProjectReference Include="..\..\Core\Noesis.App.csproj">
       <PrivateAssets>contentfiles;analyzers</PrivateAssets>
     </ProjectReference>
+  </ItemGroup>
+
+  <PropertyGroup Condition="Exists('$(SolutionDir)LICENSE.txt')">
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+  </PropertyGroup>
+  <ItemGroup Condition="Exists('$(SolutionDir)LICENSE.txt')">
+    <Content Include="$(SolutionDir)LICENSE.txt" PackagePath="" Pack="true"/>
   </ItemGroup>
 
 </Project>

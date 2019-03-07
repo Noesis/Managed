@@ -6,7 +6,7 @@
     <authors>Noesis Technologies</authors>
     <owners>Noesis Technologies</owners>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <licenseUrl>https://www.noesisengine.com/licensing.php</licenseUrl>
+    <license type="file">LICENSE.txt</license>
     <projectUrl>https://www.noesisengine.com/</projectUrl>
     <iconUrl>https://www.noesisengine.com/images/logos/Icon-256.png</iconUrl>
     <description>NoesisGUI WinRT Display</description>
@@ -20,4 +20,7 @@
       </group>
     </dependencies>
   </metadata>
+  <files>
+    <file src="../../../../LICENSE.txt" target="/" />
+  </files>
 </package>

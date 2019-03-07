@@ -51,11 +51,8 @@ public class GiveFeedbackEventArgs : RoutedEventArgs {
     }
   }
 
-  public uint Effects {
-    get {
-      uint ret = NoesisGUI_PINVOKE.GiveFeedbackEventArgs_Effects_get(swigCPtr);
-      return ret;
-    } 
+  public DragDropEffects Effects {
+    get { return GetEffectsHelper(); }
   }
 
   public bool UseDefaultCursors {
@@ -68,7 +65,9 @@ public class GiveFeedbackEventArgs : RoutedEventArgs {
     } 
   }
 
-  public GiveFeedbackEventArgs(object source, RoutedEvent arg1, uint effects, bool useDefaultCursors) : this(NoesisGUI_PINVOKE.new_GiveFeedbackEventArgs(Noesis.Extend.GetInstanceHandle(source), RoutedEvent.getCPtr(arg1), effects, useDefaultCursors), true) {
+  private DragDropEffects GetEffectsHelper() {
+    DragDropEffects ret = (DragDropEffects)NoesisGUI_PINVOKE.GiveFeedbackEventArgs_GetEffectsHelper(swigCPtr);
+    return ret;
   }
 
 }

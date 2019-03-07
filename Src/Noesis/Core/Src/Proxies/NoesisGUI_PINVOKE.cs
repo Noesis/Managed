@@ -3601,22 +3601,16 @@ internal class NoesisGUI_PINVOKE {
   public static extern bool QueryContinueDragEventArgs_EscapePressed_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
-  public static extern uint QueryContinueDragEventArgs_KeyStates_get(HandleRef jarg1);
-
-  [DllImport(Library.Name)]
   public static extern void QueryContinueDragEventArgs_Action_set(HandleRef jarg1, int jarg2);
 
   [DllImport(Library.Name)]
   public static extern int QueryContinueDragEventArgs_Action_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
-  public static extern IntPtr new_QueryContinueDragEventArgs(HandleRef jarg1, HandleRef jarg2, bool jarg3, uint jarg4);
+  public static extern int QueryContinueDragEventArgs_GetKeyStatesHelper(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern void delete_QueryContinueDragEventArgs(HandleRef jarg1);
-
-  [DllImport(Library.Name)]
-  public static extern uint GiveFeedbackEventArgs_Effects_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern void GiveFeedbackEventArgs_UseDefaultCursors_set(HandleRef jarg1, bool jarg2);
@@ -3626,40 +3620,31 @@ internal class NoesisGUI_PINVOKE {
   public static extern bool GiveFeedbackEventArgs_UseDefaultCursors_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
-  public static extern IntPtr new_GiveFeedbackEventArgs(HandleRef jarg1, HandleRef jarg2, uint jarg3, bool jarg4);
+  public static extern int GiveFeedbackEventArgs_GetEffectsHelper(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern void delete_GiveFeedbackEventArgs(HandleRef jarg1);
 
   [DllImport(Library.Name)]
-  public static extern IntPtr DragEventArgs_Data_get(HandleRef jarg1);
-
-  [DllImport(Library.Name)]
-  public static extern uint DragEventArgs_KeyStates_get(HandleRef jarg1);
-
-  [DllImport(Library.Name)]
-  public static extern uint DragEventArgs_AllowedEffects_get(HandleRef jarg1);
-
-  [DllImport(Library.Name)]
-  public static extern void DragEventArgs_Effects_set(HandleRef jarg1, uint jarg2);
-
-  [DllImport(Library.Name)]
-  public static extern uint DragEventArgs_Effects_get(HandleRef jarg1);
-
-  [DllImport(Library.Name)]
   public static extern IntPtr DragEventArgs_GetPosition(HandleRef jarg1, HandleRef jarg2);
 
   [DllImport(Library.Name)]
-  public static extern IntPtr new_DragEventArgs(HandleRef jarg1, HandleRef jarg2, HandleRef jarg3, uint jarg4, uint jarg5, HandleRef jarg6, ref Point jarg7);
+  public static extern IntPtr DragEventArgs_GetDataHelper(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern int DragEventArgs_GetKeyStatesHelper(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern int DragEventArgs_GetAllowedEffectsHelper(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern int DragEventArgs_GetEffectsHelper(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void DragEventArgs_SetEffectsHelper(HandleRef jarg1, int jarg2);
 
   [DllImport(Library.Name)]
   public static extern void delete_DragEventArgs(HandleRef jarg1);
-
-  [DllImport(Library.Name)]
-  public static extern void DragDrop_DoDragDrop__SWIG_0(HandleRef jarg1, HandleRef jarg2, uint jarg3, HandleRef jarg4);
-
-  [DllImport(Library.Name)]
-  public static extern void DragDrop_DoDragDrop__SWIG_1(HandleRef jarg1, HandleRef jarg2, uint jarg3);
 
   [DllImport(Library.Name)]
   public static extern IntPtr DragDrop_PreviewQueryContinueDragEvent_get();

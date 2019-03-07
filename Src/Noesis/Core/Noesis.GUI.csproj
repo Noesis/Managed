@@ -1,28 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>xamarinios10;xamarinmac20</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;xamarinios10</TargetFrameworks>
     <Version>2.2.0</Version>
     <Authors>Noesis Technologies</Authors>
-    <Description>NoesisGUI MTL Render Context</Description>
+    <Description>NoesisGUI is a lightweight cross-platform game user interface library based on XAML and optimized for GPUs</Description>
     <Copyright>Copyright (c) 2013 Noesis Technologies S.L.</Copyright>
     <PackageProjectUrl>https://www.noesisengine.com</PackageProjectUrl>
     <PackageIconUrl>https://www.noesisengine.com/images/logos/Icon-256.png</PackageIconUrl>
-    <RepositoryUrl>https://github.com/Noesis/Managed/tree/master/Src/NoesisApp/RenderContexts/MTL</RepositoryUrl>
+    <RepositoryUrl>https://github.com/Noesis/Managed/tree/master/Src/Noesis</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>NoesisGUI XAML GUI C# Metal</PackageTags>
+    <PackageTags>NoesisGUI XAML GUI C# Native</PackageTags>
     <PackageReleaseNotes>https://www.noesisengine.com/docs/Gui.Core.Changelog.html</PackageReleaseNotes>
-    <RootNamespace>NoesisApp</RootNamespace>
+    <RootNamespace>Noesis</RootNamespace>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageOutputPath>$(SolutionDir)NuGet\</PackageOutputPath>
-    <OutputPath Condition="'$(OS)' == 'Unix'">bin/$(Configuration)/$(TargetFramework)</OutputPath>
   </PropertyGroup>
 
-  <!-- iOS Targets and References -->
   <PropertyGroup Condition="'$(TargetFramework)' == 'xamarinios10'">
     <TargetFrameworkIdentifier>Xamarin.iOS</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v1.0</TargetFrameworkVersion>
     <LanguageTargets Condition="'$(OS)' != 'Unix'">$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets</LanguageTargets>
+    <DefineConstants>$(DefineConstants);UNITY_IPHONE</DefineConstants>
+    <OutputPath Condition="'$(OS)' == 'Unix'">bin/$(Configuration)/$(TargetFramework)</OutputPath>
   </PropertyGroup>
 
   <Import Condition="'$(TargetFramework)' == 'xamarinios10' and '$(OS)' == 'Unix'" Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
@@ -34,27 +35,9 @@
     <Reference Include="Xamarin.iOS" />
   </ItemGroup>
 
-  <!-- macOS Targets and References -->
-  <PropertyGroup Condition="'$(TargetFramework)' == 'xamarinmac20'">
-    <TargetFrameworkIdentifier>Xamarin.Mac</TargetFrameworkIdentifier>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
-    <LanguageTargets Condition="'$(OS)' != 'Unix'">$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets</LanguageTargets>
-  </PropertyGroup>
-
-  <Import Condition="'$(TargetFramework)' == 'xamarinmac20' and '$(OS)' == 'Unix'" Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'xamarinmac20'">
-    <Reference Include="netstandard" />
-    <Reference Include="System" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Core" />
-    <Reference Include="Xamarin.Mac" />
-  </ItemGroup>
-
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Noesis.App.csproj">
-      <PrivateAssets>contentfiles;analyzers</PrivateAssets>
-    </ProjectReference>
+    <Content Include="build\**" PackagePath="build" Pack="true" />
+    <Content Include="runtimes\**" PackagePath="runtimes" Pack="true" />
   </ItemGroup>
 
   <PropertyGroup Condition="Exists('$(SolutionDir)LICENSE.txt')">

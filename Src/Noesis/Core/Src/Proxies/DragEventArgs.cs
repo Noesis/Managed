@@ -51,35 +51,21 @@ public class DragEventArgs : RoutedEventArgs {
     }
   }
 
-  public object Data {
-    get {
-      IntPtr cPtr = NoesisGUI_PINVOKE.DragEventArgs_Data_get(swigCPtr);
-      return Noesis.Extend.GetProxy(cPtr, false);
-    }
+  public IDataObject Data {
+    get { return new DataObject(GetDataHelper()); }
   }
 
-  public uint KeyStates {
-    get {
-      uint ret = NoesisGUI_PINVOKE.DragEventArgs_KeyStates_get(swigCPtr);
-      return ret;
-    } 
+  public DragDropKeyStates KeyStates {
+    get { return GetKeyStatesHelper(); }
   }
 
-  public uint AllowedEffects {
-    get {
-      uint ret = NoesisGUI_PINVOKE.DragEventArgs_AllowedEffects_get(swigCPtr);
-      return ret;
-    } 
+  public DragDropEffects AllowedEffects {
+    get { return GetAllowedEffectsHelper(); }
   }
 
-  public uint Effects {
-    set {
-      NoesisGUI_PINVOKE.DragEventArgs_Effects_set(swigCPtr, value);
-    }
-    get {
-      uint ret = NoesisGUI_PINVOKE.DragEventArgs_Effects_get(swigCPtr);
-      return ret;
-    } 
+  public DragDropEffects Effects {
+    get { return GetEffectsHelper(); }
+    set { SetEffectsHelper(value); }
   }
 
   public Point GetPosition(UIElement relativeTo) {
@@ -92,7 +78,28 @@ public class DragEventArgs : RoutedEventArgs {
     }
   }
 
-  public DragEventArgs(object source, RoutedEvent arg1, object data, uint dragDropKeyStates, uint allowedEffects, UIElement target, Point point) : this(NoesisGUI_PINVOKE.new_DragEventArgs(Noesis.Extend.GetInstanceHandle(source), RoutedEvent.getCPtr(arg1), Noesis.Extend.GetInstanceHandle(data), dragDropKeyStates, allowedEffects, UIElement.getCPtr(target), ref point), true) {
+  private object GetDataHelper() {
+    IntPtr cPtr = NoesisGUI_PINVOKE.DragEventArgs_GetDataHelper(swigCPtr);
+    return Noesis.Extend.GetProxy(cPtr, false);
+  }
+
+  private DragDropKeyStates GetKeyStatesHelper() {
+    DragDropKeyStates ret = (DragDropKeyStates)NoesisGUI_PINVOKE.DragEventArgs_GetKeyStatesHelper(swigCPtr);
+    return ret;
+  }
+
+  private DragDropEffects GetAllowedEffectsHelper() {
+    DragDropEffects ret = (DragDropEffects)NoesisGUI_PINVOKE.DragEventArgs_GetAllowedEffectsHelper(swigCPtr);
+    return ret;
+  }
+
+  private DragDropEffects GetEffectsHelper() {
+    DragDropEffects ret = (DragDropEffects)NoesisGUI_PINVOKE.DragEventArgs_GetEffectsHelper(swigCPtr);
+    return ret;
+  }
+
+  private void SetEffectsHelper(DragDropEffects value) {
+    NoesisGUI_PINVOKE.DragEventArgs_SetEffectsHelper(swigCPtr, (int)value);
   }
 
 }

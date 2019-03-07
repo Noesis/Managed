@@ -11,14 +11,57 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Collections.Generic;
 
 namespace Noesis
 {
 
 public static class DragDrop {
-  public static void DoDragDrop(DependencyObject source, object data, uint allowedEffects) {
-    NoesisGUI_PINVOKE.DragDrop_DoDragDrop__SWIG_1(DependencyObject.getCPtr(source), Noesis.Extend.GetInstanceHandle(data), allowedEffects);
+  public static void DoDragDrop(DependencyObject dragSource, object data, DragDropEffects allowedEffects,
+    DragDropCompletedCallback onDragDropCompleted) {
+    DragDropCallbackInfo info = new DragDropCallbackInfo { Callback = onDragDropCompleted };
+    int callbackId = info.GetHashCode();
+    _dragDropCallbacks[callbackId] = info;
+    DoDragDropHelper(dragSource, data, allowedEffects, callbackId, _dragDropCompleted);
   }
+
+  #region DragDrop callback
+  private delegate void Callback_DragDropCompleted(int callbackId, IntPtr source,
+    IntPtr data, IntPtr target, IntPtr dropPoint, int effects);
+  private static Callback_DragDropCompleted _dragDropCompleted = OnDragDropCompleted;
+
+  [MonoPInvokeCallback(typeof(Callback_DragDropCompleted))]
+  private static void OnDragDropCompleted(int callbackId, IntPtr source,
+    IntPtr data, IntPtr target, IntPtr dropPoint, int effects) {
+    try {
+      DragDropCallbackInfo info = _dragDropCallbacks[callbackId];
+      info.Callback((DependencyObject)Extend.GetProxy(source, false),
+        new DataObject(Extend.GetProxy(data, false)), (UIElement)Extend.GetProxy(target, false),
+        Marshal.PtrToStructure<Point>(dropPoint), (DragDropEffects)effects);
+      _dragDropCallbacks.Remove(callbackId);
+    }
+    catch (Exception e) {
+      Noesis.Error.UnhandledException(e);
+    }
+  }
+
+  private static void DoDragDropHelper(DependencyObject source, object data,
+    DragDropEffects allowedEffects, int callbackId, Callback_DragDropCompleted callback) {
+    DragDrop_DoDragDrop(DependencyObject.getCPtr(source), Extend.GetInstanceHandle(data),
+    (int)allowedEffects, callbackId, callback);
+  }
+
+  [DllImport(Library.Name)]
+  private static extern void DragDrop_DoDragDrop(HandleRef source, HandleRef data, int allowedEffects,
+    int callbackId, Callback_DragDropCompleted callback);
+
+  private struct DragDropCallbackInfo {
+    public DragDropCompletedCallback Callback { get; set; }
+  }
+
+  private static Dictionary<int, DragDropCallbackInfo> _dragDropCallbacks =
+    new Dictionary<int, DragDropCallbackInfo>();
+  #endregion
 
   public static RoutedEvent PreviewQueryContinueDragEvent {
     get {
