@@ -11,4 +11,4 @@ The following is a list of the functionality exposed by the Application Framewor
 * Support for playing sounds.
 * Resource Providers implementation for loading assets.
 * Render implementations for each supported graphics API.
-* The Interactivity package.
+* The [Interactivity](https://www.noesisengine.com/docs/App.Interactivity.Behaviors.html) package.
