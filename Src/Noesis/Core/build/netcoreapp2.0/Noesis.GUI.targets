@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <NoesisTargetSystem Condition="'$(NoesisTargetSystem)' == '' and '$(OS)' == 'Windows_NT'">win</NoesisTargetSystem>
+    <NoesisTargetSystem Condition="'$(NoesisTargetSystem)' == '' and '$(OS)' == 'UNIX' and Exists('/Applications')">osx</NoesisTargetSystem>
+    <NoesisTargetSystem Condition="'$(NoesisTargetSystem)' == '' and '$(OS)' == 'UNIX'">linux</NoesisTargetSystem>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- handle PlatformTarget specifically -->
+    <NoesisTargetPlatform Condition="'$(NoesisTargetPlatform)' == '' and '$(PlatformTarget)' == 'ARM'">arm</NoesisTargetPlatform>
+    <NoesisTargetPlatform Condition="'$(NoesisTargetPlatform)' == '' and '$(PlatformTarget)' == 'x86'">x86</NoesisTargetPlatform>
+    <NoesisTargetPlatform Condition="'$(NoesisTargetPlatform)' == '' and '$(PlatformTarget)' == 'x64'">x64</NoesisTargetPlatform>
+    <!-- handle Any CPU, considering Prefer32Bit -->
+    <NoesisTargetPlatform Condition="'$(NoesisTargetPlatform)' == '' and '$(Prefer32Bit)' == 'False'">x64</NoesisTargetPlatform>
+    <NoesisTargetPlatform Condition="'$(NoesisTargetPlatform)' == '' and '$(Prefer32Bit)' == 'True'">x86</NoesisTargetPlatform>
+    <!-- fall back to x64 on 64-bit machines -->
+    <NoesisTargetPlatform Condition="'$(NoesisTargetPlatform)' == '' and $([System.Environment]::Is64BitOperatingSystem)">x64</NoesisTargetPlatform>
+    <!-- fall back to x86 -->
+    <NoesisTargetPlatform Condition="'$(NoesisTargetPlatform)' == ''">x86</NoesisTargetPlatform>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <NoesisNativeLibrary Condition="'$(NoesisTargetSystem)' == 'win'">$(MSBuildThisFileDirectory)..\..\runtimes\$(NoesisTargetSystem)-$(NoesisTargetPlatform)\native\Noesis.dll</NoesisNativeLibrary>
+    <NoesisNativeLibrary Condition="'$(NoesisTargetSystem)' == 'osx'">$(MSBuildThisFileDirectory)..\..\runtimes\$(NoesisTargetSystem)-$(NoesisTargetPlatform)\native\Noesis.bundle</NoesisNativeLibrary>
+    <NoesisNativeLibrary Condition="'$(NoesisTargetSystem)' == 'linux'">$(MSBuildThisFileDirectory)..\..\runtimes\$(NoesisTargetSystem)-$(NoesisTargetPlatform)\native\libNoesis.so</NoesisNativeLibrary>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="$(NoesisNativeLibrary)" Condition="Exists('$(NoesisNativeLibrary)')">
+      <Link>$([System.IO.Path]::GetFilename('$(NoesisNativeLibrary)'))</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

@@ -13,7 +13,7 @@ namespace NoesisApp
     {
         protected AttachableCollection()
         {
-            _associatedObject = null;
+            AssociatedObject = null;
             _items = new List<T>();
 
             CollectionChanged += OnCollectionChanged;
@@ -24,7 +24,7 @@ namespace NoesisApp
             CollectionChanged -= OnCollectionChanged;
         }
 
-        protected DependencyObject AssociatedObject { get { return _associatedObject; } }
+        protected DependencyObject AssociatedObject { get; private set; }
 
         DependencyObject IAttachedObject.AssociatedObject { get { return this.AssociatedObject; } }
 
@@ -44,7 +44,7 @@ namespace NoesisApp
                     throw new InvalidOperationException("Cannot attach to a null object");
                 }
 
-                _associatedObject = associatedObject;
+                AssociatedObject = associatedObject;
 
                 OnAttached();
             }
@@ -56,7 +56,7 @@ namespace NoesisApp
             {
                 OnDetaching();
 
-                _associatedObject = null;
+                AssociatedObject = null;
             }
         }
 
@@ -98,7 +98,6 @@ namespace NoesisApp
                     foreach (object item in e.NewItems)
                     {
                         ItemAdded((T)item);
-                        _items.Insert(IndexOf(item), (T)item);
                     }
                     break;
                 }
@@ -107,7 +106,6 @@ namespace NoesisApp
                     foreach (object item in e.OldItems)
                     {
                         ItemRemoved((T)item);
-                        _items.Remove((T)item);
                     }
                     break;
                 }
@@ -116,12 +114,10 @@ namespace NoesisApp
                     foreach (object item in e.OldItems)
                     {
                         ItemRemoved((T)item);
-                        _items.Remove((T)item);
                     }
                     foreach (object item in e.NewItems)
                     {
                         ItemAdded((T)item);
-                        _items.Insert(IndexOf(item), (T)item);
                     }
                     break;
                 }
@@ -131,17 +127,21 @@ namespace NoesisApp
                 }
                 case NotifyCollectionChangedAction.Reset:
                 {
-                    foreach (object item in e.OldItems)
+                    foreach (object item in _items)
                     {
                         ItemRemoved((T)item);
                     }
-                    _items.Clear();
                     break;
                 }
             }
+
+            _items.Clear();
+            foreach (object item in this)
+            {
+                _items.Add((T)item);
+            }
         }
 
-        DependencyObject _associatedObject;
         List<T> _items;
     }
 }

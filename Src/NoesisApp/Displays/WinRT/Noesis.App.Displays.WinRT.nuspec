@@ -9,7 +9,7 @@
     <license type="file">LICENSE.txt</license>
     <projectUrl>https://www.noesisengine.com/</projectUrl>
     <iconUrl>https://www.noesisengine.com/images/logos/Icon-256.png</iconUrl>
-    <description>NoesisGUI WinRT Display</description>
+    <description>NoesisGUI Micrososft UWP Display</description>
     <releaseNotes>https://www.noesisengine.com/docs/Gui.Core.Changelog.html</releaseNotes>
     <copyright>Copyright (c) 2013 Noesis Technologies S.L.</copyright>
     <tags>NoesisGUI XAML GUI C# UWP</tags>

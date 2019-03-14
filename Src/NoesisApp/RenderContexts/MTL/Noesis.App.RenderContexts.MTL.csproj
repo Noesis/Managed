@@ -4,7 +4,7 @@
     <TargetFrameworks>xamarinios10;xamarinmac20</TargetFrameworks>
     <Version>2.2.0</Version>
     <Authors>Noesis Technologies</Authors>
-    <Description>NoesisGUI MTL Render Context</Description>
+    <Description>NoesisGUI Apple Metal Render Context</Description>
     <Copyright>Copyright (c) 2013 Noesis Technologies S.L.</Copyright>
     <PackageProjectUrl>https://www.noesisengine.com</PackageProjectUrl>
     <PackageIconUrl>https://www.noesisengine.com/images/logos/Icon-256.png</PackageIconUrl>

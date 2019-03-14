@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Version>2.2.0</Version>
     <Authors>Noesis Technologies</Authors>
-    <Description>NoesisGUI Win32 Display</Description>
+    <Description>NoesisGUI Microsoft Windows Display</Description>
     <Copyright>Copyright (c) 2013 Noesis Technologies S.L.</Copyright>
     <PackageProjectUrl>https://www.noesisengine.com</PackageProjectUrl>
     <PackageIconUrl>https://www.noesisengine.com/images/logos/Icon-256.png</PackageIconUrl>

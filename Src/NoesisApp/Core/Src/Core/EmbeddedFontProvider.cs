@@ -16,14 +16,14 @@ namespace NoesisApp
 
             foreach (string resource in _assembly.GetManifestResourceNames())
             {
-                if (resource.EndsWith(".ttf") || resource.EndsWith(".ttc"))
+                if (resource.EndsWith(".ttf") || resource.EndsWith(".ttc") || resource.EndsWith(".otf"))
                 {
                     string[] tokens = resource.Substring(_namespace.Length + 1).Split(pointSeparator);
 
                     string path = tokens[0];
                     for (int i = 1; i < tokens.Length - 1; ++i)
                     {
-                        path += "\\";
+                        path += System.IO.Path.DirectorySeparatorChar;
                         path += tokens[i];
                     }
                     path += ".";

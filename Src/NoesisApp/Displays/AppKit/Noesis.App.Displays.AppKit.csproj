@@ -7,7 +7,7 @@
     <LanguageTargets Condition="'$(OS)' != 'Unix'">$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets</LanguageTargets>
     <Version>2.2.0</Version>
     <Authors>Noesis Technologies</Authors>
-    <Description>NoesisGUI AppKit Display</Description>
+    <Description>NoesisGUI macOS Display</Description>
     <Copyright>Copyright (c) 2013 Noesis Technologies S.L.</Copyright>
     <PackageProjectUrl>https://www.noesisengine.com</PackageProjectUrl>
     <PackageIconUrl>https://www.noesisengine.com/images/logos/Icon-256.png</PackageIconUrl>
