@@ -5,7 +5,7 @@
     <TargetFrameworkIdentifier>MonoAndroid</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v8.1</TargetFrameworkVersion>
     <LanguageTargets Condition="'$(OS)' != 'Unix'">$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets</LanguageTargets>
-    <Version>2.2.0</Version>
+    <Version>2.2.1</Version>
     <Authors>Noesis Technologies</Authors>
     <Description>NoesisGUI Android Display</Description>
     <Copyright>Copyright (c) 2013 Noesis Technologies S.L.</Copyright>
@@ -21,7 +21,7 @@
     <OutputPath Condition="'$(OS)' == 'Unix'">bin/$(Configuration)/$(TargetFramework)</OutputPath>
   </PropertyGroup>
 
-  <Import Condition="'$(OS)' == 'Unix'" Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets"/>
+  <Import Condition="'$(OS)' == 'Unix'" Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 
   <ItemGroup>
     <Reference Include="System" />
@@ -42,7 +42,7 @@
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
   </PropertyGroup>
   <ItemGroup Condition="Exists('$(SolutionDir)LICENSE.txt')">
-    <Content Include="$(SolutionDir)LICENSE.txt" PackagePath="" Pack="true"/>
+    <Content Include="$(SolutionDir)LICENSE.txt" PackagePath="" Pack="true" />
   </ItemGroup>
 
 </Project>

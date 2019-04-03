@@ -51,6 +51,13 @@ public partial class DependencyObject : DispatcherObject {
     NoesisGUI_PINVOKE.DependencyObject_CoerceValue(swigCPtr, DependencyProperty.getCPtr(dp));
   }
 
+  public bool IsSealed {
+    get {
+      bool ret = NoesisGUI_PINVOKE.DependencyObject_IsSealed_get(swigCPtr);
+      return ret;
+    } 
+  }
+
   new internal static IntPtr GetStaticType() {
     IntPtr ret = NoesisGUI_PINVOKE.DependencyObject_GetStaticType();
     return ret;

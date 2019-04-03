@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>xamarinios10;xamarinmac20</TargetFrameworks>
-    <Version>2.2.0</Version>
+    <Version>2.2.1</Version>
     <Authors>Noesis Technologies</Authors>
     <Description>NoesisGUI Apple Metal Render Context</Description>
     <Copyright>Copyright (c) 2013 Noesis Technologies S.L.</Copyright>
@@ -62,7 +62,7 @@
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
   </PropertyGroup>
   <ItemGroup Condition="Exists('$(SolutionDir)LICENSE.txt')">
-    <Content Include="$(SolutionDir)LICENSE.txt" PackagePath="" Pack="true"/>
+    <Content Include="$(SolutionDir)LICENSE.txt" PackagePath="" Pack="true" />
   </ItemGroup>
 
 </Project>

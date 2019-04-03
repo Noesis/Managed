@@ -66,7 +66,7 @@ public class Freezable : DependencyObject {
     return ret;
   }
 
-  public bool IsSealed() {
+  public new bool IsSealed() {
     bool ret = NoesisGUI_PINVOKE.Freezable_IsSealed(swigCPtr);
     return ret;
   }

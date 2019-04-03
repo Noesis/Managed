@@ -694,6 +694,10 @@ internal class NoesisGUI_PINVOKE {
   public static extern void DependencyObject_CoerceValue(HandleRef jarg1, HandleRef jarg2);
 
   [DllImport(Library.Name)]
+  [return: MarshalAs(UnmanagedType.U1)]
+  public static extern bool DependencyObject_IsSealed_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr DependencyObject_GetStaticType();
 
   [DllImport(Library.Name)]
@@ -5648,6 +5652,9 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr FrameworkElement_Resources_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr FrameworkElement_FindTreeElement(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern IntPtr FrameworkElement_GetStaticType();
@@ -11601,6 +11608,12 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr new_RoutedCommand([MarshalAs(UnmanagedType.LPWStr)]string jarg1, HandleRef jarg2, HandleRef jarg3);
 
   [DllImport(Library.Name)]
+  public static extern IntPtr RoutedCommand_GetName(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr RoutedCommand_GetOwnerType(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
   [return: MarshalAs(UnmanagedType.U1)]
   public static extern bool RoutedCommand_CanExecute__SWIG_0(HandleRef jarg1, HandleRef jarg2, HandleRef jarg3);
 
@@ -11616,6 +11629,12 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr RoutedCommand_InputGestures_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr RoutedCommand_GetNameHelper(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr RoutedCommand_GetOwnerTypeHelper(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern IntPtr RoutedCommand_GetStaticType();
@@ -13435,6 +13454,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern void AnimationTimeline_Start__SWIG_1(HandleRef jarg1, HandleRef jarg2, HandleRef jarg3, HandleRef jarg4);
 
   [DllImport(Library.Name)]
+  public static extern IntPtr AnimationTimeline_GetTargetPropertyType(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
   public static extern void AnimationTimeline_IsAdditiveProperty_set(HandleRef jarg1);
 
   [DllImport(Library.Name)]
@@ -13461,6 +13483,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern bool AnimationTimeline_IsCumulative_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
+  public static extern IntPtr AnimationTimeline_GetTargetPropertyTypeHelper(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr AnimationTimeline_GetCurrentValueHelper(HandleRef jarg1, HandleRef jarg2, HandleRef jarg3, HandleRef jarg4);
 
   [DllImport(Library.Name)]
@@ -13483,6 +13508,9 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr new_Int16Animation();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Int16Animation_GetTargetPropertyType(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern void Int16Animation_ByProperty_set(HandleRef jarg1);
@@ -13527,6 +13555,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr new_Int32Animation();
 
   [DllImport(Library.Name)]
+  public static extern IntPtr Int32Animation_GetTargetPropertyType(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
   public static extern void Int32Animation_ByProperty_set(HandleRef jarg1);
 
   [DllImport(Library.Name)]
@@ -13567,6 +13598,9 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr new_DoubleAnimation();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr DoubleAnimation_GetTargetPropertyType(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern void DoubleAnimation_ByProperty_set(HandleRef jarg1);
@@ -13611,6 +13645,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr new_ColorAnimation();
 
   [DllImport(Library.Name)]
+  public static extern IntPtr ColorAnimation_GetTargetPropertyType(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
   public static extern void ColorAnimation_ByProperty_set(HandleRef jarg1);
 
   [DllImport(Library.Name)]
@@ -13651,6 +13688,9 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr new_PointAnimation();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr PointAnimation_GetTargetPropertyType(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern void PointAnimation_ByProperty_set(HandleRef jarg1);
@@ -13695,6 +13735,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr new_RectAnimation();
 
   [DllImport(Library.Name)]
+  public static extern IntPtr RectAnimation_GetTargetPropertyType(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
   public static extern void RectAnimation_ByProperty_set(HandleRef jarg1);
 
   [DllImport(Library.Name)]
@@ -13737,6 +13780,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr new_SizeAnimation();
 
   [DllImport(Library.Name)]
+  public static extern IntPtr SizeAnimation_GetTargetPropertyType(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
   public static extern void SizeAnimation_ByProperty_set(HandleRef jarg1);
 
   [DllImport(Library.Name)]
@@ -13777,6 +13823,9 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr new_ThicknessAnimation();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr ThicknessAnimation_GetTargetPropertyType(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern void ThicknessAnimation_ByProperty_set(HandleRef jarg1);
@@ -14614,6 +14663,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr new_BooleanAnimationUsingKeyFrames();
 
   [DllImport(Library.Name)]
+  public static extern IntPtr BooleanAnimationUsingKeyFrames_GetTargetPropertyType(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr BooleanAnimationUsingKeyFrames_KeyFrames_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
@@ -14621,6 +14673,9 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr new_Int16AnimationUsingKeyFrames();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Int16AnimationUsingKeyFrames_GetTargetPropertyType(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern IntPtr Int16AnimationUsingKeyFrames_KeyFrames_get(HandleRef jarg1);
@@ -14632,6 +14687,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr new_Int32AnimationUsingKeyFrames();
 
   [DllImport(Library.Name)]
+  public static extern IntPtr Int32AnimationUsingKeyFrames_GetTargetPropertyType(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr Int32AnimationUsingKeyFrames_KeyFrames_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
@@ -14639,6 +14697,9 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr new_DoubleAnimationUsingKeyFrames();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr DoubleAnimationUsingKeyFrames_GetTargetPropertyType(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern IntPtr DoubleAnimationUsingKeyFrames_KeyFrames_get(HandleRef jarg1);
@@ -14650,6 +14711,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr new_ColorAnimationUsingKeyFrames();
 
   [DllImport(Library.Name)]
+  public static extern IntPtr ColorAnimationUsingKeyFrames_GetTargetPropertyType(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr ColorAnimationUsingKeyFrames_KeyFrames_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
@@ -14657,6 +14721,9 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr new_PointAnimationUsingKeyFrames();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr PointAnimationUsingKeyFrames_GetTargetPropertyType(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern IntPtr PointAnimationUsingKeyFrames_KeyFrames_get(HandleRef jarg1);
@@ -14668,6 +14735,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr new_RectAnimationUsingKeyFrames();
 
   [DllImport(Library.Name)]
+  public static extern IntPtr RectAnimationUsingKeyFrames_GetTargetPropertyType(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr RectAnimationUsingKeyFrames_KeyFrames_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
@@ -14675,6 +14745,9 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr new_SizeAnimationUsingKeyFrames();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr SizeAnimationUsingKeyFrames_GetTargetPropertyType(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern IntPtr SizeAnimationUsingKeyFrames_KeyFrames_get(HandleRef jarg1);
@@ -14686,6 +14759,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr new_ThicknessAnimationUsingKeyFrames();
 
   [DllImport(Library.Name)]
+  public static extern IntPtr ThicknessAnimationUsingKeyFrames_GetTargetPropertyType(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr ThicknessAnimationUsingKeyFrames_KeyFrames_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
@@ -14695,6 +14771,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr new_ObjectAnimationUsingKeyFrames();
 
   [DllImport(Library.Name)]
+  public static extern IntPtr ObjectAnimationUsingKeyFrames_GetTargetPropertyType(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr ObjectAnimationUsingKeyFrames_KeyFrames_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
@@ -14702,6 +14781,9 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr new_StringAnimationUsingKeyFrames();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr StringAnimationUsingKeyFrames_GetTargetPropertyType(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern IntPtr StringAnimationUsingKeyFrames_KeyFrames_get(HandleRef jarg1);

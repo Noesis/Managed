@@ -764,6 +764,11 @@ public partial class FrameworkElement : UIElement {
     }
   }
 
+  public static FrameworkElement FindTreeElement(object instance) {
+    IntPtr cPtr = NoesisGUI_PINVOKE.FrameworkElement_FindTreeElement(Noesis.Extend.GetInstanceHandle(instance));
+    return (FrameworkElement)Noesis.Extend.GetProxy(cPtr, false);
+  }
+
   new internal static IntPtr GetStaticType() {
     IntPtr ret = NoesisGUI_PINVOKE.FrameworkElement_GetStaticType();
     return ret;

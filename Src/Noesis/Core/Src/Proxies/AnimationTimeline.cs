@@ -30,9 +30,20 @@ public class AnimationTimeline : Timeline {
   protected AnimationTimeline() {
   }
 
+  public Type TargetPropertyType {
+    get {
+      Noesis.Extend.NativeTypeInfo info = Noesis.Extend.GetNativeTypeInfo(GetTargetPropertyTypeHelper());
+      return info.Type;
+    }
+  }
+
   public object GetCurrentValue(object defaultOriginValue, object defaultDestinationValue, AnimationClock animationClock) {
     IntPtr cPtr = GetCurrentValueHelper(defaultOriginValue, defaultDestinationValue, animationClock);
     return Noesis.Extend.GetProxy(cPtr, true);
+  }
+
+  internal bool IsValidTarget(DependencyProperty dp) {
+    return dp.PropertyType.IsAssignableFrom(TargetPropertyType) || TargetPropertyType == typeof(object);
   }
 
   public static DependencyProperty IsAdditiveProperty {
@@ -67,6 +78,11 @@ public class AnimationTimeline : Timeline {
       bool ret = NoesisGUI_PINVOKE.AnimationTimeline_IsCumulative_get(swigCPtr);
       return ret;
     } 
+  }
+
+  private IntPtr GetTargetPropertyTypeHelper() {
+    IntPtr ret = NoesisGUI_PINVOKE.AnimationTimeline_GetTargetPropertyTypeHelper(swigCPtr);
+    return ret;
   }
 
   private IntPtr GetCurrentValueHelper(object defValSrc, object defValDest, AnimationClock clock) {

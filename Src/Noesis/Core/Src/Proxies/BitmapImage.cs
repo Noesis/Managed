@@ -48,7 +48,7 @@ public class BitmapImage : BitmapSource {
 
   public Uri UriSource {
     set {
-      NoesisGUI_PINVOKE.BitmapImage_UriSource_set(swigCPtr, value != null ? value.OriginalString : string.Empty);
+      NoesisGUI_PINVOKE.BitmapImage_UriSource_set(swigCPtr, value != null ? UriHelper.GetPath(value) : string.Empty);
     }
     get {
       IntPtr uriPtr = NoesisGUI_PINVOKE.BitmapImage_UriSource_get(swigCPtr);

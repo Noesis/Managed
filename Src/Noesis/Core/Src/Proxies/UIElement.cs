@@ -668,6 +668,33 @@ public class UIElement : Visual {
   }
   #endregion
 
+  #region Animation
+  public void BeginAnimation(DependencyProperty dp, AnimationTimeline animation) {
+    this.BeginAnimation(dp, animation, HandoffBehavior.SnapshotAndReplace);
+  }
+
+  public void BeginAnimation(DependencyProperty dp, AnimationTimeline animation, HandoffBehavior handoffBehavior) {
+    if (dp == null) {
+      throw new ArgumentNullException("dp");
+    }
+    if (animation != null && !animation.IsValidTarget(dp)) {
+      throw new ArgumentException("AnimationTimeline type mismatch: " + animation.GetType() +
+          " on property " + dp.OwnerType.GetType() + "." + dp.Name + " of type " + dp.PropertyType);
+    }
+    if (base.IsSealed) {
+      throw new InvalidOperationException("Element is sealed and cannot be animated");
+    }
+    if (animation == null) {
+      base.ClearAnimation(dp);
+    }
+    else {
+      Storyboard storyboard = new Storyboard();
+      storyboard.Children.Add(animation);
+      storyboard.Begin(FrameworkElement.FindTreeElement(this), handoffBehavior);
+    }
+  }
+  #endregion
+
   public UIElement() {
   }
 

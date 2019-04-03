@@ -11,11 +11,12 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Windows.Input;
 
 namespace Noesis
 {
 
-public class RoutedCommand : BaseComponent {
+public class RoutedCommand : BaseComponent, ICommand {
   internal new static RoutedCommand CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
     return new RoutedCommand(cPtr, cMemoryOwn);
   }
@@ -29,6 +30,28 @@ public class RoutedCommand : BaseComponent {
 
   protected RoutedCommand() {
   }
+
+  public string Name {
+    get {
+      return GetNameHelper();
+    }
+  }
+
+  public Type OwnerType {
+    get {
+      Noesis.Extend.NativeTypeInfo info = Noesis.Extend.GetNativeTypeInfo(GetOwnerTypeHelper());
+      return info.Type;
+    }
+  }
+
+  public void RaiseCanExecuteChanged() {
+    System.EventHandler handler = CanExecuteChanged;
+    if (handler != null) {
+        handler(this, System.EventArgs.Empty);
+    }
+  }
+
+  public event System.EventHandler CanExecuteChanged;
 
   public bool CanExecute(object param, UIElement target) {
     bool ret = NoesisGUI_PINVOKE.RoutedCommand_CanExecute__SWIG_0(swigCPtr, Noesis.Extend.GetInstanceHandle(param), UIElement.getCPtr(target));
@@ -53,6 +76,17 @@ public class RoutedCommand : BaseComponent {
       IntPtr cPtr = NoesisGUI_PINVOKE.RoutedCommand_InputGestures_get(swigCPtr);
       return (InputGestureCollection)Noesis.Extend.GetProxy(cPtr, false);
     }
+  }
+
+  private string GetNameHelper() {
+    IntPtr strPtr = NoesisGUI_PINVOKE.RoutedCommand_GetNameHelper(swigCPtr);
+    string str = Noesis.Extend.StringFromNativeUtf8(strPtr);
+    return str;
+  }
+
+  private IntPtr GetOwnerTypeHelper() {
+    IntPtr ret = NoesisGUI_PINVOKE.RoutedCommand_GetOwnerTypeHelper(swigCPtr);
+    return ret;
   }
 
   new internal static IntPtr GetStaticType() {

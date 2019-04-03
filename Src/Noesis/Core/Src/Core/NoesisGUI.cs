@@ -46,6 +46,7 @@ namespace Noesis
             {
                 _initialized = true;
 
+                UriHelper.RegisterPack();
                 Extend.RegisterCallbacks();
 
                 Noesis_Init();

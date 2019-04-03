@@ -244,4 +244,4 @@ project.lock.json
 
 Src/Samples/
 BuildManagedSDK.py
-NoesisSamples.sln
+Samples.sln

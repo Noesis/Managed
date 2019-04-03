@@ -10,7 +10,7 @@
     <PackageIconUrl>https://www.noesisengine.com/images/logos/Icon-256.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/Noesis/Managed/tree/master/Src/Noesis/Extensions</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>NoesisGUI XAML GUI C#</PackageTags>
+    <PackageTags>NoesisGUI XAML Blend GUI C#</PackageTags>
     <PackageReleaseNotes>https://www.noesisengine.com/docs/Gui.Core.Changelog.html</PackageReleaseNotes>
     <RootNamespace>NoesisGUIExtensions</RootNamespace>
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
@@ -26,7 +26,7 @@
     <Content Include="$(SolutionDir)LICENSE.txt" PackagePath="" Pack="true" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Expression.Blend.Sdk" Version="1.0.2" />
+    <PackageReference Include="Expression.Blend.Sdk.WPF" Version="1.0.1" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />

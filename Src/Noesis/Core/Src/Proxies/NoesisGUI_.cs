@@ -1448,7 +1448,7 @@ public class NoesisGUI_ {
   }
 
   public static IntPtr Box_Uri(Uri val) {
-    IntPtr ret = NoesisGUI_PINVOKE.Box_Uri(val != null ? val.OriginalString : string.Empty);
+    IntPtr ret = NoesisGUI_PINVOKE.Box_Uri(val != null ? UriHelper.GetPath(val) : string.Empty);
     return ret;
   }
 

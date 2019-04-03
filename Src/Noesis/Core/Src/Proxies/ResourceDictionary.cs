@@ -262,7 +262,7 @@ public class ResourceDictionary : BaseDictionary, IDictionary {
 
   public Uri Source {
     set {
-      NoesisGUI_PINVOKE.ResourceDictionary_Source_set(swigCPtr, value != null ? value.OriginalString : string.Empty);
+      NoesisGUI_PINVOKE.ResourceDictionary_Source_set(swigCPtr, value != null ? UriHelper.GetPath(value) : string.Empty);
     }
     get {
       IntPtr uriPtr = NoesisGUI_PINVOKE.ResourceDictionary_Source_get(swigCPtr);
