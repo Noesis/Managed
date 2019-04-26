@@ -31,7 +31,7 @@ public class Viewbox : FrameworkElement {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(Viewbox).TypeHandle) {
+    if (type == typeof(Viewbox)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_Viewbox();
     }

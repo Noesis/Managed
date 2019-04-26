@@ -36,12 +36,18 @@ public class GridView : ViewBase {
   }
 
   public static GridViewColumnCollection GetColumnCollection(DependencyObject element) {
-    IntPtr cPtr = NoesisGUI_PINVOKE.GridView_GetColumnCollection(DependencyObject.getCPtr(element));
-    return (GridViewColumnCollection)Noesis.Extend.GetProxy(cPtr, false);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      IntPtr cPtr = NoesisGUI_PINVOKE.GridView_GetColumnCollection(DependencyObject.getCPtr(element));
+      return (GridViewColumnCollection)Noesis.Extend.GetProxy(cPtr, false);
+    }
   }
 
   public static void SetColumnCollection(DependencyObject element, GridViewColumnCollection value) {
-    NoesisGUI_PINVOKE.GridView_SetColumnCollection(DependencyObject.getCPtr(element), GridViewColumnCollection.getCPtr(value));
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.GridView_SetColumnCollection(DependencyObject.getCPtr(element), GridViewColumnCollection.getCPtr(value));
+    }
   }
 
   public static DependencyProperty AllowsColumnReorderProperty {

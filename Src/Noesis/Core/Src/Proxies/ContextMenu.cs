@@ -52,7 +52,7 @@ public class ContextMenu : MenuBase {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(ContextMenu).TypeHandle) {
+    if (type == typeof(ContextMenu)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_ContextMenu();
     }

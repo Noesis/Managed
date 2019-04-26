@@ -699,7 +699,7 @@ public class UIElement : Visual {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(UIElement).TypeHandle) {
+    if (type == typeof(UIElement)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_UIElement();
     }

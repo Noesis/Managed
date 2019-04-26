@@ -28,84 +28,138 @@ public class TextElement : FrameworkElement {
   }
 
   public static Brush GetBackground(DependencyObject element) {
-    IntPtr cPtr = NoesisGUI_PINVOKE.TextElement_GetBackground(DependencyObject.getCPtr(element));
-    return (Brush)Noesis.Extend.GetProxy(cPtr, false);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      IntPtr cPtr = NoesisGUI_PINVOKE.TextElement_GetBackground(DependencyObject.getCPtr(element));
+      return (Brush)Noesis.Extend.GetProxy(cPtr, false);
+    }
   }
 
   public static void SetBackground(DependencyObject element, Brush background) {
-    NoesisGUI_PINVOKE.TextElement_SetBackground(DependencyObject.getCPtr(element), Brush.getCPtr(background));
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.TextElement_SetBackground(DependencyObject.getCPtr(element), Brush.getCPtr(background));
+    }
   }
 
   public static FontFamily GetFontFamily(DependencyObject element) {
-    IntPtr cPtr = NoesisGUI_PINVOKE.TextElement_GetFontFamily(DependencyObject.getCPtr(element));
-    return (FontFamily)Noesis.Extend.GetProxy(cPtr, false);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      IntPtr cPtr = NoesisGUI_PINVOKE.TextElement_GetFontFamily(DependencyObject.getCPtr(element));
+      return (FontFamily)Noesis.Extend.GetProxy(cPtr, false);
+    }
   }
 
   public static void SetFontFamily(DependencyObject element, FontFamily family) {
-    NoesisGUI_PINVOKE.TextElement_SetFontFamily(DependencyObject.getCPtr(element), FontFamily.getCPtr(family));
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.TextElement_SetFontFamily(DependencyObject.getCPtr(element), FontFamily.getCPtr(family));
+    }
   }
 
   public static float GetFontSize(DependencyObject element) {
-    float ret = NoesisGUI_PINVOKE.TextElement_GetFontSize(DependencyObject.getCPtr(element));
-    return ret;
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      float ret = NoesisGUI_PINVOKE.TextElement_GetFontSize(DependencyObject.getCPtr(element));
+      return ret;
+    }
   }
 
   public static void SetFontSize(DependencyObject element, float size) {
-    NoesisGUI_PINVOKE.TextElement_SetFontSize(DependencyObject.getCPtr(element), size);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.TextElement_SetFontSize(DependencyObject.getCPtr(element), size);
+    }
   }
 
   public static FontStretch GetFontStretch(DependencyObject element) {
-    FontStretch ret = (FontStretch)NoesisGUI_PINVOKE.TextElement_GetFontStretch(DependencyObject.getCPtr(element));
-    return ret;
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      FontStretch ret = (FontStretch)NoesisGUI_PINVOKE.TextElement_GetFontStretch(DependencyObject.getCPtr(element));
+      return ret;
+    }
   }
 
   public static void SetFontStretch(DependencyObject element, FontStretch stretch) {
-    NoesisGUI_PINVOKE.TextElement_SetFontStretch(DependencyObject.getCPtr(element), (int)stretch);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.TextElement_SetFontStretch(DependencyObject.getCPtr(element), (int)stretch);
+    }
   }
 
   public static FontStyle GetFontStyle(DependencyObject element) {
-    FontStyle ret = (FontStyle)NoesisGUI_PINVOKE.TextElement_GetFontStyle(DependencyObject.getCPtr(element));
-    return ret;
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      FontStyle ret = (FontStyle)NoesisGUI_PINVOKE.TextElement_GetFontStyle(DependencyObject.getCPtr(element));
+      return ret;
+    }
   }
 
   public static void SetFontStyle(DependencyObject element, FontStyle style) {
-    NoesisGUI_PINVOKE.TextElement_SetFontStyle(DependencyObject.getCPtr(element), (int)style);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.TextElement_SetFontStyle(DependencyObject.getCPtr(element), (int)style);
+    }
   }
 
   public static FontWeight GetFontWeight(DependencyObject element) {
-    FontWeight ret = (FontWeight)NoesisGUI_PINVOKE.TextElement_GetFontWeight(DependencyObject.getCPtr(element));
-    return ret;
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      FontWeight ret = (FontWeight)NoesisGUI_PINVOKE.TextElement_GetFontWeight(DependencyObject.getCPtr(element));
+      return ret;
+    }
   }
 
   public static void SetFontWeight(DependencyObject element, FontWeight weight) {
-    NoesisGUI_PINVOKE.TextElement_SetFontWeight(DependencyObject.getCPtr(element), (int)weight);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.TextElement_SetFontWeight(DependencyObject.getCPtr(element), (int)weight);
+    }
   }
 
   public static Brush GetForeground(DependencyObject element) {
-    IntPtr cPtr = NoesisGUI_PINVOKE.TextElement_GetForeground(DependencyObject.getCPtr(element));
-    return (Brush)Noesis.Extend.GetProxy(cPtr, false);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      IntPtr cPtr = NoesisGUI_PINVOKE.TextElement_GetForeground(DependencyObject.getCPtr(element));
+      return (Brush)Noesis.Extend.GetProxy(cPtr, false);
+    }
   }
 
   public static void SetForeground(DependencyObject element, Brush foreground) {
-    NoesisGUI_PINVOKE.TextElement_SetForeground(DependencyObject.getCPtr(element), Brush.getCPtr(foreground));
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.TextElement_SetForeground(DependencyObject.getCPtr(element), Brush.getCPtr(foreground));
+    }
   }
 
   public static Brush GetStroke(DependencyObject element) {
-    IntPtr cPtr = NoesisGUI_PINVOKE.TextElement_GetStroke(DependencyObject.getCPtr(element));
-    return (Brush)Noesis.Extend.GetProxy(cPtr, false);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      IntPtr cPtr = NoesisGUI_PINVOKE.TextElement_GetStroke(DependencyObject.getCPtr(element));
+      return (Brush)Noesis.Extend.GetProxy(cPtr, false);
+    }
   }
 
   public static void SetStroke(DependencyObject element, Brush stroke) {
-    NoesisGUI_PINVOKE.TextElement_SetStroke(DependencyObject.getCPtr(element), Brush.getCPtr(stroke));
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.TextElement_SetStroke(DependencyObject.getCPtr(element), Brush.getCPtr(stroke));
+    }
   }
 
   public static float GetStrokeThickness(DependencyObject element) {
-    float ret = NoesisGUI_PINVOKE.TextElement_GetStrokeThickness(DependencyObject.getCPtr(element));
-    return ret;
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      float ret = NoesisGUI_PINVOKE.TextElement_GetStrokeThickness(DependencyObject.getCPtr(element));
+      return ret;
+    }
   }
 
   public static void SetStrokeThickness(DependencyObject element, float strokeThickness) {
-    NoesisGUI_PINVOKE.TextElement_SetStrokeThickness(DependencyObject.getCPtr(element), strokeThickness);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.TextElement_SetStrokeThickness(DependencyObject.getCPtr(element), strokeThickness);
+    }
   }
 
   public static DependencyProperty BackgroundProperty {

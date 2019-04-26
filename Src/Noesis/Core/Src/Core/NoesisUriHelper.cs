@@ -17,11 +17,17 @@ namespace Noesis
 
         public static string GetPath(Uri uri)
         {
-            Uri absUri = GetAbsoluteUri(uri);
+            bool isRootPath;
+            Uri absUri = GetAbsoluteUri(uri, out isRootPath);
 
             string path = "";
+            if (absUri.IsUnc)
+            {
+                path += "//" + absUri.Host + "/";
+            }
             if (absUri.Segments.Length > 1 && !absUri.Segments[1].Contains(";component"))
             {
+                path += isRootPath ? "/" : "";
                 path += absUri.Segments[1];
             }
             for (int i = 2; i < absUri.Segments.Length; ++i)
@@ -29,17 +35,22 @@ namespace Noesis
                 path += absUri.Segments[i];
             }
 
-            return path;
+            return Uri.UnescapeDataString(path);
         }
 
-        private static Uri GetAbsoluteUri(Uri uri)
+        private static Uri GetAbsoluteUri(Uri uri, out bool isRootPath)
         {
-            if (uri.IsAbsoluteUri)
+            Uri uri_ = new Uri(uri.OriginalString, UriKind.RelativeOrAbsolute);
+
+            if (uri_.IsAbsoluteUri)
             {
-                return uri;
+                isRootPath = false;
+                return uri_;
             }
 
-            return new Uri(new Uri("http://default.com"), uri);
+            isRootPath = uri.OriginalString.StartsWith("\\") || uri.OriginalString.StartsWith("/");
+
+            return new Uri(new Uri("file://"), uri);
         }
     }
 }

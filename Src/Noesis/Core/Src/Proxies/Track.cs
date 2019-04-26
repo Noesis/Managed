@@ -31,7 +31,7 @@ public class Track : FrameworkElement {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(Track).TypeHandle) {
+    if (type == typeof(Track)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_Track();
     }

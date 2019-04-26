@@ -36,21 +36,33 @@ public class VisualStateManager : DependencyObject {
   }
 
   public static VisualStateManager GetCustomVisualStateManager(DependencyObject obj) {
-    IntPtr cPtr = NoesisGUI_PINVOKE.VisualStateManager_GetCustomVisualStateManager(DependencyObject.getCPtr(obj));
-    return (VisualStateManager)Noesis.Extend.GetProxy(cPtr, false);
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      IntPtr cPtr = NoesisGUI_PINVOKE.VisualStateManager_GetCustomVisualStateManager(DependencyObject.getCPtr(obj));
+      return (VisualStateManager)Noesis.Extend.GetProxy(cPtr, false);
+    }
   }
 
   public static void SetCustomVisualStateManager(DependencyObject obj, VisualStateManager value) {
-    NoesisGUI_PINVOKE.VisualStateManager_SetCustomVisualStateManager(DependencyObject.getCPtr(obj), VisualStateManager.getCPtr(value));
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      NoesisGUI_PINVOKE.VisualStateManager_SetCustomVisualStateManager(DependencyObject.getCPtr(obj), VisualStateManager.getCPtr(value));
+    }
   }
 
   public static VisualStateGroupCollection GetVisualStateGroups(DependencyObject obj) {
-    IntPtr cPtr = NoesisGUI_PINVOKE.VisualStateManager_GetVisualStateGroups(DependencyObject.getCPtr(obj));
-    return (VisualStateGroupCollection)Noesis.Extend.GetProxy(cPtr, false);
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      IntPtr cPtr = NoesisGUI_PINVOKE.VisualStateManager_GetVisualStateGroups(DependencyObject.getCPtr(obj));
+      return (VisualStateGroupCollection)Noesis.Extend.GetProxy(cPtr, false);
+    }
   }
 
   public static void SetVisualStateGroups(DependencyObject obj, VisualStateGroupCollection groups) {
-    NoesisGUI_PINVOKE.VisualStateManager_SetVisualStateGroups(DependencyObject.getCPtr(obj), VisualStateGroupCollection.getCPtr(groups));
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      NoesisGUI_PINVOKE.VisualStateManager_SetVisualStateGroups(DependencyObject.getCPtr(obj), VisualStateGroupCollection.getCPtr(groups));
+    }
   }
 
   public static bool GoToState(FrameworkElement control, string stateName, bool useTransitions) {

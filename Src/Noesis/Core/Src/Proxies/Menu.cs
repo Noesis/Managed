@@ -31,7 +31,7 @@ public class Menu : MenuBase {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(Menu).TypeHandle) {
+    if (type == typeof(Menu)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_Menu();
     }

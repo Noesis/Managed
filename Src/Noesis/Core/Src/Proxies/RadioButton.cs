@@ -31,7 +31,7 @@ public class RadioButton : ToggleButton {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(RadioButton).TypeHandle) {
+    if (type == typeof(RadioButton)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_RadioButton();
     }

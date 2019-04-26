@@ -127,89 +127,143 @@ public static class ContextMenuService {
   }
 
   public static ContextMenu GetContextMenu(DependencyObject obj) {
-    IntPtr cPtr = NoesisGUI_PINVOKE.ContextMenuService_GetContextMenu(DependencyObject.getCPtr(obj));
-    return (ContextMenu)Noesis.Extend.GetProxy(cPtr, false);
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      IntPtr cPtr = NoesisGUI_PINVOKE.ContextMenuService_GetContextMenu(DependencyObject.getCPtr(obj));
+      return (ContextMenu)Noesis.Extend.GetProxy(cPtr, false);
+    }
   }
 
   public static void SetContextMenu(DependencyObject obj, ContextMenu contextMenu) {
-    NoesisGUI_PINVOKE.ContextMenuService_SetContextMenu(DependencyObject.getCPtr(obj), ContextMenu.getCPtr(contextMenu));
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      NoesisGUI_PINVOKE.ContextMenuService_SetContextMenu(DependencyObject.getCPtr(obj), ContextMenu.getCPtr(contextMenu));
+    }
   }
 
   public static bool GetHasDropShadow(DependencyObject obj) {
-    bool ret = NoesisGUI_PINVOKE.ContextMenuService_GetHasDropShadow(DependencyObject.getCPtr(obj));
-    return ret;
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      bool ret = NoesisGUI_PINVOKE.ContextMenuService_GetHasDropShadow(DependencyObject.getCPtr(obj));
+      return ret;
+    }
   }
 
   public static void SetHasDropShadow(DependencyObject obj, bool hasDropShadow) {
-    NoesisGUI_PINVOKE.ContextMenuService_SetHasDropShadow(DependencyObject.getCPtr(obj), hasDropShadow);
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      NoesisGUI_PINVOKE.ContextMenuService_SetHasDropShadow(DependencyObject.getCPtr(obj), hasDropShadow);
+    }
   }
 
   public static float GetHorizontalOffset(DependencyObject obj) {
-    float ret = NoesisGUI_PINVOKE.ContextMenuService_GetHorizontalOffset(DependencyObject.getCPtr(obj));
-    return ret;
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      float ret = NoesisGUI_PINVOKE.ContextMenuService_GetHorizontalOffset(DependencyObject.getCPtr(obj));
+      return ret;
+    }
   }
 
   public static void SetHorizontalOffset(DependencyObject obj, float offset) {
-    NoesisGUI_PINVOKE.ContextMenuService_SetHorizontalOffset(DependencyObject.getCPtr(obj), offset);
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      NoesisGUI_PINVOKE.ContextMenuService_SetHorizontalOffset(DependencyObject.getCPtr(obj), offset);
+    }
   }
 
   public static bool GetIsEnabled(DependencyObject obj) {
-    bool ret = NoesisGUI_PINVOKE.ContextMenuService_GetIsEnabled(DependencyObject.getCPtr(obj));
-    return ret;
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      bool ret = NoesisGUI_PINVOKE.ContextMenuService_GetIsEnabled(DependencyObject.getCPtr(obj));
+      return ret;
+    }
   }
 
   public static void SetIsEnabled(DependencyObject obj, bool isEnabled) {
-    NoesisGUI_PINVOKE.ContextMenuService_SetIsEnabled(DependencyObject.getCPtr(obj), isEnabled);
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      NoesisGUI_PINVOKE.ContextMenuService_SetIsEnabled(DependencyObject.getCPtr(obj), isEnabled);
+    }
   }
 
   public static PlacementMode GetPlacement(DependencyObject obj) {
-    PlacementMode ret = (PlacementMode)NoesisGUI_PINVOKE.ContextMenuService_GetPlacement(DependencyObject.getCPtr(obj));
-    return ret;
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      PlacementMode ret = (PlacementMode)NoesisGUI_PINVOKE.ContextMenuService_GetPlacement(DependencyObject.getCPtr(obj));
+      return ret;
+    }
   }
 
   public static void SetPlacement(DependencyObject obj, PlacementMode mode) {
-    NoesisGUI_PINVOKE.ContextMenuService_SetPlacement(DependencyObject.getCPtr(obj), (int)mode);
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      NoesisGUI_PINVOKE.ContextMenuService_SetPlacement(DependencyObject.getCPtr(obj), (int)mode);
+    }
   }
 
   public static Rect GetPlacementRectangle(DependencyObject obj) {
-    IntPtr ret = NoesisGUI_PINVOKE.ContextMenuService_GetPlacementRectangle(DependencyObject.getCPtr(obj));
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Rect>(ret);
-    }
-    else {
-      return new Rect();
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      IntPtr ret = NoesisGUI_PINVOKE.ContextMenuService_GetPlacementRectangle(DependencyObject.getCPtr(obj));
+      if (ret != IntPtr.Zero) {
+        return Marshal.PtrToStructure<Rect>(ret);
+      }
+      else {
+        return new Rect();
+      }
     }
   }
 
   public static void SetPlacementRectangle(DependencyObject obj, Rect rect) {
-    NoesisGUI_PINVOKE.ContextMenuService_SetPlacementRectangle(DependencyObject.getCPtr(obj), ref rect);
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      NoesisGUI_PINVOKE.ContextMenuService_SetPlacementRectangle(DependencyObject.getCPtr(obj), ref rect);
+    }
   }
 
   public static UIElement GetPlacementTarget(DependencyObject obj) {
-    IntPtr cPtr = NoesisGUI_PINVOKE.ContextMenuService_GetPlacementTarget(DependencyObject.getCPtr(obj));
-    return (UIElement)Noesis.Extend.GetProxy(cPtr, false);
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      IntPtr cPtr = NoesisGUI_PINVOKE.ContextMenuService_GetPlacementTarget(DependencyObject.getCPtr(obj));
+      return (UIElement)Noesis.Extend.GetProxy(cPtr, false);
+    }
   }
 
   public static void SetPlacementTarget(DependencyObject obj, UIElement target) {
-    NoesisGUI_PINVOKE.ContextMenuService_SetPlacementTarget(DependencyObject.getCPtr(obj), UIElement.getCPtr(target));
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      NoesisGUI_PINVOKE.ContextMenuService_SetPlacementTarget(DependencyObject.getCPtr(obj), UIElement.getCPtr(target));
+    }
   }
 
   public static bool GetShowOnDisabled(DependencyObject obj) {
-    bool ret = NoesisGUI_PINVOKE.ContextMenuService_GetShowOnDisabled(DependencyObject.getCPtr(obj));
-    return ret;
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      bool ret = NoesisGUI_PINVOKE.ContextMenuService_GetShowOnDisabled(DependencyObject.getCPtr(obj));
+      return ret;
+    }
   }
 
   public static void SetShowOnDisabled(DependencyObject obj, bool showOnDisable) {
-    NoesisGUI_PINVOKE.ContextMenuService_SetShowOnDisabled(DependencyObject.getCPtr(obj), showOnDisable);
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      NoesisGUI_PINVOKE.ContextMenuService_SetShowOnDisabled(DependencyObject.getCPtr(obj), showOnDisable);
+    }
   }
 
   public static float GetVerticalOffset(DependencyObject obj) {
-    float ret = NoesisGUI_PINVOKE.ContextMenuService_GetVerticalOffset(DependencyObject.getCPtr(obj));
-    return ret;
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      float ret = NoesisGUI_PINVOKE.ContextMenuService_GetVerticalOffset(DependencyObject.getCPtr(obj));
+      return ret;
+    }
   }
 
   public static void SetVerticalOffset(DependencyObject obj, float offset) {
-    NoesisGUI_PINVOKE.ContextMenuService_SetVerticalOffset(DependencyObject.getCPtr(obj), offset);
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      NoesisGUI_PINVOKE.ContextMenuService_SetVerticalOffset(DependencyObject.getCPtr(obj), offset);
+    }
   }
 
 }

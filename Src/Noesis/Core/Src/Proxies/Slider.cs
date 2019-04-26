@@ -31,7 +31,7 @@ public class Slider : RangeBase {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(Slider).TypeHandle) {
+    if (type == typeof(Slider)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_Slider();
     }

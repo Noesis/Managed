@@ -34,7 +34,7 @@ public class Decorator : FrameworkElement {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(Decorator).TypeHandle) {
+    if (type == typeof(Decorator)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_Decorator__SWIG_1();
     }

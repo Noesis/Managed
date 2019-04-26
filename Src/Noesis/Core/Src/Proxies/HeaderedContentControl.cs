@@ -31,7 +31,7 @@ public class HeaderedContentControl : ContentControl {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(HeaderedContentControl).TypeHandle) {
+    if (type == typeof(HeaderedContentControl)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_HeaderedContentControl();
     }

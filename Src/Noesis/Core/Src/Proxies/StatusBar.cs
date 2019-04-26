@@ -31,7 +31,7 @@ public class StatusBar : ItemsControl {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(StatusBar).TypeHandle) {
+    if (type == typeof(StatusBar)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_StatusBar();
     }

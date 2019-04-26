@@ -31,12 +31,18 @@ public class Panel : FrameworkElement {
   }
 
   public static int GetZIndex(DependencyObject element) {
-    int ret = NoesisGUI_PINVOKE.Panel_GetZIndex(DependencyObject.getCPtr(element));
-    return ret;
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      int ret = NoesisGUI_PINVOKE.Panel_GetZIndex(DependencyObject.getCPtr(element));
+      return ret;
+    }
   }
 
   public static void SetZIndex(DependencyObject element, int value) {
-    NoesisGUI_PINVOKE.Panel_SetZIndex(DependencyObject.getCPtr(element), value);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.Panel_SetZIndex(DependencyObject.getCPtr(element), value);
+    }
   }
 
   public static DependencyProperty BackgroundProperty {

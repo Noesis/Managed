@@ -24,12 +24,18 @@ public static class RenderOptions {
   }
 
   public static BitmapScalingMode GetBitmapScalingMode(DependencyObject obj) {
-    BitmapScalingMode ret = (BitmapScalingMode)NoesisGUI_PINVOKE.RenderOptions_GetBitmapScalingMode(DependencyObject.getCPtr(obj));
-    return ret;
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      BitmapScalingMode ret = (BitmapScalingMode)NoesisGUI_PINVOKE.RenderOptions_GetBitmapScalingMode(DependencyObject.getCPtr(obj));
+      return ret;
+    }
   }
 
   public static void SetBitmapScalingMode(DependencyObject obj, BitmapScalingMode bitmapScalingMode) {
-    NoesisGUI_PINVOKE.RenderOptions_SetBitmapScalingMode(DependencyObject.getCPtr(obj), (int)bitmapScalingMode);
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      NoesisGUI_PINVOKE.RenderOptions_SetBitmapScalingMode(DependencyObject.getCPtr(obj), (int)bitmapScalingMode);
+    }
   }
 
 }

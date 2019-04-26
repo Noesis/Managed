@@ -31,7 +31,7 @@ public class ToolBarPanel : StackPanel {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(ToolBarPanel).TypeHandle) {
+    if (type == typeof(ToolBarPanel)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_ToolBarPanel();
     }

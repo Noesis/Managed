@@ -37,62 +37,98 @@ public class VirtualizingPanel : Panel {
   }
 
   public static VirtualizationCacheLength GetCacheLength(DependencyObject element) {
-    IntPtr ret = NoesisGUI_PINVOKE.VirtualizingPanel_GetCacheLength(DependencyObject.getCPtr(element));
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<VirtualizationCacheLength>(ret);
-    }
-    else {
-      return new VirtualizationCacheLength();
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      IntPtr ret = NoesisGUI_PINVOKE.VirtualizingPanel_GetCacheLength(DependencyObject.getCPtr(element));
+      if (ret != IntPtr.Zero) {
+        return Marshal.PtrToStructure<VirtualizationCacheLength>(ret);
+      }
+      else {
+        return new VirtualizationCacheLength();
+      }
     }
   }
 
   public static void SetCacheLength(DependencyObject element, VirtualizationCacheLength len) {
-    NoesisGUI_PINVOKE.VirtualizingPanel_SetCacheLength(DependencyObject.getCPtr(element), ref len);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.VirtualizingPanel_SetCacheLength(DependencyObject.getCPtr(element), ref len);
+    }
   }
 
   public static VirtualizationCacheLengthUnit GetCacheLengthUnit(DependencyObject element) {
-    VirtualizationCacheLengthUnit ret = (VirtualizationCacheLengthUnit)NoesisGUI_PINVOKE.VirtualizingPanel_GetCacheLengthUnit(DependencyObject.getCPtr(element));
-    return ret;
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      VirtualizationCacheLengthUnit ret = (VirtualizationCacheLengthUnit)NoesisGUI_PINVOKE.VirtualizingPanel_GetCacheLengthUnit(DependencyObject.getCPtr(element));
+      return ret;
+    }
   }
 
   public static void SetCacheLengthUnit(DependencyObject element, VirtualizationCacheLengthUnit unit) {
-    NoesisGUI_PINVOKE.VirtualizingPanel_SetCacheLengthUnit(DependencyObject.getCPtr(element), (int)unit);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.VirtualizingPanel_SetCacheLengthUnit(DependencyObject.getCPtr(element), (int)unit);
+    }
   }
 
   public static bool GetIsContainerVirtualizable(DependencyObject element) {
-    bool ret = NoesisGUI_PINVOKE.VirtualizingPanel_GetIsContainerVirtualizable(DependencyObject.getCPtr(element));
-    return ret;
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      bool ret = NoesisGUI_PINVOKE.VirtualizingPanel_GetIsContainerVirtualizable(DependencyObject.getCPtr(element));
+      return ret;
+    }
   }
 
   public static void SetIsContainerVirtualizable(DependencyObject element, bool isVirtualizable) {
-    NoesisGUI_PINVOKE.VirtualizingPanel_SetIsContainerVirtualizable(DependencyObject.getCPtr(element), isVirtualizable);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.VirtualizingPanel_SetIsContainerVirtualizable(DependencyObject.getCPtr(element), isVirtualizable);
+    }
   }
 
   public static bool GetIsVirtualizing(DependencyObject element) {
-    bool ret = NoesisGUI_PINVOKE.VirtualizingPanel_GetIsVirtualizing(DependencyObject.getCPtr(element));
-    return ret;
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      bool ret = NoesisGUI_PINVOKE.VirtualizingPanel_GetIsVirtualizing(DependencyObject.getCPtr(element));
+      return ret;
+    }
   }
 
   public static void SetIsVirtualizing(DependencyObject element, bool isVirtualizing) {
-    NoesisGUI_PINVOKE.VirtualizingPanel_SetIsVirtualizing(DependencyObject.getCPtr(element), isVirtualizing);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.VirtualizingPanel_SetIsVirtualizing(DependencyObject.getCPtr(element), isVirtualizing);
+    }
   }
 
   public static ScrollUnit GetScrollUnit(DependencyObject element) {
-    ScrollUnit ret = (ScrollUnit)NoesisGUI_PINVOKE.VirtualizingPanel_GetScrollUnit(DependencyObject.getCPtr(element));
-    return ret;
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      ScrollUnit ret = (ScrollUnit)NoesisGUI_PINVOKE.VirtualizingPanel_GetScrollUnit(DependencyObject.getCPtr(element));
+      return ret;
+    }
   }
 
   public static void SetScrollUnit(DependencyObject element, ScrollUnit unit) {
-    NoesisGUI_PINVOKE.VirtualizingPanel_SetScrollUnit(DependencyObject.getCPtr(element), (int)unit);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.VirtualizingPanel_SetScrollUnit(DependencyObject.getCPtr(element), (int)unit);
+    }
   }
 
   public static VirtualizationMode GetVirtualizationMode(DependencyObject element) {
-    VirtualizationMode ret = (VirtualizationMode)NoesisGUI_PINVOKE.VirtualizingPanel_GetVirtualizationMode(DependencyObject.getCPtr(element));
-    return ret;
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      VirtualizationMode ret = (VirtualizationMode)NoesisGUI_PINVOKE.VirtualizingPanel_GetVirtualizationMode(DependencyObject.getCPtr(element));
+      return ret;
+    }
   }
 
   public static void SetVirtualizationMode(DependencyObject element, VirtualizationMode mode) {
-    NoesisGUI_PINVOKE.VirtualizingPanel_SetVirtualizationMode(DependencyObject.getCPtr(element), (int)mode);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.VirtualizingPanel_SetVirtualizationMode(DependencyObject.getCPtr(element), (int)mode);
+    }
   }
 
   public void BringIndexIntoView(int index) {

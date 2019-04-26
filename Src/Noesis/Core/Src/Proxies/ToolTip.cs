@@ -52,7 +52,7 @@ public class ToolTip : ContentControl {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(ToolTip).TypeHandle) {
+    if (type == typeof(ToolTip)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_ToolTip();
     }

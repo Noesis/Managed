@@ -240,7 +240,7 @@ public class ResourceDictionary : BaseDictionary, IDictionary {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(ResourceDictionary).TypeHandle) {
+    if (type == typeof(ResourceDictionary)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_ResourceDictionary();
     }

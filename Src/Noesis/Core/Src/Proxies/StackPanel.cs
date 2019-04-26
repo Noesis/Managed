@@ -31,7 +31,7 @@ public class StackPanel : Panel, Noesis.IScrollInfo {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(StackPanel).TypeHandle) {
+    if (type == typeof(StackPanel)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_StackPanel();
     }

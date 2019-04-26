@@ -31,7 +31,7 @@ public class TabItem : HeaderedContentControl {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(TabItem).TypeHandle) {
+    if (type == typeof(TabItem)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_TabItem();
     }

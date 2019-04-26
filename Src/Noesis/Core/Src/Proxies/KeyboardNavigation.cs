@@ -39,57 +39,93 @@ public class KeyboardNavigation : BaseComponent {
   }
 
   public static KeyboardNavigationMode GetTabNavigation(DependencyObject element) {
-    KeyboardNavigationMode ret = (KeyboardNavigationMode)NoesisGUI_PINVOKE.KeyboardNavigation_GetTabNavigation(DependencyObject.getCPtr(element));
-    return ret;
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      KeyboardNavigationMode ret = (KeyboardNavigationMode)NoesisGUI_PINVOKE.KeyboardNavigation_GetTabNavigation(DependencyObject.getCPtr(element));
+      return ret;
+    }
   }
 
   public static void SetTabNavigation(DependencyObject element, KeyboardNavigationMode mode) {
-    NoesisGUI_PINVOKE.KeyboardNavigation_SetTabNavigation(DependencyObject.getCPtr(element), (int)mode);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.KeyboardNavigation_SetTabNavigation(DependencyObject.getCPtr(element), (int)mode);
+    }
   }
 
   public static KeyboardNavigationMode GetControlTabNavigation(DependencyObject element) {
-    KeyboardNavigationMode ret = (KeyboardNavigationMode)NoesisGUI_PINVOKE.KeyboardNavigation_GetControlTabNavigation(DependencyObject.getCPtr(element));
-    return ret;
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      KeyboardNavigationMode ret = (KeyboardNavigationMode)NoesisGUI_PINVOKE.KeyboardNavigation_GetControlTabNavigation(DependencyObject.getCPtr(element));
+      return ret;
+    }
   }
 
   public static void SetControlTabNavigation(DependencyObject element, KeyboardNavigationMode mode) {
-    NoesisGUI_PINVOKE.KeyboardNavigation_SetControlTabNavigation(DependencyObject.getCPtr(element), (int)mode);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.KeyboardNavigation_SetControlTabNavigation(DependencyObject.getCPtr(element), (int)mode);
+    }
   }
 
   public static KeyboardNavigationMode GetDirectionalNavigation(DependencyObject element) {
-    KeyboardNavigationMode ret = (KeyboardNavigationMode)NoesisGUI_PINVOKE.KeyboardNavigation_GetDirectionalNavigation(DependencyObject.getCPtr(element));
-    return ret;
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      KeyboardNavigationMode ret = (KeyboardNavigationMode)NoesisGUI_PINVOKE.KeyboardNavigation_GetDirectionalNavigation(DependencyObject.getCPtr(element));
+      return ret;
+    }
   }
 
   public static void SetDirectionalNavigation(DependencyObject element, KeyboardNavigationMode mode) {
-    NoesisGUI_PINVOKE.KeyboardNavigation_SetDirectionalNavigation(DependencyObject.getCPtr(element), (int)mode);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.KeyboardNavigation_SetDirectionalNavigation(DependencyObject.getCPtr(element), (int)mode);
+    }
   }
 
   public static bool GetAcceptsReturn(DependencyObject element) {
-    bool ret = NoesisGUI_PINVOKE.KeyboardNavigation_GetAcceptsReturn(DependencyObject.getCPtr(element));
-    return ret;
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      bool ret = NoesisGUI_PINVOKE.KeyboardNavigation_GetAcceptsReturn(DependencyObject.getCPtr(element));
+      return ret;
+    }
   }
 
   public static void SetAcceptsReturn(DependencyObject element, bool value) {
-    NoesisGUI_PINVOKE.KeyboardNavigation_SetAcceptsReturn(DependencyObject.getCPtr(element), value);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.KeyboardNavigation_SetAcceptsReturn(DependencyObject.getCPtr(element), value);
+    }
   }
 
   public static bool GetIsTabStop(DependencyObject element) {
-    bool ret = NoesisGUI_PINVOKE.KeyboardNavigation_GetIsTabStop(DependencyObject.getCPtr(element));
-    return ret;
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      bool ret = NoesisGUI_PINVOKE.KeyboardNavigation_GetIsTabStop(DependencyObject.getCPtr(element));
+      return ret;
+    }
   }
 
   public static void SetIsTabStop(DependencyObject element, bool value) {
-    NoesisGUI_PINVOKE.KeyboardNavigation_SetIsTabStop(DependencyObject.getCPtr(element), value);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.KeyboardNavigation_SetIsTabStop(DependencyObject.getCPtr(element), value);
+    }
   }
 
   public static int GetTabIndex(DependencyObject element) {
-    int ret = NoesisGUI_PINVOKE.KeyboardNavigation_GetTabIndex(DependencyObject.getCPtr(element));
-    return ret;
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      int ret = NoesisGUI_PINVOKE.KeyboardNavigation_GetTabIndex(DependencyObject.getCPtr(element));
+      return ret;
+    }
   }
 
   public static void SetTabIndex(DependencyObject element, int value) {
-    NoesisGUI_PINVOKE.KeyboardNavigation_SetTabIndex(DependencyObject.getCPtr(element), value);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.KeyboardNavigation_SetTabIndex(DependencyObject.getCPtr(element), value);
+    }
   }
 
   public bool MoveFocus(FrameworkElement source, TraversalRequest request) {

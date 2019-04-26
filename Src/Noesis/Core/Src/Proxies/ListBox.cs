@@ -38,7 +38,7 @@ public class ListBox : Selector {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(ListBox).TypeHandle) {
+    if (type == typeof(ListBox)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_ListBox();
     }

@@ -36,7 +36,7 @@ public class Separator : Control {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(Separator).TypeHandle) {
+    if (type == typeof(Separator)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_Separator();
     }

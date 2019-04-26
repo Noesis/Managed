@@ -31,7 +31,7 @@ public class ToolBarTray : FrameworkElement {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(ToolBarTray).TypeHandle) {
+    if (type == typeof(ToolBarTray)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_ToolBarTray();
     }
@@ -41,12 +41,18 @@ public class ToolBarTray : FrameworkElement {
   }
 
   public static bool GetIsLocked(DependencyObject element) {
-    bool ret = NoesisGUI_PINVOKE.ToolBarTray_GetIsLocked(DependencyObject.getCPtr(element));
-    return ret;
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      bool ret = NoesisGUI_PINVOKE.ToolBarTray_GetIsLocked(DependencyObject.getCPtr(element));
+      return ret;
+    }
   }
 
   public static void SetIsLocked(DependencyObject element, bool isLocked) {
-    NoesisGUI_PINVOKE.ToolBarTray_SetIsLocked(DependencyObject.getCPtr(element), isLocked);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.ToolBarTray_SetIsLocked(DependencyObject.getCPtr(element), isLocked);
+    }
   }
 
   public static DependencyProperty BackgroundProperty {

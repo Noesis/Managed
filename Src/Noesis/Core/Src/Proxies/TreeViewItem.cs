@@ -70,7 +70,7 @@ public class TreeViewItem : HeaderedItemsControl {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(TreeViewItem).TypeHandle) {
+    if (type == typeof(TreeViewItem)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_TreeViewItem();
     }

@@ -43,7 +43,7 @@ public class ScrollViewer : ContentControl {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(ScrollViewer).TypeHandle) {
+    if (type == typeof(ScrollViewer)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_ScrollViewer();
     }
@@ -53,66 +53,108 @@ public class ScrollViewer : ContentControl {
   }
 
   public static bool GetCanContentScroll(DependencyObject element) {
-    bool ret = NoesisGUI_PINVOKE.ScrollViewer_GetCanContentScroll(DependencyObject.getCPtr(element));
-    return ret;
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      bool ret = NoesisGUI_PINVOKE.ScrollViewer_GetCanContentScroll(DependencyObject.getCPtr(element));
+      return ret;
+    }
   }
 
   public static void SetCanContentScroll(DependencyObject element, bool canScroll) {
-    NoesisGUI_PINVOKE.ScrollViewer_SetCanContentScroll(DependencyObject.getCPtr(element), canScroll);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.ScrollViewer_SetCanContentScroll(DependencyObject.getCPtr(element), canScroll);
+    }
   }
 
   public static ScrollBarVisibility GetHorizontalScrollBarVisibility(DependencyObject element) {
-    ScrollBarVisibility ret = (ScrollBarVisibility)NoesisGUI_PINVOKE.ScrollViewer_GetHorizontalScrollBarVisibility(DependencyObject.getCPtr(element));
-    return ret;
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      ScrollBarVisibility ret = (ScrollBarVisibility)NoesisGUI_PINVOKE.ScrollViewer_GetHorizontalScrollBarVisibility(DependencyObject.getCPtr(element));
+      return ret;
+    }
   }
 
   public static void SetHorizontalScrollBarVisibility(DependencyObject element, ScrollBarVisibility visibility) {
-    NoesisGUI_PINVOKE.ScrollViewer_SetHorizontalScrollBarVisibility(DependencyObject.getCPtr(element), (int)visibility);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.ScrollViewer_SetHorizontalScrollBarVisibility(DependencyObject.getCPtr(element), (int)visibility);
+    }
   }
 
   public static ScrollBarVisibility GetVerticalScrollBarVisibility(DependencyObject element) {
-    ScrollBarVisibility ret = (ScrollBarVisibility)NoesisGUI_PINVOKE.ScrollViewer_GetVerticalScrollBarVisibility(DependencyObject.getCPtr(element));
-    return ret;
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      ScrollBarVisibility ret = (ScrollBarVisibility)NoesisGUI_PINVOKE.ScrollViewer_GetVerticalScrollBarVisibility(DependencyObject.getCPtr(element));
+      return ret;
+    }
   }
 
   public static void SetVerticalScrollBarVisibility(DependencyObject element, ScrollBarVisibility visibility) {
-    NoesisGUI_PINVOKE.ScrollViewer_SetVerticalScrollBarVisibility(DependencyObject.getCPtr(element), (int)visibility);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.ScrollViewer_SetVerticalScrollBarVisibility(DependencyObject.getCPtr(element), (int)visibility);
+    }
   }
 
   public static bool GetIsDeferredScrollingEnabled(DependencyObject element) {
-    bool ret = NoesisGUI_PINVOKE.ScrollViewer_GetIsDeferredScrollingEnabled(DependencyObject.getCPtr(element));
-    return ret;
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      bool ret = NoesisGUI_PINVOKE.ScrollViewer_GetIsDeferredScrollingEnabled(DependencyObject.getCPtr(element));
+      return ret;
+    }
   }
 
   public static void SetIsDeferredScrollingEnabled(DependencyObject element, bool value) {
-    NoesisGUI_PINVOKE.ScrollViewer_SetIsDeferredScrollingEnabled(DependencyObject.getCPtr(element), value);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.ScrollViewer_SetIsDeferredScrollingEnabled(DependencyObject.getCPtr(element), value);
+    }
   }
 
   public static PanningMode GetPanningMode(DependencyObject element) {
-    PanningMode ret = (PanningMode)NoesisGUI_PINVOKE.ScrollViewer_GetPanningMode(DependencyObject.getCPtr(element));
-    return ret;
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      PanningMode ret = (PanningMode)NoesisGUI_PINVOKE.ScrollViewer_GetPanningMode(DependencyObject.getCPtr(element));
+      return ret;
+    }
   }
 
   public static void SetPanningMode(DependencyObject element, PanningMode panningMode) {
-    NoesisGUI_PINVOKE.ScrollViewer_SetPanningMode(DependencyObject.getCPtr(element), (int)panningMode);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.ScrollViewer_SetPanningMode(DependencyObject.getCPtr(element), (int)panningMode);
+    }
   }
 
   public static float GetPanningDeceleration(DependencyObject element) {
-    float ret = NoesisGUI_PINVOKE.ScrollViewer_GetPanningDeceleration(DependencyObject.getCPtr(element));
-    return ret;
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      float ret = NoesisGUI_PINVOKE.ScrollViewer_GetPanningDeceleration(DependencyObject.getCPtr(element));
+      return ret;
+    }
   }
 
   public static void SetPanningDeceleration(DependencyObject element, float deceleration) {
-    NoesisGUI_PINVOKE.ScrollViewer_SetPanningDeceleration(DependencyObject.getCPtr(element), deceleration);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.ScrollViewer_SetPanningDeceleration(DependencyObject.getCPtr(element), deceleration);
+    }
   }
 
   public static float GetPanningRatio(DependencyObject element) {
-    float ret = NoesisGUI_PINVOKE.ScrollViewer_GetPanningRatio(DependencyObject.getCPtr(element));
-    return ret;
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      float ret = NoesisGUI_PINVOKE.ScrollViewer_GetPanningRatio(DependencyObject.getCPtr(element));
+      return ret;
+    }
   }
 
   public static void SetPanningRatio(DependencyObject element, float panningRatio) {
-    NoesisGUI_PINVOKE.ScrollViewer_SetPanningRatio(DependencyObject.getCPtr(element), panningRatio);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.ScrollViewer_SetPanningRatio(DependencyObject.getCPtr(element), panningRatio);
+    }
   }
 
   public void LineLeft() {

@@ -28,9 +28,6 @@ public class RoutedCommand : BaseComponent, ICommand {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
-  protected RoutedCommand() {
-  }
-
   public string Name {
     get {
       return GetNameHelper();
@@ -52,6 +49,14 @@ public class RoutedCommand : BaseComponent, ICommand {
   }
 
   public event System.EventHandler CanExecuteChanged;
+
+  public RoutedCommand() {
+  }
+
+  protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
+    registerExtend = false;
+    return NoesisGUI_PINVOKE.new_RoutedCommand__SWIG_0();
+  }
 
   public bool CanExecute(object param, UIElement target) {
     bool ret = NoesisGUI_PINVOKE.RoutedCommand_CanExecute__SWIG_0(swigCPtr, Noesis.Extend.GetInstanceHandle(param), UIElement.getCPtr(target));

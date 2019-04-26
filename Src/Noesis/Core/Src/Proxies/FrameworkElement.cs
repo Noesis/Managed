@@ -124,7 +124,7 @@ public partial class FrameworkElement : UIElement {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(FrameworkElement).TypeHandle) {
+    if (type == typeof(FrameworkElement)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_FrameworkElement();
     }

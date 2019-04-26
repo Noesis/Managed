@@ -61,14 +61,14 @@ public class Popup : FrameworkElement {
   [MonoPInvokeCallback(typeof(RaiseClosedCallback))]
   private static void RaiseClosed(IntPtr cPtr, IntPtr sender, IntPtr e) {
     try {
-      if (!_Closed.ContainsKey(cPtr)) {
-        throw new InvalidOperationException("Delegate not registered for Closed event");
-      }
-      if (sender == IntPtr.Zero && e == IntPtr.Zero) {
-        _Closed.Remove(cPtr);
-        return;
-      }
       if (Noesis.Extend.Initialized) {
+        if (!_Closed.ContainsKey(cPtr)) {
+          throw new InvalidOperationException("Delegate not registered for Closed event");
+        }
+        if (sender == IntPtr.Zero && e == IntPtr.Zero) {
+          _Closed.Remove(cPtr);
+          return;
+        }
         ClosedHandler handler = _Closed[cPtr];
         if (handler != null) {
           handler(Noesis.Extend.GetProxy(sender, false), new EventArgs(e, false));
@@ -80,7 +80,7 @@ public class Popup : FrameworkElement {
     }
   }
 
-  static Dictionary<IntPtr, ClosedHandler> _Closed =
+  internal static Dictionary<IntPtr, ClosedHandler> _Closed =
       new Dictionary<IntPtr, ClosedHandler>();
   #endregion
 
@@ -116,14 +116,14 @@ public class Popup : FrameworkElement {
   [MonoPInvokeCallback(typeof(RaiseOpenedCallback))]
   private static void RaiseOpened(IntPtr cPtr, IntPtr sender, IntPtr e) {
     try {
-      if (!_Opened.ContainsKey(cPtr)) {
-        throw new InvalidOperationException("Delegate not registered for Opened event");
-      }
-      if (sender == IntPtr.Zero && e == IntPtr.Zero) {
-        _Opened.Remove(cPtr);
-        return;
-      }
       if (Noesis.Extend.Initialized) {
+        if (!_Opened.ContainsKey(cPtr)) {
+          throw new InvalidOperationException("Delegate not registered for Opened event");
+        }
+        if (sender == IntPtr.Zero && e == IntPtr.Zero) {
+          _Opened.Remove(cPtr);
+          return;
+        }
         OpenedHandler handler = _Opened[cPtr];
         if (handler != null) {
           handler(Noesis.Extend.GetProxy(sender, false), new EventArgs(e, false));
@@ -135,7 +135,7 @@ public class Popup : FrameworkElement {
     }
   }
 
-  static Dictionary<IntPtr, OpenedHandler> _Opened =
+  internal static Dictionary<IntPtr, OpenedHandler> _Opened =
       new Dictionary<IntPtr, OpenedHandler>();
   #endregion
 
@@ -145,7 +145,7 @@ public class Popup : FrameworkElement {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(Popup).TypeHandle) {
+    if (type == typeof(Popup)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_Popup();
     }

@@ -3453,27 +3453,6 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr Visual_TransformToVisual(HandleRef jarg1, HandleRef jarg2);
 
   [DllImport(Library.Name)]
-  [return: MarshalAs(UnmanagedType.U1)]
-  public static extern bool Visual_IsInvalidated(HandleRef jarg1);
-
-  [DllImport(Library.Name)]
-  [return: MarshalAs(UnmanagedType.U1)]
-  public static extern bool Visual_IsConnectedToView(HandleRef jarg1);
-
-  [DllImport(Library.Name)]
-  public static extern void Visual_DisconnectFromView(HandleRef jarg1);
-
-  [DllImport(Library.Name)]
-  [return: MarshalAs(UnmanagedType.U1)]
-  public static extern bool Visual_IsInRenderTree(HandleRef jarg1);
-
-  [DllImport(Library.Name)]
-  public static extern uint Visual_GetRenderTreeId(HandleRef jarg1);
-
-  [DllImport(Library.Name)]
-  public static extern void Visual_SetVisualBrushFlag(HandleRef jarg1);
-
-  [DllImport(Library.Name)]
   public static extern IntPtr Visual_GetViewHelper(HandleRef jarg1);
 
   [DllImport(Library.Name)]
@@ -6702,9 +6681,6 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr new_ItemsControl();
 
   [DllImport(Library.Name)]
-  public static extern int ItemsControl_GetAlternationIndex(HandleRef jarg1);
-
-  [DllImport(Library.Name)]
   public static extern IntPtr ItemsControl_ItemsControlFromItemContainer(HandleRef jarg1);
 
   [DllImport(Library.Name)]
@@ -6816,6 +6792,9 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr ItemsControl_Items_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern int ItemsControl_Get_AlternationIndex(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern IntPtr ItemsControl_Get_ContainerFromElement(HandleRef jarg1, HandleRef jarg2);
@@ -11605,7 +11584,13 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr RepeatButton_GetStaticType();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr new_RoutedCommand([MarshalAs(UnmanagedType.LPWStr)]string jarg1, HandleRef jarg2, HandleRef jarg3);
+  public static extern IntPtr new_RoutedCommand__SWIG_0();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr new_RoutedCommand__SWIG_1([MarshalAs(UnmanagedType.LPWStr)]string jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr new_RoutedCommand__SWIG_2([MarshalAs(UnmanagedType.LPWStr)]string jarg1, HandleRef jarg2, HandleRef jarg3);
 
   [DllImport(Library.Name)]
   public static extern IntPtr RoutedCommand_GetName(HandleRef jarg1);
@@ -11640,7 +11625,13 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr RoutedCommand_GetStaticType();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr new_RoutedUICommand([MarshalAs(UnmanagedType.LPWStr)]string jarg1, [MarshalAs(UnmanagedType.LPWStr)]string jarg2, HandleRef jarg3, HandleRef jarg4);
+  public static extern IntPtr new_RoutedUICommand__SWIG_0();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr new_RoutedUICommand__SWIG_1([MarshalAs(UnmanagedType.LPWStr)]string jarg1, [MarshalAs(UnmanagedType.LPWStr)]string jarg2, HandleRef jarg3);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr new_RoutedUICommand__SWIG_2([MarshalAs(UnmanagedType.LPWStr)]string jarg1, [MarshalAs(UnmanagedType.LPWStr)]string jarg2, HandleRef jarg3, HandleRef jarg4);
 
   [DllImport(Library.Name)]
   public static extern void RoutedUICommand_Text_set(HandleRef jarg1, [MarshalAs(UnmanagedType.LPWStr)]string jarg2);

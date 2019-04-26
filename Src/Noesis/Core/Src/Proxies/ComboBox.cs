@@ -31,7 +31,7 @@ public class ComboBox : Selector {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(ComboBox).TypeHandle) {
+    if (type == typeof(ComboBox)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_ComboBox();
     }

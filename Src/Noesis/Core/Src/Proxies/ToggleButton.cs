@@ -61,7 +61,7 @@ public class ToggleButton : ButtonBase {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(ToggleButton).TypeHandle) {
+    if (type == typeof(ToggleButton)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_ToggleButton();
     }

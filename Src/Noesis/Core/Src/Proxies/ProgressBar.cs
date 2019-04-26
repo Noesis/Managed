@@ -31,7 +31,7 @@ public class ProgressBar : RangeBase {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(ProgressBar).TypeHandle) {
+    if (type == typeof(ProgressBar)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_ProgressBar();
     }

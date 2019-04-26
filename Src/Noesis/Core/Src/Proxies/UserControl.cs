@@ -36,7 +36,7 @@ public class UserControl : ContentControl {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(UserControl).TypeHandle) {
+    if (type == typeof(UserControl)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_UserControl();
     }

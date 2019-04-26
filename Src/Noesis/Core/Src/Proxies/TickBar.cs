@@ -31,7 +31,7 @@ public class TickBar : FrameworkElement {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(TickBar).TypeHandle) {
+    if (type == typeof(TickBar)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_TickBar();
     }

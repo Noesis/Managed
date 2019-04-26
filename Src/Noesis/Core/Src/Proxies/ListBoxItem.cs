@@ -52,7 +52,7 @@ public class ListBoxItem : ContentControl {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(ListBoxItem).TypeHandle) {
+    if (type == typeof(ListBoxItem)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_ListBoxItem();
     }

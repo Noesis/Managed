@@ -31,7 +31,7 @@ public class RepeatButton : ButtonBase {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(RepeatButton).TypeHandle) {
+    if (type == typeof(RepeatButton)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_RepeatButton();
     }

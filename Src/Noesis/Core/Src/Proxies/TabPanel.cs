@@ -31,7 +31,7 @@ public class TabPanel : Panel {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(TabPanel).TypeHandle) {
+    if (type == typeof(TabPanel)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_TabPanel();
     }

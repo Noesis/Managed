@@ -31,7 +31,7 @@ public class GroupBox : HeaderedContentControl {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(GroupBox).TypeHandle) {
+    if (type == typeof(GroupBox)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_GroupBox();
     }

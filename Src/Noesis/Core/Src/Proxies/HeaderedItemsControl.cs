@@ -31,7 +31,7 @@ public class HeaderedItemsControl : ItemsControl {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(HeaderedItemsControl).TypeHandle) {
+    if (type == typeof(HeaderedItemsControl)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_HeaderedItemsControl();
     }

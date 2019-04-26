@@ -34,7 +34,7 @@ public class Border : Decorator {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(Border).TypeHandle) {
+    if (type == typeof(Border)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_Border__SWIG_1();
     }

@@ -167,125 +167,203 @@ public static class ToolTipService {
   }
 
   public static int GetBetweenShowDelay(DependencyObject obj) {
-    int ret = NoesisGUI_PINVOKE.ToolTipService_GetBetweenShowDelay(DependencyObject.getCPtr(obj));
-    return ret;
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      int ret = NoesisGUI_PINVOKE.ToolTipService_GetBetweenShowDelay(DependencyObject.getCPtr(obj));
+      return ret;
+    }
   }
 
   public static void SetBetweenShowDelay(DependencyObject obj, int delay) {
-    NoesisGUI_PINVOKE.ToolTipService_SetBetweenShowDelay(DependencyObject.getCPtr(obj), delay);
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      NoesisGUI_PINVOKE.ToolTipService_SetBetweenShowDelay(DependencyObject.getCPtr(obj), delay);
+    }
   }
 
   public static bool GetHasDropShadow(DependencyObject obj) {
-    bool ret = NoesisGUI_PINVOKE.ToolTipService_GetHasDropShadow(DependencyObject.getCPtr(obj));
-    return ret;
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      bool ret = NoesisGUI_PINVOKE.ToolTipService_GetHasDropShadow(DependencyObject.getCPtr(obj));
+      return ret;
+    }
   }
 
   public static void SetHasDropShadow(DependencyObject obj, bool shadow) {
-    NoesisGUI_PINVOKE.ToolTipService_SetHasDropShadow(DependencyObject.getCPtr(obj), shadow);
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      NoesisGUI_PINVOKE.ToolTipService_SetHasDropShadow(DependencyObject.getCPtr(obj), shadow);
+    }
   }
 
   public static float GetHorizontalOffset(DependencyObject obj) {
-    float ret = NoesisGUI_PINVOKE.ToolTipService_GetHorizontalOffset(DependencyObject.getCPtr(obj));
-    return ret;
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      float ret = NoesisGUI_PINVOKE.ToolTipService_GetHorizontalOffset(DependencyObject.getCPtr(obj));
+      return ret;
+    }
   }
 
   public static void SetHorizontalOffset(DependencyObject obj, float offset) {
-    NoesisGUI_PINVOKE.ToolTipService_SetHorizontalOffset(DependencyObject.getCPtr(obj), offset);
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      NoesisGUI_PINVOKE.ToolTipService_SetHorizontalOffset(DependencyObject.getCPtr(obj), offset);
+    }
   }
 
   public static int GetInitialShowDelay(DependencyObject obj) {
-    int ret = NoesisGUI_PINVOKE.ToolTipService_GetInitialShowDelay(DependencyObject.getCPtr(obj));
-    return ret;
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      int ret = NoesisGUI_PINVOKE.ToolTipService_GetInitialShowDelay(DependencyObject.getCPtr(obj));
+      return ret;
+    }
   }
 
   public static void SetInitialShowDelay(DependencyObject obj, int delay) {
-    NoesisGUI_PINVOKE.ToolTipService_SetInitialShowDelay(DependencyObject.getCPtr(obj), delay);
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      NoesisGUI_PINVOKE.ToolTipService_SetInitialShowDelay(DependencyObject.getCPtr(obj), delay);
+    }
   }
 
   public static bool GetIsEnabled(DependencyObject obj) {
-    bool ret = NoesisGUI_PINVOKE.ToolTipService_GetIsEnabled(DependencyObject.getCPtr(obj));
-    return ret;
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      bool ret = NoesisGUI_PINVOKE.ToolTipService_GetIsEnabled(DependencyObject.getCPtr(obj));
+      return ret;
+    }
   }
 
   public static void SetIsEnabled(DependencyObject obj, bool isEnabled) {
-    NoesisGUI_PINVOKE.ToolTipService_SetIsEnabled(DependencyObject.getCPtr(obj), isEnabled);
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      NoesisGUI_PINVOKE.ToolTipService_SetIsEnabled(DependencyObject.getCPtr(obj), isEnabled);
+    }
   }
 
   public static bool GetIsOpen(DependencyObject obj) {
-    bool ret = NoesisGUI_PINVOKE.ToolTipService_GetIsOpen(DependencyObject.getCPtr(obj));
-    return ret;
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      bool ret = NoesisGUI_PINVOKE.ToolTipService_GetIsOpen(DependencyObject.getCPtr(obj));
+      return ret;
+    }
   }
 
   public static void SetIsOpen(DependencyObject obj, bool isOpen) {
-    NoesisGUI_PINVOKE.ToolTipService_SetIsOpen(DependencyObject.getCPtr(obj), isOpen);
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      NoesisGUI_PINVOKE.ToolTipService_SetIsOpen(DependencyObject.getCPtr(obj), isOpen);
+    }
   }
 
   public static PlacementMode GetPlacement(DependencyObject obj) {
-    PlacementMode ret = (PlacementMode)NoesisGUI_PINVOKE.ToolTipService_GetPlacement(DependencyObject.getCPtr(obj));
-    return ret;
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      PlacementMode ret = (PlacementMode)NoesisGUI_PINVOKE.ToolTipService_GetPlacement(DependencyObject.getCPtr(obj));
+      return ret;
+    }
   }
 
   public static void SetPlacement(DependencyObject obj, PlacementMode placement) {
-    NoesisGUI_PINVOKE.ToolTipService_SetPlacement(DependencyObject.getCPtr(obj), (int)placement);
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      NoesisGUI_PINVOKE.ToolTipService_SetPlacement(DependencyObject.getCPtr(obj), (int)placement);
+    }
   }
 
   public static Rect GetPlacementRectangle(DependencyObject obj) {
-    IntPtr ret = NoesisGUI_PINVOKE.ToolTipService_GetPlacementRectangle(DependencyObject.getCPtr(obj));
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Rect>(ret);
-    }
-    else {
-      return new Rect();
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      IntPtr ret = NoesisGUI_PINVOKE.ToolTipService_GetPlacementRectangle(DependencyObject.getCPtr(obj));
+      if (ret != IntPtr.Zero) {
+        return Marshal.PtrToStructure<Rect>(ret);
+      }
+      else {
+        return new Rect();
+      }
     }
   }
 
   public static void SetPlacementRectangle(DependencyObject obj, Rect rect) {
-    NoesisGUI_PINVOKE.ToolTipService_SetPlacementRectangle(DependencyObject.getCPtr(obj), ref rect);
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      NoesisGUI_PINVOKE.ToolTipService_SetPlacementRectangle(DependencyObject.getCPtr(obj), ref rect);
+    }
   }
 
   public static UIElement GetPlacementTarget(DependencyObject obj) {
-    IntPtr cPtr = NoesisGUI_PINVOKE.ToolTipService_GetPlacementTarget(DependencyObject.getCPtr(obj));
-    return (UIElement)Noesis.Extend.GetProxy(cPtr, false);
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      IntPtr cPtr = NoesisGUI_PINVOKE.ToolTipService_GetPlacementTarget(DependencyObject.getCPtr(obj));
+      return (UIElement)Noesis.Extend.GetProxy(cPtr, false);
+    }
   }
 
   public static void SetPlacementTarget(DependencyObject obj, UIElement target) {
-    NoesisGUI_PINVOKE.ToolTipService_SetPlacementTarget(DependencyObject.getCPtr(obj), UIElement.getCPtr(target));
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      NoesisGUI_PINVOKE.ToolTipService_SetPlacementTarget(DependencyObject.getCPtr(obj), UIElement.getCPtr(target));
+    }
   }
 
   public static int GetShowDuration(DependencyObject obj) {
-    int ret = NoesisGUI_PINVOKE.ToolTipService_GetShowDuration(DependencyObject.getCPtr(obj));
-    return ret;
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      int ret = NoesisGUI_PINVOKE.ToolTipService_GetShowDuration(DependencyObject.getCPtr(obj));
+      return ret;
+    }
   }
 
   public static void SetShowDuration(DependencyObject obj, int duration) {
-    NoesisGUI_PINVOKE.ToolTipService_SetShowDuration(DependencyObject.getCPtr(obj), duration);
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      NoesisGUI_PINVOKE.ToolTipService_SetShowDuration(DependencyObject.getCPtr(obj), duration);
+    }
   }
 
   public static bool GetShowOnDisabled(DependencyObject obj) {
-    bool ret = NoesisGUI_PINVOKE.ToolTipService_GetShowOnDisabled(DependencyObject.getCPtr(obj));
-    return ret;
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      bool ret = NoesisGUI_PINVOKE.ToolTipService_GetShowOnDisabled(DependencyObject.getCPtr(obj));
+      return ret;
+    }
   }
 
   public static void SetShowOnDisabled(DependencyObject obj, bool showOnDisable) {
-    NoesisGUI_PINVOKE.ToolTipService_SetShowOnDisabled(DependencyObject.getCPtr(obj), showOnDisable);
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      NoesisGUI_PINVOKE.ToolTipService_SetShowOnDisabled(DependencyObject.getCPtr(obj), showOnDisable);
+    }
   }
 
   public static object GetToolTip(DependencyObject obj) {
-    IntPtr cPtr = NoesisGUI_PINVOKE.ToolTipService_GetToolTip(DependencyObject.getCPtr(obj));
-    return Noesis.Extend.GetProxy(cPtr, false);
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      IntPtr cPtr = NoesisGUI_PINVOKE.ToolTipService_GetToolTip(DependencyObject.getCPtr(obj));
+      return Noesis.Extend.GetProxy(cPtr, false);
+    }
   }
 
   public static void SetToolTip(DependencyObject obj, object toolTip) {
-    NoesisGUI_PINVOKE.ToolTipService_SetToolTip(DependencyObject.getCPtr(obj), Noesis.Extend.GetInstanceHandle(toolTip));
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      NoesisGUI_PINVOKE.ToolTipService_SetToolTip(DependencyObject.getCPtr(obj), Noesis.Extend.GetInstanceHandle(toolTip));
+    }
   }
 
   public static float GetVerticalOffset(DependencyObject obj) {
-    float ret = NoesisGUI_PINVOKE.ToolTipService_GetVerticalOffset(DependencyObject.getCPtr(obj));
-    return ret;
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      float ret = NoesisGUI_PINVOKE.ToolTipService_GetVerticalOffset(DependencyObject.getCPtr(obj));
+      return ret;
+    }
   }
 
   public static void SetVerticalOffset(DependencyObject obj, float offset) {
-    NoesisGUI_PINVOKE.ToolTipService_SetVerticalOffset(DependencyObject.getCPtr(obj), offset);
+    if (obj == null) throw new ArgumentNullException("obj");
+    {
+      NoesisGUI_PINVOKE.ToolTipService_SetVerticalOffset(DependencyObject.getCPtr(obj), offset);
+    }
   }
 
 }

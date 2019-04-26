@@ -31,7 +31,7 @@ public class DockPanel : Panel {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(DockPanel).TypeHandle) {
+    if (type == typeof(DockPanel)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_DockPanel();
     }
@@ -41,12 +41,18 @@ public class DockPanel : Panel {
   }
 
   public static Dock GetDock(DependencyObject element) {
-    Dock ret = (Dock)NoesisGUI_PINVOKE.DockPanel_GetDock(DependencyObject.getCPtr(element));
-    return ret;
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      Dock ret = (Dock)NoesisGUI_PINVOKE.DockPanel_GetDock(DependencyObject.getCPtr(element));
+      return ret;
+    }
   }
 
   public static void SetDock(DependencyObject element, Dock dock) {
-    NoesisGUI_PINVOKE.DockPanel_SetDock(DependencyObject.getCPtr(element), (int)dock);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.DockPanel_SetDock(DependencyObject.getCPtr(element), (int)dock);
+    }
   }
 
   public static DependencyProperty DockProperty {

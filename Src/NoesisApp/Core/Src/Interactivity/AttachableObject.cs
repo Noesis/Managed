@@ -12,6 +12,7 @@ namespace NoesisApp
         {
             _associatedType = associatedType;
             _associatedObject = null;
+            _view = null;
         }
 
         protected Type AssociatedType { get { return _associatedType; } }

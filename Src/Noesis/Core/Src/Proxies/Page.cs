@@ -31,7 +31,7 @@ public class Page : UserControl {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(Page).TypeHandle) {
+    if (type == typeof(Page)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_Page();
     }

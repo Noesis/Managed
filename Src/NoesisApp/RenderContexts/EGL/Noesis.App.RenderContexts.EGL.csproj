@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>2.2.1</Version>
+    <Version>2.2.2</Version>
     <Authors>Noesis Technologies</Authors>
     <Description>NoesisGUI Khronos EGL Render Context</Description>
     <Copyright>Copyright (c) 2013 Noesis Technologies S.L.</Copyright>
@@ -21,7 +21,7 @@
     <ProjectReference Include="..\..\Core\Noesis.App.csproj">
       <PrivateAssets>contentfiles;analyzers</PrivateAssets>
     </ProjectReference>
-    <PackageReference Include="OpenGL.Net" Version="0.7.1" />
+    <PackageReference Include="OpenGL.Net" Version="0.8.4" />
   </ItemGroup>
 
   <PropertyGroup Condition="Exists('$(SolutionDir)LICENSE.txt')">

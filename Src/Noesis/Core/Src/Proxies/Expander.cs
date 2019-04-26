@@ -52,7 +52,7 @@ public class Expander : HeaderedContentControl {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(Expander).TypeHandle) {
+    if (type == typeof(Expander)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_Expander();
     }

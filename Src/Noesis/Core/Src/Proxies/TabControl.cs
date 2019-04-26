@@ -31,7 +31,7 @@ public class TabControl : Selector {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(TabControl).TypeHandle) {
+    if (type == typeof(TabControl)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_TabControl();
     }

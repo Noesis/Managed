@@ -205,7 +205,7 @@ namespace Noesis
             MethodInfo helper = CreateGetterHelperMethod.MakeGenericMethod(type,
                 method.ReturnType);
 
-            // Now call it. The null argument is because it’s a static method.
+            // Now call it. The null argument is because it's a static method.
             object[] methodArg = { method };
             object ret = helper.Invoke(null, methodArg);
 
@@ -238,7 +238,7 @@ namespace Noesis
             MethodInfo helper = CreateSetterHelperMethod.MakeGenericMethod(type,
                 method.GetParameters()[0].ParameterType);
 
-            // Now call it. The null argument is because it’s a static method.
+            // Now call it. The null argument is because it's a static method.
             object[] methodArg = { method };
             object ret = helper.Invoke(null, methodArg);
 
@@ -386,7 +386,7 @@ namespace Noesis
             MethodInfo helper = CreateIndexerGetterHelperMethod.MakeGenericMethod(type,
                 method.GetParameters()[0].ParameterType, method.ReturnType);
 
-            // Now call it. The null argument is because it’s a static method.
+            // Now call it. The null argument is because it's a static method.
             object[] methodArg = { method };
             object ret = helper.Invoke(null, methodArg);
 
@@ -421,7 +421,7 @@ namespace Noesis
             MethodInfo helper = CreateIndexerSetterHelperMethod.MakeGenericMethod(type,
                 parameters[0].ParameterType, parameters[1].ParameterType);
 
-            // Now call it. The null argument is because it’s a static method.
+            // Now call it. The null argument is because it's a static method.
             object[] methodArg = { method };
             object ret = helper.Invoke(null, methodArg);
 
@@ -745,6 +745,12 @@ namespace Noesis
             {
                 AddPropertyAccessor<string>(info, p, usePropertyInfo);
                 return CreatePropertyData(p, NativePropertyType.String);
+            };
+
+            addPropFunctions[typeof(System.Uri)] = (info, p, usePropertyInfo) =>
+            {
+                AddPropertyAccessor<System.Uri>(info, p, usePropertyInfo);
+                return CreatePropertyData(p, NativePropertyType.Uri);
             };
 
             return addPropFunctions;

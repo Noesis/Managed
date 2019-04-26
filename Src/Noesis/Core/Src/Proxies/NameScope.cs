@@ -54,12 +54,18 @@ public class NameScope : BaseComponent {
   }
 
   public static NameScope GetNameScope(DependencyObject element) {
-    IntPtr cPtr = NoesisGUI_PINVOKE.NameScope_GetNameScope(DependencyObject.getCPtr(element));
-    return (NameScope)Noesis.Extend.GetProxy(cPtr, false);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      IntPtr cPtr = NoesisGUI_PINVOKE.NameScope_GetNameScope(DependencyObject.getCPtr(element));
+      return (NameScope)Noesis.Extend.GetProxy(cPtr, false);
+    }
   }
 
   public static void SetNameScope(DependencyObject element, NameScope nameScope) {
-    NoesisGUI_PINVOKE.NameScope_SetNameScope(DependencyObject.getCPtr(element), NameScope.getCPtr(nameScope));
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.NameScope_SetNameScope(DependencyObject.getCPtr(element), NameScope.getCPtr(nameScope));
+    }
   }
 
   public object FindName(string name) {

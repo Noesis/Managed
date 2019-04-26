@@ -38,18 +38,27 @@ public class Visual : DependencyObject {
   }
 
   public bool IsAncestorOf(Visual visual) {
-    bool ret = NoesisGUI_PINVOKE.Visual_IsAncestorOf(swigCPtr, Visual.getCPtr(visual));
-    return ret;
+    if (visual == null) throw new ArgumentNullException("visual");
+    {
+      bool ret = NoesisGUI_PINVOKE.Visual_IsAncestorOf(swigCPtr, Visual.getCPtr(visual));
+      return ret;
+    }
   }
 
   public bool IsDescendantOf(Visual visual) {
-    bool ret = NoesisGUI_PINVOKE.Visual_IsDescendantOf(swigCPtr, Visual.getCPtr(visual));
-    return ret;
+    if (visual == null) throw new ArgumentNullException("visual");
+    {
+      bool ret = NoesisGUI_PINVOKE.Visual_IsDescendantOf(swigCPtr, Visual.getCPtr(visual));
+      return ret;
+    }
   }
 
   public Visual FindCommonVisualAncestor(Visual visual) {
-    IntPtr cPtr = NoesisGUI_PINVOKE.Visual_FindCommonVisualAncestor(swigCPtr, Visual.getCPtr(visual));
-    return (Visual)Noesis.Extend.GetProxy(cPtr, false);
+    if (visual == null) throw new ArgumentNullException("visual");
+    {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Visual_FindCommonVisualAncestor(swigCPtr, Visual.getCPtr(visual));
+      return (Visual)Noesis.Extend.GetProxy(cPtr, false);
+    }
   }
 
   public Point PointFromScreen(Point point) {
@@ -73,61 +82,42 @@ public class Visual : DependencyObject {
   }
 
   public Matrix4 TransformToAncestor(Visual ancestor) {
-    IntPtr ret = NoesisGUI_PINVOKE.Visual_TransformToAncestor(swigCPtr, Visual.getCPtr(ancestor));
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Matrix4>(ret);
-    }
-    else {
-      return new Matrix4();
+    if (ancestor == null) throw new ArgumentNullException("ancestor");
+    {
+      IntPtr ret = NoesisGUI_PINVOKE.Visual_TransformToAncestor(swigCPtr, Visual.getCPtr(ancestor));
+      if (ret != IntPtr.Zero) {
+        return Marshal.PtrToStructure<Matrix4>(ret);
+      }
+      else {
+        return new Matrix4();
+      }
     }
   }
 
   public Matrix4 TransformToDescendant(Visual descendant) {
-    IntPtr ret = NoesisGUI_PINVOKE.Visual_TransformToDescendant(swigCPtr, Visual.getCPtr(descendant));
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Matrix4>(ret);
-    }
-    else {
-      return new Matrix4();
+    if (descendant == null) throw new ArgumentNullException("descendant");
+    {
+      IntPtr ret = NoesisGUI_PINVOKE.Visual_TransformToDescendant(swigCPtr, Visual.getCPtr(descendant));
+      if (ret != IntPtr.Zero) {
+        return Marshal.PtrToStructure<Matrix4>(ret);
+      }
+      else {
+        return new Matrix4();
+      }
     }
   }
 
   public Matrix4 TransformToVisual(Visual visual) {
-    IntPtr ret = NoesisGUI_PINVOKE.Visual_TransformToVisual(swigCPtr, Visual.getCPtr(visual));
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Matrix4>(ret);
+    if (visual == null) throw new ArgumentNullException("visual");
+    {
+      IntPtr ret = NoesisGUI_PINVOKE.Visual_TransformToVisual(swigCPtr, Visual.getCPtr(visual));
+      if (ret != IntPtr.Zero) {
+        return Marshal.PtrToStructure<Matrix4>(ret);
+      }
+      else {
+        return new Matrix4();
+      }
     }
-    else {
-      return new Matrix4();
-    }
-  }
-
-  public bool IsInvalidated() {
-    bool ret = NoesisGUI_PINVOKE.Visual_IsInvalidated(swigCPtr);
-    return ret;
-  }
-
-  public bool IsConnectedToView() {
-    bool ret = NoesisGUI_PINVOKE.Visual_IsConnectedToView(swigCPtr);
-    return ret;
-  }
-
-  public void DisconnectFromView() {
-    NoesisGUI_PINVOKE.Visual_DisconnectFromView(swigCPtr);
-  }
-
-  public bool IsInRenderTree() {
-    bool ret = NoesisGUI_PINVOKE.Visual_IsInRenderTree(swigCPtr);
-    return ret;
-  }
-
-  public uint GetRenderTreeId() {
-    uint ret = NoesisGUI_PINVOKE.Visual_GetRenderTreeId(swigCPtr);
-    return ret;
-  }
-
-  public void SetVisualBrushFlag() {
-    NoesisGUI_PINVOKE.Visual_SetVisualBrushFlag(swigCPtr);
   }
 
   private IntPtr GetViewHelper() {

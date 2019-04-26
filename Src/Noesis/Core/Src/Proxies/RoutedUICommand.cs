@@ -27,7 +27,12 @@ public class RoutedUICommand : RoutedCommand {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
-  protected RoutedUICommand() {
+  public RoutedUICommand() {
+  }
+
+  protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
+    registerExtend = false;
+    return NoesisGUI_PINVOKE.new_RoutedUICommand__SWIG_0();
   }
 
   public string Text {

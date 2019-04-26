@@ -429,8 +429,7 @@ namespace Noesis
         #endregion
 
         #region Private members
-        internal View(FrameworkElement content):
-            this(Noesis_View_Create(BaseComponent.getCPtr(content)), true)
+        internal View(FrameworkElement content): this(RegisterContent(content))
         {
         }
 
@@ -440,7 +439,18 @@ namespace Noesis
 
         internal new static View CreateProxy(IntPtr cPtr, bool cMemoryOwn)
         {
-            return new View(cPtr, cMemoryOwn);
+            // If sCreatingView is not null means this function is being called inside the
+            // constructor when the native pointer is being created by Noesis_View_Create(),
+            // so we return that same View instead of a new proxy
+            if (sCreatingView != null)
+            {
+                sCreatingView.swigCPtr = new HandleRef(sCreatingView, cPtr);
+                return sCreatingView;
+            }
+            else
+            {
+                return new View(cPtr, cMemoryOwn);
+            }
         }
 
         new internal static IntPtr GetStaticType()
@@ -449,6 +459,36 @@ namespace Noesis
         }
 
         internal HandleRef CPtr { get { return BaseComponent.getCPtr(this); } }
+
+        #region View creation from C#
+        private View(HandleRef content)
+        {
+            sContentPtr = new HandleRef(null, IntPtr.Zero);
+        }
+
+        private static HandleRef RegisterContent(FrameworkElement content)
+        {
+            sContentPtr = BaseComponent.getCPtr(content);
+            return sContentPtr;
+        }
+
+        protected override IntPtr CreateCPtr(Type type, out bool registerExtend)
+        {
+            registerExtend = false;
+
+            sCreatingView = this;
+            IntPtr cPtr = Noesis_View_Create(sContentPtr);
+            sCreatingView = null;
+
+            return cPtr;
+        }
+
+        [ThreadStatic]
+        private static HandleRef sContentPtr = new HandleRef(null, IntPtr.Zero);
+
+        [ThreadStatic]
+        private static View sCreatingView = null;
+        #endregion
         #endregion
 
         #region Imports

@@ -43,17 +43,26 @@ public class Selector : ItemsControl {
   #endregion
 
   public static bool GetIsSelected(DependencyObject element) {
-    bool ret = NoesisGUI_PINVOKE.Selector_GetIsSelected(DependencyObject.getCPtr(element));
-    return ret;
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      bool ret = NoesisGUI_PINVOKE.Selector_GetIsSelected(DependencyObject.getCPtr(element));
+      return ret;
+    }
   }
 
   public static void SetIsSelected(DependencyObject element, bool value) {
-    NoesisGUI_PINVOKE.Selector_SetIsSelected(DependencyObject.getCPtr(element), value);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.Selector_SetIsSelected(DependencyObject.getCPtr(element), value);
+    }
   }
 
   public static bool GetIsSelectionActive(UIElement element) {
-    bool ret = NoesisGUI_PINVOKE.Selector_GetIsSelectionActive(UIElement.getCPtr(element));
-    return ret;
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      bool ret = NoesisGUI_PINVOKE.Selector_GetIsSelectionActive(UIElement.getCPtr(element));
+      return ret;
+    }
   }
 
   public static DependencyProperty IsSelectedProperty {

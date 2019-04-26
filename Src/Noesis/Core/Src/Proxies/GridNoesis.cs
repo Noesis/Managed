@@ -31,7 +31,7 @@ public class Grid : Panel {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(Grid).TypeHandle) {
+    if (type == typeof(Grid)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_Grid();
     }
@@ -41,48 +41,78 @@ public class Grid : Panel {
   }
 
   public static int GetColumn(DependencyObject element) {
-    int ret = NoesisGUI_PINVOKE.Grid_GetColumn(DependencyObject.getCPtr(element));
-    return ret;
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      int ret = NoesisGUI_PINVOKE.Grid_GetColumn(DependencyObject.getCPtr(element));
+      return ret;
+    }
   }
 
   public static void SetColumn(DependencyObject element, int column) {
-    NoesisGUI_PINVOKE.Grid_SetColumn(DependencyObject.getCPtr(element), column);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.Grid_SetColumn(DependencyObject.getCPtr(element), column);
+    }
   }
 
   public static int GetColumnSpan(DependencyObject element) {
-    int ret = NoesisGUI_PINVOKE.Grid_GetColumnSpan(DependencyObject.getCPtr(element));
-    return ret;
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      int ret = NoesisGUI_PINVOKE.Grid_GetColumnSpan(DependencyObject.getCPtr(element));
+      return ret;
+    }
   }
 
   public static void SetColumnSpan(DependencyObject element, int columnSpan) {
-    NoesisGUI_PINVOKE.Grid_SetColumnSpan(DependencyObject.getCPtr(element), columnSpan);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.Grid_SetColumnSpan(DependencyObject.getCPtr(element), columnSpan);
+    }
   }
 
   public static bool GetIsSharedSizeScope(DependencyObject element) {
-    bool ret = NoesisGUI_PINVOKE.Grid_GetIsSharedSizeScope(DependencyObject.getCPtr(element));
-    return ret;
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      bool ret = NoesisGUI_PINVOKE.Grid_GetIsSharedSizeScope(DependencyObject.getCPtr(element));
+      return ret;
+    }
   }
 
   public static void SetIsSharedSizeScope(DependencyObject element, bool value) {
-    NoesisGUI_PINVOKE.Grid_SetIsSharedSizeScope(DependencyObject.getCPtr(element), value);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.Grid_SetIsSharedSizeScope(DependencyObject.getCPtr(element), value);
+    }
   }
 
   public static int GetRow(DependencyObject element) {
-    int ret = NoesisGUI_PINVOKE.Grid_GetRow(DependencyObject.getCPtr(element));
-    return ret;
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      int ret = NoesisGUI_PINVOKE.Grid_GetRow(DependencyObject.getCPtr(element));
+      return ret;
+    }
   }
 
   public static void SetRow(DependencyObject element, int row) {
-    NoesisGUI_PINVOKE.Grid_SetRow(DependencyObject.getCPtr(element), row);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.Grid_SetRow(DependencyObject.getCPtr(element), row);
+    }
   }
 
   public static int GetRowSpan(DependencyObject element) {
-    int ret = NoesisGUI_PINVOKE.Grid_GetRowSpan(DependencyObject.getCPtr(element));
-    return ret;
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      int ret = NoesisGUI_PINVOKE.Grid_GetRowSpan(DependencyObject.getCPtr(element));
+      return ret;
+    }
   }
 
   public static void SetRowSpan(DependencyObject element, int rowSpan) {
-    NoesisGUI_PINVOKE.Grid_SetRowSpan(DependencyObject.getCPtr(element), rowSpan);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.Grid_SetRowSpan(DependencyObject.getCPtr(element), rowSpan);
+    }
   }
 
   public static DependencyProperty ColumnProperty {

@@ -43,7 +43,7 @@ public class ScrollBar : RangeBase {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(ScrollBar).TypeHandle) {
+    if (type == typeof(ScrollBar)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_ScrollBar();
     }

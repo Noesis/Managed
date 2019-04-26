@@ -36,31 +36,49 @@ public class Storyboard : ParallelTimeline {
   }
 
   public static string GetTargetName(DependencyObject element) {
-    IntPtr strPtr = NoesisGUI_PINVOKE.Storyboard_GetTargetName(DependencyObject.getCPtr(element));
-    string str = Noesis.Extend.StringFromNativeUtf8(strPtr);
-    return str;
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      IntPtr strPtr = NoesisGUI_PINVOKE.Storyboard_GetTargetName(DependencyObject.getCPtr(element));
+      string str = Noesis.Extend.StringFromNativeUtf8(strPtr);
+      return str;
+    }
   }
 
   public static void SetTargetName(DependencyObject element, string name) {
-    NoesisGUI_PINVOKE.Storyboard_SetTargetName(DependencyObject.getCPtr(element), name != null ? name : string.Empty);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.Storyboard_SetTargetName(DependencyObject.getCPtr(element), name != null ? name : string.Empty);
+    }
   }
 
   public static PropertyPath GetTargetProperty(DependencyObject element) {
-    IntPtr cPtr = NoesisGUI_PINVOKE.Storyboard_GetTargetProperty(DependencyObject.getCPtr(element));
-    return (PropertyPath)Noesis.Extend.GetProxy(cPtr, false);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Storyboard_GetTargetProperty(DependencyObject.getCPtr(element));
+      return (PropertyPath)Noesis.Extend.GetProxy(cPtr, false);
+    }
   }
 
   public static void SetTargetProperty(DependencyObject element, PropertyPath path) {
-    NoesisGUI_PINVOKE.Storyboard_SetTargetProperty(DependencyObject.getCPtr(element), PropertyPath.getCPtr(path));
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.Storyboard_SetTargetProperty(DependencyObject.getCPtr(element), PropertyPath.getCPtr(path));
+    }
   }
 
   public static DependencyObject GetTarget(DependencyObject element) {
-    IntPtr cPtr = NoesisGUI_PINVOKE.Storyboard_GetTarget(DependencyObject.getCPtr(element));
-    return (DependencyObject)Noesis.Extend.GetProxy(cPtr, false);
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Storyboard_GetTarget(DependencyObject.getCPtr(element));
+      return (DependencyObject)Noesis.Extend.GetProxy(cPtr, false);
+    }
   }
 
   public static void SetTarget(DependencyObject element, DependencyObject target) {
-    NoesisGUI_PINVOKE.Storyboard_SetTarget(DependencyObject.getCPtr(element), DependencyObject.getCPtr(target));
+    if (element == null) throw new ArgumentNullException("element");
+    {
+      NoesisGUI_PINVOKE.Storyboard_SetTarget(DependencyObject.getCPtr(element), DependencyObject.getCPtr(target));
+    }
   }
 
   public void Begin() {
@@ -68,35 +86,63 @@ public class Storyboard : ParallelTimeline {
   }
 
   public void Begin(FrameworkElement target) {
-    NoesisGUI_PINVOKE.Storyboard_Begin__SWIG_1(swigCPtr, FrameworkElement.getCPtr(target));
+    if (target == null) throw new ArgumentNullException("target");
+    {
+      NoesisGUI_PINVOKE.Storyboard_Begin__SWIG_1(swigCPtr, FrameworkElement.getCPtr(target));
+    }
   }
 
   public void Begin(FrameworkElement target, bool isControllable) {
-    NoesisGUI_PINVOKE.Storyboard_Begin__SWIG_2(swigCPtr, FrameworkElement.getCPtr(target), isControllable);
+    if (target == null) throw new ArgumentNullException("target");
+    {
+      NoesisGUI_PINVOKE.Storyboard_Begin__SWIG_2(swigCPtr, FrameworkElement.getCPtr(target), isControllable);
+    }
   }
 
   public void Begin(FrameworkElement target, HandoffBehavior handoffBehavior) {
-    NoesisGUI_PINVOKE.Storyboard_Begin__SWIG_3(swigCPtr, FrameworkElement.getCPtr(target), (int)handoffBehavior);
+    if (target == null) throw new ArgumentNullException("target");
+    {
+      NoesisGUI_PINVOKE.Storyboard_Begin__SWIG_3(swigCPtr, FrameworkElement.getCPtr(target), (int)handoffBehavior);
+    }
   }
 
   public void Begin(FrameworkElement target, HandoffBehavior handoffBehavior, bool isControllable) {
-    NoesisGUI_PINVOKE.Storyboard_Begin__SWIG_4(swigCPtr, FrameworkElement.getCPtr(target), (int)handoffBehavior, isControllable);
+    if (target == null) throw new ArgumentNullException("target");
+    {
+      NoesisGUI_PINVOKE.Storyboard_Begin__SWIG_4(swigCPtr, FrameworkElement.getCPtr(target), (int)handoffBehavior, isControllable);
+    }
   }
 
   public void Begin(FrameworkElement target, FrameworkElement nameScope) {
-    NoesisGUI_PINVOKE.Storyboard_Begin__SWIG_5(swigCPtr, FrameworkElement.getCPtr(target), FrameworkElement.getCPtr(nameScope));
+    if (target == null) throw new ArgumentNullException("target");
+    if (nameScope == null) throw new ArgumentNullException("nameScope");
+    {
+      NoesisGUI_PINVOKE.Storyboard_Begin__SWIG_5(swigCPtr, FrameworkElement.getCPtr(target), FrameworkElement.getCPtr(nameScope));
+    }
   }
 
   public void Begin(FrameworkElement target, FrameworkElement nameScope, bool isControllable) {
-    NoesisGUI_PINVOKE.Storyboard_Begin__SWIG_6(swigCPtr, FrameworkElement.getCPtr(target), FrameworkElement.getCPtr(nameScope), isControllable);
+    if (target == null) throw new ArgumentNullException("target");
+    if (nameScope == null) throw new ArgumentNullException("nameScope");
+    {
+      NoesisGUI_PINVOKE.Storyboard_Begin__SWIG_6(swigCPtr, FrameworkElement.getCPtr(target), FrameworkElement.getCPtr(nameScope), isControllable);
+    }
   }
 
   public void Begin(FrameworkElement target, FrameworkElement nameScope, HandoffBehavior handoffBehavior) {
-    NoesisGUI_PINVOKE.Storyboard_Begin__SWIG_7(swigCPtr, FrameworkElement.getCPtr(target), FrameworkElement.getCPtr(nameScope), (int)handoffBehavior);
+    if (target == null) throw new ArgumentNullException("target");
+    if (nameScope == null) throw new ArgumentNullException("nameScope");
+    {
+      NoesisGUI_PINVOKE.Storyboard_Begin__SWIG_7(swigCPtr, FrameworkElement.getCPtr(target), FrameworkElement.getCPtr(nameScope), (int)handoffBehavior);
+    }
   }
 
   public void Begin(FrameworkElement target, FrameworkElement nameScope, HandoffBehavior handoffBehavior, bool isControllable) {
-    NoesisGUI_PINVOKE.Storyboard_Begin__SWIG_8(swigCPtr, FrameworkElement.getCPtr(target), FrameworkElement.getCPtr(nameScope), (int)handoffBehavior, isControllable);
+    if (target == null) throw new ArgumentNullException("target");
+    if (nameScope == null) throw new ArgumentNullException("nameScope");
+    {
+      NoesisGUI_PINVOKE.Storyboard_Begin__SWIG_8(swigCPtr, FrameworkElement.getCPtr(target), FrameworkElement.getCPtr(nameScope), (int)handoffBehavior, isControllable);
+    }
   }
 
   public void Pause() {
@@ -104,7 +150,10 @@ public class Storyboard : ParallelTimeline {
   }
 
   public void Pause(FrameworkElement target) {
-    NoesisGUI_PINVOKE.Storyboard_Pause__SWIG_1(swigCPtr, FrameworkElement.getCPtr(target));
+    if (target == null) throw new ArgumentNullException("target");
+    {
+      NoesisGUI_PINVOKE.Storyboard_Pause__SWIG_1(swigCPtr, FrameworkElement.getCPtr(target));
+    }
   }
 
   public void Resume() {
@@ -112,7 +161,10 @@ public class Storyboard : ParallelTimeline {
   }
 
   public void Resume(FrameworkElement target) {
-    NoesisGUI_PINVOKE.Storyboard_Resume__SWIG_1(swigCPtr, FrameworkElement.getCPtr(target));
+    if (target == null) throw new ArgumentNullException("target");
+    {
+      NoesisGUI_PINVOKE.Storyboard_Resume__SWIG_1(swigCPtr, FrameworkElement.getCPtr(target));
+    }
   }
 
   public void Stop() {
@@ -120,7 +172,10 @@ public class Storyboard : ParallelTimeline {
   }
 
   public void Stop(FrameworkElement target) {
-    NoesisGUI_PINVOKE.Storyboard_Stop__SWIG_1(swigCPtr, FrameworkElement.getCPtr(target));
+    if (target == null) throw new ArgumentNullException("target");
+    {
+      NoesisGUI_PINVOKE.Storyboard_Stop__SWIG_1(swigCPtr, FrameworkElement.getCPtr(target));
+    }
   }
 
   public void Remove() {
@@ -128,7 +183,10 @@ public class Storyboard : ParallelTimeline {
   }
 
   public void Remove(FrameworkElement target) {
-    NoesisGUI_PINVOKE.Storyboard_Remove__SWIG_1(swigCPtr, FrameworkElement.getCPtr(target));
+    if (target == null) throw new ArgumentNullException("target");
+    {
+      NoesisGUI_PINVOKE.Storyboard_Remove__SWIG_1(swigCPtr, FrameworkElement.getCPtr(target));
+    }
   }
 
   public bool IsPlaying() {
@@ -137,8 +195,11 @@ public class Storyboard : ParallelTimeline {
   }
 
   public bool IsPlaying(FrameworkElement target) {
-    bool ret = NoesisGUI_PINVOKE.Storyboard_IsPlaying__SWIG_1(swigCPtr, FrameworkElement.getCPtr(target));
-    return ret;
+    if (target == null) throw new ArgumentNullException("target");
+    {
+      bool ret = NoesisGUI_PINVOKE.Storyboard_IsPlaying__SWIG_1(swigCPtr, FrameworkElement.getCPtr(target));
+      return ret;
+    }
   }
 
   public bool IsPaused() {
@@ -147,8 +208,11 @@ public class Storyboard : ParallelTimeline {
   }
 
   public bool IsPaused(FrameworkElement target) {
-    bool ret = NoesisGUI_PINVOKE.Storyboard_IsPaused__SWIG_1(swigCPtr, FrameworkElement.getCPtr(target));
-    return ret;
+    if (target == null) throw new ArgumentNullException("target");
+    {
+      bool ret = NoesisGUI_PINVOKE.Storyboard_IsPaused__SWIG_1(swigCPtr, FrameworkElement.getCPtr(target));
+      return ret;
+    }
   }
 
   public static DependencyProperty TargetNameProperty {

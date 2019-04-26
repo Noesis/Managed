@@ -28,6 +28,11 @@ public class ItemsControl : Control {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
+  public static int GetAlternationIndex(DependencyObject element) {
+    if (element == null) throw new ArgumentNullException("element");
+    return Get_AlternationIndex(element);
+  }
+
   DependencyObject ContainerFromElement(DependencyObject element) {
     return Get_ContainerFromElement(element);
   }
@@ -45,18 +50,13 @@ public class ItemsControl : Control {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(ItemsControl).TypeHandle) {
+    if (type == typeof(ItemsControl)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_ItemsControl();
     }
     else {
       return base.CreateExtendCPtr(type, out registerExtend);
     }
-  }
-
-  public static int GetAlternationIndex(DependencyObject element) {
-    int ret = NoesisGUI_PINVOKE.ItemsControl_GetAlternationIndex(DependencyObject.getCPtr(element));
-    return ret;
   }
 
   public static ItemsControl ItemsControlFromItemContainer(DependencyObject container) {
@@ -223,6 +223,11 @@ public class ItemsControl : Control {
       IntPtr cPtr = NoesisGUI_PINVOKE.ItemsControl_Items_get(swigCPtr);
       return (ItemCollection)Noesis.Extend.GetProxy(cPtr, false);
     }
+  }
+
+  private static int Get_AlternationIndex(DependencyObject element) {
+    int ret = NoesisGUI_PINVOKE.ItemsControl_Get_AlternationIndex(DependencyObject.getCPtr(element));
+    return ret;
   }
 
   private DependencyObject Get_ContainerFromElement(DependencyObject element) {

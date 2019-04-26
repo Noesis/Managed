@@ -31,7 +31,7 @@ public class Image : FrameworkElement {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(Image).TypeHandle) {
+    if (type == typeof(Image)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_Image();
     }

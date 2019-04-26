@@ -381,6 +381,26 @@ namespace Noesis
             _element = BaseComponent.getCPtr(element).Handle;
         }
 
+
+        internal static void Clear(EventHandlerStore[] events)
+        {
+            foreach (EventHandlerStore ehs in events)
+            {
+                ehs._binds.Clear();
+            }
+
+            Clock._Completed.Clear();
+            CommandBinding._PreviewCanExecute.Clear();
+            CommandBinding._PreviewExecuted.Clear();
+            CommandBinding._CanExecute.Clear();
+            CommandBinding._Executed.Clear();
+            ItemContainerGenerator._ItemsChanged.Clear();
+            ItemContainerGenerator._StatusChanged.Clear();
+            Popup._Closed.Clear();
+            Popup._Opened.Clear();
+            Timeline._Completed.Clear();
+        }
+
         private static void EnsureEventsProperty()
         {
             if (BaseComponent.getCPtr(EventsProperty).Handle == IntPtr.Zero)
@@ -393,8 +413,8 @@ namespace Noesis
 
         private static DependencyProperty EventsProperty = null;
 
-        IntPtr _element;
-        Dictionary<long, Delegate> _binds = new Dictionary<long, Delegate>();
+        private IntPtr _element;
+        private Dictionary<long, Delegate> _binds = new Dictionary<long, Delegate>();
         #endregion
 
         #region Imports

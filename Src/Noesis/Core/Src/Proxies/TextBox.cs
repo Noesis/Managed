@@ -31,7 +31,7 @@ public class TextBox : TextBoxBase {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(TextBox).TypeHandle) {
+    if (type == typeof(TextBox)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_TextBox();
     }

@@ -58,6 +58,12 @@ namespace Noesis
 
                     Initialized = false;
 
+                    EventHandlerStore.Clear(_extends
+                        .Where(kv => kv.Value.weak.Target is EventHandlerStore)
+                        .Select(kv => kv.Value.weak.Target)
+                        .Cast<EventHandlerStore>()
+                        .ToArray());
+
                     var pendingReleases = new List<KeyValuePair<IntPtr, WeakReference>>();
 
                     pendingReleases.AddRange(_proxies);
@@ -172,6 +178,7 @@ namespace Noesis
                 _getPropertyValue_Short,
                 _getPropertyValue_UShort,
                 _getPropertyValue_String,
+                _getPropertyValue_Uri,
                 _getPropertyValue_Color,
                 _getPropertyValue_Point,
                 _getPropertyValue_Rect,
@@ -191,6 +198,7 @@ namespace Noesis
                 _setPropertyValue_Short,
                 _setPropertyValue_UShort,
                 _setPropertyValue_String,
+                _setPropertyValue_Uri,
                 _setPropertyValue_Color,
                 _setPropertyValue_Point,
                 _setPropertyValue_Rect,
@@ -226,8 +234,8 @@ namespace Noesis
                 null, null, null, null,
                 null, null, null, null, null, null,
                 null,
-                null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-                null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
                 null, null, null);
         }
 
@@ -2709,6 +2717,7 @@ namespace Noesis
             NullableKeyTime,
             Enum,
             String,
+            Uri,
             BaseComponent,
             Event
         };
@@ -3162,6 +3171,26 @@ namespace Noesis
             }
         }
 
+        private delegate IntPtr Callback_GetPropertyValue_Uri(IntPtr nativeType, int propertyIndex,
+            IntPtr cPtr);
+        private static Callback_GetPropertyValue_Uri _getPropertyValue_Uri = GetPropertyValue_Uri;
+
+        [MonoPInvokeCallback(typeof(Callback_GetPropertyValue_Uri))]
+        private static IntPtr GetPropertyValue_Uri(IntPtr nativeType, int propertyIndex,
+            IntPtr cPtr)
+        {
+            try
+            {
+                Uri uri = GetPropertyValue<Uri>(GetProperty(nativeType, propertyIndex), GetExtendInstance(cPtr));
+                return Marshal.StringToHGlobalUni(uri != null ? UriHelper.GetPath(uri) : string.Empty);
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+                return Marshal.StringToHGlobalUni(string.Empty);
+            }
+        }
+
         private delegate void Callback_GetPropertyValue_Color(IntPtr nativeType, int propertyIndex,
             IntPtr cPtr, IntPtr valuePtr, [MarshalAs(UnmanagedType.U1)]ref bool isNull);
         private static Callback_GetPropertyValue_Color _getPropertyValue_Color = GetPropertyValue_Color;
@@ -3547,6 +3576,26 @@ namespace Noesis
             {
                 SetPropertyValue<string>(GetProperty(nativeType, propertyIndex),
                     GetExtendInstance(cPtr), StringFromNativeUtf8(val));
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        private delegate void Callback_SetPropertyValue_Uri(IntPtr nativeType, int propertyIndex,
+            IntPtr cPtr, IntPtr val);
+        private static Callback_SetPropertyValue_Uri _setPropertyValue_Uri = SetPropertyValue_Uri;
+
+        [MonoPInvokeCallback(typeof(Callback_SetPropertyValue_Uri))]
+        private static void SetPropertyValue_Uri(IntPtr nativeType, int propertyIndex,
+            IntPtr cPtr, IntPtr val)
+        {
+            try
+            {
+                Uri uri = new Uri(StringFromNativeUtf8(val), UriKind.Relative);
+                SetPropertyValue<Uri>(GetProperty(nativeType, propertyIndex),
+                    GetExtendInstance(cPtr), uri);
             }
             catch (Exception e)
             {

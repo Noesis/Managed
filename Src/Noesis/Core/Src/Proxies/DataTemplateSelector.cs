@@ -35,7 +35,7 @@ public class DataTemplateSelector : BaseComponent {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(DataTemplateSelector).TypeHandle) {
+    if (type == typeof(DataTemplateSelector)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_DataTemplateSelector();
     }

@@ -64,14 +64,14 @@ public class ItemContainerGenerator : BaseComponent, Noesis.IRecyclingItemContai
   [MonoPInvokeCallback(typeof(RaiseItemsChangedCallback))]
   private static void RaiseItemsChanged(IntPtr cPtr, IntPtr sender, IntPtr e) {
     try {
-      if (!_ItemsChanged.ContainsKey(cPtr)) {
-        throw new System.InvalidOperationException("Delegate not registered for ItemsChanged event");
-      }
-      if (sender == IntPtr.Zero && e == IntPtr.Zero) {
-        _ItemsChanged.Remove(cPtr);
-        return;
-      }
       if (Noesis.Extend.Initialized) {
+        if (!_ItemsChanged.ContainsKey(cPtr)) {
+          throw new System.InvalidOperationException("Delegate not registered for ItemsChanged event");
+        }
+        if (sender == IntPtr.Zero && e == IntPtr.Zero) {
+          _ItemsChanged.Remove(cPtr);
+          return;
+        }
         ItemsChangedHandler handler = _ItemsChanged[cPtr];
         if (handler != null) {
           handler(Noesis.Extend.GetProxy(sender, false), new ItemsChangedEventArgs(e, false));
@@ -83,7 +83,7 @@ public class ItemContainerGenerator : BaseComponent, Noesis.IRecyclingItemContai
     }
   }
 
-  static Dictionary<IntPtr, ItemsChangedHandler> _ItemsChanged =
+  internal static Dictionary<IntPtr, ItemsChangedHandler> _ItemsChanged =
       new Dictionary<IntPtr, ItemsChangedHandler>();
   #endregion
 
@@ -119,14 +119,14 @@ public class ItemContainerGenerator : BaseComponent, Noesis.IRecyclingItemContai
   [MonoPInvokeCallback(typeof(RaiseStatusChangedCallback))]
   private static void RaiseStatusChanged(IntPtr cPtr, IntPtr sender, IntPtr e) {
     try {
-      if (!_StatusChanged.ContainsKey(cPtr)) {
-        throw new System.InvalidOperationException("Delegate not registered for StatusChanged event");
-      }
-      if (sender == IntPtr.Zero && e == IntPtr.Zero) {
-        _StatusChanged.Remove(cPtr);
-        return;
-      }
       if (Noesis.Extend.Initialized) {
+        if (!_StatusChanged.ContainsKey(cPtr)) {
+          throw new System.InvalidOperationException("Delegate not registered for StatusChanged event");
+        }
+        if (sender == IntPtr.Zero && e == IntPtr.Zero) {
+          _StatusChanged.Remove(cPtr);
+          return;
+        }
         StatusChangedHandler handler = _StatusChanged[cPtr];
         if (handler != null) {
           handler(Noesis.Extend.GetProxy(sender, false), new EventArgs(e, false));
@@ -138,7 +138,7 @@ public class ItemContainerGenerator : BaseComponent, Noesis.IRecyclingItemContai
     }
   }
 
-  static Dictionary<IntPtr, StatusChangedHandler> _StatusChanged =
+  internal static Dictionary<IntPtr, StatusChangedHandler> _StatusChanged =
       new Dictionary<IntPtr, StatusChangedHandler>();
   #endregion
 

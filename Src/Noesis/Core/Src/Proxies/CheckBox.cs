@@ -36,7 +36,7 @@ public class CheckBox : ToggleButton {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    if ((object)type.TypeHandle == typeof(CheckBox).TypeHandle) {
+    if (type == typeof(CheckBox)) {
       registerExtend = false;
       return NoesisGUI_PINVOKE.new_CheckBox();
     }
