@@ -1,4 +1,9 @@
-NoesisGUI Managed SDK
+<a href="https://www.nuget.org/profiles/NoesisTechnologies"><img alt="Nuget" src="https://img.shields.io/nuget/v/Noesis.GUI.svg"></a>
+<a href="https://www.noesisengine.com"><img alt="website" src="https://img.shields.io/badge/site-noesisengine.com-blue.svg"></a>
+<a href="https://www.noesisengine.com/docs/Gui.Core.Index.html"><img alt="documentation" src="https://img.shields.io/badge/doc-index-blue.svg"></a>
+<a href="https://twitter.com/NoesisEngine"><img src="https://img.shields.io/badge/twitter-%40NoesisEngine-55acee.svg?style=flat-square"></a>
+  
+NoesisGUI Managed SDK 
 =====================
 
 This repository contains source code for [NuGet packages](https://www.nuget.org/profiles/NoesisTechnologies) corresponding to the C# SDK of [NoesisGUI](https://www.noesisengine.com).
