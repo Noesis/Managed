@@ -5,7 +5,7 @@
     <TargetFrameworkIdentifier>Xamarin.Mac</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <LanguageTargets Condition="'$(OS)' != 'Unix'">$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets</LanguageTargets>
-    <Version>2.2.2</Version>
+    <Version>2.2.3</Version>
     <Authors>Noesis Technologies</Authors>
     <Description>NoesisGUI NSOpenGL Render Context</Description>
     <Copyright>Copyright (c) 2013 Noesis Technologies S.L.</Copyright>
@@ -35,7 +35,6 @@
     <ProjectReference Include="..\..\Core\Noesis.App.csproj">
       <PrivateAssets>contentfiles;analyzers</PrivateAssets>
     </ProjectReference>
-    <PackageReference Include="OpenGL.Net" Version="0.8.4" />
   </ItemGroup>
 
   <PropertyGroup Condition="Exists('$(SolutionDir)LICENSE.txt')">

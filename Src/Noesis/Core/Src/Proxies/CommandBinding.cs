@@ -64,14 +64,14 @@ public class CommandBinding : BaseComponent {
   private static void RaisePreviewCanExecute(IntPtr cPtr, IntPtr sender, IntPtr e) {
     try {
       if (Noesis.Extend.Initialized) {
-        if (!_PreviewCanExecute.ContainsKey(cPtr)) {
-          throw new InvalidOperationException("Delegate not registered for PreviewCanExecute event");
-        }
         if (sender == IntPtr.Zero && e == IntPtr.Zero) {
           _PreviewCanExecute.Remove(cPtr);
           return;
         }
-        PreviewCanExecuteHandler handler = _PreviewCanExecute[cPtr];
+        PreviewCanExecuteHandler handler = null;
+        if (!_PreviewCanExecute.TryGetValue(cPtr, out handler)) {
+          throw new InvalidOperationException("Delegate not registered for PreviewCanExecute event");
+        }
         if (handler != null) {
           handler(Noesis.Extend.GetProxy(sender, false), new CanExecuteRoutedEventArgs(e, false));
         }
@@ -119,14 +119,14 @@ public class CommandBinding : BaseComponent {
   private static void RaiseCanExecute(IntPtr cPtr, IntPtr sender, IntPtr e) {
     try {
       if (Noesis.Extend.Initialized) {
-        if (!_CanExecute.ContainsKey(cPtr)) {
-          throw new InvalidOperationException("Delegate not registered for CanExecute event");
-        }
         if (sender == IntPtr.Zero && e == IntPtr.Zero) {
           _CanExecute.Remove(cPtr);
           return;
         }
-        CanExecuteHandler handler = _CanExecute[cPtr];
+        CanExecuteHandler handler = null;
+        if (!_CanExecute.TryGetValue(cPtr, out handler)) {
+          throw new InvalidOperationException("Delegate not registered for CanExecute event");
+        }
         if (handler != null) {
           handler(Noesis.Extend.GetProxy(sender, false), new CanExecuteRoutedEventArgs(e, false));
         }
@@ -174,14 +174,14 @@ public class CommandBinding : BaseComponent {
   private static void RaisePreviewExecuted(IntPtr cPtr, IntPtr sender, IntPtr e) {
     try {
       if (Noesis.Extend.Initialized) {
-        if (!_PreviewExecuted.ContainsKey(cPtr)) {
-          throw new InvalidOperationException("Delegate not registered for PreviewExecuted event");
-        }
         if (sender == IntPtr.Zero && e == IntPtr.Zero) {
           _PreviewExecuted.Remove(cPtr);
           return;
         }
-        PreviewExecutedHandler handler = _PreviewExecuted[cPtr];
+        PreviewExecutedHandler handler = null;
+        if (!_PreviewExecuted.TryGetValue(cPtr, out handler)) {
+          throw new InvalidOperationException("Delegate not registered for PreviewExecuted event");
+        }
         if (handler != null) {
           handler(Noesis.Extend.GetProxy(sender, false), new ExecutedRoutedEventArgs(e, false));
         }
@@ -229,14 +229,14 @@ public class CommandBinding : BaseComponent {
   private static void RaiseExecuted(IntPtr cPtr, IntPtr sender, IntPtr e) {
     try {
       if (Noesis.Extend.Initialized) {
-        if (!_Executed.ContainsKey(cPtr)) {
-          throw new InvalidOperationException("Delegate not registered for Executed event");
-        }
         if (sender == IntPtr.Zero && e == IntPtr.Zero) {
           _Executed.Remove(cPtr);
           return;
         }
-        ExecutedHandler handler = _Executed[cPtr];
+        ExecutedHandler handler = null;
+        if (!_Executed.TryGetValue(cPtr, out handler)) {
+          throw new InvalidOperationException("Delegate not registered for Executed event");
+        }
         if (handler != null) {
           handler(Noesis.Extend.GetProxy(sender, false), new ExecutedRoutedEventArgs(e, false));
         }

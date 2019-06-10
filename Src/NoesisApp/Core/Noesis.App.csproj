@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>2.2.2</Version>
+    <Version>2.2.3</Version>
     <Authors>Noesis Technologies</Authors>
     <Description>NoesisGUI Application Framework</Description>
     <Copyright>Copyright (c) 2013 Noesis Technologies S.L.</Copyright>
@@ -29,7 +29,7 @@
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
   </PropertyGroup>
   <ItemGroup Condition="Exists('$(SolutionDir)LICENSE.txt')">
-    <Content Include="$(SolutionDir)LICENSE.txt" PackagePath="" Pack="true"/>
+    <Content Include="$(SolutionDir)LICENSE.txt" PackagePath="" Pack="true" />
   </ItemGroup>
 
 </Project>

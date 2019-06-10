@@ -3,9 +3,6 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Noesis;
 
-using OpenGL;
-using Khronos;
-
 namespace NoesisApp
 {
     public class RenderContextGLX : RenderContext
@@ -14,18 +11,10 @@ namespace NoesisApp
         {
         }
 
-        static RenderContextGLX()
-        {
-            Environment.SetEnvironmentVariable("OPENGL_NET_EGL_STATIC_INIT", "NO");
-            Gl.Initialize();
-        }
-
         ~RenderContextGLX()
         {
-            _device = null;
-            Glx.DestroyContext(_display, _context);
-            _context = IntPtr.Zero;
-            Glx.MakeCurrent(_display, IntPtr.Zero, IntPtr.Zero);
+            glXMakeCurrent(_display, IntPtr.Zero, IntPtr.Zero);
+            glXDestroyContext(_display, _context);
         }
 
         public override RenderDevice Device
@@ -36,7 +25,6 @@ namespace NoesisApp
         private IntPtr _display = IntPtr.Zero;
         private IntPtr _window = IntPtr.Zero;
         private IntPtr _context = IntPtr.Zero;
-        Glx.Extensions _extensions;
         private RenderDeviceGL _device;
 
         public override void Init(IntPtr display, IntPtr window, uint samples, bool vsync, bool sRGB)
@@ -44,115 +32,128 @@ namespace NoesisApp
             _display = display;
             _window = window;
 
-            int[] ma = { 0 }, mi = { 0 };
-            Glx.QueryVersion(display, ma, mi);
+            int ma = 0, mi = 0;
+            glXQueryVersion(display, ref ma, ref mi);
 
             int screen = 0;//DefaultScreen(display);
 
-            _extensions = new Glx.Extensions();
+            IntPtr extensionStringPtr = glXQueryExtensionsString(display, screen);
+            string extensionString = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(extensionStringPtr);
+            string[] extensions = extensionString.Split(' ');
 
             IntPtr config = IntPtr.Zero;
-            if (samples > 1 && _extensions.Multisample_ARB)
+            if (samples > 1 && Array.IndexOf(extensions, "GLX_ARB_multisample") >= 0)
             {
                 do
                 {
-                    unsafe
+                    int[] attrs =
                     {
-                        int[] attrs =
-                        {
-                            Glx.X_RENDERABLE, Gl.TRUE,
-                            Glx.DRAWABLE_TYPE, (int)Glx.WINDOW_BIT,
-                            Glx.RENDER_TYPE, (int)Glx.RGBA_BIT,
-                            Glx.DOUBLEBUFFER, Gl.TRUE,
-                            Glx.RED_SIZE, 8,
-                            Glx.BLUE_SIZE, 8,
-                            Glx.GREEN_SIZE, 8,
-                            Glx.STENCIL_SIZE, 8,
-                            Glx.SAMPLE_BUFFERS, samples > 1 ? 1 : 0,
-                            Glx.SAMPLES, (int)(samples > 1 ? samples : 0),
-                            Gl.NONE,
-                        };
+                        GLX_X_RENDERABLE, GL_TRUE,
+                        GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
+                        GLX_RENDER_TYPE, GLX_RGBA_BIT,
+                        GLX_DOUBLEBUFFER, GL_TRUE,
+                        GLX_RED_SIZE, 8,
+                        GLX_GREEN_SIZE, 8,
+                        GLX_BLUE_SIZE, 8,
+                        GLX_STENCIL_SIZE, 8,
+                        GLX_SAMPLE_BUFFERS, samples > 1 ? 1 : 0,
+                        GLX_SAMPLES, (int)(samples > 1 ? samples : 0),
+                        GL_NONE,
+                    };
 
-                        int[] num = { 0 };
-                        IntPtr* cs = Glx.ChooseFBConfig(display, screen, attrs, num);
-                        if (num[0] != 0)
-                        {
-                            config = cs[0];
-                        }
-                        else
-                        {
-                            samples >>= 1;
-                        }
-                        Glx.XFree((IntPtr)cs);
+                    int num = 0;
+                    IntPtr ptr = glXChooseFBConfig(display, screen, attrs, ref num);
+                    if (num != 0)
+                    {
+                        IntPtr[] cs = new IntPtr[num];
+                        System.Runtime.InteropServices.Marshal.Copy(ptr, cs, 0, num);
+                        config = cs[0];
                     }
+                    else
+                    {
+                        samples >>= 1;
+                    }
+                    XFree(ptr);
                 } while (config == IntPtr.Zero && samples != 0);
             }
             else
             {
-                unsafe
+                int[] attrs =
                 {
-                    int[] attrs =
-                    {
-                        Glx.X_RENDERABLE, Gl.TRUE,
-                        Glx.DRAWABLE_TYPE, (int)Glx.WINDOW_BIT,
-                        Glx.RENDER_TYPE, (int)Glx.RGBA_BIT,
-                        Glx.DOUBLEBUFFER, Gl.TRUE,
-                        Glx.RED_SIZE, 8,
-                        Glx.BLUE_SIZE, 8,
-                        Glx.GREEN_SIZE, 8,
-                        Glx.STENCIL_SIZE, 8,
-                        Gl.NONE,
-                    };
+                    GLX_X_RENDERABLE, GL_TRUE,
+                    GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
+                    GLX_RENDER_TYPE, GLX_RGBA_BIT,
+                    GLX_DOUBLEBUFFER, GL_TRUE,
+                    GLX_RED_SIZE, 8,
+                    GLX_GREEN_SIZE, 8,
+                    GLX_BLUE_SIZE, 8,
+                    GLX_STENCIL_SIZE, 8,
+                    GL_NONE,
+                };
 
-                    int[] num = { 0 };
-                    IntPtr* cs = Glx.ChooseFBConfig(display, screen, attrs, num);
-                    config = cs[0];
-                    Glx.XFree((IntPtr)cs);
-                }
+                int num = 0;
+                IntPtr ptr = glXChooseFBConfig(display, screen, attrs, ref num);
+                IntPtr[] cs = new IntPtr[num];
+                System.Runtime.InteropServices.Marshal.Copy(ptr, cs, 0, num);
+                config = cs[0];
+                XFree(ptr);
             }
 
-            Glx.XVisualInfo visual = Glx.GetVisualFromFBConfig(display, config);
+            IntPtr visual = glXGetVisualFromFBConfig(display, config);
 
-            if (_extensions.CreateContext_ARB)
+            IntPtr c = glXCreateContext(display, visual, IntPtr.Zero, true);
+
+            glXCreateContextAttribsARB = GetProcAddress<CreateContextAttribsARB>("glXCreateContextAttribsARB");
+            glXSwapIntervalEXT = GetProcAddress<SwapIntervalEXT>("glXSwapIntervalEXT");
+            glXSwapIntervalMESA = GetProcAddress<SwapIntervalMESA>("glXSwapIntervalMESA");
+            glXSwapIntervalSGI = GetProcAddress<SwapIntervalSGI>("glXSwapIntervalSGI");
+
+            glXDestroyContext(display, c);
+
+            XSetErrorHandler((a, b) => { return 0; });
+            if (Array.IndexOf(extensions, "GLX_ARB_create_context") >= 0)
             {
                 int[] versions = { 46, 45, 44, 43, 42, 41, 40, 33 };
                 int flags = 0;
-                if (_extensions.CreateContextNoError_ARB)
-                {
-                    flags |= Glx.CONTEXT_OPENGL_NO_ERROR_ARB;
-                }
 
-                foreach (int version in versions)
+#if DEBUG
+                flags |= GLX_CONTEXT_DEBUG_BIT_ARB;
+#endif
+
+                for (int i = 0; i < versions.Length && _context == IntPtr.Zero; i++)
                 {
                     int[] attribs =
                     {
-                            Glx.CONTEXT_FLAGS_ARB, flags,
-                            Glx.CONTEXT_PROFILE_MASK_ARB, (int)Glx.CONTEXT_CORE_PROFILE_BIT_ARB,
-                            Glx.CONTEXT_MAJOR_VERSION_ARB, version / 10,
-                            Glx.CONTEXT_MINOR_VERSION_ARB, version % 10,
-                            Gl.NONE
-                        };
+                        GLX_CONTEXT_FLAGS_ARB, flags,
+                        GLX_CONTEXT_PROFILE_MASK_ARB, GLX_CONTEXT_CORE_PROFILE_BIT_ARB,
+                        GLX_CONTEXT_MAJOR_VERSION_ARB, versions[i] / 10,
+                        GLX_CONTEXT_MINOR_VERSION_ARB, versions[i] % 10,
+                        0
+                    };
 
-                    _context = Glx.CreateContextAttribsARB(display, config, IntPtr.Zero, true, attribs);
-                    if (_context != IntPtr.Zero)
-                        break;
+                    _context = glXCreateContextAttribsARB(display, config, IntPtr.Zero, true, attribs);
                 }
             }
+            XSetErrorHandler(null);
 
             if (_context == IntPtr.Zero)
             {
-                _context = Glx.CreateContext(display, visual, IntPtr.Zero, true);
+                _context = glXCreateContext(display, visual, IntPtr.Zero, true);
             }
 
-            Glx.MakeCurrent(display, (IntPtr)window, _context);
+            glXMakeCurrent(display, window, _context);
 
-            if (_extensions.SwapControl_EXT)
+            if (Array.IndexOf(extensions, "GLX_EXT_swap_control") >= 0)
             {
-                Glx.SwapIntervalEXT(display, (IntPtr)window, vsync ? 1 : 0);
+                glXSwapIntervalEXT(display, window, vsync ? 1 : 0);
             }
-            else if (_extensions.SwapControl_SGI)
+            else if (Array.IndexOf(extensions, "GLX_MESA_swap_control") >= 0)
             {
-                Glx.SwapIntervalSGI(vsync ? 1 : 0);
+                glXSwapIntervalMESA((uint)(vsync ? 1 : 0));
+            }
+            else if (Array.IndexOf(extensions, "GLX_SGI_swap_control") >= 0)
+            {
+                glXSwapIntervalSGI(vsync ? 1 : 0);
             }
 
             _device = new RenderDeviceGL();
@@ -166,27 +167,131 @@ namespace NoesisApp
 
         public override void SetDefaultRenderTarget(int width, int height, bool doClearColor)
         {
-            Gl.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-            Gl.Viewport(0, 0, width, height);
+            glViewport(0, 0, width, height);
 
-            Gl.ClearStencil(0);
-            ClearBufferMask mask = ClearBufferMask.StencilBufferBit;
+            glClearStencil(0);
+            uint mask = GL_STENCIL_BUFFER_BIT;
 
             if (doClearColor)
             {
-                Gl.ColorMask(true, true, true, true);
-                Gl.ClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+                mask |= GL_COLOR_BUFFER_BIT;
+                glColorMask(true, true, true, true);
+                glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
             }
 
-            Gl.Clear(mask);
+            glClear(mask);
         }
 
         public override void Swap()
         {
-            Glx.SwapBuffers(_display, _window);
+            glXSwapBuffers(_display, _window);
         }
 
         public override void Resize() { }
+
+        public static TDelegate GetProcAddress<TDelegate>(string name) where TDelegate : class
+        {
+            IntPtr addr = glXGetProcAddress(name);
+            if (addr == IntPtr.Zero) return null;
+            return (TDelegate)(object)System.Runtime.InteropServices.Marshal.GetDelegateForFunctionPointer(addr, typeof(TDelegate));
+        }
+
+        private const int GL_TRUE = 1;
+        private const int GL_NONE = 0;
+        private const int GLX_X_RENDERABLE = 0x8012;
+        private const int GLX_DRAWABLE_TYPE = 0x8010;
+        private const int GLX_WINDOW_BIT = 0x00000001;
+        private const int GLX_RENDER_TYPE = 0x8011;
+        private const int GLX_RGBA_BIT = 0x00000001;
+        private const int GLX_DOUBLEBUFFER = 5;
+        private const int GLX_RED_SIZE = 8;
+        private const int GLX_GREEN_SIZE = 9;
+        private const int GLX_BLUE_SIZE = 10;
+        private const int GLX_STENCIL_SIZE = 13;
+        private const int GLX_SAMPLE_BUFFERS = 0x186a0;
+        private const int GLX_SAMPLES = 0x186a1;
+        private const int GLX_CONTEXT_DEBUG_BIT_ARB = 0x00000001;
+        private const int GLX_CONTEXT_FLAGS_ARB = 0x2094;
+        private const int GLX_CONTEXT_PROFILE_MASK_ARB = 0x9126;
+        private const int GLX_CONTEXT_CORE_PROFILE_BIT_ARB = 0x00000001;
+        private const int GLX_CONTEXT_MAJOR_VERSION_ARB = 0x2091;
+        private const int GLX_CONTEXT_MINOR_VERSION_ARB = 0x2092;
+
+        public delegate int XErrorHandler(IntPtr dpy, IntPtr error);
+
+        private const string X11LibraryName = "X11";
+
+        [DllImport(X11LibraryName)]
+        public static extern int XFree(IntPtr data);
+
+        [DllImport(X11LibraryName)]
+        public extern static IntPtr XSetErrorHandler(XErrorHandler error_handler);
+
+        public delegate IntPtr CreateContextAttribsARB(IntPtr dpy, IntPtr config, IntPtr share_context, bool direct, int[] attrib_list);
+        public CreateContextAttribsARB glXCreateContextAttribsARB;
+
+        public delegate void SwapIntervalEXT(IntPtr dpy, IntPtr drawable, int interval);
+        public SwapIntervalEXT glXSwapIntervalEXT;
+
+        public delegate int SwapIntervalMESA(uint interval);
+        public SwapIntervalMESA glXSwapIntervalMESA;
+
+        public delegate int SwapIntervalSGI(int interval);
+        public SwapIntervalSGI glXSwapIntervalSGI;
+
+        private const string GLXLibraryName = "GLX";
+
+        [DllImport(GLXLibraryName)]
+        static extern bool glXQueryVersion(IntPtr dpy, ref int major, ref int minor);
+
+        [DllImport(GLXLibraryName)]
+        static extern IntPtr glXQueryExtensionsString(IntPtr dpy, int screen);
+
+        [DllImport(GLXLibraryName)]
+        static extern IntPtr glXChooseFBConfig(IntPtr dpy, int screen, int[] attrib_list, ref int nelements);
+
+        [DllImport(GLXLibraryName)]
+        static extern IntPtr glXGetVisualFromFBConfig(IntPtr dpy, IntPtr config);
+
+        [DllImport(GLXLibraryName)]
+        static extern IntPtr glXCreateContext(IntPtr dpy, IntPtr vis, IntPtr shareList, bool direct);
+
+        [DllImport(GLXLibraryName)]
+        static extern void glXDestroyContext(IntPtr dpy, IntPtr ctx);
+
+        [DllImport(GLXLibraryName)]
+        static extern bool glXMakeCurrent(IntPtr dpy, IntPtr drawable, IntPtr ctx);
+
+        [DllImport(GLXLibraryName)]
+        static extern void glXSwapBuffers(IntPtr dpy, IntPtr drawable);
+
+        [DllImport(OpenGLLibraryName)]
+        static extern IntPtr glXGetProcAddress(string lpszProc);
+
+        private const uint GL_FRAMEBUFFER = 0x8D40;
+        private const uint GL_STENCIL_BUFFER_BIT = 0x00000400;
+        private const uint GL_COLOR_BUFFER_BIT = 0x00004000;
+
+        private const string OpenGLLibraryName = "GL";
+
+        [DllImport(OpenGLLibraryName)]
+        static extern void glBindFramebuffer(uint target, uint framebuffer);
+
+        [DllImport(OpenGLLibraryName)]
+        static extern void glViewport(int x, int y, int width, int height);
+
+        [DllImport(OpenGLLibraryName)]
+        static extern void glClearStencil(int s);
+
+        [DllImport(OpenGLLibraryName)]
+        static extern void glClear(uint s);
+
+        [DllImport(OpenGLLibraryName)]
+        static extern void glColorMask(bool r, bool g, bool b, bool a);
+
+        [DllImport(OpenGLLibraryName)]
+        static extern void glClearColor(float r, float g, float b, float a);
     }
 }

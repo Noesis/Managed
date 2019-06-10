@@ -31,7 +31,7 @@ public class FileTextureProvider : TextureProvider {
   protected FileTextureProvider() {
   }
 
-  public virtual System.IO.Stream OpenStream(string filename) {
+  public virtual Stream OpenStream(string filename) {
     return null;
   }
 

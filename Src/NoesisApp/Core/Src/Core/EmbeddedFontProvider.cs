@@ -7,11 +7,16 @@ namespace NoesisApp
 {
     public class EmbeddedFontProvider : FontProvider
     {
-        public EmbeddedFontProvider(Application app)
+        public EmbeddedFontProvider(Assembly assembly, string ns) : this(assembly, ns, null)
         {
-            Type type = app.GetType();
-            _assembly = type.Assembly;
-            _namespace = type.Namespace;
+        }
+
+        public EmbeddedFontProvider(Assembly assembly, string ns, FontProvider provider)
+        {
+            _assembly = assembly;
+            _namespace = ns;
+            _provider = provider;
+
             char[] pointSeparator = new char[] { '.' };
 
             foreach (string resource in _assembly.GetManifestResourceNames())
@@ -42,11 +47,24 @@ namespace NoesisApp
 
         public override Stream OpenFont(string folder, string id)
         {
-            string filename = folder + (folder.Length > 0 ? "/" : "") + id;
-            return EmbeddedProviderHelper.GetResource(_assembly, _namespace, filename);
+            Stream stream = null;
+
+            if (_provider != null)
+            {
+                stream = _provider.OpenFont(folder, id);
+            }
+
+            if (stream == null)
+            {
+                string filename = folder + (folder.Length > 0 ? "/" : "") + id;
+                stream = EmbeddedProviderHelper.GetResource(_assembly, _namespace, filename);
+            }
+
+            return stream;
         }
 
         private Assembly _assembly;
         private string _namespace;
+        private FontProvider _provider;
     }
 }

@@ -554,7 +554,7 @@ namespace NoesisApp
                 }
                 case WinApi.WM.SYSKEYDOWN:
                 {
-                    if ((lParam.ToInt32() & 0x20000000) != 0) // ALT key is pressed
+                    if ((lParam.ToInt64() & 0x0000000020000000) != 0) // ALT key is pressed
                     {
                         int index = LoWord(wParam);
                         if (index <= 0xff && _keys[index] != Noesis.Key.None)
@@ -566,7 +566,7 @@ namespace NoesisApp
                 }
                 case WinApi.WM.SYSKEYUP:
                 {
-                    if ((lParam.ToInt32() & 0x20000000) != 0) // ALT key is pressed
+                    if ((lParam.ToInt64() & 0x0000000020000000) != 0) // ALT key is pressed
                     {
                         int index = LoWord(wParam);
                         if (index <= 0xff && _keys[index] != Noesis.Key.None)

@@ -62,14 +62,14 @@ public class Popup : FrameworkElement {
   private static void RaiseClosed(IntPtr cPtr, IntPtr sender, IntPtr e) {
     try {
       if (Noesis.Extend.Initialized) {
-        if (!_Closed.ContainsKey(cPtr)) {
-          throw new InvalidOperationException("Delegate not registered for Closed event");
-        }
         if (sender == IntPtr.Zero && e == IntPtr.Zero) {
           _Closed.Remove(cPtr);
           return;
         }
-        ClosedHandler handler = _Closed[cPtr];
+        ClosedHandler handler = null;
+        if (!_Closed.TryGetValue(cPtr, out handler)) {
+          throw new InvalidOperationException("Delegate not registered for Closed event");
+        }
         if (handler != null) {
           handler(Noesis.Extend.GetProxy(sender, false), new EventArgs(e, false));
         }
@@ -117,14 +117,14 @@ public class Popup : FrameworkElement {
   private static void RaiseOpened(IntPtr cPtr, IntPtr sender, IntPtr e) {
     try {
       if (Noesis.Extend.Initialized) {
-        if (!_Opened.ContainsKey(cPtr)) {
-          throw new InvalidOperationException("Delegate not registered for Opened event");
-        }
         if (sender == IntPtr.Zero && e == IntPtr.Zero) {
           _Opened.Remove(cPtr);
           return;
         }
-        OpenedHandler handler = _Opened[cPtr];
+        OpenedHandler handler = null;
+        if (!_Opened.TryGetValue(cPtr, out handler)) {
+          throw new InvalidOperationException("Delegate not registered for Opened event");
+        }
         if (handler != null) {
           handler(Noesis.Extend.GetProxy(sender, false), new EventArgs(e, false));
         }

@@ -5,11 +5,19 @@ using NoesisApp;
 
 namespace NoesisApp
 {
+    public class WindowRenderingEventArgs : System.EventArgs
+    {
+        public double Timestamp { get; internal set; }
+    }
+
+    public delegate void WindowRenderingEventHandler(object sender, WindowRenderingEventArgs e);
+
     /// <summary>
     /// Provides the ability to create, configure, show, and manage the lifetime of windows and dialog boxes.
     /// </summary>
     public class Window : ContentControl
     {
+        #region Window properties
         #region Title
         public static readonly DependencyProperty TitleProperty = DependencyProperty.Register(
             "Title", typeof(string), typeof(Window),
@@ -117,6 +125,19 @@ namespace NoesisApp
             set { SetValue(TopmostProperty, value); }
         }
         #endregion
+        #endregion
+
+        #region Render properties
+        public Display Display { get; private set; }
+        public RenderContext RenderContext { get; private set; }
+        public uint Samples { get; private set; }
+        public bool PPAA { get; private set; }
+
+        /// <summary>
+        /// Event raised when window surface is cleared and ready to start rendering
+        /// </summary>
+        public event WindowRenderingEventHandler Rendering;
+        #endregion
 
         static Window()
         {
@@ -129,25 +150,26 @@ namespace NoesisApp
 
         public Window()
         {
-            Noesis_Window_IgnoreLayout(BaseComponent.getCPtr(this), true);
+            IgnoreLayout(true);
+            _renderingArgs = new WindowRenderingEventArgs();
         }
 
         public void Init(Display display, RenderContext renderContext, uint samples, bool ppaa)
         {
-            _display = display;
-            _renderContext = renderContext;
-            _samples = samples;
-            _ppaa = ppaa;
+            Display = display;
+            RenderContext = renderContext;
+            Samples = samples;
+            PPAA = ppaa;
 
             // Set display properties
-            _display.SetTitle(Title);
+            Display.SetTitle(Title);
 
             // Set display Location
             float left = Left;
             float top = Top;
             if (!float.IsNaN(left) && !float.IsNaN(top))
             {
-                _display.SetLocation((int)left, (int)top);
+                Display.SetLocation((int)left, (int)top);
             }
 
             // Set display Size
@@ -155,7 +177,7 @@ namespace NoesisApp
             float height = Height;
             if (!float.IsNaN(width) && !float.IsNaN(height))
             {
-                _display.SetSize((int)width, (int)height);
+                Display.SetSize((int)width, (int)height);
             }
 
             // Create View
@@ -165,23 +187,23 @@ namespace NoesisApp
             _view.Renderer.Init(renderContext.Device);
 
             // Hook to display events
-            _display.LocationChanged += OnDisplayLocationChanged;
-            _display.SizeChanged += OnDisplaySizeChanged;
-            _display.StateChanged += OnDisplayStateChanged;
-            _display.FileDropped += OnDisplayFileDropped;
-            _display.Activated += OnDisplayActivated;
-            _display.Deactivated += OnDisplayDeactivated;
-            _display.MouseMove += OnDisplayMouseMove;
-            _display.MouseButtonDown += OnDisplayMouseButtonDown;
-            _display.MouseButtonUp += OnDisplayMouseButtonUp;
-            _display.MouseDoubleClick += OnDisplayMouseDoubleClick;
-            _display.MouseWheel += OnDisplayMouseWheel;
-            _display.KeyDown += OnDisplayKeyDown;
-            _display.KeyUp += OnDisplayKeyUp;
-            _display.Char += OnDisplayChar;
-            _display.TouchMove += OnDisplayTouchMove;
-            _display.TouchDown += OnDisplayTouchDown;
-            _display.TouchUp += OnDisplayTouchUp;
+            Display.LocationChanged += OnDisplayLocationChanged;
+            Display.SizeChanged += OnDisplaySizeChanged;
+            Display.StateChanged += OnDisplayStateChanged;
+            Display.FileDropped += OnDisplayFileDropped;
+            Display.Activated += OnDisplayActivated;
+            Display.Deactivated += OnDisplayDeactivated;
+            Display.MouseMove += OnDisplayMouseMove;
+            Display.MouseButtonDown += OnDisplayMouseButtonDown;
+            Display.MouseButtonUp += OnDisplayMouseButtonUp;
+            Display.MouseDoubleClick += OnDisplayMouseDoubleClick;
+            Display.MouseWheel += OnDisplayMouseWheel;
+            Display.KeyDown += OnDisplayKeyDown;
+            Display.KeyUp += OnDisplayKeyUp;
+            Display.Char += OnDisplayChar;
+            Display.TouchMove += OnDisplayTouchMove;
+            Display.TouchDown += OnDisplayTouchDown;
+            Display.TouchUp += OnDisplayTouchUp;
         }
 
         public void Render(double time)
@@ -190,7 +212,7 @@ namespace NoesisApp
             _view.Update(time);
 
             // Render
-            _renderContext.BeginRender();
+            RenderContext.BeginRender();
 
             Renderer renderer = _view.Renderer;
             renderer.UpdateRenderTree();
@@ -200,34 +222,38 @@ namespace NoesisApp
                 renderer.RenderOffscreen();
             }
 
-            _renderContext.SetDefaultRenderTarget(_display.ClientWidth, _display.ClientHeight, true);
+            RenderContext.SetDefaultRenderTarget(Display.ClientWidth, Display.ClientHeight, true);
+
+            _renderingArgs.Timestamp = time;
+            Rendering?.Invoke(this, _renderingArgs);
+
             renderer.Render();
 
-            _renderContext.EndRender();
+            RenderContext.EndRender();
 
-            _renderContext.Swap();
+            RenderContext.Swap();
         }
 
         public void Shutdown()
         {
             // Unhook to display events
-            _display.LocationChanged -= OnDisplayLocationChanged;
-            _display.SizeChanged -= OnDisplaySizeChanged;
-            _display.StateChanged -= OnDisplayStateChanged;
-            _display.FileDropped -= OnDisplayFileDropped;
-            _display.Activated -= OnDisplayActivated;
-            _display.Deactivated -= OnDisplayDeactivated;
-            _display.MouseMove -= OnDisplayMouseMove;
-            _display.MouseButtonDown -= OnDisplayMouseButtonDown;
-            _display.MouseButtonUp -= OnDisplayMouseButtonUp;
-            _display.MouseDoubleClick -= OnDisplayMouseDoubleClick;
-            _display.MouseWheel -= OnDisplayMouseWheel;
-            _display.KeyDown -= OnDisplayKeyDown;
-            _display.KeyUp -= OnDisplayKeyUp;
-            _display.Char -= OnDisplayChar;
-            _display.TouchMove -= OnDisplayTouchMove;
-            _display.TouchDown -= OnDisplayTouchDown;
-            _display.TouchUp -= OnDisplayTouchUp;
+            Display.LocationChanged -= OnDisplayLocationChanged;
+            Display.SizeChanged -= OnDisplaySizeChanged;
+            Display.StateChanged -= OnDisplayStateChanged;
+            Display.FileDropped -= OnDisplayFileDropped;
+            Display.Activated -= OnDisplayActivated;
+            Display.Deactivated -= OnDisplayDeactivated;
+            Display.MouseMove -= OnDisplayMouseMove;
+            Display.MouseButtonDown -= OnDisplayMouseButtonDown;
+            Display.MouseButtonUp -= OnDisplayMouseButtonUp;
+            Display.MouseDoubleClick -= OnDisplayMouseDoubleClick;
+            Display.MouseWheel -= OnDisplayMouseWheel;
+            Display.KeyDown -= OnDisplayKeyDown;
+            Display.KeyUp -= OnDisplayKeyUp;
+            Display.Char -= OnDisplayChar;
+            Display.TouchMove -= OnDisplayTouchMove;
+            Display.TouchDown -= OnDisplayTouchDown;
+            Display.TouchUp -= OnDisplayTouchUp;
 
             _view.Renderer.Shutdown();
             _view = null;
@@ -235,7 +261,7 @@ namespace NoesisApp
 
         public void Close()
         {
-            _display.Close();
+            Display.Close();
         }
 
         protected virtual void OnFileDropped(string filename)
@@ -247,7 +273,7 @@ namespace NoesisApp
         private static void OnTitleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             Window window = (Window)d;
-            window._display.SetTitle((string)e.NewValue);
+            window.Display.SetTitle((string)e.NewValue);
         }
 
         private static void OnTopChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -256,7 +282,7 @@ namespace NoesisApp
             if ((window._flags & WindowFlags.UpdatingWindow) == 0)
             {
                 window._flags |= WindowFlags.UpdatingDisplay;
-                window._display.SetLocation((int)window.Left, (int)(float)e.NewValue);
+                window.Display.SetLocation((int)window.Left, (int)(float)e.NewValue);
                 window._flags &= ~WindowFlags.UpdatingDisplay;
             }
         }
@@ -267,7 +293,7 @@ namespace NoesisApp
             if ((window._flags & WindowFlags.UpdatingWindow) == 0)
             {
                 window._flags |= WindowFlags.UpdatingDisplay;
-                window._display.SetLocation((int)(float)e.NewValue, (int)window.Top);
+                window.Display.SetLocation((int)(float)e.NewValue, (int)window.Top);
                 window._flags &= ~WindowFlags.UpdatingDisplay;
             }
         }
@@ -278,7 +304,7 @@ namespace NoesisApp
             if ((window._flags & WindowFlags.UpdatingWindow) == 0)
             {
                 window._flags |= WindowFlags.UpdatingDisplay;
-                window._display.SetSize((int)(float)e.NewValue, (int)window.Height);
+                window.Display.SetSize((int)(float)e.NewValue, (int)window.Height);
                 window._flags &= ~WindowFlags.UpdatingDisplay;
             }
         }
@@ -289,7 +315,7 @@ namespace NoesisApp
             if ((window._flags & WindowFlags.UpdatingWindow) == 0)
             {
                 window._flags |= WindowFlags.UpdatingDisplay;
-                window._display.SetSize((int)window.Width, (int)(float)e.NewValue);
+                window.Display.SetSize((int)window.Width, (int)(float)e.NewValue);
                 window._flags &= ~WindowFlags.UpdatingDisplay;
             }
         }
@@ -300,7 +326,7 @@ namespace NoesisApp
             if ((window._flags & WindowFlags.UpdatingWindow) == 0)
             {
                 window._flags |= WindowFlags.UpdatingDisplay;
-                window._display.SetWindowState((WindowState)e.NewValue);
+                window.Display.SetWindowState((WindowState)e.NewValue);
                 window._flags &= ~WindowFlags.UpdatingDisplay;
             }
         }
@@ -311,7 +337,7 @@ namespace NoesisApp
             if ((window._flags & WindowFlags.UpdatingWindow) == 0)
             {
                 window._flags |= WindowFlags.UpdatingDisplay;
-                window._display.SetWindowStyle((WindowStyle)e.NewValue);
+                window.Display.SetWindowStyle((WindowStyle)e.NewValue);
                 window._flags &= ~WindowFlags.UpdatingDisplay;
             }
         }
@@ -322,7 +348,7 @@ namespace NoesisApp
             if ((window._flags & WindowFlags.UpdatingWindow) == 0)
             {
                 window._flags |= WindowFlags.UpdatingDisplay;
-                window._display.SetWindowStartupLocation((WindowStartupLocation)e.NewValue);
+                window.Display.SetWindowStartupLocation((WindowStartupLocation)e.NewValue);
                 window._flags &= ~WindowFlags.UpdatingDisplay;
             }
         }
@@ -333,7 +359,7 @@ namespace NoesisApp
             if ((window._flags & WindowFlags.UpdatingWindow) == 0)
             {
                 window._flags |= WindowFlags.UpdatingDisplay;
-                window._display.SetResizeMode((ResizeMode)e.NewValue);
+                window.Display.SetResizeMode((ResizeMode)e.NewValue);
                 window._flags &= ~WindowFlags.UpdatingDisplay;
             }
         }
@@ -344,7 +370,7 @@ namespace NoesisApp
             if ((window._flags & WindowFlags.UpdatingWindow) == 0)
             {
                 window._flags |= WindowFlags.UpdatingDisplay;
-                window._display.SetShowInTaskbar((bool)e.NewValue);
+                window.Display.SetShowInTaskbar((bool)e.NewValue);
                 window._flags &= ~WindowFlags.UpdatingDisplay;
             }
         }
@@ -355,7 +381,7 @@ namespace NoesisApp
             if ((window._flags & WindowFlags.UpdatingWindow) == 0)
             {
                 window._flags |= WindowFlags.UpdatingDisplay;
-                window._display.SetTopmost((bool)e.NewValue);
+                window.Display.SetTopmost((bool)e.NewValue);
                 window._flags &= ~WindowFlags.UpdatingDisplay;
             }
         }
@@ -385,8 +411,8 @@ namespace NoesisApp
 
             if (_view != null)
             {
-                _renderContext.Resize();
-                _view.SetSize(_display.ClientWidth, _display.ClientHeight);
+                RenderContext.Resize();
+                _view.SetSize(Display.ClientWidth, Display.ClientHeight);
             }
         }
 
@@ -473,11 +499,8 @@ namespace NoesisApp
         #endregion
 
         #region Private members
-        private Display _display;
-        private RenderContext _renderContext;
-        private uint _samples;
-        private bool _ppaa;
         private View _view;
+        private WindowRenderingEventArgs _renderingArgs;
 
         [Flags]
         private enum WindowFlags
@@ -486,12 +509,6 @@ namespace NoesisApp
             UpdatingWindow = 2
         }
         private WindowFlags _flags;
-        #endregion
-
-        #region Imports
-        [DllImport(Library.Name)]
-        static extern void Noesis_Window_IgnoreLayout(HandleRef window, bool ignore);
-
         #endregion
     }
 }

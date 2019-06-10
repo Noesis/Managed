@@ -93,6 +93,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr Extend_TextBoxBase(IntPtr typeName);
 
   [DllImport(Library.Name)]
+  public static extern IntPtr Extend_BaseUICollection(IntPtr typeName);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr Extend_Border(IntPtr typeName);
 
   [DllImport(Library.Name)]
@@ -683,6 +686,9 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr DispatcherObject_GetStaticType();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr DependencyObject_GetExpression(HandleRef jarg1, HandleRef jarg2);
 
   [DllImport(Library.Name)]
   public static extern void DependencyObject_ClearValue(HandleRef jarg1, HandleRef jarg2);
@@ -4958,6 +4964,9 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr UIElement_Keyboard_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void UIElement_IgnoreLayout(HandleRef jarg1, bool jarg2);
 
   [DllImport(Library.Name)]
   public static extern IntPtr UIElement_GetStaticType();

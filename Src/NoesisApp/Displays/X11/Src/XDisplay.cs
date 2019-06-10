@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Text;
 using Noesis;
 
 namespace NoesisApp
 {
     public class XDisplay : Display
     {
-        public XDisplay()
+        public XDisplay(): this(false)
+        {
+        }
+
+        public XDisplay(bool fullScreen)
         {
             _display = XOpenDisplay("");
 
@@ -22,6 +27,31 @@ namespace NoesisApp
             attr.event_mask = EventMask.FocusChangeMask | EventMask.StructureNotifyMask | EventMask.SubstructureNotifyMask |
                 EventMask.PointerMotionMask | EventMask.ButtonPressMask | EventMask.ButtonReleaseMask | EventMask.KeyPressMask | EventMask.KeyReleaseMask;
             _window = XCreateWindow(_display, root, 0, 0, (uint)screen.width, (uint)screen.height, 0, depth, (uint)WindowClass.InputOutput, visual, (ulong)AttributeMask.CWEventMask, ref attr);
+
+            if (fullScreen)
+            {
+                uint[] data = { XInternAtom(_display, "_NET_WM_STATE_FULLSCREEN", true) };
+                uint property = XInternAtom(_display, "_NET_WM_STATE", false);
+
+                XChangeProperty(_display, (IntPtr)_window, property, 4 /*XA_ATOM*/, 32, 0 /*PropModeReplace*/, data, 1);
+            }
+
+            _xim = XOpenIM(_display, IntPtr.Zero, null, null);
+            if (_xim == IntPtr.Zero)
+            {
+                XSetLocaleModifiers("@im=none");
+                _xim = XOpenIM(_display, IntPtr.Zero, null, null);
+            }
+
+            if (_xim != IntPtr.Zero)
+            {
+                _xic = XCreateIC(_xim, "inputStyle", (IntPtr)0x0408L, "clientWindow", (IntPtr)_window, "focusWindow", (IntPtr)_window, IntPtr.Zero);
+                if (_xic != IntPtr.Zero)
+                {
+                    XSetICFocus(_xic);
+                    _utf8 = new UTF8Encoding();
+                }
+            }
         }
 
         ~XDisplay()
@@ -62,7 +92,8 @@ namespace NoesisApp
         public override void EnterMessageLoop(bool runInBackground)
         {
             IntPtr e = System.Runtime.InteropServices.Marshal.AllocHGlobal(24 * sizeof(long));
-            while (true)
+            bool running = true;
+            while (running)
             {
                 while (XPending(_display) != 0)
                 {
@@ -77,6 +108,11 @@ namespace NoesisApp
 
                     switch ((Event)anyEvent.type)
                     {
+                        case Event.ClientMessage:
+                        {
+                            running = false;
+                            break;
+                        }
                         case Event.ConfigureNotify:
                         {
                             XConfigureEvent configureEvent = (XConfigureEvent)System.Runtime.InteropServices.Marshal.PtrToStructure(e, typeof(XConfigureEvent));
@@ -87,7 +123,7 @@ namespace NoesisApp
                         }
 
                         case Event.FocusIn:
-                        {   
+                        {
                             Activated?.Invoke(this);
                             break;
                         }
@@ -180,6 +216,28 @@ namespace NoesisApp
                             if (key != Key.None)
                             {
                                 KeyDown?.Invoke(this, key);
+                            }
+
+                           if (_xic != IntPtr.Zero)
+                            {
+                                Status status = 0;
+                                byte[] buffer = new byte[256];
+                                KeySym ret_ks = (KeySym)0;
+                                int size = Xutf8LookupString(_xic, e, buffer, 255, ref ret_ks, ref status);
+                                if (size > 0 && ((int)status == XLookupChars || (int)   status == XLookupBoth))
+                                {
+                                    buffer[size] = 0;
+                                    Decoder decoder = _utf8.GetDecoder();
+                                    char[] text = new char[256];
+                                    int bytesUsed = 0;
+                                    int charsUsed = 0;
+                                    bool completed = false;
+                                    decoder.Convert(buffer, 0, size, text, 0, 255, true, out bytesUsed, out charsUsed, out completed);
+                                    for (int i = 0; i < charsUsed; ++i)
+                                    {
+                                        Char?.Invoke(this, text[i]);
+                                    }
+                                }
                             }
                             break;
                         }
@@ -714,6 +772,12 @@ namespace NoesisApp
 
             return Key.None;
         }
+
+        const int XBufferOverflow = -1;
+        const int XLookupNone = 1;
+        const int XLookupChars = 2;
+        const int XLookupKeySym = 3;
+        const int XLookupBoth = 4;
         #endregion
 
         #region Imports
@@ -761,9 +825,33 @@ namespace NoesisApp
 
         [DllImport("libX11.so.6")]
         public static extern KeySym XLookupKeysym(ref XKeyEvent key_event, int index);
+
+        [DllImport("libX11.so.6")]
+        public static extern uint XInternAtom(IntPtr display, string atom_name, bool only_if_exists);
+
+        [DllImport("libX11.so.6")]
+        public static extern int XChangeProperty(IntPtr display, IntPtr window, uint property, uint type, int format, int mode, uint[] data, int nelements);
+
+        [DllImport("libX11.so.6")]
+        public static extern IntPtr XOpenIM(IntPtr display, IntPtr db, string res_name, string res_class);
+
+        [DllImport("libX11.so.6")]
+        public static extern IntPtr XSetLocaleModifiers(string modifier_list);
+
+        [DllImport("libX11.so.6", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr XCreateIC(IntPtr im, string arg0, IntPtr val0, string arg1, IntPtr val1, string arg2, IntPtr val2, IntPtr terminator);
+
+        [DllImport("libX11.so.6")]
+        public static extern void XSetICFocus(IntPtr ic);
+
+        [DllImport("libX11.so.6")]
+        public static extern int Xutf8LookupString(IntPtr ic, IntPtr @event, byte[] buffer_return, int bytes_buffer, ref KeySym keysym_return, ref Status status_return);
         #endregion
 
         private IntPtr _display;
         private Window _window;
+        private IntPtr _xim;
+        private IntPtr _xic;
+        private UTF8Encoding _utf8;
     }
 }

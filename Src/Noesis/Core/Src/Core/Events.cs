@@ -399,6 +399,7 @@ namespace Noesis
             Popup._Closed.Clear();
             Popup._Opened.Clear();
             Timeline._Completed.Clear();
+            View._Rendering.Clear();
         }
 
         private static void EnsureEventsProperty()

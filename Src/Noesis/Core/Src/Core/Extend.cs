@@ -335,29 +335,33 @@ namespace Noesis
         {
             public Action<object, DependencyProperty> OnPropertyChanged { get; private set; }
 
-#if ENABLE_IL2CPP || UNITY_IOS
             object[] _dp = new object[1];
             private object[] DP(DependencyProperty dp)
             {
                 _dp[0] = dp;
                 return _dp;
             }
-#endif
 
             public PropertyChangedInfo(System.Type type, MethodInfo propChanged)
             {
-#if ENABLE_IL2CPP || UNITY_IOS
-                OnPropertyChanged = (instance, dp) => propChanged.Invoke(instance, DP(dp));
-#else
-                var obj = System.Linq.Expressions.Expression.Parameter(typeof(object), "obj");
-                var instance = System.Linq.Expressions.Expression.Convert(obj, type);
-                var dp = System.Linq.Expressions.Expression.Parameter(typeof(DependencyProperty), "dp");
-                var call = System.Linq.Expressions.Expression.Call(instance, propChanged, new ParameterExpression[] { dp });
-                var lambda = System.Linq.Expressions.Expression.Lambda<Action<object, DependencyProperty>>(call,
-                    new ParameterExpression[] { obj, dp });
+#if !ENABLE_IL2CPP && !UNITY_IOS
+                if (Platform.ID != PlatformID.iPhone)
+                {
+                    var obj = System.Linq.Expressions.Expression.Parameter(typeof(object), "obj");
+                    var instance = System.Linq.Expressions.Expression.Convert(obj, type);
+                    var dp = System.Linq.Expressions.Expression.Parameter(typeof(DependencyProperty), "dp");
+                    var call = System.Linq.Expressions.Expression.Call(instance, propChanged,
+                        new ParameterExpression[] { dp });
+                    var lambda = System.Linq.Expressions.Expression.Lambda<Action<object, DependencyProperty>>(
+                        call, new ParameterExpression[] { obj, dp });
 
-                OnPropertyChanged = lambda.Compile();
+                    OnPropertyChanged = lambda.Compile();
+                }
+                else
 #endif
+                {
+                    OnPropertyChanged = (instance, dp) => propChanged.Invoke(instance, DP(dp));
+                }
             }
         }
 
@@ -1304,7 +1308,7 @@ namespace Noesis
         private static Func<object> TypeCreator(System.Type type)
         {
 #if !ENABLE_IL2CPP && !UNITY_IOS
-            if (!type.GetTypeInfo().IsValueType)
+            if (!type.GetTypeInfo().IsValueType && Platform.ID != PlatformID.iPhone)
             {
                 #if NETFX_CORE
                 var ctor = type.GetTypeInfo().DeclaredConstructors.Where(c =>
@@ -1435,7 +1439,7 @@ namespace Noesis
 #if ENABLE_IL2CPP || UNITY_IOS
                 bool usePropertyInfo = true;
 #else
-                bool usePropertyInfo = type.GetTypeInfo().IsValueType;
+                bool usePropertyInfo = type.GetTypeInfo().IsValueType || Platform.ID == PlatformID.iPhone;
 #endif
 
                 NativeTypePropsInfo propsInfo = (NativeTypePropsInfo)info;

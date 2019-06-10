@@ -39,6 +39,12 @@ public partial class DependencyObject : DispatcherObject {
     InvalidatePropertyHelper(dp);
   }
 
+  public Expression GetExpression(DependencyProperty dp) {
+    IntPtr cPtr = NoesisGUI_PINVOKE.DependencyObject_GetExpression(swigCPtr, DependencyProperty.getCPtr(dp));
+    Expression ret = (cPtr == IntPtr.Zero) ? null : new Expression(cPtr, false);
+    return ret;
+  }
+
   public void ClearValue(DependencyProperty dp) {
     NoesisGUI_PINVOKE.DependencyObject_ClearValue(swigCPtr, DependencyProperty.getCPtr(dp));
   }

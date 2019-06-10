@@ -1779,6 +1779,10 @@ public class UIElement : Visual {
     }
   }
 
+  protected void IgnoreLayout(bool ignore) {
+    NoesisGUI_PINVOKE.UIElement_IgnoreLayout(swigCPtr, ignore);
+  }
+
   new internal static IntPtr GetStaticType() {
     IntPtr ret = NoesisGUI_PINVOKE.UIElement_GetStaticType();
     return ret;

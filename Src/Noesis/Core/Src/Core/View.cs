@@ -279,19 +279,19 @@ namespace Noesis
             {
                 if (!_Rendering.ContainsKey(CPtr.Handle))
                 {
-                    _Rendering.Add(CPtr.Handle, new RenderingEventInfo { view = this });
+                    _Rendering.Add(CPtr.Handle, null);
                     Noesis_View_BindRenderingEvent(CPtr, _raiseRendering);
                 }
 
-                _Rendering[CPtr.Handle].handler += value;
+                _Rendering[CPtr.Handle] += value;
             }
             remove
             {
                 if (_Rendering.ContainsKey(CPtr.Handle))
                 {
-                    _Rendering[CPtr.Handle].handler -= value;
+                    _Rendering[CPtr.Handle] -= value;
 
-                    if (_Rendering[CPtr.Handle].handler == null)
+                    if (_Rendering[CPtr.Handle] == null)
                     {
                         Noesis_View_UnbindRenderingEvent(CPtr, _raiseRendering);
                         _Rendering.Remove(CPtr.Handle);
@@ -309,23 +309,22 @@ namespace Noesis
         {
             try
             {
-                RenderingEventInfo info = null;
-                if (!_Rendering.TryGetValue(cPtr, out info))
-                {
-                    throw new InvalidOperationException(
-                        "Delegate not registered for Rendering event");
-                }
-                if (sender == IntPtr.Zero)
-                {
-                    _Rendering.Remove(cPtr);
-                    return;
-                }
                 if (Noesis.Extend.Initialized)
                 {
-                    RenderingEventHandler handler = info.handler;
+                    if (sender == IntPtr.Zero)
+                    {
+                        _Rendering.Remove(cPtr);
+                        return;
+                    }
+                    RenderingEventHandler handler = null;
+                    if (!_Rendering.TryGetValue(cPtr, out handler))
+                    {
+                        throw new InvalidOperationException(
+                            "Delegate not registered for Rendering event");
+                    }
                     if (handler != null)
                     {
-                        handler(info.view, EventArgs.Empty);
+                        handler((View)Noesis.Extend.GetProxy(cPtr, false), EventArgs.Empty);
                     }
                 }
             }
@@ -335,14 +334,8 @@ namespace Noesis
             }
         }
 
-        private class RenderingEventInfo
-        {
-            public RenderingEventHandler handler;
-            public View view;
-        }
-
-        static Dictionary<IntPtr, RenderingEventInfo> _Rendering =
-            new Dictionary<IntPtr, RenderingEventInfo>();
+        internal static Dictionary<IntPtr, RenderingEventHandler> _Rendering =
+            new Dictionary<IntPtr, RenderingEventHandler>();
         #endregion
 
         /// <summary>
@@ -365,7 +358,7 @@ namespace Noesis
         public int CreateTimer(int interval, TimerCallback callback)
         {
             int timerId = Noesis_View_CreateTimer(CPtr, interval, _timerEvent);
-            _Timer.Add(new TimerKey { View = this, TimerId = timerId }, callback);
+            _timers.Add(timerId, callback);
             return timerId;
         }
 
@@ -382,7 +375,7 @@ namespace Noesis
         /// </summary>
         public void CancelTimer(int timerId)
         {
-            _Timer.Remove(new TimerKey { View = this, TimerId = timerId });
+            _timers.Remove(timerId);
             Noesis_View_CancelTimer(CPtr, timerId);
         }
 
@@ -396,15 +389,14 @@ namespace Noesis
             try
             {
                 View view = (View)Noesis.Extend.GetProxy(cPtr, false);
-                TimerKey key = new TimerKey { View = view, TimerId = timerId };
 
                 TimerCallback callback;
-                if (_Timer.TryGetValue(key, out callback))
+                if (view._timers.TryGetValue(timerId, out callback))
                 {
                     int nextTick = callback();
                     if (nextTick <= 0)
                     {
-                        _Timer.Remove(key);
+                        view._timers.Remove(timerId);
                     }
 
                     return nextTick;
@@ -418,13 +410,7 @@ namespace Noesis
             return 0;
         }
 
-        struct TimerKey
-        {
-            public View View { get; set; }
-            public int TimerId { get; set; }
-        }
-
-        static Dictionary<TimerKey, TimerCallback> _Timer = new Dictionary<TimerKey, TimerCallback>();
+        Dictionary<int, TimerCallback> _timers = new Dictionary<int, TimerCallback>();
         #endregion
         #endregion
 

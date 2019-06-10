@@ -65,14 +65,14 @@ public class Timeline : Animatable {
   private static void RaiseCompleted(IntPtr cPtr, IntPtr sender, IntPtr e) {
     try {
       if (Noesis.Extend.Initialized) {
-        if (!_Completed.ContainsKey(cPtr)) {
-          throw new InvalidOperationException("Delegate not registered for Completed event");
-        }
         if (sender == IntPtr.Zero && e == IntPtr.Zero) {
           _Completed.Remove(cPtr);
           return;
         }
-        CompletedHandler handler = _Completed[cPtr];
+        CompletedHandler handler = null;
+        if (!_Completed.TryGetValue(cPtr, out handler)) {
+          throw new InvalidOperationException("Delegate not registered for Completed event");
+        }
         if (handler != null) {
           handler(Noesis.Extend.GetProxy(sender, false), new EventArgs(e, false));
         }

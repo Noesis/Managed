@@ -2,9 +2,6 @@
 using System.Runtime.InteropServices;
 using Noesis;
 
-using OpenGL;
-using Khronos;
-
 namespace NoesisApp
 {
     public class RenderContextWGL : RenderContext
@@ -13,16 +10,11 @@ namespace NoesisApp
         {
         }
 
-        static RenderContextWGL()
-        {
-            Gl.Initialize();
-        }
-
         ~RenderContextWGL()
         {
-            Wgl.DeleteContext(_context);
+            wglMakeCurrent(IntPtr.Zero, IntPtr.Zero);
+            wglDeleteContext(_context);
             _context = IntPtr.Zero;
-            Wgl.MakeCurrent(_display, IntPtr.Zero);
         }
 
         public override RenderDevice Device
@@ -33,7 +25,6 @@ namespace NoesisApp
         private IntPtr _display = IntPtr.Zero;
         private IntPtr _window = IntPtr.Zero;
         private IntPtr _context = IntPtr.Zero;
-        Wgl.Extensions _extensions;
         private RenderDeviceGL _device;
 
         public override void Init(IntPtr display, IntPtr window, uint samples, bool vsync, bool sRGB)
@@ -41,87 +32,118 @@ namespace NoesisApp
             _display = display;
             _window = window;
 
-            _extensions = new Wgl.Extensions();
-            int pixelFormat = 0;
-            if (_extensions.PixelFormat_ARB && _extensions.Multisample_ARB)
+            // Dummy window and context to get ARB wgl func pointers
+            PIXELFORMATDESCRIPTOR pfd = new PIXELFORMATDESCRIPTOR();
+            pfd.nSize = (ushort)System.Runtime.InteropServices.Marshal.SizeOf(pfd);
+            pfd.nVersion = 1;
+            pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
+            pfd.iPixelType = PFD_TYPE_RGBA;
+            pfd.cColorBits = 24;
+            pfd.cStencilBits = 8;
+
+            int pf = ChoosePixelFormat(_display, ref pfd);
+
+            SetPixelFormat(_display, pf, ref pfd);
+
+            IntPtr hglrc = wglCreateContext(_display);
+
+            wglMakeCurrent(_display, hglrc);
+
+            wglGetExtensionsStringARB = GetProcAddress<GetExtensionsStringARB>("wglGetExtensionsStringARB");
+            wglChoosePixelFormatARB = GetProcAddress<ChoosePixelFormatARB>("wglChoosePixelFormatARB");
+            wglCreateContextAttribsARB = GetProcAddress<CreateContextAttribsARB>("wglCreateContextAttribsARB");
+            wglSwapIntervalEXT = GetProcAddress<SwapIntervalEXT>("wglSwapIntervalEXT");
+
+            wglMakeCurrent(IntPtr.Zero, IntPtr.Zero);
+            wglDeleteContext(hglrc);
+
+            IntPtr extensionStringPtr = wglGetExtensionsStringARB(_display);
+            string extensionString = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(extensionStringPtr);
+            string[] extensions = extensionString.Split(' ');
+
+            if (Array.IndexOf(extensions, "WGL_ARB_pixel_format") >= 0 && Array.IndexOf(extensions, "WGL_ARB_multisample") >= 0)
             {
                 do
                 {
                     int[] attribs =
                     {
-                        Wgl.DRAW_TO_WINDOW_ARB, Gl.TRUE,
-                        Wgl.SUPPORT_OPENGL_ARB, Gl.TRUE,
-                        Wgl.DOUBLE_BUFFER_ARB, Gl.TRUE,
-                        Wgl.PIXEL_TYPE_ARB, Wgl.TYPE_RGBA_ARB,
-                        Wgl.COLOR_BITS_ARB, 24,
-                        Wgl.STENCIL_BITS_ARB, 8,
-                        Wgl.SAMPLE_BUFFERS_ARB, samples > 1 ? 1 : 0,
-                        Wgl.SAMPLES_ARB, (int)(samples > 1 ? samples : 0),
-                        Gl.NONE
+                        WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,
+                        WGL_SUPPORT_OPENGL_ARB, GL_TRUE,
+                        WGL_DOUBLE_BUFFER_ARB, GL_TRUE,
+                        WGL_PIXEL_TYPE_ARB, WGL_TYPE_RGBA_ARB,
+                        WGL_COLOR_BITS_ARB, 24,
+                        WGL_STENCIL_BITS_ARB, 8,
+                        WGL_SAMPLE_BUFFERS_ARB, samples > 1 ? 1 : 0,
+                        WGL_SAMPLES_ARB, samples > 1 ? (int)samples : 0,
+                        0
                     };
 
-                    float[] fattribs = { };
-                    int[] pf = { 0 };
-                    uint[] n = { 0 };
-                    if (Wgl.ChoosePixelFormatARB(display, attribs, fattribs, 1, pf, n))
+                    int[] pixelFormats = { 0 };
+                    uint n = 0;
+                    if (!wglChoosePixelFormatARB(_display, attribs, null, 1, pixelFormats, ref n) || n == 0)
                     {
-                        pixelFormat = pf[0];
+                        pf = 0;
+                        samples >>= 1;
                     }
                     else
                     {
-                        samples >>= 1;
+                        pf = pixelFormats[0];
                     }
-                } while (pixelFormat == 0 && samples != 0);
+                }
+                while (pf == 0 && samples != 0);
             }
 
-            Wgl.PIXELFORMATDESCRIPTOR pfd = new Wgl.PIXELFORMATDESCRIPTOR();
-            if (pixelFormat == 0)
+            if (pf == 0)
             {
-                pfd.dwFlags = Wgl.PixelFormatDescriptorFlags.DrawToWindow | Wgl.PixelFormatDescriptorFlags.SupportOpenGL | Wgl.PixelFormatDescriptorFlags.Doublebuffer;
-                pfd.iPixelType = Wgl.PixelFormatDescriptorPixelType.Rgba;
-                pfd.cStencilBits = 8;
-                pfd.cColorBits = 24;
-                pixelFormat = Wgl.ChoosePixelFormat(display, ref pfd);
+                pf = ChoosePixelFormat(_display, ref pfd);
             }
 
-            int ir = Wgl.UnsafeNativeMethods.DescribePixelFormat(display, pixelFormat, (uint)Noesis.Marshal.SizeOf<Wgl.PIXELFORMATDESCRIPTOR>(), ref pfd);
-            bool r = Wgl.UnsafeNativeMethods.SetPixelFormat(display, pixelFormat, ref pfd);
+            DescribePixelFormat(_display, pf, (uint)System.Runtime.InteropServices.Marshal.SizeOf(pfd), ref pfd);
 
-            if (_extensions.CreateContext_ARB)
+            SetPixelFormat(_display, pf, ref pfd);
+
+            if (Array.IndexOf(extensions, "WGL_ARB_create_context") >= 0)
             {
                 int[] versions = { 46, 45, 44, 43, 42, 41, 40, 33 };
                 int flags = 0;
-                if (_extensions.CreateContextNoError_ARB)
-                {
-                    flags |= Wgl.CONTEXT_OPENGL_NO_ERROR_ARB;
-                }
 
-                foreach (int version in versions)
+#if DEBUG
+                flags |= WGL_CONTEXT_DEBUG_BIT_ARB;
+#else
+                if (Array.IndexOf(extensions, "WGL_ARB_create_context_no_error") >= 0)
+                {
+                    flags |= WGL_CONTEXT_OPENGL_NO_ERROR_ARB;
+                }
+#endif
+
+                for (int i = 0; i < versions.Length && _context == IntPtr.Zero; i++)
                 {
                     int[] attribs =
                     {
-                        Wgl.CONTEXT_FLAGS_ARB, flags,
-                        Wgl.CONTEXT_PROFILE_MASK_ARB, (int)Wgl.CONTEXT_CORE_PROFILE_BIT_ARB,
-                        Wgl.CONTEXT_MAJOR_VERSION_ARB, version / 10,
-                        Wgl.CONTEXT_MINOR_VERSION_ARB, version % 10,
-                        Gl.NONE
+                        WGL_CONTEXT_FLAGS_ARB, flags,
+                        WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
+                        WGL_CONTEXT_MAJOR_VERSION_ARB, versions[i] / 10,
+                        WGL_CONTEXT_MINOR_VERSION_ARB, versions[i] % 10,
+                        0
                     };
 
-                    _context = Wgl.CreateContextAttribsARB(display, IntPtr.Zero, attribs);
+                    _context = wglCreateContextAttribsARB(_display, IntPtr.Zero, attribs);
                 }
             }
 
             if (_context == IntPtr.Zero)
             {
-                _context = Wgl.CreateContext(display);
+                _context = wglCreateContext(_display);
             }
 
-            r = Wgl.MakeCurrent(display, _context);
+            wglMakeCurrent(_display, _context);
 
-            if (_extensions.SwapControl_EXT)
+            if (Array.IndexOf(extensions, "WGL_EXT_swap_control") >= 0)
             {
-                Wgl.SwapIntervalEXT(vsync ? 1 : 0);
+                wglSwapIntervalEXT(vsync ? 1 : 0);
             }
+
+            glBindFramebuffer = GetProcAddress<BindFramebuffer>("glBindFramebuffer");
 
             _device = new RenderDeviceGL();
         }
@@ -134,28 +156,157 @@ namespace NoesisApp
 
         public override void SetDefaultRenderTarget(int width, int height, bool doClearColor)
         {
-            Gl.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-            Gl.Viewport(0, 0, width, height);
+            glViewport(0, 0, width, height);
 
-            Gl.ClearStencil(0);
-            ClearBufferMask mask = ClearBufferMask.StencilBufferBit;
+            glClearStencil(0);
+            uint mask = GL_STENCIL_BUFFER_BIT;
 
             if (doClearColor)
             {
-                Gl.ColorMask(true, true, true, true);
-                Gl.ClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+                mask |= GL_COLOR_BUFFER_BIT;
+                glColorMask(true, true, true, true);
+                glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
             }
 
-            Gl.Clear(mask);
+            glClear(mask);
         }
 
         public override void Resize() { }
 
         public override void Swap()
         {
-            Wgl.UnsafeNativeMethods.GdiSwapBuffersFast(_display);
+            SwapBuffers(_display);
         }
 
+        public static TDelegate GetProcAddress<TDelegate>(string name) where TDelegate : class
+        {
+            IntPtr addr = wglGetProcAddress(name);
+            if (addr == IntPtr.Zero) return null;
+            return (TDelegate)(object)System.Runtime.InteropServices.Marshal.GetDelegateForFunctionPointer(addr, typeof(TDelegate));
+        }
+
+        private const int GL_TRUE = 1;
+        private const int WGL_DRAW_TO_WINDOW_ARB = 0x2001;
+        private const int WGL_SUPPORT_OPENGL_ARB = 0x2010;
+        private const int WGL_DOUBLE_BUFFER_ARB = 0x2011;
+        private const int WGL_PIXEL_TYPE_ARB = 0x2013;
+        private const int WGL_TYPE_RGBA_ARB = 0x202B;
+        private const int WGL_COLOR_BITS_ARB = 0x2014;
+        private const int WGL_STENCIL_BITS_ARB = 0x2023;
+        private const int WGL_SAMPLE_BUFFERS_ARB = 0x2041;
+        private const int WGL_SAMPLES_ARB = 0x2042;
+        private const int WGL_CONTEXT_DEBUG_BIT_ARB = 0x00000001;
+        private const int WGL_CONTEXT_OPENGL_NO_ERROR_ARB = 0x31B3;
+        private const int WGL_CONTEXT_FLAGS_ARB = 0x2094;
+        private const int WGL_CONTEXT_PROFILE_MASK_ARB = 0x9126;
+        private const int WGL_CONTEXT_CORE_PROFILE_BIT_ARB = 0x00000001;
+        private const int WGL_CONTEXT_MAJOR_VERSION_ARB = 0x2091;
+        private const int WGL_CONTEXT_MINOR_VERSION_ARB = 0x2092;
+
+        public delegate IntPtr GetExtensionsStringARB(IntPtr hdc);
+        public GetExtensionsStringARB wglGetExtensionsStringARB;
+
+        public delegate bool ChoosePixelFormatARB(IntPtr hdc, int[] piAttribIList, float[] pfAttribFList, uint nMaxFormats, int[] piFormats, ref uint nNumFormats);
+        public ChoosePixelFormatARB wglChoosePixelFormatARB;
+
+        public delegate IntPtr CreateContextAttribsARB(IntPtr hdc, IntPtr hShareContext, int[] attribList);
+        public CreateContextAttribsARB wglCreateContextAttribsARB;
+
+        public delegate bool SwapIntervalEXT(int interval);
+        public SwapIntervalEXT wglSwapIntervalEXT;
+
+        public delegate void BindFramebuffer(uint target, uint framebuffer);
+        public BindFramebuffer glBindFramebuffer;
+
+        private const uint PFD_DRAW_TO_WINDOW = 0x00000004;
+        private const uint PFD_SUPPORT_OPENGL = 0x00000020;
+        private const uint PFD_DOUBLEBUFFER = 0x00000001;
+        private const byte PFD_TYPE_RGBA = 0;
+
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct PIXELFORMATDESCRIPTOR
+        {
+            public ushort nSize;
+            public ushort nVersion;
+            public uint dwFlags;
+            public byte iPixelType;
+            public byte cColorBits;
+            public byte cRedBits;
+            public byte cRedShift;
+            public byte cGreenBits;
+            public byte cGreenShift;
+            public byte cBlueBits;
+            public byte cBlueShift;
+            public byte cAlphaBits;
+            public byte cAlphaShift;
+            public byte cAccumBits;
+            public byte cAccumRedBits;
+            public byte cAccumGreenBits;
+            public byte cAccumBlueBits;
+            public byte cAccumAlphaBits;
+            public byte cDepthBits;
+            public byte cStencilBits;
+            public byte cAuxBuffers;
+            public byte iLayerType;
+            public byte bReserved;
+            public uint dwLayerMask;
+            public uint dwVisibleMask;
+            public uint dwDamageMask;
+        }
+
+        private const string Gdi32LibraryName = "gdi32.dll";
+
+        [DllImport(Gdi32LibraryName)]
+        static extern int ChoosePixelFormat(IntPtr hdc, ref PIXELFORMATDESCRIPTOR ppfd);
+
+        [DllImport(Gdi32LibraryName)]
+        static extern bool SetPixelFormat(IntPtr hdc, int format, ref PIXELFORMATDESCRIPTOR ppfd);
+
+        [DllImport(Gdi32LibraryName)]
+        static extern int DescribePixelFormat(IntPtr hdc, int iPixelFormat, uint nBytes, ref PIXELFORMATDESCRIPTOR ppfd);
+
+        [DllImport(Gdi32LibraryName)]
+        static extern bool SwapBuffers(IntPtr hdc);
+
+        private const string User32LibraryName = "user32.dll";
+
+        [DllImport(User32LibraryName)]
+        static extern IntPtr GetDC(IntPtr hWnd);
+
+        private const uint GL_FRAMEBUFFER = 0x8D40;
+        private const uint GL_STENCIL_BUFFER_BIT = 0x00000400;
+        private const uint GL_COLOR_BUFFER_BIT = 0x00004000;
+
+        private const string OpenGLLibraryName = "opengl32.dll";
+
+        [DllImport(OpenGLLibraryName)]
+        static extern IntPtr wglCreateContext(IntPtr hdc);
+
+        [DllImport(OpenGLLibraryName)]
+        static extern bool wglDeleteContext(IntPtr hglrc);
+
+        [DllImport(OpenGLLibraryName)]
+        static extern bool wglMakeCurrent(IntPtr hdc, IntPtr hglrc);
+
+        [DllImport(OpenGLLibraryName)]
+        static extern IntPtr wglGetProcAddress(string lpszProc);
+
+        [DllImport(OpenGLLibraryName)]
+        static extern void glViewport(int x, int y, int width, int height);
+
+        [DllImport(OpenGLLibraryName)]
+        static extern void glClearStencil(int s);
+
+        [DllImport(OpenGLLibraryName)]
+        static extern void glClear(uint s);
+
+        [DllImport(OpenGLLibraryName)]
+        static extern void glColorMask(bool r, bool g, bool b, bool a);
+
+        [DllImport(OpenGLLibraryName)]
+        static extern void glClearColor(float r, float g, float b, float a);
     }
 }

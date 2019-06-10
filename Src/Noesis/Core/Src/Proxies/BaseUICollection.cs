@@ -196,6 +196,9 @@ public class BaseUICollection : BaseComponent, IList {
     return ret;
   }
 
+  internal new static IntPtr Extend(string typeName) {
+    return NoesisGUI_PINVOKE.Extend_BaseUICollection(Marshal.StringToHGlobalAnsi(typeName));
+  }
 }
 
 }

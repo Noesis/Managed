@@ -4,6 +4,7 @@ using Windows.UI.Core;
 using Windows.System;
 using Windows.UI.Input;
 using Windows.Devices.Input;
+using Windows.ApplicationModel.Core;
 
 namespace NoesisApp
 {
@@ -26,6 +27,9 @@ namespace NoesisApp
             window.PointerWheelChanged += OnPointerWheel;
 
             _window = GCHandle.Alloc(window);
+
+            _lastClickTime = 0;
+            _lastClickButton = Noesis.MouseButton.Left;
         }
 
         ~WinRTDisplay()
@@ -66,7 +70,7 @@ namespace NoesisApp
 
         public override void Close()
         {
-            CoreWindow.GetForCurrentThread().Close();
+            CoreApplication.Exit();
         }
 
         public override void EnterMessageLoop(bool runInBackground)
@@ -189,7 +193,20 @@ namespace NoesisApp
                 }
                 case PointerDeviceType.Mouse:
                 {
-                    MouseButtonDown(this, (int)p.Position.X, (int)p.Position.Y, MouseButton(p.Properties));
+                    ulong time = p.Timestamp;
+                    ulong elapsedTime = (time - _lastClickTime) / 1000;
+                    Noesis.MouseButton button = MouseButton(p.Properties);
+                    if (elapsedTime <= (ulong)GetDoubleClickTime() && button == _lastClickButton)
+                    {
+                        MouseDoubleClick(this, (int)p.Position.X, (int)p.Position.Y, button);
+                        _lastClickTime = 0;
+                    }
+                    else
+                    {
+                        MouseButtonDown(this, (int)p.Position.X, (int)p.Position.Y, button);
+                        _lastClickTime = time;
+                    }
+                    _lastClickButton = button;
                     break;
                 }
             }
@@ -412,6 +429,13 @@ namespace NoesisApp
         }
         #endregion
 
+        #region Imports
+        [DllImport("user32", CharSet = CharSet.Auto, ExactSpelling = true)]
+        private static extern int GetDoubleClickTime();
+        #endregion
+
         GCHandle _window;
+        ulong _lastClickTime;
+        Noesis.MouseButton _lastClickButton;
     }
 }

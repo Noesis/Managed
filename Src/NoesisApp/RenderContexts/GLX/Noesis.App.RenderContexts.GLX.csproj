@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>2.2.2</Version>
+    <Version>2.2.3</Version>
     <Authors>Noesis Technologies</Authors>
     <Description>NoesisGUI GLX Render Context</Description>
     <Copyright>Copyright (c) 2013 Noesis Technologies S.L.</Copyright>
@@ -10,11 +10,10 @@
     <PackageIconUrl>https://www.noesisengine.com/images/logos/Icon-256.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/Noesis/Managed/tree/master/Src/NoesisApp/RenderContexts/GLX</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>NoesisGI XAML GUI C# OpenGL</PackageTags>
+    <PackageTags>NoesisGUI XAML GUI C# OpenGL</PackageTags>
     <PackageReleaseNotes>https://www.noesisengine.com/docs/Gui.Core.Changelog.html</PackageReleaseNotes>
     <RootNamespace>NoesisApp</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PackageOutputPath>$(SolutionDir)NuGet\</PackageOutputPath>
   </PropertyGroup>
 
@@ -22,7 +21,6 @@
     <ProjectReference Include="..\..\Core\Noesis.App.csproj">
       <PrivateAssets>contentfiles;analyzers</PrivateAssets>
     </ProjectReference>
-    <PackageReference Include="OpenGL.Net" Version="0.8.4" />
   </ItemGroup>
 
   <PropertyGroup Condition="Exists('$(SolutionDir)LICENSE.txt')">

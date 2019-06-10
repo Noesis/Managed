@@ -4,6 +4,7 @@ using Foundation;
 using CoreGraphics;
 using System.Drawing;
 using Noesis;
+using ObjCRuntime;
 
 namespace NoesisApp
 {
@@ -11,7 +12,14 @@ namespace NoesisApp
     {
         public bool Closed { get; set; }
 
-        private Window _window;
+        private WindowClass _window;
+        private WindowDelegate _delegate;
+        TextInputClient _textinputClient;
+
+        public WindowClass Window
+        {
+            get { return _window; }
+        }
 
         public AppKitDisplay()
         {
@@ -23,14 +31,19 @@ namespace NoesisApp
             NSWindowStyle style = NSWindowStyle.Titled | NSWindowStyle.Closable |
                 NSWindowStyle.Miniaturizable | NSWindowStyle.Resizable;
 
-            _window = new Window(frame, style, NSBackingStore.Buffered, false);
+            _window = new WindowClass(frame, style, NSBackingStore.Buffered, false);
             _window.AppKitDisplay = this;
             _window.ReleasedWhenClosed = false;
             _window.BackgroundColor = NSColor.Black;
             _window.IsOpaque = true;
             _window.AcceptsMouseMovedEvents = true;
-            //_window.RegisterForDraggedTypes(new NSArray())
-            _window.Delegate = new WindowDelegate(this, _window);
+            string[] draggedTypes = { NSPasteboard.NSFilenamesType.ToString() };
+            _window.RegisterForDraggedTypes(draggedTypes);
+            _delegate = new WindowDelegate(this, _window);
+            _window.Delegate = _delegate;
+
+            _textinputClient = new TextInputClient(this);
+            _window.ContentView.AddSubview(_textinputClient);
 
             FillKeyTable();
         }
@@ -90,10 +103,17 @@ namespace NoesisApp
 
         public override void OpenSoftwareKeyboard(Noesis.UIElement focused)
         {
+            TextBox textBox = focused as TextBox;
+            if (textBox != null)
+            {
+                _textinputClient.SetControl(textBox);
+                _window.MakeFirstResponder(_textinputClient);
+            }
         }
 
         public override void CloseSoftwareKeyboard()
         {
+            _window.MakeFirstResponder(_window);
         }
 
         public void OnActivated()
@@ -169,44 +189,225 @@ namespace NoesisApp
         }
 
         #region Types
-        public class WindowDelegate : NSWindowDelegate
+        public class TextInputClient : NSView, INSTextInputClient
         {
             private AppKitDisplay _display;
-            private Window _window;
+            private TextBox _control;
 
-            public WindowDelegate(AppKitDisplay display, Window window)
+            public TextInputClient(AppKitDisplay display)
+            {
+                _display = display;
+            }
+
+            public void SetControl(TextBox control)
+            {
+                _control = control;
+            }
+
+            public void RemoveMarkedText()
+            {
+                NSRange r = MarkedRange;
+                if (r.Location != NSRange.NotFound)
+                {
+                    _control.Select((int)r.Location, (int)r.Length);
+                    _control.SelectedText = "";
+                    //_control.ClearCompositionUnderlines();
+                }
+            }
+
+            [Export("attributedSubstringForProposedRange:actualRange:")]
+            [BindingImpl(BindingImplOptions.GeneratedCode | BindingImplOptions.Optimizable)]
+            public virtual NSAttributedString GetAttributedSubstring(NSRange proposedRange, out NSRange actualRange)
+            {
+                actualRange = proposedRange;
+                return null;
+            }
+
+            [Export("characterIndexForPoint:")]
+            [BindingImpl(BindingImplOptions.GeneratedCode | BindingImplOptions.Optimizable)]
+            public virtual nuint GetCharacterIndex(CGPoint point)
+            {
+                return 0;
+            }
+
+            [Export("firstRectForCharacterRange:actualRange:")]
+            [BindingImpl(BindingImplOptions.GeneratedCode | BindingImplOptions.Optimizable)]
+            public virtual CGRect GetFirstRect(NSRange characterRange, out NSRange actualRange)
+            {
+                Rect r = _control.GetRangeBounds((uint)characterRange.Location, (uint)(characterRange.Location + characterRange.Length));
+                Visual visual = _control.TextView;
+                Matrix4 m = visual.TransformToAncestor(_control.View.Content);
+                r.Transform(m);
+
+                float height = (float)_display.Window.ContentView.Bounds.Height;
+                CGRect rect = new CGRect(r.X, height - (r.Y + r.Height), r.Width, r.Height);
+                actualRange = characterRange;
+                return _display.Window.ConvertRectToScreen(rect);
+            }
+
+            [BindingImpl(BindingImplOptions.GeneratedCode | BindingImplOptions.Optimizable)]
+            public virtual bool HasMarkedText
+            {
+                [Export("hasMarkedText")]
+                get { return false; /*_control.GetNumCompositionUnderlines() > 0;*/ }
+            }
+
+            [BindingImpl(BindingImplOptions.GeneratedCode | BindingImplOptions.Optimizable)]
+            public virtual NSRange MarkedRange
+            {
+                [Export("markedRange")]
+                get
+                {
+                    /*if (_control.GetNumCompositionUnderlines() > 0)
+                    {
+                        CompositionUnderline u = _control.GetCompositionUnderline(0);
+                        return NSRange(u.start, u.end - u.start);
+                    }*/
+
+                    return new NSRange(NSRange.NotFound, 0);
+                }
+            }
+
+            [BindingImpl(BindingImplOptions.GeneratedCode | BindingImplOptions.Optimizable)]
+            public virtual NSRange SelectedRange
+            {
+                [Export("selectedRange")]
+                get { return new NSRange(_control.SelectionStart, _control.SelectionLength); }
+            }
+
+            public void InsertText_(NSObject text, NSRange replacementRange)
+            {
+                if (replacementRange.Location != NSRange.NotFound)
+                {
+                    _control.Select((int)replacementRange.Location, (int)replacementRange.Length);
+                }
+
+                NSAttributedString attributedText = text as NSAttributedString;
+                if (attributedText != null)
+                {
+                    _control.SelectedText = attributedText.ToString();
+                    _control.UpdateLayout();
+                }
+                else
+                {
+                    _control.SelectedText = text.ToString();
+                    _control.UpdateLayout();
+                }
+
+                _control.CaretIndex = _control.SelectionStart + _control.SelectionLength;
+            }
+
+            [Export("insertText:replacementRange:")]
+            [BindingImpl(BindingImplOptions.GeneratedCode | BindingImplOptions.Optimizable)]
+            public virtual void InsertText(NSObject text, NSRange replacementRange)
+            {
+                RemoveMarkedText();
+                InsertText_(text, replacementRange);
+            }
+
+            [Export("setMarkedText:selectedRange:replacementRange:")]
+            [BindingImpl(BindingImplOptions.GeneratedCode | BindingImplOptions.Optimizable)]
+            public virtual void SetMarkedText(NSObject text, NSRange selectedRange, NSRange replacementRange)
+            {
+                NSRange r = HasMarkedText ? MarkedRange : SelectedRange;
+
+                if (replacementRange.Location != NSRange.NotFound)
+                {
+                    r.Location += replacementRange.Location;
+                    r.Length = replacementRange.Length;
+                }
+
+                //_control.ClearCompositionUnderlines();
+                InsertText_(text, r);
+
+                /*string s = text.ToString();
+                if (s.Length > 0)
+                {
+                    CmpositionUnderline u = new CompositionUnderline((uint)r.Location, (uint)r.Location + (uint)s.Length, CompositionLineStyle::Solid);
+                    _control->AddCompositionUnderline(u);
+                }*/
+
+                _control.Select((int)(r.Location + selectedRange.Location), (int)selectedRange.Length);
+            }
+
+            [Export("unmarkText")]
+            [BindingImpl(BindingImplOptions.GeneratedCode | BindingImplOptions.Optimizable)]
+            public virtual void UnmarkText()
+            {
+                //_control.ClearCompositionUnderlines();
+            }
+
+            [BindingImpl(BindingImplOptions.GeneratedCode | BindingImplOptions.Optimizable)]
+            public virtual NSString[] ValidAttributesForMarkedText
+            {
+                [Export("validAttributesForMarkedText")]
+                get { return new NSString[0]; }
+            }
+
+            [Export("doCommandBySelector:")]
+            [BindingImpl(BindingImplOptions.GeneratedCode | BindingImplOptions.Optimizable)]
+            public virtual void DoCommand(ObjCRuntime.Selector selector)
+            {
+                //_control.ClearCompositionUnderlines();
+                NSApplication app = NSApplication.SharedApplication;
+                base.KeyDown(app.CurrentEvent);
+            }
+
+            public override void KeyDown(NSEvent evt)
+            {
+                NSEvent[] evts = { evt };
+                InterpretKeyEvents(evts);
+            }
+        }
+
+        public class WindowDelegate : NSWindow, INSWindowDelegate
+        {
+            private AppKitDisplay _display;
+            private WindowClass _window;
+
+            public WindowDelegate(AppKitDisplay display, WindowClass window)
             {
                 _display = display;
                 _window = window;
             }
 
-            public override void WillClose(NSNotification notification)
+            [Export("windowWillClose:")]
+            [BindingImpl(BindingImplOptions.GeneratedCode | BindingImplOptions.Optimizable)]
+            public new virtual void WillClose(NSNotification notification)
             {
                 _display.Closed = true;
             }
 
-            public override void DidBecomeKey(NSNotification notification)
+            [Export("windowDidBecomeKey:")]
+            [BindingImpl(BindingImplOptions.GeneratedCode | BindingImplOptions.Optimizable)]
+            public new virtual void DidBecomeKey(NSNotification notification)
             {
                 _display.OnActivated();
             }
 
-            public override void DidResignKey(NSNotification notification)
+            [Export("windowDidResignKey:")]
+            [BindingImpl(BindingImplOptions.GeneratedCode | BindingImplOptions.Optimizable)]
+            public new virtual void DidResignKey(NSNotification notification)
             {
                 _display.OnDeactivated();
             }
 
-            public override void DidResize(NSNotification notification)
+            [Export("windowDidResize:")]
+            [BindingImpl(BindingImplOptions.GeneratedCode | BindingImplOptions.Optimizable)]
+            public new virtual void DidResize(NSNotification notification)
             {
                 _display.OnSizeChanged((int)_window.Frame.Size.Width, (int)_window.Frame.Size.Height);
             }
 
-            public override void DidMove(NSNotification notification)
+            [Export("windowDidMove:")]
+            [BindingImpl(BindingImplOptions.GeneratedCode | BindingImplOptions.Optimizable)]
+            public new virtual void DidMove(NSNotification notification)
             {
                 _display.OnLocationChanged((int)_window.Frame.Location.X, (int)_window.Frame.Location.Y);
             }
         }
 
-        public class Window : NSWindow
+        public class WindowClass : NSWindow
         {
             public AppKitDisplay AppKitDisplay { get; set; }
 
@@ -221,7 +422,7 @@ namespace NoesisApp
                 Control = 4
             }
 
-            public Window(RectangleF rect, NSWindowStyle style, NSBackingStore backingStore, bool defer) :
+            public WindowClass(RectangleF rect, NSWindowStyle style, NSBackingStore backingStore, bool defer) :
                 base(rect, style, backingStore, defer)
             {
             }
@@ -276,15 +477,16 @@ namespace NoesisApp
                 _modifiers = modifiers;
             }
 
-            private PointF MousePos(NSEvent evt)
+            private CGPoint MousePos(NSEvent evt)
             {
-                return new PointF((float)evt.LocationInWindow.X, (float)(ContentView.Bounds.Size.Height - evt.LocationInWindow.Y));
+                nfloat height = ContentView.Bounds.Size.Height;
+                return new CGPoint(evt.LocationInWindow.X, height - evt.LocationInWindow.Y);
             }
 
             public override void MouseDown(NSEvent evt)
             {
                 UpdateModifiers(evt);
-                PointF position = MousePos(evt);
+                CGPoint position = MousePos(evt);
 
                 if (evt.ClickCount == 2)
                 {
@@ -299,7 +501,7 @@ namespace NoesisApp
             public override void MouseUp(NSEvent evt)
             {
                 UpdateModifiers(evt);
-                PointF position = MousePos(evt);
+                CGPoint position = MousePos(evt);
 
                 AppKitDisplay.OnMouseButtonUp((int)position.X, (int)position.Y, MouseButton.Left);
             }
@@ -307,7 +509,7 @@ namespace NoesisApp
             public override void RightMouseDown(NSEvent evt)
             {
                 UpdateModifiers(evt);
-                PointF position = MousePos(evt);
+                CGPoint position = MousePos(evt);
 
                 if (evt.ClickCount == 2)
                 {
@@ -322,7 +524,7 @@ namespace NoesisApp
             public override void RightMouseUp(NSEvent evt)
             {
                 UpdateModifiers(evt);
-                PointF position = MousePos(evt);
+                CGPoint position = MousePos(evt);
 
                 AppKitDisplay.OnMouseButtonUp((int)position.X, (int)position.Y, MouseButton.Right);
             }
@@ -330,7 +532,7 @@ namespace NoesisApp
             public override void OtherMouseDown(NSEvent evt)
             {
                 UpdateModifiers(evt);
-                PointF position = MousePos(evt);
+                CGPoint position = MousePos(evt);
 
                 if (evt.ClickCount == 2)
                 {
@@ -345,7 +547,7 @@ namespace NoesisApp
             public override void OtherMouseUp(NSEvent evt)
             {
                 UpdateModifiers(evt);
-                PointF position = MousePos(evt);
+                CGPoint position = MousePos(evt);
 
                 AppKitDisplay.OnMouseButtonUp((int)position.X, (int)position.Y, MouseButton.Middle);
             }
@@ -353,7 +555,7 @@ namespace NoesisApp
             public override void MouseMoved(NSEvent evt)
             {
                 UpdateModifiers(evt);
-                PointF position = MousePos(evt);
+                CGPoint position = MousePos(evt);
 
                 AppKitDisplay.OnMouseMove((int)position.X, (int)position.Y);
             }
@@ -361,7 +563,7 @@ namespace NoesisApp
             public override void MouseDragged(NSEvent evt)
             {
                 UpdateModifiers(evt);
-                PointF position = MousePos(evt);
+                CGPoint position = MousePos(evt);
 
                 AppKitDisplay.OnMouseMove((int)position.X, (int)position.Y);
             }
@@ -369,7 +571,7 @@ namespace NoesisApp
             public override void RightMouseDragged(NSEvent evt)
             {
                 UpdateModifiers(evt);
-                PointF position = MousePos(evt);
+                CGPoint position = MousePos(evt);
 
                 AppKitDisplay.OnMouseMove((int)position.X, (int)position.Y);
             }
@@ -377,7 +579,7 @@ namespace NoesisApp
             public override void OtherMouseDragged(NSEvent evt)
             {
                 UpdateModifiers(evt);
-                PointF position = MousePos(evt);
+                CGPoint position = MousePos(evt);
 
                 AppKitDisplay.OnMouseMove((int)position.X, (int)position.Y);
             }
@@ -385,7 +587,7 @@ namespace NoesisApp
             public override void ScrollWheel(NSEvent evt)
             {
                 UpdateModifiers(evt);
-                PointF position = MousePos(evt);
+                CGPoint position = MousePos(evt);
 
                 AppKitDisplay.OnMouseWheel((int)position.X, (int)position.Y, (int)evt.DeltaY);
             }
@@ -394,7 +596,8 @@ namespace NoesisApp
             {
                 UpdateModifiers(evt);
                 AppKitDisplay.OnKeyDown(evt.KeyCode);
-                //InterpretKeyEvents(new NSArray(evt));
+                NSEvent[] evts = { evt };
+                InterpretKeyEvents(evts);
             }
 
             public override void KeyUp(NSEvent evt)

@@ -44,7 +44,7 @@ public class FontProvider : BaseComponent {
   /// </summary>
   /// <param name="folder">Path to the folder where font should be found.</param>
   /// <param name="id">Font ID, typically file name.</param>
-  public virtual System.IO.Stream OpenFont(string folder, string id) {
+  public virtual Stream OpenFont(string folder, string id) {
     return null;
   }
 

@@ -31,6 +31,8 @@ namespace NoesisApp
 
         public Display Display { get; set; }
 
+        public Window MainWindow { get; set; }
+
         public ResourceDictionary Resources { get; set; }
 
         public event StartupEventHandler Startup;
@@ -68,7 +70,7 @@ namespace NoesisApp
             DateTime startTime = DateTime.Now;
             Display.Render += (d) =>
             {
-                _mainWindow.Render((DateTime.Now - startTime).TotalSeconds);
+                MainWindow.Render((DateTime.Now - startTime).TotalSeconds);
             };
 
             bool runInBackground = false; // TODO: decide how to get this option
@@ -113,9 +115,10 @@ namespace NoesisApp
             });
 
             // Set resource providers
-            GUI.SetXamlProvider(CreateXamlProvider());
-            GUI.SetTextureProvider(CreateTextureProvider());
-            GUI.SetFontProvider(CreateFontProvider());
+            Type type = this.GetType();
+            GUI.SetXamlProvider(new EmbeddedXamlProvider(type.Assembly, type.Namespace, CreateXamlProvider()));
+            GUI.SetTextureProvider(new EmbeddedTextureProvider(type.Assembly, type.Namespace, CreateTextureProvider()));
+            GUI.SetFontProvider(new EmbeddedFontProvider(type.Assembly, type.Namespace, CreateFontProvider()));
 
             // Load App.xaml
             if (string.IsNullOrEmpty(Uri))
@@ -133,14 +136,14 @@ namespace NoesisApp
             }
 
             object root = GUI.LoadXaml(StartupUri);
-            _mainWindow = root as Window;
+            MainWindow = root as Window;
 
-            if (_mainWindow == null)
+            if (MainWindow == null)
             {
                 // non window roots are allowed
-                _mainWindow = new Window();
-                _mainWindow.Content = root;
-                _mainWindow.Title = Title;
+                MainWindow = new Window();
+                MainWindow.Content = root;
+                MainWindow.Title = Title;
             }
 
             uint samples = Samples;
@@ -157,7 +160,7 @@ namespace NoesisApp
                 renderContext.SetWindow(window);
             };
 
-            _mainWindow.Init(Display, renderContext, samples, ppaa);
+            MainWindow.Init(Display, renderContext, samples, ppaa);
 
             StartupEventArgs e = new StartupEventArgs();
             OnStartup(e);
@@ -174,11 +177,17 @@ namespace NoesisApp
             {
                 _exitCode = e.ApplicationExitCode;
 
-                _mainWindow.Shutdown();
-                _mainWindow = null;
+                // Make sure the View is destroyed after the Window element tree
+                View view = MainWindow.View;
 
+                MainWindow.Shutdown();
+                MainWindow = null;
+
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+
+                view = null;
                 Resources = null;
-
                 Current = null;
 
                 // Shut down Noesis
@@ -194,7 +203,7 @@ namespace NoesisApp
         public void Shutdown(int exitCode)
         {
             _exitCode = exitCode;
-            _mainWindow.Close();
+            MainWindow.Close();
         }
 
         private void OnLog(LogLevel level, string channel, string message)
@@ -231,16 +240,18 @@ namespace NoesisApp
         /// </summary>
         protected virtual XamlProvider CreateXamlProvider()
         {
-            return new EmbeddedXamlProvider(this);
+            Type type = this.GetType();
+            return new EmbeddedXamlProvider(type.Assembly, type.Namespace);
         }
 
         /// <summary>
         /// Creates the provider used for loading textures
         /// </summary>
         /// <returns></returns>
-        protected virtual TextureProvider CreateTextureProvider()
+        protected virtual FileTextureProvider CreateTextureProvider()
         {
-            return new EmbeddedTextureProvider(this);
+            Type type = this.GetType();
+            return new EmbeddedTextureProvider(type.Assembly, type.Namespace);
         }
 
         /// <summary>
@@ -248,7 +259,8 @@ namespace NoesisApp
         /// </summary>
         protected virtual FontProvider CreateFontProvider()
         {
-            return new EmbeddedFontProvider(this);
+            Type type = this.GetType();
+            return new EmbeddedFontProvider(type.Assembly, type.Namespace);
         }
 
         protected virtual string Title
@@ -287,7 +299,6 @@ namespace NoesisApp
         }
 
         #region Private members
-        Window _mainWindow;
         int _exitCode;
         #endregion
     }

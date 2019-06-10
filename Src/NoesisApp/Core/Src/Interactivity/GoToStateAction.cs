@@ -93,6 +93,21 @@ namespace NoesisApp
                     current = parent;
                     parent = parent.Parent;
                 }
+
+                if (HasStateGroup(current))
+                {
+                    FrameworkElement templatedParent = current.TemplatedParent;
+                    if (templatedParent != null && templatedParent is Control)
+                    {
+                        return templatedParent;
+                    }
+                    if (parent != null && parent is UserControl)
+                    {
+                        return parent;
+                    }
+
+                    return current;
+                }
             }
 
             return null;

@@ -5,7 +5,7 @@
     <TargetFrameworkIdentifier>MonoAndroid</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v8.1</TargetFrameworkVersion>
     <LanguageTargets Condition="'$(OS)' != 'Unix'">$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets</LanguageTargets>
-    <Version>2.2.2</Version>
+    <Version>2.2.3</Version>
     <Authors>Noesis Technologies</Authors>
     <Description>NoesisGUI Android Display</Description>
     <Copyright>Copyright (c) 2013 Noesis Technologies S.L.</Copyright>

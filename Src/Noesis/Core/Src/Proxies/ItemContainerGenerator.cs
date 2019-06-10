@@ -65,14 +65,14 @@ public class ItemContainerGenerator : BaseComponent, Noesis.IRecyclingItemContai
   private static void RaiseItemsChanged(IntPtr cPtr, IntPtr sender, IntPtr e) {
     try {
       if (Noesis.Extend.Initialized) {
-        if (!_ItemsChanged.ContainsKey(cPtr)) {
-          throw new System.InvalidOperationException("Delegate not registered for ItemsChanged event");
-        }
         if (sender == IntPtr.Zero && e == IntPtr.Zero) {
           _ItemsChanged.Remove(cPtr);
           return;
         }
-        ItemsChangedHandler handler = _ItemsChanged[cPtr];
+        ItemsChangedHandler handler = null;
+        if (!_ItemsChanged.TryGetValue(cPtr, out handler)) {
+          throw new System.InvalidOperationException("Delegate not registered for ItemsChanged event");
+        }
         if (handler != null) {
           handler(Noesis.Extend.GetProxy(sender, false), new ItemsChangedEventArgs(e, false));
         }
@@ -120,14 +120,14 @@ public class ItemContainerGenerator : BaseComponent, Noesis.IRecyclingItemContai
   private static void RaiseStatusChanged(IntPtr cPtr, IntPtr sender, IntPtr e) {
     try {
       if (Noesis.Extend.Initialized) {
-        if (!_StatusChanged.ContainsKey(cPtr)) {
-          throw new System.InvalidOperationException("Delegate not registered for StatusChanged event");
-        }
         if (sender == IntPtr.Zero && e == IntPtr.Zero) {
           _StatusChanged.Remove(cPtr);
           return;
         }
-        StatusChangedHandler handler = _StatusChanged[cPtr];
+        StatusChangedHandler handler = null;
+        if (!_StatusChanged.TryGetValue(cPtr, out handler)) {
+          throw new System.InvalidOperationException("Delegate not registered for StatusChanged event");
+        }
         if (handler != null) {
           handler(Noesis.Extend.GetProxy(sender, false), new EventArgs(e, false));
         }

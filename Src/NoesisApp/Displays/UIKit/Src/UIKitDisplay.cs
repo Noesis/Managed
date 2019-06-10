@@ -11,6 +11,11 @@ namespace NoesisApp
     {
         public UIKitDisplay Display { get; set; }
 
+        public override bool CanBecomeFirstResponder
+        {
+            get { return true;  }
+        }
+
         public View(CGRect rect)
             : base(rect)
         {
