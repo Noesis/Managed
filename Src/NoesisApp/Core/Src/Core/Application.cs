@@ -50,8 +50,8 @@ namespace NoesisApp
 
             _exitCode = 0;
 
-            Log.SetLogCallback(OnLog);
-            Error.SetUnhandledCallback(OnUnhandledException);
+            Log.SetLogCallback(LogCallback);
+            Error.SetUnhandledCallback(UnhandledCallback);
             GUI.Init();
         }
 
@@ -195,33 +195,62 @@ namespace NoesisApp
             }
         }
 
+        /// <summary>
+        ///  Shuts down the application. You can handle the Exit event to detect when an application is
+        ///  about to stop running, to perform any appropriate processing.
+        /// </summary>
         public void Shutdown()
         {
             Shutdown(0);
         }
 
+        /// <summary>
+        /// Shuts down the application that returns the specified exit code to the operating system.
+        /// </summary>
+        /// <param name="exitCode">An integer exit code. The default is 0.</param>
         public void Shutdown(int exitCode)
         {
             _exitCode = exitCode;
             MainWindow.Close();
         }
 
-        private void OnLog(LogLevel level, string channel, string message)
+        private void LogCallback(LogLevel level, string channel, string message)
+        {
+            OnLog(level, channel, message);
+        }
+
+        /// <summary>
+        /// Called when Noesis wants to print a message
+        /// </summary>
+        /// <param name="level">Trace, Debug, Info, Warning or Error</param>
+        /// <param name="channel">General channel is the empty string</param>
+        /// <param name="message">Message text</param>
+        protected virtual void OnLog(LogLevel level, string channel, string message)
         {
             if (string.IsNullOrEmpty(channel) || channel == "Binding")
             {
                 string[] prefixes = new string[] { "T", "D", "I", "W", "E" };
                 string prefix = (int)level < prefixes.Length ? prefixes[(int)level] : " ";
-                System.Diagnostics.Debug.WriteLine("[NOESIS/" + prefix + "] " + message);
+                System.Console.WriteLine("[NOESIS/" + prefix + "] " + message);
             }
         }
 
-        private void OnUnhandledException(Exception exception)
+        private void UnhandledCallback(Exception exception)
+        {
+            OnUnhandledException(exception);
+        }
+
+        /// <summary>
+        /// Called when an unhandled exception occurs in C# during a Native to Managed transition.
+        /// No throws should be raised inside this function to avoid stack unwinding problems.
+        /// </summary>
+        /// <param name="exception">Unhanlded exception generated in managed code</param>
+        protected virtual void OnUnhandledException(Exception exception)
         {
             // Exception stack trace stops on managed-native transitions, so we create a StackTrace
             // object that contains information of the full call stack
             System.Diagnostics.StackTrace stack = new System.Diagnostics.StackTrace(3, true);
-            System.Diagnostics.Debug.WriteLine(exception.GetType() + ": " + exception.Message + "\n" +
+            System.Console.WriteLine(exception.GetType() + ": " + exception.Message + "\n" +
                 exception.StackTrace + "\n" + stack);
         }
 
@@ -247,7 +276,6 @@ namespace NoesisApp
         /// <summary>
         /// Creates the provider used for loading textures
         /// </summary>
-        /// <returns></returns>
         protected virtual FileTextureProvider CreateTextureProvider()
         {
             Type type = this.GetType();

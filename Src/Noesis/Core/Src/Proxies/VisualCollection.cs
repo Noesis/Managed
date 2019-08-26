@@ -30,7 +30,19 @@ public class VisualCollection : UICollection<Visual> {
   protected VisualCollection() {
   }
 
-  public VisualCollection(Visual visualParent) : this(NoesisGUI_PINVOKE.new_VisualCollection(Visual.getCPtr(visualParent)), true) {
+  public VisualCollection(Visual parent) : this(Create(CheckParent(parent)), true) {
+  }
+
+  private static Visual CheckParent(Visual parent) {
+    if (parent == null) {
+      throw new ArgumentNullException("parent");
+    }
+    return parent;
+  }
+
+  private static IntPtr Create(Visual parent) {
+    IntPtr ret = NoesisGUI_PINVOKE.VisualCollection_Create(Visual.getCPtr(parent));
+    return ret;
   }
 
   new internal static IntPtr GetStaticType() {

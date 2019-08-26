@@ -53,9 +53,6 @@ namespace Noesis
 
                 try
                 {
-                    Noesis.GUI.SetApplicationResources(null);
-                    Update();
-
                     Initialized = false;
 
                     EventHandlerStore.Clear(_extends
@@ -63,6 +60,8 @@ namespace Noesis
                         .Select(kv => kv.Value.weak.Target)
                         .Cast<EventHandlerStore>()
                         .ToArray());
+
+                    Noesis.GUI.SetApplicationResources(null);
 
                     var pendingReleases = new List<KeyValuePair<IntPtr, WeakReference>>();
 
@@ -75,6 +74,7 @@ namespace Noesis
 
                         if (kv.Value.instance != null && !(kv.Value.instance is BaseComponent))
                         {
+                            _extendPtrs.Remove(kv.Value.instance);
                             _weakExtends.Add(kv.Key, kv.Value.weak);
                         }
 
@@ -892,6 +892,7 @@ namespace Noesis
             AddNativeType(Noesis.SkewTransform.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.SkewTransform), Noesis.SkewTransform.CreateProxy));
             AddNativeType(Noesis.Slider.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Slider), Noesis.Slider.CreateProxy));
             AddNativeType(Noesis.SolidColorBrush.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.SolidColorBrush), Noesis.SolidColorBrush.CreateProxy));
+            AddNativeType(Noesis.Span.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Span), Noesis.Span.CreateProxy));
             AddNativeType(Noesis.StackPanel.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.StackPanel), Noesis.StackPanel.CreateProxy));
             AddNativeType(Noesis.StatusBar.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.StatusBar), Noesis.StatusBar.CreateProxy));
             AddNativeType(Noesis.StatusBarItem.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.StatusBarItem), Noesis.StatusBarItem.CreateProxy));
@@ -3940,9 +3941,11 @@ namespace Noesis
                             extend.instance = extend.weak.Target;
 
                             RemoveWeakExtend(cPtr);
+                            AddExtendPtr(extend.instance, cPtr);
                         }
                         else
                         {
+                            RemoveExtendPtr(extend.instance);
                             AddWeakExtend(cPtr, extend.instance, extend.weak);
 
                             extend.instance = null;
@@ -4035,34 +4038,20 @@ namespace Noesis
                     "Native pointer of registered extend instance is null");
             }
 
-            ExtendInfo extend = new ExtendInfo();
-            extend.instance = null;
-            extend.weak = new WeakReference(instance);
+            ExtendInfo extend = new ExtendInfo { weak = new WeakReference(instance) };
 
             lock (_extends)
             {
                 _extends.Add(cPtr.ToInt64(), extend);
-                _extendPtrs.Add(extend.weak, cPtr);
             }
 
             AddWeakExtend(cPtr, instance, extend.weak);
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////
         private static void RemoveExtendInfo(IntPtr cPtr)
         {
             lock (_extends)
             {
-                ExtendInfo extend = null;
-                if (_extends.TryGetValue(cPtr.ToInt64(), out extend))
-                {
-                    _extendPtrs.Remove(extend.weak);
-                }
-                else
-                {
-                    _weakKey.Target = null;
-                    _extendPtrs.Remove(_weakKey);
-                }
                 _extends.Remove(cPtr.ToInt64());
             }
 
@@ -4071,13 +4060,30 @@ namespace Noesis
 
         public static void ForceRemoveExtend(object instance, IntPtr cPtr)
         {
-            lock (_extends)
-            {
-                _weakKey.Target = instance;
-                _extendPtrs.Remove(_weakKey);
-            }
-
             RemoveWeakExtend(cPtr);
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private static void AddExtendPtr(object instance, IntPtr cPtr)
+        {
+            if (!(instance is BaseComponent))
+            {
+                lock (_extendPtrs)
+                {
+                    _extendPtrs.Add(instance, cPtr);
+                }
+            }
+        }
+
+        private static void RemoveExtendPtr(object instance)
+        {
+            if (!(instance is BaseComponent))
+            {
+                lock (_extendPtrs)
+                {
+                    _extendPtrs.Remove(instance);
+                }
+            }
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -4133,26 +4139,7 @@ namespace Noesis
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
         static Dictionary<long, ExtendInfo> _extends = new Dictionary<long, ExtendInfo>();
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////
-        private class ExtendPtrComparer : IEqualityComparer<WeakReference>
-        {
-            public bool Equals(WeakReference x, WeakReference y)
-            {
-                return x.Target == y.Target;
-            }
-            public int GetHashCode(WeakReference wr)
-            {
-                object target = wr.Target;
-                return target != null ? target.GetHashCode() : 0;
-            }
-        }
-
-        static Dictionary<WeakReference, IntPtr> _extendPtrs =
-            new Dictionary<WeakReference, IntPtr>(new ExtendPtrComparer());
-
-        static WeakReference _weakKey = new WeakReference(null);
-
+        static Dictionary<object, IntPtr> _extendPtrs = new Dictionary<object, IntPtr>();
         private static Dictionary<long, WeakReference> _weakExtends = new Dictionary<long, WeakReference>();
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -4259,12 +4246,42 @@ namespace Noesis
             }
             else
             {
-                _weakKey.Target = instance;
-                lock (_extends)
+                lock (_extendPtrs)
                 {
-                    _extendPtrs.TryGetValue(_weakKey, out cPtr);
+                    _extendPtrs.TryGetValue(instance, out cPtr);
                 }
-                _weakKey.Target = null;
+
+                if (cPtr == IntPtr.Zero)
+                {
+                    cPtr = FindWeakInstancePtr(instance);
+                }
+            }
+
+            return cPtr;
+        }
+
+        private static IntPtr FindWeakInstancePtr(object instance)
+        {
+            IntPtr cPtr = IntPtr.Zero;
+
+            lock (_weakExtends)
+            {
+                var enumerator = _weakExtends.GetEnumerator();
+                try
+                {
+                    while (enumerator.MoveNext())
+                    {
+                        if (enumerator.Current.Value.Target == instance)
+                        {
+                            cPtr = new IntPtr(enumerator.Current.Key);
+                            break;
+                        }
+                    }
+                }
+                finally
+                {
+                    enumerator.Dispose();
+                }
             }
 
             return cPtr;

@@ -97,6 +97,19 @@ namespace NoesisApp
             "MaximumScale", typeof(float), typeof(TranslateZoomRotateBehavior),
             new PropertyMetadata(10.0f));
 
+        /// <summary>
+        /// Gets or sets the sensitivity factor used to zoom using mouse wheel. Default value is 1.0f.
+        /// </summary>
+        public float WheelSensitivity
+        {
+            get { return (float)GetValue(WheelSensitivityProperty); }
+            set { SetValue(WheelSensitivityProperty, value); }
+        }
+
+        public static readonly DependencyProperty WheelSensitivityProperty = DependencyProperty.Register(
+            "WheelSensitivity", typeof(float), typeof(TranslateZoomRotateBehavior),
+            new PropertyMetadata(1.0f));
+
         protected override void OnAttached()
         {
             FrameworkElement associatedObject = AssociatedObject;
@@ -118,6 +131,7 @@ namespace NoesisApp
             associatedObject.ManipulationDelta += OnManipulationDelta;
             associatedObject.MouseLeftButtonDown += OnMouseDown;
             associatedObject.MouseLeftButtonUp += OnMouseUp;
+            associatedObject.MouseWheel += OnMouseWheel;
         }
 
         protected override void OnDetaching()
@@ -132,10 +146,11 @@ namespace NoesisApp
 
             associatedObject.IsManipulationEnabled = false;
             associatedObject.ManipulationStarting -= OnManipulationStarting;
-            associatedObject.ManipulationDelta -= OnManipulationDelta;
             associatedObject.ManipulationInertiaStarting -= OnManipulationInertia;
+            associatedObject.ManipulationDelta -= OnManipulationDelta;
             associatedObject.MouseLeftButtonDown -= OnMouseDown;
             associatedObject.MouseLeftButtonUp -= OnMouseUp;
+            associatedObject.MouseWheel -= OnMouseWheel;
         }
 
         private void OnManipulationStarting(object sender, ManipulationStartingEventArgs e)
@@ -246,10 +261,15 @@ namespace NoesisApp
                     delta.Y = 0.0f;
                 }
 
+                delta.X *= _scale.ScaleX;
+                delta.Y *= _scale.ScaleY;
+
                 _translate.X += delta.X;
                 _translate.Y += delta.Y;
 
                 _settingPosition = false;
+
+                e.Handled = true;
             }
         }
 
@@ -258,6 +278,41 @@ namespace NoesisApp
             FrameworkElement associatedObject = AssociatedObject;
             associatedObject.MouseMove -= OnMouseMove;
             associatedObject.LostMouseCapture -= OnMouseLost;
+
+            e.Handled = true;
+        }
+
+        void OnMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            ManipulationModes supportedGestures = SupportedGestures;
+            if ((supportedGestures & ManipulationModes.Scale) != 0)
+            {
+                float sensitivity = WheelSensitivity;
+                float factor = 1.0f + sensitivity;
+                float prevScale = _scale.ScaleX;
+                float scale = prevScale * (e.Delta > 0 ? factor : 1.0f / factor);
+
+                FrameworkElement target = AssociatedObject;
+                Size renderSize = target.RenderSize;
+                Point center = new Point(renderSize.Width* 0.5f, renderSize.Height * 0.5f);
+                Point point = e.GetPosition(target);
+                Point pointScaled = center + (point - center) * scale;
+
+                _scale.ScaleX = 1.0f;
+                _scale.ScaleY = 1.0f;
+                _translate.X = 0.0f;
+                _translate.Y = 0.0f;
+
+                point = e.GetPosition(target);
+                Vector offset = point - pointScaled;
+
+                _scale.ScaleX = scale;
+                _scale.ScaleY = scale;
+                _translate.X = offset.X;
+                _translate.Y = offset.Y;
+
+                e.Handled = true;
+            }
         }
 
         private ScaleTransform _scale = null;

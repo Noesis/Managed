@@ -70,7 +70,7 @@ public static class VisualTreeHelper {
   private static HitTestResultBehavior OnHitTestResult(int callbacksId, IntPtr hitPtr) {
     try {
       HitTestCallbackInfo info = _hitTestCallbacks[callbacksId];
-      return info.Result(new HitTestResult(hitPtr, false));
+      return info.Result(new HitTestResult(hitPtr, true));
     }
     catch (Exception e)
     {

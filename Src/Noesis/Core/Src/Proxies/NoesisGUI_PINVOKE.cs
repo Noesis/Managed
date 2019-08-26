@@ -3495,7 +3495,7 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr VisualTreeHelper_HitTestHelper(HandleRef jarg1, ref Point jarg2);
 
   [DllImport(Library.Name)]
-  public static extern IntPtr new_VisualCollection(HandleRef jarg1);
+  public static extern IntPtr VisualCollection_Create(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern IntPtr VisualCollection_GetStaticType();
@@ -3548,6 +3548,38 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern void delete_RoutedEventArgs(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  [return: MarshalAs(UnmanagedType.U1)]
+  public static extern bool DataObjectEventArgs_CommandCancelled_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  [return: MarshalAs(UnmanagedType.U1)]
+  public static extern bool DataObjectEventArgs_IsDragDrop_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void DataObjectEventArgs_CancelCommand(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void delete_DataObjectEventArgs(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr DataObjectCopyingEventArgs_GetDataObjectHelper(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void delete_DataObjectCopyingEventArgs(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr DataObjectPastingEventArgs_GetSourceDataObjectHelper(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr DataObjectPastingEventArgs_GetDataObjectHelper(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void DataObjectPastingEventArgs_SetDataObjectHelper(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern void delete_DataObjectPastingEventArgs(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern IntPtr DragDropEffects_GetStaticType();
@@ -3726,13 +3758,13 @@ internal class NoesisGUI_PINVOKE {
   public static extern void delete_MouseWheelEventArgs(HandleRef jarg1);
 
   [DllImport(Library.Name)]
-  public static extern ulong TouchEventArgs_TouchDevice_get(HandleRef jarg1);
-
-  [DllImport(Library.Name)]
   public static extern IntPtr new_TouchEventArgs(HandleRef jarg1, HandleRef jarg2, ref Point jarg3, ulong jarg4);
 
   [DllImport(Library.Name)]
   public static extern IntPtr TouchEventArgs_GetTouchPoint(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern ulong TouchEventArgs_GetTouchDeviceId(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern void delete_TouchEventArgs(HandleRef jarg1);
@@ -4296,11 +4328,11 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   [return: MarshalAs(UnmanagedType.U1)]
-  public static extern bool UIElement_CaptureTouch(HandleRef jarg1, uint jarg2);
+  public static extern bool UIElement_CaptureTouch(HandleRef jarg1, ulong jarg2);
 
   [DllImport(Library.Name)]
   [return: MarshalAs(UnmanagedType.U1)]
-  public static extern bool UIElement_ReleaseTouchCapture(HandleRef jarg1, uint jarg2);
+  public static extern bool UIElement_ReleaseTouchCapture(HandleRef jarg1, ulong jarg2);
 
   [DllImport(Library.Name)]
   public static extern void UIElement_ReleaseAllTouchCaptures(HandleRef jarg1);

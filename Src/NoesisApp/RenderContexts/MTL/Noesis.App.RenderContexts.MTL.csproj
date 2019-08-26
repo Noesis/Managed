@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>xamarinios10;xamarinmac20</TargetFrameworks>
-    <Version>2.2.3</Version>
+    <Version>2.2.4</Version>
     <Authors>Noesis Technologies</Authors>
     <Description>NoesisGUI Apple Metal Render Context</Description>
     <Copyright>Copyright (c) 2013 Noesis Technologies S.L.</Copyright>

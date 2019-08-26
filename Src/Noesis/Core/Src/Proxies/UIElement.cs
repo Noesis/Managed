@@ -717,12 +717,12 @@ public class UIElement : Visual {
     NoesisGUI_PINVOKE.UIElement_ReleaseMouseCapture(swigCPtr);
   }
 
-  public bool CaptureTouch(uint touchDevice) {
+  public bool CaptureTouch(ulong touchDevice) {
     bool ret = NoesisGUI_PINVOKE.UIElement_CaptureTouch(swigCPtr, touchDevice);
     return ret;
   }
 
-  public bool ReleaseTouchCapture(uint touchDevice) {
+  public bool ReleaseTouchCapture(ulong touchDevice) {
     bool ret = NoesisGUI_PINVOKE.UIElement_ReleaseTouchCapture(swigCPtr, touchDevice);
     return ret;
   }

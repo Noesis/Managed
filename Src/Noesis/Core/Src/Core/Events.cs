@@ -102,6 +102,44 @@ namespace Noesis
     }
     #endregion
 
+    public class InputDevice
+    {
+        public UIElement Target { get; private set; }
+
+        internal InputDevice(UIElement target)
+        {
+            Target = target;
+        }
+    }
+
+    public class TouchDevice : InputDevice
+    {
+        public ulong Id { get; private set; }
+
+        public UIElement DirectlyOver { get { return Target; } }
+
+        public CaptureMode CaptureMode { get { return CaptureMode.Element; } }
+
+        public UIElement Captured
+        {
+            get
+            {
+                IntPtr cPtr = TouchDevice_GetCaptured(BaseComponent.getCPtr(Target), Id);
+                return (UIElement)Extend.GetProxy(cPtr, false);
+            }
+        }
+
+        internal TouchDevice(UIElement target, ulong id): base(target)
+        {
+            Id = id;
+        }
+
+        #region Imports
+        [DllImport(Library.Name)]
+        private static extern IntPtr TouchDevice_GetCaptured(HandleRef target, ulong id);
+        #endregion
+    }
+
     internal class EventHandlerStore
     {
         #region Routed Events

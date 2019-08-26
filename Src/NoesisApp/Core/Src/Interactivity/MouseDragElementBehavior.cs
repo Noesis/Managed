@@ -118,6 +118,7 @@ namespace NoesisApp
             {
                 DragBegun(this, e);
             }
+            e.Handled = true;
         }
 
         private void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -132,6 +133,7 @@ namespace NoesisApp
             {
                 Dragging(this, e);
             }
+            e.Handled = true;
         }
 
         private void OnLostMouseCapture(object sender, MouseEventArgs e)
@@ -141,6 +143,7 @@ namespace NoesisApp
             {
                 DragFinished(this, e);
             }
+            e.Handled = true;
         }
 
         private void StartDrag(Point relativePosition)

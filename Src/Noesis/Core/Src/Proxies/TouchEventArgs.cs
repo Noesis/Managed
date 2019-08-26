@@ -51,11 +51,10 @@ public class TouchEventArgs : InputEventArgs {
     }
   }
 
-  public ulong TouchDevice {
+  public TouchDevice TouchDevice {
     get {
-      ulong ret = NoesisGUI_PINVOKE.TouchEventArgs_TouchDevice_get(swigCPtr);
-      return ret;
-    } 
+      return new TouchDevice(Source as UIElement, GetTouchDeviceId());
+    }
   }
 
   public TouchEventArgs(object s, RoutedEvent e, Point touchPoint, ulong touchDevice) : this(NoesisGUI_PINVOKE.new_TouchEventArgs(Noesis.Extend.GetInstanceHandle(s), RoutedEvent.getCPtr(e), ref touchPoint, touchDevice), true) {
@@ -69,6 +68,11 @@ public class TouchEventArgs : InputEventArgs {
     else {
       return new Point();
     }
+  }
+
+  private ulong GetTouchDeviceId() {
+    ulong ret = NoesisGUI_PINVOKE.TouchEventArgs_GetTouchDeviceId(swigCPtr);
+    return ret;
   }
 
 }

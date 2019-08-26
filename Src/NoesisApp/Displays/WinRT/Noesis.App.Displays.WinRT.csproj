@@ -72,9 +72,9 @@
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
   <PropertyGroup>
     <PackageOutputPath>$(SolutionDir)NuGet\</PackageOutputPath>
-    <PackageVersion>2.2.3</PackageVersion>
+    <PackageVersion>2.2.4</PackageVersion>
     <NuGetTool>$(NuGetPackageRoot)nuget.commandline\4.9.3\tools\NuGet.exe</NuGetTool>
-    <PostBuildEvent>$(NuGetTool) pack $(ProjectDir)$(ProjectFileName) -OutputDirectory $(PackageOutputPath) -Version $(PackageVersion) -Prop Configuration=$(Configuration)</PostBuildEvent>
+    <PostBuildEvent>$(NuGetTool) pack $(ProjectDir)$(ProjectFileName) -OutputDirectory $(PackageOutputPath) -Version $(PackageVersion) -Prop Configuration=$(Configuration) -MSBuildVersion 15.9</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
