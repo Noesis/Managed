@@ -21,12 +21,12 @@ namespace NoesisApp
             IntPtr screenPtr = XScreenOfDisplay(_display, screenNumber);
             Screen screen = Noesis.Marshal.PtrToStructure<Screen>(screenPtr);
 
-            Window root = XRootWindow(_display, screenNumber);
+            IntPtr root = XRootWindow(_display, screenNumber);
 
             XSetWindowAttributes attr = new XSetWindowAttributes();
             attr.event_mask = EventMask.FocusChangeMask | EventMask.StructureNotifyMask | EventMask.SubstructureNotifyMask |
                 EventMask.PointerMotionMask | EventMask.ButtonPressMask | EventMask.ButtonReleaseMask | EventMask.KeyPressMask | EventMask.KeyReleaseMask;
-            _window = XCreateWindow(_display, root, 0, 0, (uint)screen.width, (uint)screen.height, 0, depth, (uint)WindowClass.InputOutput, visual, (ulong)AttributeMask.CWEventMask, ref attr);
+            _window = XCreateWindow(_display, root, 0, 0, (uint)screen.width, (uint)screen.height, 0, depth, (uint)WindowClass.InputOutput, visual, (IntPtr)AttributeMask.CWEventMask, ref attr);
 
             if (fullScreen)
             {
@@ -66,7 +66,7 @@ namespace NoesisApp
 
         public override IntPtr NativeWindow
         {
-            get { return (IntPtr)_window; }
+            get { return _window; }
         }
 
         public override int ClientWidth
@@ -99,7 +99,7 @@ namespace NoesisApp
                 {
                     XNextEvent(_display, e);
 
-                    if (XFilterEvent(e, Window.None))
+                    if (XFilterEvent(e, IntPtr.Zero))
                     {
                         continue;
                     }
@@ -282,23 +282,23 @@ namespace NoesisApp
             InputOnly = 2
         }
 
-        public enum AttributeMask : ulong
+        public enum AttributeMask : uint
         {
-            CWBackPixmap = (1L << 0),
-            CWBackPixel = (1L << 1),
-            CWBorderPixmap = (1L << 2),
-            CWBorderPixel = (1L << 3),
-            CWBitGravity = (1L << 4),
-            CWWinGravity = (1L << 5),
-            CWBackingStore = (1L << 6),
-            CWBackingPlanes = (1L << 7),
-            CWBackingPixel = (1L << 8),
-            CWOverrideRedirect = (1L << 9),
-            CWSaveUnder = (1L << 10),
-            CWEventMask = (1L << 11),
-            CWDontPropagate = (1L << 12),
-            CWColormap = (1L << 13),
-            CWCursor = (1L << 14),
+            CWBackPixmap = (1 << 0),
+            CWBackPixel = (1 << 1),
+            CWBorderPixmap = (1 << 2),
+            CWBorderPixel = (1 << 3),
+            CWBitGravity = (1 << 4),
+            CWWinGravity = (1 << 5),
+            CWBackingStore = (1 << 6),
+            CWBackingPlanes = (1 << 7),
+            CWBackingPixel = (1 << 8),
+            CWOverrideRedirect = (1 << 9),
+            CWSaveUnder = (1 << 10),
+            CWEventMask = (1 << 11),
+            CWDontPropagate = (1 << 12),
+            CWColormap = (1 << 13),
+            CWCursor = (1 << 14),
         }
 
         public enum Status : int
@@ -384,7 +384,7 @@ namespace NoesisApp
             Button5 = 5
         }
 
-        public enum KeySym : ulong
+        public enum KeySym : uint
         {
             XK_Cancel = 0xff69,
             XK_BackSpace = 0xff08,
@@ -498,18 +498,12 @@ namespace NoesisApp
         #endregion
 
         #region Types
-        public enum Window : ulong { None = 0 }
-
-        public enum Colormap : ulong { }
-
-        public enum Pixmap : ulong { }
-
         [StructLayout(LayoutKind.Sequential)]
         public struct Screen
         {
             public IntPtr ext_data;
             public IntPtr display;
-            public Window root;
+            public IntPtr root;
             public int width, height;
             public int mwidth, mheight;
             public int ndepths;
@@ -517,9 +511,9 @@ namespace NoesisApp
             public int root_depth;
             public IntPtr root_visual;
             public IntPtr default_gc;
-            public Colormap cmap;
-            public ulong white_pixel;
-            public ulong black_pixel;
+            public IntPtr cmap;
+            public IntPtr white_pixel;
+            public IntPtr black_pixel;
             public int max_maps, min_maps;
             public int backing_store;
             public bool save_unders;
@@ -530,27 +524,27 @@ namespace NoesisApp
         public struct XAnyEvent
         {
             public int type;
-            public ulong serial;
+            public IntPtr serial;
             public bool send_event;
             public IntPtr display;
-            public Window window;
+            public IntPtr window;
         }
 
         [StructLayout(LayoutKind.Sequential, Size = (24 * sizeof(long)))]
         public struct XConfigureEvent
         {
             public int type;
-            public ulong serial;
+            public IntPtr serial;
             public bool send_event;
             public IntPtr display;
-            public Window parent;
-            public Window window;
+            public IntPtr parent;
+            public IntPtr window;
             public int x;
             public int y;
             public int width;
             public int height;
             public int border_width;
-            public Window above;
+            public IntPtr above;
             public bool override_redirect;
         }
 
@@ -558,13 +552,13 @@ namespace NoesisApp
         public struct XMotionEvent
         {
             public int type;
-            public ulong serial;
+            public IntPtr serial;
             public bool send_event;
             public IntPtr display;
-            public Window window;
-            public Window root;
-            public Window subwindow;
-            public ulong time;
+            public IntPtr window;
+            public IntPtr root;
+            public IntPtr subwindow;
+            public IntPtr time;
             public int x, y;
             public int x_root, y_root;
             public uint state;
@@ -576,13 +570,13 @@ namespace NoesisApp
         public struct XButtonEvent
         {
             public int type;
-            public ulong serial;
+            public IntPtr serial;
             public bool send_event;
             public IntPtr display;
-            public Window window;
-            public Window root;
-            public Window subwindow;
-            public ulong time;
+            public IntPtr window;
+            public IntPtr root;
+            public IntPtr subwindow;
+            public IntPtr time;
             public int x, y;
             public int x_root, y_root;
             public uint state;
@@ -594,13 +588,13 @@ namespace NoesisApp
         public struct XKeyEvent
         {
             public int type;
-            public ulong serial;
+            public IntPtr serial;
             public bool send_event;
             public IntPtr display;
-            public Window window;
-            public Window root;
-            public Window subwindow;
-            public ulong time;
+            public IntPtr window;
+            public IntPtr root;
+            public IntPtr subwindow;
+            public IntPtr time;
             public int x, y;
             public int x_root, y_root;
             public uint state;
@@ -611,20 +605,20 @@ namespace NoesisApp
         [StructLayout(LayoutKind.Sequential)]
         public struct XSetWindowAttributes
         {
-            public Pixmap background_pixmap;
-            public ulong background_pixel;
-            public Pixmap border_pixmap;
-            public ulong border_pixel;
+            public IntPtr background_pixmap;
+            public IntPtr background_pixel;
+            public IntPtr border_pixmap;
+            public IntPtr border_pixel;
             public int bit_gravity;
             public int win_gravity;
             public int backing_store;
-            public ulong backing_planes;
-            public ulong backing_pixel;
+            public IntPtr backing_planes;
+            public IntPtr backing_pixel;
             public bool save_under;
             public EventMask event_mask;
             public EventMask do_not_propagate_mask;
             public bool override_redirect;
-            public Colormap colormap;
+            public IntPtr colormap;
             public Cursor cursor;
         }
 
@@ -636,15 +630,15 @@ namespace NoesisApp
             public int border_width;
             public int depth;
             public IntPtr visual;
-            public Window root;
+            public IntPtr root;
             public int @class;
             public int bit_gravity;
             public int win_gravity;
             public int backing_store;
-            public ulong backing_planes;
-            public ulong backing_pixel;
+            public IntPtr backing_planes;
+            public IntPtr backing_pixel;
             public bool save_under;
-            public Colormap colormap;
+            public IntPtr colormap;
             public bool map_installed;
             public int map_state;
             public long all_event_masks;
@@ -797,16 +791,16 @@ namespace NoesisApp
         public static extern IntPtr XScreenOfDisplay(IntPtr display, int screen_number);
 
         [DllImport("libX11.so.6")]
-        public static extern Window XRootWindow(IntPtr display, int screen_number);
+        public static extern IntPtr XRootWindow(IntPtr display, int screen_number);
 
         [DllImport("libX11.so.6")]
-        public static extern Window XCreateWindow(IntPtr display, Window parent, int x, int y, uint width, uint height, uint border_width, int depth, uint @class, IntPtr visual, ulong valuemask, ref XSetWindowAttributes attributes);
+        public static extern IntPtr XCreateWindow(IntPtr display, IntPtr parent, int x, int y, uint width, uint height, uint border_width, int depth, uint @class, IntPtr visual, IntPtr valuemask, ref XSetWindowAttributes attributes);
 
         [DllImport("libX11.so.6")]
-        public static extern int XMapWindow(IntPtr display, Window window);
+        public static extern int XMapWindow(IntPtr display, IntPtr window);
 
         [DllImport("libX11.so.6")]
-        public static extern Status XRaiseWindow(IntPtr display, Window window);
+        public static extern Status XRaiseWindow(IntPtr display, IntPtr window);
 
         [DllImport("libX11.so.6")]
         public static extern int XPending(IntPtr display);
@@ -815,13 +809,13 @@ namespace NoesisApp
         public static extern Status XNextEvent(IntPtr display, IntPtr event_return);
 
         [DllImport("libX11.so.6")]
-        public static extern bool XFilterEvent(IntPtr @event, Window window);
+        public static extern bool XFilterEvent(IntPtr @event, IntPtr window);
 
         [DllImport("libX11.so.6")]
-        public static extern Status XGetWindowAttributes(IntPtr display, Window window, out XWindowAttributes attributes);
+        public static extern Status XGetWindowAttributes(IntPtr display, IntPtr window, out XWindowAttributes attributes);
 
         [DllImport("libX11.so.6")]
-        public static extern Status XResizeWindow(IntPtr display, Window window, uint width, uint height);
+        public static extern Status XResizeWindow(IntPtr display, IntPtr window, uint width, uint height);
 
         [DllImport("libX11.so.6")]
         public static extern KeySym XLookupKeysym(ref XKeyEvent key_event, int index);
@@ -849,7 +843,7 @@ namespace NoesisApp
         #endregion
 
         private IntPtr _display;
-        private Window _window;
+        private IntPtr _window;
         private IntPtr _xim;
         private IntPtr _xic;
         private UTF8Encoding _utf8;

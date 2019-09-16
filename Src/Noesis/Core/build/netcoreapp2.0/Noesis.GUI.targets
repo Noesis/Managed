@@ -10,6 +10,7 @@
   <PropertyGroup>
     <!-- handle PlatformTarget specifically -->
     <NoesisTargetPlatform Condition="'$(NoesisTargetPlatform)' == '' and '$(PlatformTarget)' == 'ARM'">arm</NoesisTargetPlatform>
+    <NoesisTargetPlatform Condition="'$(NoesisTargetPlatform)' == '' and '$(PlatformTarget)' == 'ARM64'">arm64</NoesisTargetPlatform>
     <NoesisTargetPlatform Condition="'$(NoesisTargetPlatform)' == '' and '$(PlatformTarget)' == 'x86'">x86</NoesisTargetPlatform>
     <NoesisTargetPlatform Condition="'$(NoesisTargetPlatform)' == '' and '$(PlatformTarget)' == 'x64'">x64</NoesisTargetPlatform>
     <!-- handle Any CPU, considering Prefer32Bit -->
