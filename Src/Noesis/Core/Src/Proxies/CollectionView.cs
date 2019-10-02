@@ -16,7 +16,7 @@ using System.Collections;
 namespace Noesis
 {
 
-public class CollectionView : BaseComponent, System.Collections.IEnumerable {
+public class CollectionView : BaseComponent, IEnumerable {
   internal new static CollectionView CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
     return new CollectionView(cPtr, cMemoryOwn);
   }
@@ -31,13 +31,13 @@ public class CollectionView : BaseComponent, System.Collections.IEnumerable {
   protected CollectionView() {
   }
 
-  public CollectionView(System.Collections.IEnumerable collection) :
+  public CollectionView(IEnumerable collection) :
     base(CreateCollectionView(collection), true) {
   }
 
-  public System.Collections.IEnumerable SourceCollection {
+  public IEnumerable SourceCollection {
     get {
-      return (System.Collections.IEnumerable)GetSourceCollectionHelper();
+      return (IEnumerable)GetSourceCollectionHelper();
     }
   }
 
@@ -46,8 +46,16 @@ public class CollectionView : BaseComponent, System.Collections.IEnumerable {
     return Noesis.Extend.GetProxy(cPtr, true);
   }
 
-  private struct CollectionViewEnumerator : System.Collections.IEnumerator {
-    object System.Collections.IEnumerator.Current {
+  public Enumerator GetEnumerator() {
+    return new Enumerator(this);
+  }
+
+  IEnumerator IEnumerable.GetEnumerator() {
+    return new Enumerator(this);
+  }
+
+  public struct Enumerator : IEnumerator {
+    object IEnumerator.Current {
       get { return Current; }
     }
     public object Current {
@@ -62,16 +70,12 @@ public class CollectionView : BaseComponent, System.Collections.IEnumerable {
     public void Reset() {
       this._index = -1;
     }
-    public CollectionViewEnumerator(CollectionView c) {
+    public Enumerator(CollectionView c) {
       this._collectionView = c;
       this._index = -1;
     }
     private CollectionView _collectionView;
     private int _index;
-  }
-
-  public System.Collections.IEnumerator GetEnumerator() {
-    return new CollectionViewEnumerator(this);
   }
 
   public int IndexOf(object item) {

@@ -4338,6 +4338,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern void UIElement_ReleaseAllTouchCaptures(HandleRef jarg1);
 
   [DllImport(Library.Name)]
+  public static extern IntPtr UIElement_GetTouchCaptured(HandleRef jarg1, ulong jarg2);
+
+  [DllImport(Library.Name)]
   [return: MarshalAs(UnmanagedType.U1)]
   public static extern bool UIElement_Focus(HandleRef jarg1);
 

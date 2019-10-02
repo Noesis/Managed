@@ -5,7 +5,7 @@
     <TargetFrameworkIdentifier>Xamarin.Mac</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <LanguageTargets Condition="'$(OS)' != 'Unix'">$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets</LanguageTargets>
-    <Version>2.2.4</Version>
+    <Version>2.2.5</Version>
     <Authors>Noesis Technologies</Authors>
     <Description>NoesisGUI NSOpenGL Render Context</Description>
     <Copyright>Copyright (c) 2013 Noesis Technologies S.L.</Copyright>

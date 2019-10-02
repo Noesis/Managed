@@ -132,6 +132,11 @@ namespace Noesis
 
         #region Imports
 
+        static DependencyProperty()
+        {
+            Noesis.GUI.Init();
+        }
+
         ////////////////////////////////////////////////////////////////////////////////////////////////
         [DllImport(Library.Name)]
         private static extern IntPtr Noesis_RegisterDependencyProperty(IntPtr classType,

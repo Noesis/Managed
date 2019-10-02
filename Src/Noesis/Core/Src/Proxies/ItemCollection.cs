@@ -119,11 +119,15 @@ public class ItemCollection : BaseComponent, IList {
     }
   }
 
-  public IEnumerator GetEnumerator() {
-    return new CollectionEnumerator(this);
+  public Enumerator GetEnumerator() {
+    return new Enumerator(this);
   }
 
-  private struct CollectionEnumerator :  IEnumerator {
+  IEnumerator IEnumerable.GetEnumerator() {
+    return new Enumerator(this);
+  }
+
+  public struct Enumerator :  IEnumerator {
     object IEnumerator.Current {
       get { return Current; }
     }
@@ -139,7 +143,7 @@ public class ItemCollection : BaseComponent, IList {
     public void Reset() {
       this._index = -1;
     }
-    public CollectionEnumerator(ItemCollection c) {
+    public Enumerator(ItemCollection c) {
       this._collection = c;
       this._index = -1;
     }

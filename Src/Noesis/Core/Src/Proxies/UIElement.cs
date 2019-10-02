@@ -731,6 +731,11 @@ public class UIElement : Visual {
     NoesisGUI_PINVOKE.UIElement_ReleaseAllTouchCaptures(swigCPtr);
   }
 
+  public UIElement GetTouchCaptured(ulong touchDevice) {
+    IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_GetTouchCaptured(swigCPtr, touchDevice);
+    return (UIElement)Noesis.Extend.GetProxy(cPtr, false);
+  }
+
   public bool Focus() {
     bool ret = NoesisGUI_PINVOKE.UIElement_Focus(swigCPtr);
     return ret;

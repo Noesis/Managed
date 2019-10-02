@@ -63,14 +63,13 @@ namespace Noesis
 
                     Noesis.GUI.SetApplicationResources(null);
 
-                    var pendingReleases = new List<KeyValuePair<IntPtr, WeakReference>>();
+                    var pendingReleases = new List<KeyValuePair<long, WeakReference>>();
 
                     pendingReleases.AddRange(_proxies);
 
                     foreach (var kv in _extends)
                     {
-                        pendingReleases.Add(new KeyValuePair<IntPtr, WeakReference>(
-                            new IntPtr(kv.Key), kv.Value.weak));
+                        pendingReleases.Add(new KeyValuePair<long, WeakReference>(kv.Key, kv.Value.weak));
 
                         if (kv.Value.instance != null && !(kv.Value.instance is BaseComponent))
                         {
@@ -100,7 +99,7 @@ namespace Noesis
                         object instance = kv.Value.Target;
                         if (instance != null)
                         {
-                            BaseComponent.ForceRelease(instance, kv.Key);
+                            BaseComponent.ForceRelease(instance, new IntPtr(kv.Key));
                         }
                     }
 
@@ -4190,17 +4189,18 @@ namespace Noesis
         ////////////////////////////////////////////////////////////////////////////////////////////////
         private static BaseComponent GetProxyInstance(IntPtr cPtr, bool ownMemory, NativeTypeInfo info)
         {
+            long ptr = cPtr.ToInt64();
             lock (_proxies)
             {
                 WeakReference wr;
-                if (_proxies.TryGetValue(cPtr, out wr))
+                if (_proxies.TryGetValue(ptr, out wr))
                 {
                     if (wr != null)
                     {
                         BaseComponent component = (BaseComponent)wr.Target;
                         if (component == null)
                         {
-                            _proxies.Remove(cPtr);
+                            _proxies.Remove(ptr);
                         }
                         else
                         {
@@ -4217,13 +4217,14 @@ namespace Noesis
         public static BaseComponent AddProxy(BaseComponent instance)
         {
             IntPtr cPtr = BaseComponent.getCPtr(instance).Handle;
+            long ptr = cPtr.ToInt64();
             lock (_proxies)
             {
-                if (_proxies.ContainsKey(cPtr))
+                if (_proxies.ContainsKey(ptr))
                 {
-                    _proxies.Remove(cPtr);
+                    _proxies.Remove(ptr);
                 }
-                _proxies.Add(cPtr, new WeakReference(instance));
+                _proxies.Add(ptr, new WeakReference(instance));
             }
 
             return instance;
@@ -4232,10 +4233,11 @@ namespace Noesis
         ////////////////////////////////////////////////////////////////////////////////////////////////
         public static void RemoveProxy(IntPtr cPtr)
         {
+            long ptr = cPtr.ToInt64();
             lock (_proxies)
             {
                 WeakReference wr;
-                if (_proxies.TryGetValue(cPtr, out wr))
+                if (_proxies.TryGetValue(ptr, out wr))
                 {
                     // A  new proxy may be created for the same cPtr while the previous proxy is
                     // pending for GC. When its Finalizer is called, we have to make sure that a new
@@ -4244,7 +4246,7 @@ namespace Noesis
                     {
                         if (wr.Target == null)
                         {
-                            _proxies.Remove(cPtr);
+                            _proxies.Remove(ptr);
                         }
                     }
                 }
@@ -4252,7 +4254,7 @@ namespace Noesis
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-        static Dictionary<IntPtr, WeakReference> _proxies = new Dictionary<IntPtr, WeakReference>();
+        static Dictionary<long, WeakReference> _proxies = new Dictionary<long, WeakReference>();
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
         public static HandleRef GetInstanceHandle(object instance)

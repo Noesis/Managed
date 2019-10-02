@@ -171,12 +171,17 @@ namespace Noesis
         #endregion
 
         #region Enumerator
+        public new Enumerator GetEnumerator()
+        {
+            return new Enumerator(this);
+        }
+
         IEnumerator<T> IEnumerable<T>.GetEnumerator()
         {
             return new Enumerator(this);
         }
 
-        private struct Enumerator : IEnumerator<T>
+        public new struct Enumerator : IEnumerator<T>
         {
             object IEnumerator.Current
             {
@@ -196,6 +201,7 @@ namespace Noesis
                 }
                 return true;
             }
+
             public void Reset()
             {
                 this._index = -1;

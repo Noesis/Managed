@@ -46,6 +46,13 @@ namespace Noesis
 
         #region Imports
 
+        #if !UNITY_5_3_OR_NEWER
+        static Texture()
+        {
+            Noesis.GUI.Init();
+        }
+        #endif
+
         private static Texture WrapD3D11(IntPtr nativePointer, int width, int height,
             int numMipMaps, bool isInverted)
         {

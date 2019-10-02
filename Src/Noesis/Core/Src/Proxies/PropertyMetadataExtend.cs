@@ -196,6 +196,12 @@ namespace Noesis
         }
 
         #region Imports
+
+        static PropertyMetadata()
+        {
+            Noesis.GUI.Init();
+        }
+
         [DllImport(Library.Name)]
         private static extern IntPtr Noesis_PropertyMetadata_Create();
 
