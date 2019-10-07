@@ -114,6 +114,20 @@ namespace NoesisGUIExtensions
             return (bool)control.GetValue(IsFocusEngagedProperty);
         }
 
+        public static readonly DependencyProperty SupportsFocusEngagementProperty =
+            DependencyProperty.RegisterAttached("SupportsFocusEngagement", typeof(bool), typeof(Element),
+                new PropertyMetadata(false));
+
+        public static bool GetSupportsFocusEngagement(DependencyObject obj)
+        {
+            return (bool)obj.GetValue(SupportsFocusEngagementProperty);
+        }
+
+        public static void SetSupportsFocusEngagement(DependencyObject obj, bool value)
+        {
+            obj.SetValue(SupportsFocusEngagementProperty, value);
+        }
+
         #endregion
 
         /// <summary>
