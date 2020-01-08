@@ -40,16 +40,6 @@ namespace Noesis
             }
         }
 
-        int ICollection<T>.Count
-        {
-            get { return base.Count; }
-        }
-
-        public bool IsReadOnly
-        {
-            get { return base.IsFrozen; }
-        }
-
         public void Add(T item)
         {
             CheckReentrancy();
@@ -115,7 +105,7 @@ namespace Noesis
 
         public void CopyTo(T[] array, int arrayIndex)
         {
-            ((ICollection)this).CopyTo(array, arrayIndex);
+            base.CopyTo(array, arrayIndex);
         }
 
         public event NotifyCollectionChangedEventHandler CollectionChanged;
@@ -168,6 +158,66 @@ namespace Noesis
         }
 
         private SimpleMonitor _monitor = new SimpleMonitor();
+        #endregion
+
+        #region IList<T>
+        T IList<T>.this[int index]
+        {
+            get { return this[index]; }
+            set { this[index] = value; }
+        }
+
+        int IList<T>.IndexOf(T item)
+        {
+            return this.IndexOf(item);
+        }
+
+        void IList<T>.Insert(int index, T item)
+        {
+            this.Insert(index, item);
+        }
+
+        void IList<T>.RemoveAt(int index)
+        {
+            this.RemoveAt(index);
+        }
+        #endregion
+
+        #region ICollection<T>
+        int ICollection<T>.Count
+        {
+            get { return base.Count; }
+        }
+
+        bool ICollection<T>.IsReadOnly
+        {
+            get { return base.IsReadOnly; }
+        }
+
+        void ICollection<T>.Add(T item)
+        {
+            this.Add(item);
+        }
+
+        void ICollection<T>.Clear()
+        {
+            this.Clear();
+        }
+
+        bool ICollection<T>.Contains(T item)
+        {
+            return this.Contains(item);
+        }
+
+        void ICollection<T>.CopyTo(T[] array, int arrayIndex)
+        {
+            this.CopyTo(array, arrayIndex);
+        }
+
+        bool ICollection<T>.Remove(T item)
+        {
+            return this.Remove(item);
+        }
         #endregion
 
         #region Enumerator

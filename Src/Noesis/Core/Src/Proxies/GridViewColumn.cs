@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-public class GridViewColumn : DependencyObject {
+public class GridViewColumn : Animatable {
   internal new static GridViewColumn CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
     return new GridViewColumn(cPtr, cMemoryOwn);
   }

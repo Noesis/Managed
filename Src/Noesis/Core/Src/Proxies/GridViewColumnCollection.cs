@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-public class GridViewColumnCollection : UICollection<GridViewColumn> {
+public class GridViewColumnCollection : FreezableCollection<GridViewColumn> {
   internal new static GridViewColumnCollection CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
     return new GridViewColumnCollection(cPtr, cMemoryOwn);
   }

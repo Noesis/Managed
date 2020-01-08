@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace Noesis
 {
@@ -32,7 +33,7 @@ namespace Noesis
         public static string GetBuildVersion()
         {
             IntPtr version = Noesis_GetBuildVersion();
-            return Noesis.Extend.StringFromNativeUtf8(version);
+            return Extend.StringFromNativeUtf8(version);
         }
 
         private static bool _initialized = false;
@@ -52,6 +53,9 @@ namespace Noesis
                 Noesis_Init();
 
                 Extend.Init();
+
+                Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
+                SynchronizationContext.SetSynchronizationContext(dispatcher.SynchronizationContext);
             }
         }
 

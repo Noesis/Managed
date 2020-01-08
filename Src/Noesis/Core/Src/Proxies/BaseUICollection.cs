@@ -31,37 +31,22 @@ public class BaseUICollection : BaseComponent, IList {
   protected BaseUICollection() {
   }
 
-  public object this[int index] {
-    get {
-      if (index >= Count) {
-        throw new ArgumentOutOfRangeException("index");
-      }
-      IntPtr cPtr = Get(index);
-      return Noesis.Extend.GetProxy(cPtr, true);
-    }
-    set {
-      if (index >= Count) {
-        throw new ArgumentOutOfRangeException("index");
-      }
-      Set(index, value);
-    }
-  }
-
+  #region IList
   object IList.this[int index] {
     get { return this[index]; }
     set { this[index] = value; }
   }
 
   int IList.Add(object value) {
-    return Add(value);
+    return this.Add(value);
   }
 
   bool IList.Contains(object value) {
-    return Contains(value);
+    return this.Contains(value);
   }
 
   void IList.Clear() {
-    Clear();
+    this.Clear();
   }
 
   bool IList.IsReadOnly {
@@ -73,19 +58,25 @@ public class BaseUICollection : BaseComponent, IList {
   }
 
   int IList.IndexOf(object value) {
-    return IndexOf(value);
+    return this.IndexOf(value);
   }
 
   void IList.Insert(int index, object value) {
-    Insert(index, value);
+    this.Insert(index, value);
   }
 
   void IList.Remove(object value) {
-    Remove(value);
+    this.Remove(value);
   }
 
   void IList.RemoveAt(int index) {
-    RemoveAt(index);
+    this.RemoveAt(index);
+  }
+  #endregion
+
+  #region ICollection
+  int ICollection.Count {
+    get { return this.Count; }
   }
 
   bool ICollection.IsSynchronized {
@@ -97,24 +88,11 @@ public class BaseUICollection : BaseComponent, IList {
   }
 
   void ICollection.CopyTo(Array array, int arrayIndex) {
-    if (array == null) {
-      throw new ArgumentNullException("array");
-    }
-    if (arrayIndex < 0) {
-      throw new ArgumentOutOfRangeException("arrayIndex is less than 0.");
-    }
-    if ((array != null) && (array.Rank != 1)) {
-      throw new ArgumentException("array is multidimensional.");
-    }
-    if (array.Length + arrayIndex > Count) { 
-      throw new ArgumentException("There is no available space in array to copy all elements in the ICollection.");
-    }
-    int numElements = Count;
-    for (int i = 0; i < numElements; ++i) {
-      array.SetValue(this[i], arrayIndex + i);
-    }
+    this.CopyTo(array, arrayIndex);
   }
+  #endregion
 
+  #region Enumerator
   public Enumerator GetEnumerator() {
     return new Enumerator(this);
   }
@@ -145,6 +123,42 @@ public class BaseUICollection : BaseComponent, IList {
     }
     private BaseUICollection _collection;
     private int _index;
+  }
+  #endregion
+
+  public object this[int index] {
+    get {
+      if (index >= Count) {
+        throw new ArgumentOutOfRangeException("index");
+      }
+      IntPtr cPtr = Get(index);
+      return Noesis.Extend.GetProxy(cPtr, true);
+    }
+    set {
+      if (index >= Count) {
+        throw new ArgumentOutOfRangeException("index");
+      }
+      Set(index, value);
+    }
+  }
+
+  public void CopyTo(Array array, int arrayIndex) {
+    if (array == null) {
+      throw new ArgumentNullException("array");
+    }
+    if (arrayIndex < 0) {
+      throw new ArgumentOutOfRangeException("arrayIndex is less than 0.");
+    }
+    if ((array != null) && (array.Rank != 1)) {
+      throw new ArgumentException("array is multidimensional.");
+    }
+    if (array.Length - arrayIndex < Count) { 
+      throw new ArgumentException("There is no available space in array to copy all elements in the ICollection.");
+    }
+    int numElements = Count;
+    for (int i = 0; i < numElements; ++i) {
+      array.SetValue(this[i], arrayIndex + i);
+    }
   }
 
   public int Count {

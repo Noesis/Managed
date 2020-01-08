@@ -30,6 +30,26 @@ public class DispatcherObject : BaseComponent {
   protected DispatcherObject() {
   }
 
+  public Dispatcher Dispatcher {
+    get { return Dispatcher.FromThreadId(ThreadId); }
+  }
+
+  public bool CheckAccess() {
+    bool ret = NoesisGUI_PINVOKE.DispatcherObject_CheckAccess(swigCPtr);
+    return ret;
+  }
+
+  public void VerifyAccess() {
+    NoesisGUI_PINVOKE.DispatcherObject_VerifyAccess(swigCPtr);
+  }
+
+  public int ThreadId {
+    get {
+      int ret = NoesisGUI_PINVOKE.DispatcherObject_ThreadId_get(swigCPtr);
+      return ret;
+    } 
+  }
+
   new internal static IntPtr GetStaticType() {
     IntPtr ret = NoesisGUI_PINVOKE.DispatcherObject_GetStaticType();
     return ret;

@@ -63,10 +63,6 @@ namespace Noesis
                     component.swigCPtr = new HandleRef(null, IntPtr.Zero);
                     Noesis.Extend.RemoveProxy(cPtr);
                 }
-                else
-                {
-                    Noesis.Extend.ForceRemoveExtend(instance, cPtr);
-                }
 
                 Release(cPtr);
             }

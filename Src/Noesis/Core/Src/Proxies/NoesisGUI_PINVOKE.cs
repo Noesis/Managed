@@ -685,6 +685,16 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr DependencyProperty_GetMetadataHelper(HandleRef jarg1, IntPtr jarg2);
 
   [DllImport(Library.Name)]
+  [return: MarshalAs(UnmanagedType.U1)]
+  public static extern bool DispatcherObject_CheckAccess(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void DispatcherObject_VerifyAccess(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern int DispatcherObject_ThreadId_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr DispatcherObject_GetStaticType();
 
   [DllImport(Library.Name)]
@@ -15361,9 +15371,6 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr GridViewColumnHeader_GetStaticType();
-
-  [DllImport(Library.Name)]
-  public static extern IntPtr new_ViewBase();
 
   [DllImport(Library.Name)]
   public static extern void ViewBase_ClearItem(HandleRef jarg1, HandleRef jarg2);

@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-public class ViewBase : DependencyObject {
+public class ViewBase : Animatable {
   internal new static ViewBase CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
     return new ViewBase(cPtr, cMemoryOwn);
   }
@@ -27,12 +27,7 @@ public class ViewBase : DependencyObject {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
-  public ViewBase() {
-  }
-
-  protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    registerExtend = false;
-    return NoesisGUI_PINVOKE.new_ViewBase();
+  protected ViewBase() {
   }
 
   public virtual void ClearItem(ListViewItem item) {

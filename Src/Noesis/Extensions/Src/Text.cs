@@ -5,6 +5,7 @@
 
 using System;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace NoesisGUIExtensions
@@ -66,6 +67,62 @@ namespace NoesisGUIExtensions
         public static double GetStrokeThickness(UIElement element)
         {
             return (double)element.GetValue(StrokeThicknessProperty);
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Specifies the placeholder text for TextBoxes and PasswordBoxes
+        /// </summary>
+        #region Placeholder attached property
+
+        public static readonly DependencyProperty PlaceholderProperty =
+            DependencyProperty.RegisterAttached("Placeholder", typeof(string), typeof(Text),
+            new FrameworkPropertyMetadata(string.Empty, OnPlaceholderChanged));
+
+        public static void SetPlaceholder(UIElement element, string value)
+        {
+            element.SetValue(PlaceholderProperty, value);
+        }
+
+        public static string GetPlaceholder(UIElement element)
+        {
+            return (string)element.GetValue(PlaceholderProperty);
+        }
+
+        private static void OnPlaceholderChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            PasswordBox passwordBox = d as PasswordBox;
+            if (passwordBox != null)
+            {
+                string oldPlaceholder = e.OldValue as string;
+                if (!string.IsNullOrEmpty(oldPlaceholder))
+                {
+                    passwordBox.PasswordChanged -= OnPasswordChanged;
+                }
+
+                string newPlaceholder = e.NewValue as string;
+                if (!string.IsNullOrEmpty(newPlaceholder))
+                {
+                    passwordBox.PasswordChanged += OnPasswordChanged;
+                }
+            }
+        }
+
+        private static void OnPasswordChanged(object sender, RoutedEventArgs e)
+        {
+            PasswordBox passwordBox = (PasswordBox)sender;
+            uint passwordLength = (uint)passwordBox.Password.Length;
+            passwordBox.SetValue(PasswordLengthProperty, passwordLength);
+        }
+
+        public static readonly DependencyProperty PasswordLengthProperty =
+            DependencyProperty.RegisterAttached("PasswordLength", typeof(uint), typeof(Text),
+            new FrameworkPropertyMetadata(0u));
+
+        public static uint GetPasswordLength(PasswordBox element)
+        {
+            return (uint)element.GetValue(PasswordLengthProperty);
         }
 
         #endregion

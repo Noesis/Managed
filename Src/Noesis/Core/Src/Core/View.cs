@@ -267,6 +267,7 @@ namespace Noesis
         public bool Update(double timeInSeconds)
         {
             Noesis.Extend.Update();
+            Dispatcher.ProcessQueue();
             return Noesis_View_Update(CPtr, timeInSeconds);
         }
 

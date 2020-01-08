@@ -25,6 +25,8 @@ namespace NoesisApp
     {
         public static Application Current { get; private set; }
 
+        public Dispatcher Dispatcher { get; private set; }
+
         public string Uri { get; set; }
 
         public string StartupUri { get; set; }
@@ -47,6 +49,7 @@ namespace NoesisApp
             }
 
             Current = this;
+            Dispatcher = Dispatcher.CurrentDispatcher;
 
             _exitCode = 0;
 

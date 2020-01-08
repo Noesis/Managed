@@ -585,26 +585,32 @@ namespace NoesisApp
                 // BEGIN -- Touch Input Notifications
                 case WinApi.WM.POINTERDOWN:
                 {
-                    //uint32_t id = GET_POINTERID_WPARAM(wParam);
-                    //POINT point = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
-                    //ScreenToClient(NativeWindow, &point);
-                    //mTouchDown(this, point.x, point.y, id);
+                    ulong id = (ulong)LoWord(wParam);
+                    WinApi.Point point;
+                    point.X = LoWord(lParam);
+                    point.Y = HiWord(lParam);
+                    WinApi.ScreenToClient(NativeWindow, ref point);
+                    TouchDown?.Invoke(this, point.X, point.Y, id);
                     return true;
                 }
                 case WinApi.WM.POINTERUPDATE:
                 {
-                    //uint32_t id = GET_POINTERID_WPARAM(wParam);
-                    //POINT point = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
-                    //ScreenToClient(NativeWindow, &point);
-                    //mTouchMove(this, point.x, point.y, id);
+                    ulong id = (ulong)LoWord(wParam);
+                    WinApi.Point point;
+                    point.X = LoWord(lParam);
+                    point.Y = HiWord(lParam);
+                    WinApi.ScreenToClient(NativeWindow, ref point);
+                    TouchMove?.Invoke(this, point.X, point.Y, id);
                     return true;
                 }
                 case WinApi.WM.POINTERUP:
                 {
-                    //uint32_t id = GET_POINTERID_WPARAM(wParam);
-                    //POINT point = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
-                    //ScreenToClient(NativeWindow, &point);
-                    //mTouchUp(this, point.x, point.y, id);
+                    ulong id = (ulong)LoWord(wParam);
+                    WinApi.Point point;
+                    point.X = LoWord(lParam);
+                    point.Y = HiWord(lParam);
+                    WinApi.ScreenToClient(NativeWindow, ref point);
+                    TouchUp?.Invoke(this, point.X, point.Y, id);
                     return true;
                 }
                 // END -- Touch Input Notifications

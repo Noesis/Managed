@@ -27,16 +27,6 @@ namespace Noesis
             set { base[index] = value; }
         }
 
-        int ICollection<T>.Count
-        {
-            get { return base.Count; }
-        }
-
-        public bool IsReadOnly
-        {
-            get { return false; }
-        }
-
         public void Add(T item)
         {
             base.Add(item);
@@ -64,8 +54,68 @@ namespace Noesis
 
         public void CopyTo(T[] array, int arrayIndex)
         {
-            ((ICollection)this).CopyTo(array, arrayIndex);
+            base.CopyTo(array, arrayIndex);
         }
+
+        #region IList<T>
+        T IList<T>.this[int index]
+        {
+            get { return this[index]; }
+            set { this[index] = value; }
+        }
+
+        int IList<T>.IndexOf(T item)
+        {
+            return this.IndexOf(item);
+        }
+
+        void IList<T>.Insert(int index, T item)
+        {
+            this.Insert(index, item);
+        }
+
+        void IList<T>.RemoveAt(int index)
+        {
+            this.RemoveAt(index);
+        }
+        #endregion
+
+        #region ICollection<T>
+        int ICollection<T>.Count
+        {
+            get { return base.Count; }
+        }
+
+        bool ICollection<T>.IsReadOnly
+        {
+            get { return false; }
+        }
+
+        void ICollection<T>.Add(T item)
+        {
+            this.Add(item);
+        }
+
+        void ICollection<T>.Clear()
+        {
+            this.Clear();
+        }
+
+        bool ICollection<T>.Contains(T item)
+        {
+            return this.Contains(item);
+        }
+
+        void ICollection<T>.CopyTo(T[] array, int arrayIndex)
+        {
+            this.CopyTo(array, arrayIndex);
+        }
+
+        bool ICollection<T>.Remove(T item)
+        {
+            return this.Remove(item);
+        }
+        #endregion
 
         #region Enumerator
         public new Enumerator GetEnumerator()
@@ -121,4 +171,3 @@ namespace Noesis
     }
 
 }
-
