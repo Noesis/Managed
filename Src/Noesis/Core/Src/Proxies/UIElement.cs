@@ -810,6 +810,13 @@ public class UIElement : Visual {
     }
   }
 
+  public static DependencyProperty EffectProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_EffectProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
   public static DependencyProperty FocusableProperty {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_FocusableProperty_get();
@@ -908,13 +915,6 @@ public class UIElement : Visual {
     }
   }
 
-  public static DependencyProperty ProjectionProperty {
-    get {
-      IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_ProjectionProperty_get();
-      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
-    }
-  }
-
   public static DependencyProperty RenderTransformOriginProperty {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_RenderTransformOriginProperty_get();
@@ -925,6 +925,13 @@ public class UIElement : Visual {
   public static DependencyProperty RenderTransformProperty {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_RenderTransformProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static DependencyProperty Transform3DProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_Transform3DProperty_get();
       return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
     }
   }
@@ -1566,6 +1573,17 @@ public class UIElement : Visual {
     } 
   }
 
+  public Effect Effect {
+    set {
+      NoesisGUI_PINVOKE.UIElement_Effect_set(swigCPtr, Effect.getCPtr(value));
+    } 
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_Effect_get(swigCPtr);
+      Effect ret = (cPtr == IntPtr.Zero) ? null : new Effect(cPtr, false);
+      return ret;
+    } 
+  }
+
   public bool Focusable {
     set {
       NoesisGUI_PINVOKE.UIElement_Focusable_set(swigCPtr, value);
@@ -1682,16 +1700,6 @@ public class UIElement : Visual {
     } 
   }
 
-  public Projection Projection {
-    set {
-      NoesisGUI_PINVOKE.UIElement_Projection_set(swigCPtr, Projection.getCPtr(value));
-    } 
-    get {
-      IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_Projection_get(swigCPtr);
-      return (Projection)Noesis.Extend.GetProxy(cPtr, false);
-    }
-  }
-
   public Point RenderTransformOrigin {
     set {
       NoesisGUI_PINVOKE.UIElement_RenderTransformOrigin_set(swigCPtr, ref value);
@@ -1716,6 +1724,16 @@ public class UIElement : Visual {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_RenderTransform_get(swigCPtr);
       return (Transform)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public Transform3D Transform3D {
+    set {
+      NoesisGUI_PINVOKE.UIElement_Transform3D_set(swigCPtr, Transform3D.getCPtr(value));
+    } 
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_Transform3D_get(swigCPtr);
+      return (Transform3D)Noesis.Extend.GetProxy(cPtr, false);
     }
   }
 
@@ -1786,11 +1804,6 @@ public class UIElement : Visual {
 
   protected void IgnoreLayout(bool ignore) {
     NoesisGUI_PINVOKE.UIElement_IgnoreLayout(swigCPtr, ignore);
-  }
-
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.UIElement_GetStaticType();
-    return ret;
   }
 
   internal new static IntPtr Extend(string typeName) {

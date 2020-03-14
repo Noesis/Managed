@@ -52,11 +52,6 @@ public class GridViewRowPresenterBase : FrameworkElement {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.GridViewRowPresenterBase_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

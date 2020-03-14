@@ -206,11 +206,6 @@ public class ScrollContentPresenter : ContentPresenter, Noesis.IScrollInfo {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ScrollContentPresenter_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

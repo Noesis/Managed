@@ -61,11 +61,6 @@ public class ClockGroup : Clock {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ClockGroup_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

@@ -41,11 +41,6 @@ public class ControllableStoryboardAction : TriggerAction {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ControllableStoryboardAction_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

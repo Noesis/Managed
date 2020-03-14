@@ -142,11 +142,6 @@ public class ButtonBase : ContentControl {
     NoesisGUI_PINVOKE.ButtonBase_SetCommandHelper(swigCPtr, Noesis.Extend.GetInstanceHandle(command));
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ButtonBase_GetStaticType();
-    return ret;
-  }
-
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_ButtonBase(Marshal.StringToHGlobalAnsi(typeName));
   }

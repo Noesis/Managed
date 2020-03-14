@@ -52,11 +52,6 @@ public class TransformGroup : Transform {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.TransformGroup_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

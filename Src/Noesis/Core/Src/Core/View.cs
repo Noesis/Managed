@@ -58,16 +58,6 @@ namespace Noesis
         }
 
         /// <summary>
-        /// Per-Primitive Antialiasing (PPAA) implements antialiasing by extruding the contours of
-        /// the geometry and smoothing them. Useful when GPU MSAA cannot be used.
-        /// </summary>
-        /// <param name="mode"></param>
-        public void SetIsPPAAEnabled(bool enabled)
-        {
-            Noesis_View_SetIsPPAAEnabled(CPtr, enabled);
-        }
-
-        /// <summary>
         /// Sets the curve tolerance in screen space. MediumQuality is the default value
         /// </summary>
         public void SetTessellationMaxPixelError(TessellationMaxPixelError maxError)
@@ -76,7 +66,7 @@ namespace Noesis
         }
 
         /// <summary>
-        /// Enables debugging flags. No debug flags are active by default
+        /// Enables render flags. No flags are active by default
         /// </summary>
         public void SetFlags(RenderFlags flags)
         {
@@ -278,24 +268,26 @@ namespace Noesis
         {
             add
             {
-                if (!_Rendering.ContainsKey(CPtr.Handle))
+                long ptr = CPtr.Handle.ToInt64();
+                if (!_Rendering.ContainsKey(ptr))
                 {
-                    _Rendering.Add(CPtr.Handle, null);
+                    _Rendering.Add(ptr, null);
                     Noesis_View_BindRenderingEvent(CPtr, _raiseRendering);
                 }
 
-                _Rendering[CPtr.Handle] += value;
+                _Rendering[ptr] += value;
             }
             remove
             {
-                if (_Rendering.ContainsKey(CPtr.Handle))
+                long ptr = CPtr.Handle.ToInt64();
+                if (_Rendering.ContainsKey(ptr))
                 {
-                    _Rendering[CPtr.Handle] -= value;
+                    _Rendering[ptr] -= value;
 
-                    if (_Rendering[CPtr.Handle] == null)
+                    if (_Rendering[ptr] == null)
                     {
                         Noesis_View_UnbindRenderingEvent(CPtr, _raiseRendering);
-                        _Rendering.Remove(CPtr.Handle);
+                        _Rendering.Remove(ptr);
                     }
                 }
             }
@@ -312,13 +304,14 @@ namespace Noesis
             {
                 if (Noesis.Extend.Initialized)
                 {
+                    long ptr = cPtr.ToInt64();
                     if (sender == IntPtr.Zero)
                     {
-                        _Rendering.Remove(cPtr);
+                        _Rendering.Remove(ptr);
                         return;
                     }
                     RenderingEventHandler handler = null;
-                    if (!_Rendering.TryGetValue(cPtr, out handler))
+                    if (!_Rendering.TryGetValue(ptr, out handler))
                     {
                         throw new InvalidOperationException(
                             "Delegate not registered for Rendering event");
@@ -335,8 +328,8 @@ namespace Noesis
             }
         }
 
-        internal static Dictionary<IntPtr, RenderingEventHandler> _Rendering =
-            new Dictionary<IntPtr, RenderingEventHandler>();
+        internal static Dictionary<long, RenderingEventHandler> _Rendering =
+            new Dictionary<long, RenderingEventHandler>();
         #endregion
 
         /// <summary>
@@ -440,11 +433,6 @@ namespace Noesis
             }
         }
 
-        new internal static IntPtr GetStaticType()
-        {
-            return Noesis_View_GetStaticType();
-        }
-
         internal HandleRef CPtr { get { return BaseComponent.getCPtr(this); } }
 
         #region View creation from C#
@@ -480,9 +468,6 @@ namespace Noesis
 
         #region Imports
         [DllImport(Library.Name)]
-        static extern IntPtr Noesis_View_GetStaticType();
-
-        [DllImport(Library.Name)]
         static extern IntPtr Noesis_View_Find(HandleRef node);
 
         [DllImport(Library.Name)]
@@ -493,9 +478,6 @@ namespace Noesis
 
         [DllImport(Library.Name)]
         static extern void Noesis_View_SetSize(HandleRef view, int width, int height);
-
-        [DllImport(Library.Name)]
-        static extern void Noesis_View_SetIsPPAAEnabled(HandleRef view, bool enabled);
 
         [DllImport(Library.Name)]
         static extern void Noesis_View_SetTessellationMaxPixelError(HandleRef view, float maxError);
@@ -610,6 +592,17 @@ namespace Noesis
 
         /// <summary>Inverts the render vertically.</summary>
         FlipY = 8,
+
+        /// <summary>
+        /// Per-Primitive Antialiasing extrudes the contours of the geometry and smooths them.
+        /// It is a 'cheap' antialiasing algorithm useful when GPU MSAA is not enabled
+        /// </summary>
+        PPAA = 16,
+
+        /// <summary>
+        /// Enables subpixel rendering compatible with LCD displays
+        /// </summary>
+        LCD = 32
     };
 
     /// <summary>

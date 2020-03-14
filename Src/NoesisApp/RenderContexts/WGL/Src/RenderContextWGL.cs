@@ -173,6 +173,44 @@ namespace NoesisApp
             glClear(mask);
         }
 
+        public override ImageCapture CaptureRenderTarget(RenderTarget surface)
+        {
+            int[] viewport = new int[4];
+            glGetIntegerv(GL_VIEWPORT, viewport);
+
+            int x = viewport[0];
+            int y = viewport[1];
+            int width = viewport[2];
+            int height = viewport[3];
+
+            byte[] src = new byte[width * height * 4];
+            int srcStride = width * 4;
+
+            glPixelStorei(GL_PACK_ALIGNMENT, 1);
+            glReadPixels(x, y, width, height, GL_RGBA, GL_UNSIGNED_BYTE, src);
+
+            ImageCapture img = new ImageCapture((uint)width, (uint)height);
+
+            byte[] dst = img.Pixels;
+
+            for (int i = 0; i < height; ++i)
+            {
+                int dstRow = i * (int)img.Stride;
+                int srcRow = i * srcStride;
+
+                for (int j = 0; j < width; ++j)
+                {
+                    // RGBA -> BGRA
+                    dst[dstRow + 4 * j + 2] = src[srcRow + 4 * j + 0];
+                    dst[dstRow + 4 * j + 1] = src[srcRow + 4 * j + 1];
+                    dst[dstRow + 4 * j + 0] = src[srcRow + 4 * j + 2];
+                    dst[dstRow + 4 * j + 3] = src[srcRow + 4 * j + 3];
+                }
+            }
+
+            return img;
+        }
+
         public override void Resize() { }
 
         public override void Swap()
@@ -279,6 +317,10 @@ namespace NoesisApp
         private const uint GL_FRAMEBUFFER = 0x8D40;
         private const uint GL_STENCIL_BUFFER_BIT = 0x00000400;
         private const uint GL_COLOR_BUFFER_BIT = 0x00004000;
+        private const uint GL_VIEWPORT = 0x00000BA2;
+        private const uint GL_PACK_ALIGNMENT = 0x00000D05;
+        private const uint GL_UNSIGNED_BYTE = 0x00001401;
+        private const uint GL_RGBA = 0x00001908;
 
         private const string OpenGLLibraryName = "opengl32.dll";
 
@@ -308,5 +350,15 @@ namespace NoesisApp
 
         [DllImport(OpenGLLibraryName)]
         static extern void glClearColor(float r, float g, float b, float a);
+
+        [DllImport(OpenGLLibraryName)]
+        public static extern void glGetIntegerv(uint pname, int[] param);
+
+        [DllImport(OpenGLLibraryName)]
+        public static extern void glPixelStorei(uint pname, int param);
+
+        [DllImport(OpenGLLibraryName)]
+        public static extern void glReadPixels(int x, int y, int width, int height,
+            uint format, uint type, byte[] pixels);
     }
 }

@@ -91,11 +91,6 @@ public class WrapPanel : Panel {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.WrapPanel_GetStaticType();
-    return ret;
-  }
-
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_WrapPanel(Marshal.StringToHGlobalAnsi(typeName));
   }

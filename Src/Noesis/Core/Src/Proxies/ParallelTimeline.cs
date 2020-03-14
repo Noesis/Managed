@@ -52,11 +52,6 @@ public class ParallelTimeline : TimelineGroup {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ParallelTimeline_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

@@ -42,11 +42,6 @@ public class RectAnimationUsingKeyFrames : AnimationTimeline {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.RectAnimationUsingKeyFrames_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

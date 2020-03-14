@@ -244,11 +244,6 @@ public class ItemsControl : Control {
     NoesisGUI_PINVOKE.ItemsControl_Set_ItemsSource(swigCPtr, Noesis.Extend.GetInstanceHandle(items));
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ItemsControl_GetStaticType();
-    return ret;
-  }
-
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_ItemsControl(Marshal.StringToHGlobalAnsi(typeName));
   }

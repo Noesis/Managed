@@ -27,11 +27,6 @@ public class StringKeyFrameCollection : FreezableCollection<StringKeyFrame> {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.StringKeyFrameCollection_GetStaticType();
-    return ret;
-  }
-
   public StringKeyFrameCollection() {
   }
 

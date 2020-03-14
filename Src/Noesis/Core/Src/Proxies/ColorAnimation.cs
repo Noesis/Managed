@@ -27,14 +27,6 @@ public class ColorAnimation : BaseAnimation {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
-  public ColorAnimation() {
-  }
-
-  protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    registerExtend = false;
-    return NoesisGUI_PINVOKE.new_ColorAnimation();
-  }
-
   public static DependencyProperty ByProperty {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ColorAnimation_ByProperty_get();
@@ -110,9 +102,12 @@ public class ColorAnimation : BaseAnimation {
 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ColorAnimation_GetStaticType();
-    return ret;
+  public ColorAnimation() {
+  }
+
+  protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
+    registerExtend = false;
+    return NoesisGUI_PINVOKE.new_ColorAnimation();
   }
 
 }

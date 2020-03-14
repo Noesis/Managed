@@ -51,6 +51,13 @@ public class ContentControl : Control {
     }
   }
 
+  public static DependencyProperty ContentStringFormatProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.ContentControl_ContentStringFormatProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
   public static DependencyProperty ContentTemplateProperty {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ContentControl_ContentTemplateProperty_get();
@@ -79,6 +86,17 @@ public class ContentControl : Control {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ContentControl_Content_get(swigCPtr);
       return Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public string ContentStringFormat {
+    set {
+      NoesisGUI_PINVOKE.ContentControl_ContentStringFormat_set(swigCPtr, value != null ? value : string.Empty);
+    }
+    get {
+      IntPtr strPtr = NoesisGUI_PINVOKE.ContentControl_ContentStringFormat_get(swigCPtr);
+      string str = Noesis.Extend.StringFromNativeUtf8(strPtr);
+      return str;
     }
   }
 
@@ -114,11 +132,6 @@ public class ContentControl : Control {
     string str = Noesis.Extend.StringFromNativeUtf8(strPtr);
     NoesisGUI_PINVOKE.FreeString(strPtr);
     return str;
-  }
-
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ContentControl_GetStaticType();
-    return ret;
   }
 
   internal new static IntPtr Extend(string typeName) {

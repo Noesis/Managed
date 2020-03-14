@@ -164,11 +164,6 @@ public class Grid : Panel {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Grid_GetStaticType();
-    return ret;
-  }
-
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_Grid(Marshal.StringToHGlobalAnsi(typeName));
   }

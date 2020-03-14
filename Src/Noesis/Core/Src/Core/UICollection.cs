@@ -32,6 +32,14 @@ namespace Noesis
             base.Add(item);
         }
 
+        public void AddRange(IEnumerable<T> range)
+        {
+            foreach (var item in range)
+            {
+                base.Add(item);
+            }
+        }
+
         public bool Contains(T item)
         {
             return base.Contains(item);

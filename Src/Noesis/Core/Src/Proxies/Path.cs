@@ -52,11 +52,6 @@ public class Path : Shape {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Path_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

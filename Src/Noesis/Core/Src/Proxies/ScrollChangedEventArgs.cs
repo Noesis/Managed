@@ -135,7 +135,7 @@ public class ScrollChangedEventArgs : RoutedEventArgs {
     } 
   }
 
-  public ScrollChangedEventArgs(object s) : this(NoesisGUI_PINVOKE.new_ScrollChangedEventArgs(Noesis.Extend.GetInstanceHandle(s)), true) {
+  public ScrollChangedEventArgs(object source) : this(NoesisGUI_PINVOKE.new_ScrollChangedEventArgs(Noesis.Extend.GetInstanceHandle(source)), true) {
   }
 
 }

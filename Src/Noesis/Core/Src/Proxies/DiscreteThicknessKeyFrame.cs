@@ -35,11 +35,6 @@ public class DiscreteThicknessKeyFrame : ThicknessKeyFrame {
     return NoesisGUI_PINVOKE.new_DiscreteThicknessKeyFrame();
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.DiscreteThicknessKeyFrame_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

@@ -54,11 +54,6 @@ public class ComboBoxItem : ListBoxItem {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ComboBoxItem_GetStaticType();
-    return ret;
-  }
-
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_ComboBoxItem(Marshal.StringToHGlobalAnsi(typeName));
   }

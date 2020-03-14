@@ -65,7 +65,7 @@ public class DragDeltaEventArgs : RoutedEventArgs {
     } 
   }
 
-  public DragDeltaEventArgs(object s, float h, float v) : this(NoesisGUI_PINVOKE.new_DragDeltaEventArgs(Noesis.Extend.GetInstanceHandle(s), h, v), true) {
+  public DragDeltaEventArgs(object source, float hChange, float vChange) : this(NoesisGUI_PINVOKE.new_DragDeltaEventArgs(Noesis.Extend.GetInstanceHandle(source), hChange, vChange), true) {
   }
 
 }

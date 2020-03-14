@@ -96,11 +96,6 @@ public class ToolBarTray : FrameworkElement {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ToolBarTray_GetStaticType();
-    return ret;
-  }
-
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_ToolBarTray(Marshal.StringToHGlobalAnsi(typeName));
   }

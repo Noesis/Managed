@@ -32,8 +32,7 @@ public class ThicknessKeyFrame : Freezable {
 
   public static DependencyProperty KeyTimeProperty {
     get {
-      IntPtr cPtr = NoesisGUI_PINVOKE.ThicknessKeyFrame_KeyTimeProperty_get();
-      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+      return NoesisGUI_.KeyFrame_KeyTimeProperty();
     }
   }
 
@@ -76,11 +75,6 @@ public class ThicknessKeyFrame : Freezable {
       }
     }
 
-  }
-
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ThicknessKeyFrame_GetStaticType();
-    return ret;
   }
 
 }

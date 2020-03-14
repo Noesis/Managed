@@ -67,11 +67,6 @@ public class BulletDecorator : Decorator {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.BulletDecorator_GetStaticType();
-    return ret;
-  }
-
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_BulletDecorator(Marshal.StringToHGlobalAnsi(typeName));
   }

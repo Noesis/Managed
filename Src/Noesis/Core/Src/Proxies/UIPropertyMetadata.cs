@@ -27,11 +27,6 @@ public partial class UIPropertyMetadata : PropertyMetadata {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.UIPropertyMetadata_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

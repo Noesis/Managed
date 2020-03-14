@@ -107,6 +107,27 @@ public class Shape : FrameworkElement {
     }
   }
 
+  public static DependencyProperty TrimStartProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Shape_TrimStartProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static DependencyProperty TrimEndProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Shape_TrimEndProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static DependencyProperty TrimOffsetProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Shape_TrimOffsetProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
   public Brush Fill {
     set {
       NoesisGUI_PINVOKE.Shape_Fill_set(swigCPtr, Brush.getCPtr(value));
@@ -218,9 +239,34 @@ public class Shape : FrameworkElement {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Shape_GetStaticType();
-    return ret;
+  public float TrimStart {
+    set {
+      NoesisGUI_PINVOKE.Shape_TrimStart_set(swigCPtr, value);
+    } 
+    get {
+      float ret = NoesisGUI_PINVOKE.Shape_TrimStart_get(swigCPtr);
+      return ret;
+    } 
+  }
+
+  public float TrimEnd {
+    set {
+      NoesisGUI_PINVOKE.Shape_TrimEnd_set(swigCPtr, value);
+    } 
+    get {
+      float ret = NoesisGUI_PINVOKE.Shape_TrimEnd_get(swigCPtr);
+      return ret;
+    } 
+  }
+
+  public float TrimOffset {
+    set {
+      NoesisGUI_PINVOKE.Shape_TrimOffset_set(swigCPtr, value);
+    } 
+    get {
+      float ret = NoesisGUI_PINVOKE.Shape_TrimOffset_get(swigCPtr);
+      return ret;
+    } 
   }
 
   internal new static IntPtr Extend(string typeName) {

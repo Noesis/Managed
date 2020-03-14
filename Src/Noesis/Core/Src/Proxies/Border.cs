@@ -149,11 +149,6 @@ public class Border : Decorator {
 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Border_GetStaticType();
-    return ret;
-  }
-
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_Border(Marshal.StringToHGlobalAnsi(typeName));
   }

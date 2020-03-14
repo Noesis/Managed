@@ -45,6 +45,14 @@ public class ItemsChangedEventArgs : EventArgs {
     }
   }
 
+  public ItemsChangedEventArgs(NotifyCollectionChangedAction action, GeneratorPosition position, GeneratorPosition oldPosition, int itemCount, int itemUICount)
+    : this(CreateHelper1((int)action, position, oldPosition, itemCount, itemUICount), true) {
+  }
+
+  public ItemsChangedEventArgs(NotifyCollectionChangedAction action, GeneratorPosition position, int itemCount, int itemUICount)
+    : this(CreateHelper2((int)action, position, itemCount, itemUICount), true) {
+  }
+
   public NotifyCollectionChangedAction Action {
     get {
       return (NotifyCollectionChangedAction)GetActionHelper();
@@ -53,60 +61,56 @@ public class ItemsChangedEventArgs : EventArgs {
 
   public GeneratorPosition Position {
     get {
-      return GetPositionHelper();
+      IntPtr ret = NoesisGUI_PINVOKE.ItemsChangedEventArgs_Position_get(swigCPtr);
+      if (ret != IntPtr.Zero) {
+        return Marshal.PtrToStructure<GeneratorPosition>(ret);
+      }
+      else {
+        return new GeneratorPosition();
+      }
     }
+
   }
 
   public GeneratorPosition OldPosition {
     get {
-      return GetOldPositionHelper();
+      IntPtr ret = NoesisGUI_PINVOKE.ItemsChangedEventArgs_OldPosition_get(swigCPtr);
+      if (ret != IntPtr.Zero) {
+        return Marshal.PtrToStructure<GeneratorPosition>(ret);
+      }
+      else {
+        return new GeneratorPosition();
+      }
     }
+
   }
 
   public int ItemCount {
     get {
-      return GetItemCountHelper();
-    }
+      int ret = NoesisGUI_PINVOKE.ItemsChangedEventArgs_ItemCount_get(swigCPtr);
+      return ret;
+    } 
   }
 
   public int ItemUICount {
     get {
-      return GetItemUICountHelper();
-    }
+      int ret = NoesisGUI_PINVOKE.ItemsChangedEventArgs_ItemUICount_get(swigCPtr);
+      return ret;
+    } 
+  }
+
+  private static IntPtr CreateHelper1(int action, GeneratorPosition position, GeneratorPosition oldPosition, int itemCount, int itemUICount) {
+    IntPtr ret = NoesisGUI_PINVOKE.ItemsChangedEventArgs_CreateHelper1(action, ref position, ref oldPosition, itemCount, itemUICount);
+    return ret;
+  }
+
+  private static IntPtr CreateHelper2(int action, GeneratorPosition position, int itemCount, int itemUICount) {
+    IntPtr ret = NoesisGUI_PINVOKE.ItemsChangedEventArgs_CreateHelper2(action, ref position, itemCount, itemUICount);
+    return ret;
   }
 
   private int GetActionHelper() {
     int ret = NoesisGUI_PINVOKE.ItemsChangedEventArgs_GetActionHelper(swigCPtr);
-    return ret;
-  }
-
-  private GeneratorPosition GetPositionHelper() {
-    IntPtr ret = NoesisGUI_PINVOKE.ItemsChangedEventArgs_GetPositionHelper(swigCPtr);
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<GeneratorPosition>(ret);
-    }
-    else {
-      return new GeneratorPosition();
-    }
-  }
-
-  private GeneratorPosition GetOldPositionHelper() {
-    IntPtr ret = NoesisGUI_PINVOKE.ItemsChangedEventArgs_GetOldPositionHelper(swigCPtr);
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<GeneratorPosition>(ret);
-    }
-    else {
-      return new GeneratorPosition();
-    }
-  }
-
-  private int GetItemCountHelper() {
-    int ret = NoesisGUI_PINVOKE.ItemsChangedEventArgs_GetItemCountHelper(swigCPtr);
-    return ret;
-  }
-
-  private int GetItemUICountHelper() {
-    int ret = NoesisGUI_PINVOKE.ItemsChangedEventArgs_GetItemUICountHelper(swigCPtr);
     return ret;
   }
 

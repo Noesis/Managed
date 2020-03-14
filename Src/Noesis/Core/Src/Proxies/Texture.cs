@@ -31,11 +31,6 @@ public partial class Texture : BaseComponent {
     NoesisGUI_PINVOKE.Texture_SetPrivateData(swigCPtr, Noesis.Extend.GetInstanceHandle(context));
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Texture_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

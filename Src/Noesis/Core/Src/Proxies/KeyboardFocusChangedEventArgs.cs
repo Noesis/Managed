@@ -65,7 +65,7 @@ public class KeyboardFocusChangedEventArgs : KeyboardEventArgs {
     }
   }
 
-  public KeyboardFocusChangedEventArgs(object s, RoutedEvent e, UIElement o, UIElement n) : this(NoesisGUI_PINVOKE.new_KeyboardFocusChangedEventArgs(Noesis.Extend.GetInstanceHandle(s), RoutedEvent.getCPtr(e), UIElement.getCPtr(o), UIElement.getCPtr(n)), true) {
+  public KeyboardFocusChangedEventArgs(object source, RoutedEvent arg1, UIElement oldFocus, UIElement newFocus) : this(NoesisGUI_PINVOKE.new_KeyboardFocusChangedEventArgs(Noesis.Extend.GetInstanceHandle(source), RoutedEvent.getCPtr(arg1), UIElement.getCPtr(oldFocus), UIElement.getCPtr(newFocus)), true) {
   }
 
 }

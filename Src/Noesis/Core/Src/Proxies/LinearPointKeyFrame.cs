@@ -35,11 +35,6 @@ public class LinearPointKeyFrame : PointKeyFrame {
     return NoesisGUI_PINVOKE.new_LinearPointKeyFrame();
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.LinearPointKeyFrame_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

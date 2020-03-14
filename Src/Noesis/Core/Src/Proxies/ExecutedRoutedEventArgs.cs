@@ -11,6 +11,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Windows.Input;
 
 namespace Noesis
 {
@@ -42,6 +43,35 @@ public class ExecutedRoutedEventArgs : RoutedEventArgs {
       GC.SuppressFinalize(this);
       base.Dispose();
     }
+  }
+
+  internal static new void InvokeHandler(Delegate handler, IntPtr sender, IntPtr args) {
+    ExecutedRoutedEventHandler handler_ = (ExecutedRoutedEventHandler)handler;
+    if (handler_ != null) {
+      handler_(Extend.GetProxy(sender, false), new ExecutedRoutedEventArgs(args, false));
+    }
+  }
+
+  public ICommand Command {
+    get {
+      return GetCommandHelper() as ICommand;
+    }
+  }
+
+  public object Parameter {
+    get {
+      return GetParameterHelper();
+    }
+  }
+
+  private object GetCommandHelper() {
+    IntPtr cPtr = NoesisGUI_PINVOKE.ExecutedRoutedEventArgs_GetCommandHelper(swigCPtr);
+    return Noesis.Extend.GetProxy(cPtr, false);
+  }
+
+  private object GetParameterHelper() {
+    IntPtr cPtr = NoesisGUI_PINVOKE.ExecutedRoutedEventArgs_GetParameterHelper(swigCPtr);
+    return Noesis.Extend.GetProxy(cPtr, false);
   }
 
 }

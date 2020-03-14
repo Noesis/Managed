@@ -70,11 +70,6 @@ public class DashStyle : Animatable {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.DashStyle_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

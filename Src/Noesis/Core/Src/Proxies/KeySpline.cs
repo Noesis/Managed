@@ -80,11 +80,6 @@ public class KeySpline : Freezable {
 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.KeySpline_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

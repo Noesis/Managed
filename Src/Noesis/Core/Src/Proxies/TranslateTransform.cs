@@ -72,11 +72,6 @@ public class TranslateTransform : Transform {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.TranslateTransform_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

@@ -27,11 +27,6 @@ public class LineBreak : Inline {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.LineBreak_GetStaticType();
-    return ret;
-  }
-
   public LineBreak() {
   }
 

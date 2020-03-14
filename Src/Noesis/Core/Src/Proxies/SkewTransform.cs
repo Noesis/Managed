@@ -106,11 +106,6 @@ public class SkewTransform : Transform {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.SkewTransform_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

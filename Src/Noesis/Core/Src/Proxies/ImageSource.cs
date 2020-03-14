@@ -44,11 +44,6 @@ public class ImageSource : Animatable {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ImageSource_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

@@ -117,11 +117,6 @@ public class RadialGradientBrush : GradientBrush {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.RadialGradientBrush_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

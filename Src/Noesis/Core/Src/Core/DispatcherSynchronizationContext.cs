@@ -33,11 +33,6 @@ namespace Noesis
             _dispatcher.BeginInvoke(d, state);
         }
 
-        public override int Wait(IntPtr[] waitHandles, bool waitAll, int millisecondsTimeout)
-        {
-            return WaitHelper(waitHandles, waitAll, millisecondsTimeout);
-        }
-
         public override SynchronizationContext CreateCopy()
         {
             return new DispatcherSynchronizationContext(_dispatcher);

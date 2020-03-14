@@ -104,6 +104,48 @@ namespace NoesisApp
             _dev.ImmediateContext.Rasterizer.SetViewport(_viewport);
         }
 
+        public override ImageCapture CaptureRenderTarget(RenderTarget surface)
+        {
+            ShaderResourceView view = new ShaderResourceView(surface.Texture.D3D11NativePointer);
+            Texture2D source = view.Resource.QueryInterface<Texture2D>();
+
+            Texture2DDescription desc = source.Description;
+            desc.CpuAccessFlags = CpuAccessFlags.Read;
+            desc.Usage = ResourceUsage.Staging;
+            desc.BindFlags = BindFlags.None;
+
+            Texture2D dest = new Texture2D(_dev, desc);
+
+            _dev.ImmediateContext.CopyResource(source, dest);
+
+            SharpDX.DataBox data = _dev.ImmediateContext.MapSubresource(dest, 0,
+                MapMode.Read, SharpDX.Direct3D11.MapFlags.None);
+
+            ImageCapture img = new ImageCapture((uint)desc.Width, (uint)desc.Height);
+
+            byte[] dst = img.Pixels;
+            IntPtr src = data.DataPointer;
+
+            for (int i = 0; i < desc.Height; ++i)
+            {
+                int dstRow = i * (int)img.Stride;
+                int srcRow = i * data.RowPitch;
+
+                for (int j = 0; j < desc.Width; ++j)
+                {
+                    // RGBA -> BGRA
+                    dst[dstRow + 4 * j + 2] = Noesis.Marshal.ReadByte(src, srcRow + 4 * i + 0);
+                    dst[dstRow + 4 * j + 1] = Noesis.Marshal.ReadByte(src, srcRow + 4 * i + 1);
+                    dst[dstRow + 4 * j + 0] = Noesis.Marshal.ReadByte(src, srcRow + 4 * i + 2);
+                    dst[dstRow + 4 * j + 3] = Noesis.Marshal.ReadByte(src, srcRow + 4 * i + 3);
+                }
+            }
+
+            _dev.ImmediateContext.UnmapSubresource(dest, 0);
+
+            return img;
+        }
+
         public override void Swap()
         {
             _swapChain.Present(_vsync ? 1 : 0, PresentFlags.None);

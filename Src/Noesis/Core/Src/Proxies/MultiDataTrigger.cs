@@ -49,11 +49,6 @@ public class MultiDataTrigger : TriggerBase {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.MultiDataTrigger_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

@@ -37,7 +37,7 @@ public class DataTemplate : FrameworkTemplate {
 
   public Type DataType {
     set {
-      NoesisGUI_PINVOKE.DataTemplate_DataType_set(swigCPtr, new HandleRef(value, (value != null ? Noesis.Extend.GetNativeType(value) : IntPtr.Zero)));
+      NoesisGUI_PINVOKE.DataTemplate_DataType_set(swigCPtr, value != null ? Noesis.Extend.EnsureNativeType(value) : IntPtr.Zero);
     }
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.DataTemplate_DataType_get(swigCPtr);
@@ -54,11 +54,6 @@ public class DataTemplate : FrameworkTemplate {
       IntPtr cPtr = NoesisGUI_PINVOKE.DataTemplate_Triggers_get(swigCPtr);
       return (TriggerCollection)Noesis.Extend.GetProxy(cPtr, false);
     }
-  }
-
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.DataTemplate_GetStaticType();
-    return ret;
   }
 
 }

@@ -54,6 +54,13 @@ public partial class DependencyProperty : BaseComponent {
   }
 
   public Noesis.PropertyMetadata GetMetadata(Type forType) {
+    if (forType == null) {
+      throw new ArgumentNullException("forType");
+    }
+    if (!typeof(DependencyObject).IsAssignableFrom(forType)) {
+      throw new ArgumentException(
+        "Can't get metadata for non-DependencyObject type " + forType);
+    }
     return GetMetadataHelper(Noesis.Extend.GetNativeType(forType));
   }
 
@@ -77,11 +84,6 @@ public partial class DependencyProperty : BaseComponent {
       bool ret = NoesisGUI_PINVOKE.DependencyProperty_ReadOnly_get(swigCPtr);
       return ret;
     } 
-  }
-
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.DependencyProperty_GetStaticType();
-    return ret;
   }
 
   private IntPtr GetOwnerTypeHelper() {

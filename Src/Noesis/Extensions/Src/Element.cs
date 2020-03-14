@@ -21,19 +21,19 @@ namespace NoesisGUIExtensions
     public static class Element
     {
         /// <summary>
-        /// Adds projection capabilities to UI elements.
-        /// It Specifies the Projection object used to project the UI element.
+        /// Adds 3D transform capabilities to UI elements.
+        /// It Specifies the Transform3D object used to transform the UI element in 3D space.
         ///
         /// Usage:
         ///
         ///     <Grid
         ///       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         ///       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        ///       xmlns:noesis="clr-namespace:NoesisGUIExtensions">
+        ///       xmlns:noesis="clr-namespace:NoesisGUIExtensions;assembly=Noesis.GUI.Extensions">
         ///         <Grid.Resources>
-        ///             <Storyboard x:Key="AnimProjection" AutoReverse="True" RepeatBehavior="Forever">
+        ///             <Storyboard x:Key="AnimTransform3D" AutoReverse="True" RepeatBehavior="Forever">
         ///                 <DoubleAnimationUsingKeyFrames
-        ///                   Storyboard.TargetProperty="(noesis:Element.Projection).(noesis:PlaneProjection.RotationY)"
+        ///                   Storyboard.TargetProperty="(noesis:Element.Transform3D).(noesis:CompositeTransform3D.RotationY)"
         ///                   Storyboard.TargetName="Root">
         ///                     <EasingDoubleKeyFrame KeyTime="0:0:2" Value="-60">
         ///                         <EasingDoubleKeyFrame.EasingFunction>
@@ -45,16 +45,16 @@ namespace NoesisGUIExtensions
         ///         </Grid.Resources>
         ///         <Grid.Triggers>
         ///             <EventTrigger RoutedEvent="FrameworkElement.Loaded">
-        ///                 <BeginStoryboard Storyboard="{StaticResource AnimProjection}"/>
+        ///                 <BeginStoryboard Storyboard="{StaticResource AnimTransform3D}"/>
         ///             </EventTrigger>
         ///         </Grid.Triggers>
         ///         <Grid x:Name="Root">
-        ///             <noesis:Element.Projection>
-        ///                 <noesis:PlaneProjection RotationY="60"/>
-        ///             </noesis:Element.Projection>
+        ///             <noesis:Element.Transform3D>
+        ///                 <noesis:CompositeTransform3D RotationY="60"/>
+        ///             </noesis:Element.Transform3D>
         ///             <Rectangle Width="500" Height="300" Fill="#80FF0000"/>
         ///             <TextBlock
-        ///               Text="3D Projection, wow!"
+        ///               Text="3D Transformations, wow!"
         ///               FontSize="40"
         ///               HorizontalAlignment="Center"
         ///               VerticalAlignment="Center"/>
@@ -62,20 +62,20 @@ namespace NoesisGUIExtensions
         ///     </Grid>
         ///
         /// </summary>
-        #region Projection attached property
+        #region Transform3D attached property
 
-        public static readonly DependencyProperty ProjectionProperty =
-            DependencyProperty.RegisterAttached("Projection", typeof(Projection), typeof(Element),
+        public static readonly DependencyProperty Transform3DProperty =
+            DependencyProperty.RegisterAttached("Transform3D", typeof(Transform3D), typeof(Element),
             new PropertyMetadata(null));
 
-        public static void SetProjection(UIElement element, Projection value)
+        public static void SetTransform3D(UIElement element, Transform3D value)
         {
-            element.SetValue(ProjectionProperty, value);
+            element.SetValue(Transform3DProperty, value);
         }
 
-        public static Projection GetProjection(UIElement element)
+        public static Transform3D GetTransform3D(UIElement element)
         {
-            return (Projection)element.GetValue(ProjectionProperty);
+            return (Transform3D)element.GetValue(Transform3DProperty);
         }
 
         #endregion
@@ -112,20 +112,6 @@ namespace NoesisGUIExtensions
         public static bool GetIsFocusEngaged(Control control)
         {
             return (bool)control.GetValue(IsFocusEngagedProperty);
-        }
-
-        public static readonly DependencyProperty SupportsFocusEngagementProperty =
-            DependencyProperty.RegisterAttached("SupportsFocusEngagement", typeof(bool), typeof(Element),
-                new PropertyMetadata(false));
-
-        public static bool GetSupportsFocusEngagement(DependencyObject obj)
-        {
-            return (bool)obj.GetValue(SupportsFocusEngagementProperty);
-        }
-
-        public static void SetSupportsFocusEngagement(DependencyObject obj, bool value)
-        {
-            obj.SetValue(SupportsFocusEngagementProperty, value);
         }
 
         #endregion

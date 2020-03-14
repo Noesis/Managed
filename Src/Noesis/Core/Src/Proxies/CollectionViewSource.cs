@@ -58,7 +58,7 @@ public class CollectionViewSource : DependencyObject {
 
   public Type CollectionViewType {
     set {
-      NoesisGUI_PINVOKE.CollectionViewSource_CollectionViewType_set(swigCPtr, new HandleRef(value, (value != null ? Noesis.Extend.GetNativeType(value) : IntPtr.Zero)));
+      NoesisGUI_PINVOKE.CollectionViewSource_CollectionViewType_set(swigCPtr, value != null ? Noesis.Extend.EnsureNativeType(value) : IntPtr.Zero);
     }
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.CollectionViewSource_CollectionViewType_get(swigCPtr);
@@ -85,11 +85,6 @@ public class CollectionViewSource : DependencyObject {
       IntPtr cPtr = NoesisGUI_PINVOKE.CollectionViewSource_View_get(swigCPtr);
       return (CollectionView)Noesis.Extend.GetProxy(cPtr, false);
     }
-  }
-
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.CollectionViewSource_GetStaticType();
-    return ret;
   }
 
 }

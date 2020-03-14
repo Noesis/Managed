@@ -52,11 +52,6 @@ public class ExponentialEase : EasingFunctionBase {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ExponentialEase_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

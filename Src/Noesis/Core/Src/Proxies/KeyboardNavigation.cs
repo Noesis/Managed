@@ -180,11 +180,6 @@ public class KeyboardNavigation : BaseComponent {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.KeyboardNavigation_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

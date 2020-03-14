@@ -251,11 +251,6 @@ public class TextBox : TextBoxBase {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.TextBox_GetStaticType();
-    return ret;
-  }
-
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_TextBox(Marshal.StringToHGlobalAnsi(typeName));
   }

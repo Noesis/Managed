@@ -193,11 +193,6 @@ public class GridViewColumn : Animatable {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.GridViewColumn_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

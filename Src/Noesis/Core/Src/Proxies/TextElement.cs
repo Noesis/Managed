@@ -315,11 +315,6 @@ public class TextElement : FrameworkElement {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.TextElement_GetStaticType();
-    return ret;
-  }
-
   public TextElement() {
   }
 

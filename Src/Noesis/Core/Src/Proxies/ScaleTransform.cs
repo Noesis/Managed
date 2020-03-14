@@ -106,11 +106,6 @@ public class ScaleTransform : Transform {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ScaleTransform_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

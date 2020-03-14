@@ -306,11 +306,6 @@ public class ItemCollection : BaseComponent, IList {
     return ret;
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ItemCollection_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

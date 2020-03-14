@@ -38,11 +38,6 @@ public class Italic : Span {
   public Italic(Inline childInline) : this(NoesisGUI_PINVOKE.new_Italic__SWIG_1(Inline.getCPtr(childInline)), true) {
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Italic_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

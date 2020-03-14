@@ -94,11 +94,6 @@ public class VisualTransition : DependencyObject {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.VisualTransition_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

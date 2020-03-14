@@ -12,6 +12,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Noesis
 {
@@ -33,7 +34,7 @@ public class ResourceDictionary : BaseDictionary, IDictionary {
       if (key == null) {
         throw new ArgumentNullException("key");
       }
-      return GetValueHelper(key);
+      return GetValueHelper(GetValidKey(key));
     }
     set {
       if (key == null) {
@@ -42,34 +43,67 @@ public class ResourceDictionary : BaseDictionary, IDictionary {
       if (value == null) {
         throw new ArgumentNullException("value");
       }
-      SetValueHelper(key, value);
+      SetValueHelper(GetValidKey(key), value);
     }
   }
 
   public ICollection Keys {
     get {
-      int count = Count;
-      IntPtr keysPtr = GetKeysHelper();
-      object[] keys = new object[count];
-      for (int i = 0; i < count; ++i) {
-        object key = GetKeyHelper(keysPtr, i);
-        keys[i] = key is string ? key : Noesis.Extend.GetNativeTypeInfo(new IntPtr((long)key)).Type;
-      }
-      BaseComponent.Release(keysPtr);
-      return keys;
+      KeysData keys = new KeysData { Keys = new object[Count], Index = 0 };
+      int id = keys.GetHashCode();
+      _keysData[id] = keys;
+      ResourceDictionary_EnumKeys(ResourceDictionary.getCPtr(this), id, _enumKeys);
+      _keysData.Remove(id);
+      return keys.Keys;
     }
   }
 
   public ICollection Values {
     get {
-      return new ResourceValuesCollection(this);
+      return new ValuesCollection(this);
     }
   }
 
-  #region Enumaration
+  public bool Contains(object key) {
+    return ContainsHelper(GetValidKey(key));
+  }
 
-  private class ResourceDictionaryEnumerator : IDictionaryEnumerator {
-    internal ResourceDictionaryEnumerator(ResourceDictionary owner) {
+  public void Add(object key, object value) {
+    AddHelper(GetValidKey(key), value);
+  }
+
+  public void Remove(object key) {
+    RemoveHelper(GetValidKey(key));
+  }
+
+  public Enumerator GetEnumerator() {
+    return new Enumerator(this);
+  }
+
+  IDictionaryEnumerator IDictionary.GetEnumerator() {
+    return new Enumerator(this);
+  }
+
+  IEnumerator IEnumerable.GetEnumerator() {
+    return new Enumerator(this);
+  }
+
+  #region Key validation
+  private string GetValidKey(object key) {
+    if (key is string) {
+      return (string)key;
+    }
+    if (key is Type) {
+      return ((Type)key).FullName;
+    }
+    throw new ArgumentException("Only string and Type keys are supported");
+  }
+  #endregion
+
+  #region Enumeration
+
+  public class Enumerator : IDictionaryEnumerator {
+    internal Enumerator(ResourceDictionary owner) {
       _owner = owner;
       _keysEnumerator = _owner.Keys.GetEnumerator();
     }
@@ -118,36 +152,38 @@ public class ResourceDictionary : BaseDictionary, IDictionary {
     #endregion
   }
 
-  private class ResourceValuesEnumerator : IEnumerator {
-    internal ResourceValuesEnumerator(ResourceDictionary owner) {
-      _owner = owner;
-      _keysEnumerator = _owner.Keys.GetEnumerator();
-    }
+  #region Keys
+  [DllImport(Library.Name)]
+  private static extern void ResourceDictionary_EnumKeys(HandleRef dictionary, int id, ResourceDictionaryEnumKeysCallback callback);
 
-    #region IEnumerator
-    object IEnumerator.Current {
-      get {
-        return _owner[_keysEnumerator.Current];
-      }
-    }
-
-    bool IEnumerator.MoveNext() {
-      return _keysEnumerator.MoveNext();
-    }
-
-    void IEnumerator.Reset() {
-      _keysEnumerator.Reset();
-    }
-    #endregion
-
-    #region Data
-    private ResourceDictionary _owner;
-    private IEnumerator _keysEnumerator;
-    #endregion
+  private struct KeysData {
+    public object[] Keys;
+    public int Index;
   }
 
-  private class ResourceValuesCollection : ICollection {
-    internal ResourceValuesCollection(ResourceDictionary owner) {
+  private delegate void ResourceDictionaryEnumKeysCallback(int id, string key);
+  private static ResourceDictionaryEnumKeysCallback _enumKeys = OnEnumKeys;
+  [MonoPInvokeCallback(typeof(ResourceDictionaryEnumKeysCallback))]
+  private static void OnEnumKeys(int id, string key) {
+    try {
+      if (Noesis.Extend.Initialized) {
+        KeysData keys = _keysData[id];
+        Type type = Noesis.Extend.FindType(key);
+        keys.Keys[keys.Index++] = type != null ? (object)type : (object)key;
+      }
+    }
+    catch (Exception e) {
+      Error.UnhandledException(e);
+    }
+  }
+
+  private static Dictionary<int, KeysData> _keysData =
+   new Dictionary<int, KeysData>();
+  #endregion
+
+  #region Values
+  private class ValuesCollection : ICollection {
+    internal ValuesCollection(ResourceDictionary owner) {
       _owner = owner;
     }
 
@@ -176,8 +212,40 @@ public class ResourceDictionary : BaseDictionary, IDictionary {
       }
     }
 
+    public Enumerator GetEnumerator() {
+      return new Enumerator(_owner);
+    }
+
     IEnumerator IEnumerable.GetEnumerator() {
-      return new ResourceValuesEnumerator(_owner);
+      return new Enumerator(_owner);
+    }
+
+    public class Enumerator : IEnumerator {
+      internal Enumerator(ResourceDictionary owner) {
+        _owner = owner;
+        _keysEnumerator = _owner.Keys.GetEnumerator();
+      }
+  
+      #region IEnumerator
+      object IEnumerator.Current {
+        get {
+          return _owner[_keysEnumerator.Current];
+        }
+      }
+  
+      bool IEnumerator.MoveNext() {
+        return _keysEnumerator.MoveNext();
+      }
+  
+      void IEnumerator.Reset() {
+        _keysEnumerator.Reset();
+      }
+      #endregion
+  
+      #region Data
+      private ResourceDictionary _owner;
+      private IEnumerator _keysEnumerator;
+      #endregion
     }
     #endregion
  
@@ -185,28 +253,9 @@ public class ResourceDictionary : BaseDictionary, IDictionary {
     private ResourceDictionary _owner;
     #endregion
   }
-
   #endregion
 
-  public bool Contains(object key) {
-    return ContainsHelper(key);
-  }
-
-  public void Add(object key, object value) {
-    AddHelper(key, value);
-  }
-
-  public void Remove(object key) {
-    RemoveHelper(key);
-  }
-
-  public IDictionaryEnumerator GetEnumerator() {
-    return new ResourceDictionaryEnumerator(this);
-  }
-
-  IEnumerator IEnumerable.GetEnumerator() {
-    return ((IDictionary)this).GetEnumerator();
-  }
+  #endregion
 
   public void CopyTo(DictionaryEntry[] array, int index) {
     ICollection keys = Keys;
@@ -285,41 +334,26 @@ public class ResourceDictionary : BaseDictionary, IDictionary {
     } 
   }
 
-  private object GetValueHelper(object key) {
-    IntPtr cPtr = NoesisGUI_PINVOKE.ResourceDictionary_GetValueHelper(swigCPtr, Noesis.Extend.GetInstanceHandle(key));
+  private object GetValueHelper(string key) {
+    IntPtr cPtr = NoesisGUI_PINVOKE.ResourceDictionary_GetValueHelper(swigCPtr, key != null ? key : string.Empty);
     return Noesis.Extend.GetProxy(cPtr, false);
   }
 
-  private void SetValueHelper(object key, object value) {
-    NoesisGUI_PINVOKE.ResourceDictionary_SetValueHelper(swigCPtr, Noesis.Extend.GetInstanceHandle(key), Noesis.Extend.GetInstanceHandle(value));
+  private void SetValueHelper(string key, object value) {
+    NoesisGUI_PINVOKE.ResourceDictionary_SetValueHelper(swigCPtr, key != null ? key : string.Empty, Noesis.Extend.GetInstanceHandle(value));
   }
 
-  private bool ContainsHelper(object key) {
-    bool ret = NoesisGUI_PINVOKE.ResourceDictionary_ContainsHelper(swigCPtr, Noesis.Extend.GetInstanceHandle(key));
+  private bool ContainsHelper(string key) {
+    bool ret = NoesisGUI_PINVOKE.ResourceDictionary_ContainsHelper(swigCPtr, key != null ? key : string.Empty);
     return ret;
   }
 
-  private void AddHelper(object key, object value) {
-    NoesisGUI_PINVOKE.ResourceDictionary_AddHelper(swigCPtr, Noesis.Extend.GetInstanceHandle(key), Noesis.Extend.GetInstanceHandle(value));
+  private void AddHelper(string key, object value) {
+    NoesisGUI_PINVOKE.ResourceDictionary_AddHelper(swigCPtr, key != null ? key : string.Empty, Noesis.Extend.GetInstanceHandle(value));
   }
 
-  private void RemoveHelper(object key) {
-    NoesisGUI_PINVOKE.ResourceDictionary_RemoveHelper(swigCPtr, Noesis.Extend.GetInstanceHandle(key));
-  }
-
-  private IntPtr GetKeysHelper() {
-    IntPtr ret = NoesisGUI_PINVOKE.ResourceDictionary_GetKeysHelper(swigCPtr);
-    return ret;
-  }
-
-  private static object GetKeyHelper(IntPtr keysPtr, int index) {
-    IntPtr cPtr = NoesisGUI_PINVOKE.ResourceDictionary_GetKeyHelper(keysPtr, index);
-    return Noesis.Extend.GetProxy(cPtr, false);
-  }
-
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ResourceDictionary_GetStaticType();
-    return ret;
+  private void RemoveHelper(string key) {
+    NoesisGUI_PINVOKE.ResourceDictionary_RemoveHelper(swigCPtr, key != null ? key : string.Empty);
   }
 
   internal new static IntPtr Extend(string typeName) {

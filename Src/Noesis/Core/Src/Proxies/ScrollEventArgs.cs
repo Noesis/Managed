@@ -65,7 +65,7 @@ public class ScrollEventArgs : RoutedEventArgs {
     } 
   }
 
-  public ScrollEventArgs(object s, float value, ScrollEventType type) : this(NoesisGUI_PINVOKE.new_ScrollEventArgs(Noesis.Extend.GetInstanceHandle(s), value, (int)type), true) {
+  public ScrollEventArgs(object source, float value, ScrollEventType type) : this(NoesisGUI_PINVOKE.new_ScrollEventArgs(Noesis.Extend.GetInstanceHandle(source), value, (int)type), true) {
   }
 
 }

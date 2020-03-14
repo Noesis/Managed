@@ -35,11 +35,6 @@ public class SineEase : EasingFunctionBase {
     return NoesisGUI_PINVOKE.new_SineEase();
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.SineEase_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

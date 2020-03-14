@@ -169,11 +169,6 @@ public class Binding : BindingBase {
     NoesisGUI_PINVOKE.Binding_SetConverterHelper(swigCPtr, Noesis.Extend.GetInstanceHandle(converter));
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Binding_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

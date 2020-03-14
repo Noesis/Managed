@@ -52,11 +52,6 @@ public class EasingFunctionBase : Freezable {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.EasingFunctionBase_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

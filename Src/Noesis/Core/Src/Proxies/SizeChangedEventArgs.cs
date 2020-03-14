@@ -51,58 +51,47 @@ public class SizeChangedEventArgs : RoutedEventArgs {
     }
   }
 
-  public Noesis.Size NewSize {
+  public Size NewSize {
     get {
-      return GetNewSizeHelper();
+      IntPtr ret = NoesisGUI_PINVOKE.SizeChangedEventArgs_NewSize_get(swigCPtr);
+      if (ret != IntPtr.Zero) {
+        return Marshal.PtrToStructure<Size>(ret);
+      }
+      else {
+        return new Size();
+      }
     }
+
   }
 
-  public Noesis.Size OldSize {
+  public Size PreviousSize {
     get {
-      return GetOldSizeHelper();
+      IntPtr ret = NoesisGUI_PINVOKE.SizeChangedEventArgs_PreviousSize_get(swigCPtr);
+      if (ret != IntPtr.Zero) {
+        return Marshal.PtrToStructure<Size>(ret);
+      }
+      else {
+        return new Size();
+      }
     }
+
   }
 
   public bool WidthChanged {
     get {
-      return GetWidthChangedHelper();
-    }
+      bool ret = NoesisGUI_PINVOKE.SizeChangedEventArgs_WidthChanged_get(swigCPtr);
+      return ret;
+    } 
   }
 
   public bool HeightChanged {
     get {
-      return GetHeightChangedHelper();
-    }
+      bool ret = NoesisGUI_PINVOKE.SizeChangedEventArgs_HeightChanged_get(swigCPtr);
+      return ret;
+    } 
   }
 
-  private Size GetNewSizeHelper() {
-    IntPtr ret = NoesisGUI_PINVOKE.SizeChangedEventArgs_GetNewSizeHelper(swigCPtr);
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Size>(ret);
-    }
-    else {
-      return new Size();
-    }
-  }
-
-  private Size GetOldSizeHelper() {
-    IntPtr ret = NoesisGUI_PINVOKE.SizeChangedEventArgs_GetOldSizeHelper(swigCPtr);
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Size>(ret);
-    }
-    else {
-      return new Size();
-    }
-  }
-
-  private bool GetWidthChangedHelper() {
-    bool ret = NoesisGUI_PINVOKE.SizeChangedEventArgs_GetWidthChangedHelper(swigCPtr);
-    return ret;
-  }
-
-  private bool GetHeightChangedHelper() {
-    bool ret = NoesisGUI_PINVOKE.SizeChangedEventArgs_GetHeightChangedHelper(swigCPtr);
-    return ret;
+  public SizeChangedEventArgs(object source, RoutedEvent arg1, SizeChangedInfo info) : this(NoesisGUI_PINVOKE.new_SizeChangedEventArgs(Noesis.Extend.GetInstanceHandle(source), RoutedEvent.getCPtr(arg1), SizeChangedInfo.getCPtr(info)), true) {
   }
 
 }

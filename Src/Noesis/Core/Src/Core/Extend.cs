@@ -15,11 +15,6 @@ namespace Noesis
     ////////////////////////////////////////////////////////////////////////////////////////////////
     internal partial class Extend
     {
-        static Extend()
-        {
-            Noesis.GUI.Init();
-        }
-
         ////////////////////////////////////////////////////////////////////////////////////////////////
         public static bool Initialized { get; internal set; }
 
@@ -77,7 +72,13 @@ namespace Noesis
                     GC.Collect();
                     GC.WaitForPendingFinalizers();
 
-                    AddDestroyedExtends();
+#if !NETSTANDARD
+                    _weakExtendsIndex = 0;
+                    while (_weakExtendsIndex < _weakExtends.Count)
+                    {
+                        AddDestroyedExtends();
+                    }
+#endif
 
                     foreach (var kv in pendingReleases)
                     {
@@ -89,6 +90,9 @@ namespace Noesis
                     }
 
                     ReleasePending();
+
+                    Noesis_ClearExtendTypes();
+                    Noesis_EnableExtend(false);
                 }
                 catch (Exception)
                 {
@@ -96,11 +100,7 @@ namespace Noesis
                     // assembly unload will close Unity without notifying
                 }
 
-                Noesis_ClearExtendTypes();
-
                 ClearTables();
-
-                Noesis_EnableExtend(false);
             }
         }
 
@@ -130,6 +130,8 @@ namespace Noesis
 
                 _converterConvert,
                 _converterConvertBack,
+                _multiConverterConvert,
+                _multiConverterConvertBack,
 
                 _listCount,
                 _listGet,
@@ -153,6 +155,7 @@ namespace Noesis
                 _streamGetPosition,
                 _streamGetLength,
                 _streamRead,
+                _streamClose,
 
                 _providerLoadXaml,
                 _providerTextureInfo,
@@ -181,6 +184,7 @@ namespace Noesis
                 _getPropertyValue_TimeSpan,
                 _getPropertyValue_Duration,
                 _getPropertyValue_KeyTime,
+                _getPropertyValue_Type,
                 _getPropertyValue_BaseComponent,
 
                 _setPropertyValue_Bool,
@@ -201,6 +205,7 @@ namespace Noesis
                 _setPropertyValue_TimeSpan,
                 _setPropertyValue_Duration,
                 _setPropertyValue_KeyTime,
+                _setPropertyValue_Type,
                 _setPropertyValue_BaseComponent,
 
                 _createInstance,
@@ -218,17 +223,17 @@ namespace Noesis
                 null, null, null, null, null, null,
                 null, null, null,
                 null, null,
-                null, null,
+                null, null, null, null,
                 null, null, null, null, null,
                 null, null, null,
                 null, null,
                 null, null,
                 null,
-                null, null, null, null,
+                null, null, null, null, null,
                 null, null, null, null, null, null,
                 null,
-                null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-                null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
                 null, null, null);
         }
 
@@ -416,47 +421,39 @@ namespace Noesis
         ////////////////////////////////////////////////////////////////////////////////////////////////
         private static void AddNativeType(IntPtr nativeType, NativeTypeInfo info)
         {
-            AddNativeType(nativeType, info, true);
-        }
-
-        private static void AddNativeType(IntPtr nativeType, NativeTypeInfo info, bool checkType)
-        {
             // Check we are calling GetStaticType on the correct native type
-            NativeTypeInfo current;
-            if (_nativeTypes.TryGetValue(nativeType.ToInt64(), out current))
+            NativeTypeInfo currentInfo;
+            if (_nativeTypes.TryGetValue(nativeType.ToInt64(), out currentInfo))
             {
-                Log.Error(string.Format(
-                    "Native type already registered for type {0}, trying to register {1}",
-                    current.Type.FullName, info.Type.FullName));
+                Log.Error(string.Format("Native type already registered for type {0}, registering {1}",
+                    currentInfo.Type.FullName, info.Type.FullName));
             }
 
             _nativeTypes[nativeType.ToInt64()] = info;
 
-            if (checkType)
+            IntPtr currentType;
+            if (_managedTypes.TryGetValue(info.Type, out currentType))
             {
-                IntPtr currentType;
-                if (_managedTypes.TryGetValue(info.Type, out currentType))
-                {
-                    Log.Error(string.Format("Native type already registered for type {0}",
-                        info.Type.FullName));
-                }
-
-                _managedTypes[info.Type] = nativeType;
+                Log.Error(string.Format("Native type already registered for type {0}",
+                    info.Type.FullName));
             }
+
+            _managedTypes[info.Type] = nativeType;
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
         public static IntPtr TryGetNativeType(Type type)
         {
             IntPtr nativeType;
-            if (_managedTypes.TryGetValue(type, out nativeType))
+            lock (_managedTypes)
             {
-                return nativeType;
+                if (_managedTypes.TryGetValue(type, out nativeType))
+                {
+                    return nativeType;
+                }
             }
-            else
-            {
-                return IntPtr.Zero;
-            }
+
+            return IntPtr.Zero;
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -560,521 +557,557 @@ namespace Noesis
         ////////////////////////////////////////////////////////////////////////////////////////////////
         public static void RegisterNativeTypes()
         {
-            AddNativeType(NoesisGUI_.String_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(string)));
-            AddNativeType(NoesisGUI_.Bool_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(bool)));
-            AddNativeType(NoesisGUI_.Float_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(float)));
-            AddNativeType(NoesisGUI_.Double_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(double)));
-            AddNativeType(NoesisGUI_.Int_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(int)));
-            AddNativeType(NoesisGUI_.UInt_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(uint)));
-            AddNativeType(NoesisGUI_.Short_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(short)));
-            AddNativeType(NoesisGUI_.UShort_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(ushort)));
-            AddNativeType(NoesisGUI_.Long_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(long)));
-            AddNativeType(NoesisGUI_.ULong_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(ulong)));
-            AddNativeType(NoesisGUI_.Color_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.Color)));
-            AddNativeType(NoesisGUI_.Point_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.Point)));
-            AddNativeType(NoesisGUI_.Rect_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.Rect)));
-            AddNativeType(NoesisGUI_.Size_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.Size)));
-            AddNativeType(NoesisGUI_.Thickness_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.Thickness)));
-            AddNativeType(NoesisGUI_.CornerRadius_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.CornerRadius)));
-            AddNativeType(NoesisGUI_.GridLength_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.GridLength)));
-            AddNativeType(NoesisGUI_.Duration_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.Duration)));
-            AddNativeType(NoesisGUI_.KeyTime_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.KeyTime)));
-            AddNativeType(NoesisGUI_.TimeSpan_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(System.TimeSpan)));
-            AddNativeType(NoesisGUI_.VirtualizationCacheLength_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.VirtualizationCacheLength)));
+            const int TypesCapacity = 512;
+            IntPtr[] types = new IntPtr[TypesCapacity];
+            for (int t = 0; t < TypesCapacity; ++t) types[t] = IntPtr.Zero;
 
-            AddNativeType(NoesisGUI_.NullableBool_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(System.Nullable<bool>)));
-            AddNativeType(NoesisGUI_.NullableFloat_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(System.Nullable<float>)));
-            AddNativeType(NoesisGUI_.NullableDouble_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(System.Nullable<double>)));
-            AddNativeType(NoesisGUI_.NullableInt32_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(System.Nullable<int>)));
-            AddNativeType(NoesisGUI_.NullableUInt32_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(System.Nullable<uint>)));
-            AddNativeType(NoesisGUI_.NullableInt16_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(System.Nullable<short>)));
-            AddNativeType(NoesisGUI_.NullableUInt16_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(System.Nullable<ushort>)));
-            AddNativeType(NoesisGUI_.NullableInt64_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(System.Nullable<long>)));
-            AddNativeType(NoesisGUI_.NullableUInt64_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(System.Nullable<ulong>)));
-            AddNativeType(NoesisGUI_.NullableColor_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(System.Nullable<Noesis.Color>)));
-            AddNativeType(NoesisGUI_.NullablePoint_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(System.Nullable<Noesis.Point>)));
-            AddNativeType(NoesisGUI_.NullableRect_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(System.Nullable<Noesis.Rect>)));
-            AddNativeType(NoesisGUI_.NullableSize_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(System.Nullable<Noesis.Size>)));
-            AddNativeType(NoesisGUI_.NullableThickness_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(System.Nullable<Noesis.Thickness>)));
-            AddNativeType(NoesisGUI_.NullableCornerRadius_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(System.Nullable<Noesis.CornerRadius>)));
-            AddNativeType(NoesisGUI_.NullableDuration_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(System.Nullable<Noesis.Duration>)));
-            AddNativeType(NoesisGUI_.NullableKeyTime_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(System.Nullable<Noesis.KeyTime>)));
-            AddNativeType(NoesisGUI_.NullableTimeSpan_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(System.Nullable<System.TimeSpan>)));
+            int numTypes = Noesis_GetNativeTypes(types, TypesCapacity);
 
-            AddNativeType(NoesisGUI_.AlignmentX_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.AlignmentX)));
-            AddNativeType(NoesisGUI_.AlignmentY_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.AlignmentY)));
-            AddNativeType(NoesisGUI_.AutoToolTipPlacement_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.AutoToolTipPlacement)));
-            AddNativeType(NoesisGUI_.BindingMode_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.BindingMode)));
-            AddNativeType(NoesisGUI_.BitmapScalingMode_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.BitmapScalingMode)));
-            AddNativeType(NoesisGUI_.BrushMappingMode_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.BrushMappingMode)));
-            AddNativeType(NoesisGUI_.CharacterCasing_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.CharacterCasing)));
-            AddNativeType(NoesisGUI_.ClickMode_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.ClickMode)));
-            AddNativeType(NoesisGUI_.ColorInterpolationMode_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.ColorInterpolationMode)));
-            AddNativeType(NoesisGUI_.Cursor_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.Cursor)));
-            AddNativeType(NoesisGUI_.Dock_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.Dock)));
-            AddNativeType(NoesisGUI_.ExpandDirection_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.ExpandDirection)));
-            AddNativeType(NoesisGUI_.FillRule_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.FillRule)));
-            AddNativeType(NoesisGUI_.FlowDirection_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.FlowDirection)));
-            AddNativeType(NoesisGUI_.FontStretch_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.FontStretch)));
-            AddNativeType(NoesisGUI_.FontStyle_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.FontStyle)));
-            AddNativeType(NoesisGUI_.FontWeight_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.FontWeight)));
-            AddNativeType(NoesisGUI_.GeometryCombineMode_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.GeometryCombineMode)));
-            AddNativeType(NoesisGUI_.GradientSpreadMethod_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.GradientSpreadMethod)));
-            AddNativeType(NoesisGUI_.HorizontalAlignment_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.HorizontalAlignment)));
-            AddNativeType(NoesisGUI_.KeyboardNavigationMode_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.KeyboardNavigationMode)));
-            AddNativeType(NoesisGUI_.LineStackingStrategy_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.LineStackingStrategy)));
-            AddNativeType(NoesisGUI_.ListSortDirection_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.ListSortDirection)));
-            AddNativeType(NoesisGUI_.MenuItemRole_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.MenuItemRole)));
-            AddNativeType(NoesisGUI_.Orientation_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.Orientation)));
-            AddNativeType(NoesisGUI_.OverflowMode_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.OverflowMode)));
-            AddNativeType(NoesisGUI_.PenLineCap_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.PenLineCap)));
-            AddNativeType(NoesisGUI_.PenLineJoin_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.PenLineJoin)));
-            AddNativeType(NoesisGUI_.PlacementMode_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.PlacementMode)));
-            AddNativeType(NoesisGUI_.PopupAnimation_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.PopupAnimation)));
-            AddNativeType(NoesisGUI_.RelativeSourceMode_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.RelativeSourceMode)));
-            AddNativeType(NoesisGUI_.SelectionMode_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.SelectionMode)));
-            AddNativeType(NoesisGUI_.ScrollBarVisibility_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.ScrollBarVisibility)));
-            AddNativeType(NoesisGUI_.Stretch_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.Stretch)));
-            AddNativeType(NoesisGUI_.StretchDirection_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.StretchDirection)));
-            AddNativeType(NoesisGUI_.TextDecorations_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.TextDecorations)));
-            AddNativeType(NoesisGUI_.TextAlignment_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.TextAlignment)));
-            AddNativeType(NoesisGUI_.TextTrimming_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.TextTrimming)));
-            AddNativeType(NoesisGUI_.TextWrapping_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.TextWrapping)));
-            AddNativeType(NoesisGUI_.TickBarPlacement_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.TickBarPlacement)));
-            AddNativeType(NoesisGUI_.TickPlacement_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.TickPlacement)));
-            AddNativeType(NoesisGUI_.TileMode_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.TileMode)));
-            AddNativeType(NoesisGUI_.VerticalAlignment_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.VerticalAlignment)));
-            AddNativeType(NoesisGUI_.Visibility_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.Visibility)));
-            AddNativeType(NoesisGUI_.ClockState_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.ClockState)));
-            AddNativeType(NoesisGUI_.EasingMode_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.EasingMode)));
-            AddNativeType(NoesisGUI_.SlipBehavior_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.SlipBehavior)));
-            AddNativeType(NoesisGUI_.FillBehavior_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.FillBehavior)));
-            AddNativeType(NoesisGUI_.GridViewColumnHeaderRole_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.GridViewColumnHeaderRole)));
-            AddNativeType(NoesisGUI_.HandoffBehavior_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.HandoffBehavior)));
-            AddNativeType(NoesisGUI_.PanningMode_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.PanningMode)));
-            AddNativeType(NoesisGUI_.UpdateSourceTrigger_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.UpdateSourceTrigger)));
-            AddNativeType(NoesisGUI_.ScrollUnit_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.ScrollUnit)));
-            AddNativeType(NoesisGUI_.VirtualizationMode_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.VirtualizationMode)));
-            AddNativeType(NoesisGUI_.VirtualizationCacheLengthUnit_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.VirtualizationCacheLengthUnit)));
-            AddNativeType(NoesisGUI_.PPAAMode_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Basic, typeof(Noesis.PPAAMode)));
+            int i = 0;
 
-            AddNativeType(NoesisGUI_.Boxed_String_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<string>)));
-            AddNativeType(NoesisGUI_.Boxed_Bool_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<bool>)));
-            AddNativeType(NoesisGUI_.Boxed_Float_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<float>)));
-            AddNativeType(NoesisGUI_.Boxed_Double_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<double>)));
-            AddNativeType(NoesisGUI_.Boxed_Int_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<int>)));
-            AddNativeType(NoesisGUI_.Boxed_UInt_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<uint>)));
-            AddNativeType(NoesisGUI_.Boxed_Short_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<short>)));
-            AddNativeType(NoesisGUI_.Boxed_UShort_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<ushort>)));
-            AddNativeType(NoesisGUI_.Boxed_Long_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<long>)));
-            AddNativeType(NoesisGUI_.Boxed_ULong_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<ulong>)));
-            AddNativeType(NoesisGUI_.Boxed_Color_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.Color>)));
-            AddNativeType(NoesisGUI_.Boxed_Point_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.Point>)));
-            AddNativeType(NoesisGUI_.Boxed_Rect_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.Rect>)));
-            AddNativeType(NoesisGUI_.Boxed_Size_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.Size>)));
-            AddNativeType(NoesisGUI_.Boxed_Thickness_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.Thickness>)));
-            AddNativeType(NoesisGUI_.Boxed_CornerRadius_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.CornerRadius>)));
-            AddNativeType(NoesisGUI_.Boxed_GridLength_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.GridLength>)));
-            AddNativeType(NoesisGUI_.Boxed_Duration_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.Duration>)));
-            AddNativeType(NoesisGUI_.Boxed_KeyTime_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.KeyTime>)));
-            AddNativeType(NoesisGUI_.Boxed_TimeSpan_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<System.TimeSpan>)));
-            AddNativeType(NoesisGUI_.Boxed_VirtualizationCacheLength_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.VirtualizationCacheLength>)));
+            // NOTE: Must keep in sync with NoesisNativeTypes.i in SWIGNoesis tool
 
-            AddNativeType(NoesisGUI_.Boxed_AlignmentX_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.AlignmentX>)));
-            AddNativeType(NoesisGUI_.Boxed_AlignmentY_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.AlignmentY>)));
-            AddNativeType(NoesisGUI_.Boxed_AutoToolTipPlacement_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.AutoToolTipPlacement>)));
-            AddNativeType(NoesisGUI_.Boxed_BindingMode_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.BindingMode>)));
-            AddNativeType(NoesisGUI_.Boxed_BitmapScalingMode_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.BitmapScalingMode>)));
-            AddNativeType(NoesisGUI_.Boxed_BrushMappingMode_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.BrushMappingMode>)));
-            AddNativeType(NoesisGUI_.Boxed_CharacterCasing_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.CharacterCasing>)));
-            AddNativeType(NoesisGUI_.Boxed_ClickMode_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.ClickMode>)));
-            AddNativeType(NoesisGUI_.Boxed_ColorInterpolationMode_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.ColorInterpolationMode>)));
-            AddNativeType(NoesisGUI_.Boxed_Cursor_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.Cursor>)));
-            AddNativeType(NoesisGUI_.Boxed_Dock_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.Dock>)));
-            AddNativeType(NoesisGUI_.Boxed_ExpandDirection_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.ExpandDirection>)));
-            AddNativeType(NoesisGUI_.Boxed_FillRule_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.FillRule>)));
-            AddNativeType(NoesisGUI_.Boxed_FlowDirection_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.FlowDirection>)));
-            AddNativeType(NoesisGUI_.Boxed_FontStretch_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.FontStretch>)));
-            AddNativeType(NoesisGUI_.Boxed_FontStyle_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.FontStyle>)));
-            AddNativeType(NoesisGUI_.Boxed_FontWeight_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.FontWeight>)));
-            AddNativeType(NoesisGUI_.Boxed_GeometryCombineMode_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.GeometryCombineMode>)));
-            AddNativeType(NoesisGUI_.Boxed_GradientSpreadMethod_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.GradientSpreadMethod>)));
-            AddNativeType(NoesisGUI_.Boxed_HorizontalAlignment_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.HorizontalAlignment>)));
-            AddNativeType(NoesisGUI_.Boxed_KeyboardNavigationMode_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.KeyboardNavigationMode>)));
-            AddNativeType(NoesisGUI_.Boxed_LineStackingStrategy_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.LineStackingStrategy>)));
-            AddNativeType(NoesisGUI_.Boxed_ListSortDirection_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.ListSortDirection>)));
-            AddNativeType(NoesisGUI_.Boxed_MenuItemRole_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.MenuItemRole>)));
-            AddNativeType(NoesisGUI_.Boxed_Orientation_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.Orientation>)));
-            AddNativeType(NoesisGUI_.Boxed_OverflowMode_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.OverflowMode>)));
-            AddNativeType(NoesisGUI_.Boxed_PenLineCap_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.PenLineCap>)));
-            AddNativeType(NoesisGUI_.Boxed_PenLineJoin_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.PenLineJoin>)));
-            AddNativeType(NoesisGUI_.Boxed_PlacementMode_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.PlacementMode>)));
-            AddNativeType(NoesisGUI_.Boxed_PopupAnimation_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.PopupAnimation>)));
-            AddNativeType(NoesisGUI_.Boxed_RelativeSourceMode_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.RelativeSourceMode>)));
-            AddNativeType(NoesisGUI_.Boxed_SelectionMode_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.SelectionMode>)));
-            AddNativeType(NoesisGUI_.Boxed_ScrollBarVisibility_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.ScrollBarVisibility>)));
-            AddNativeType(NoesisGUI_.Boxed_Stretch_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.Stretch>)));
-            AddNativeType(NoesisGUI_.Boxed_StretchDirection_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.StretchDirection>)));
-            AddNativeType(NoesisGUI_.Boxed_TextDecorations_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.TextDecorations>)));
-            AddNativeType(NoesisGUI_.Boxed_TextAlignment_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.TextAlignment>)));
-            AddNativeType(NoesisGUI_.Boxed_TextTrimming_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.TextTrimming>)));
-            AddNativeType(NoesisGUI_.Boxed_TextWrapping_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.TextWrapping>)));
-            AddNativeType(NoesisGUI_.Boxed_TickBarPlacement_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.TickBarPlacement>)));
-            AddNativeType(NoesisGUI_.Boxed_TickPlacement_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.TickPlacement>)));
-            AddNativeType(NoesisGUI_.Boxed_TileMode_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.TileMode>)));
-            AddNativeType(NoesisGUI_.Boxed_VerticalAlignment_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.VerticalAlignment>)));
-            AddNativeType(NoesisGUI_.Boxed_Visibility_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.Visibility>)));
-            AddNativeType(NoesisGUI_.Boxed_ClockState_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.ClockState>)));
-            AddNativeType(NoesisGUI_.Boxed_EasingMode_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.EasingMode>)));
-            AddNativeType(NoesisGUI_.Boxed_SlipBehavior_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.SlipBehavior>)));
-            AddNativeType(NoesisGUI_.Boxed_FillBehavior_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.FillBehavior>)));
-            AddNativeType(NoesisGUI_.Boxed_GridViewColumnHeaderRole_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.GridViewColumnHeaderRole>)));
-            AddNativeType(NoesisGUI_.Boxed_HandoffBehavior_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.HandoffBehavior>)));
-            AddNativeType(NoesisGUI_.Boxed_PanningMode_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.PanningMode>)));
-            AddNativeType(NoesisGUI_.Boxed_UpdateSourceTrigger_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.UpdateSourceTrigger>)));
-            AddNativeType(NoesisGUI_.Boxed_ScrollUnit_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.ScrollUnit>)));
-            AddNativeType(NoesisGUI_.Boxed_VirtualizationMode_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.VirtualizationMode>)));
-            AddNativeType(NoesisGUI_.Boxed_VirtualizationCacheLengthUnit_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.VirtualizationCacheLengthUnit>)));
-            AddNativeType(NoesisGUI_.Boxed_PPAAMode_GetStaticType(), new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Noesis.PPAAMode>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Type)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(string)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(bool)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(float)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(double)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(int)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(uint)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(short)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(ushort)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(long)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(ulong)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Color)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Point)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Rect)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Size)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Thickness)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(CornerRadius)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(GridLength)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Duration)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(KeyTime)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(TimeSpan)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(VirtualizationCacheLength)));
 
-            AddNativeType(Noesis.BaseComponent.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.BaseComponent), Noesis.BaseComponent.CreateProxy));
-            AddNativeType(Noesis.DispatcherObject.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.DispatcherObject), Noesis.DispatcherObject.CreateProxy));
-            AddNativeType(Noesis.DependencyObject.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.DependencyObject), Noesis.DependencyObject.CreateProxy));
-            AddNativeType(Noesis.DependencyProperty.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.DependencyProperty), Noesis.DependencyProperty.CreateProxy));
-            AddNativeType(Noesis.Freezable.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Freezable), Noesis.Freezable.CreateProxy));
-            AddNativeType(Noesis.PropertyMetadata.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.PropertyMetadata), Noesis.PropertyMetadata.CreateProxy));
-            AddNativeType(Noesis.Expression.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Expression), Noesis.Expression.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(bool?)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(float?)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(double?)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(int?)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(uint?)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(short?)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(ushort?)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(long?)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(ulong?)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Color?)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Point?)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Rect?)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Size?)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Thickness?)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(CornerRadius?)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Duration?)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(KeyTime?)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(TimeSpan?)));
 
-            AddNativeType(Noesis.View.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.View), Noesis.View.CreateProxy));
-            AddNativeType(Noesis.Renderer.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Renderer), Noesis.Renderer.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(AlignmentX)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(AlignmentY)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(AutoToolTipPlacement)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(BindingMode)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(BitmapScalingMode)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(BrushMappingMode)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(CharacterCasing)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(ClickMode)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(ColorInterpolationMode)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Cursor)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Dock)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(ExpandDirection)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(FillRule)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(FlowDirection)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(FontStretch)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(FontStyle)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(FontWeight)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(GeometryCombineMode)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(GradientSpreadMethod)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(HorizontalAlignment)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(KeyboardNavigationMode)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(LineStackingStrategy)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(ListSortDirection)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(MenuItemRole)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Orientation)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(OverflowMode)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(PenLineCap)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(PenLineJoin)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(PlacementMode)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(PopupAnimation)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(RelativeSourceMode)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(SelectionMode)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(ScrollBarVisibility)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Stretch)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(StretchDirection)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(TextDecorations)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(TextAlignment)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(TextTrimming)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(TextWrapping)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(TickBarPlacement)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(TickPlacement)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(TileMode)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(VerticalAlignment)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Visibility)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(ClockState)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(EasingMode)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(SlipBehavior)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(FillBehavior)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(GridViewColumnHeaderRole)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(HandoffBehavior)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(PanningMode)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(UpdateSourceTrigger)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(ScrollUnit)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(VirtualizationMode)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(VirtualizationCacheLengthUnit)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(PPAAMode)));
 
-            AddNativeType(Noesis.AdornerDecorator.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.AdornerDecorator), Noesis.AdornerDecorator.CreateProxy));
-            AddNativeType(Noesis.Animatable.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Animatable), Noesis.Animatable.CreateProxy));
-            AddNativeType(Noesis.BindingBase.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.BindingBase), Noesis.BindingBase.CreateProxy));
-            AddNativeType(Noesis.BindingExpressionBase.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.BindingExpressionBase), Noesis.BindingExpressionBase.CreateProxy));
-            AddNativeType(Noesis.BindingExpression.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.BindingExpression), Noesis.BindingExpression.CreateProxy));
-            AddNativeType(Noesis.Bold.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Bold), Noesis.Bold.CreateProxy));
-            AddNativeType(Noesis.ButtonBase.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ButtonBase), Noesis.ButtonBase.CreateProxy));
-            AddNativeType(Noesis.DefinitionBase.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.DefinitionBase), Noesis.DefinitionBase.CreateProxy));
-            AddNativeType(Noesis.MenuBase.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.MenuBase), Noesis.MenuBase.CreateProxy));
-            AddNativeType(Noesis.SetterBase.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.SetterBase), Noesis.SetterBase.CreateProxy));
-            AddNativeType(Noesis.SetterBaseCollection.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.SetterBaseCollection), Noesis.SetterBaseCollection.CreateProxy));
-            AddNativeType(Noesis.TextBoxBase.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.TextBoxBase), Noesis.TextBoxBase.CreateProxy));
-            AddNativeType(Noesis.TriggerBase.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.TriggerBase), Noesis.TriggerBase.CreateProxy));
-            AddNativeType(Noesis.Binding.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Binding), Noesis.Binding.CreateProxy));
-            AddNativeType(Noesis.BitmapImage.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.BitmapImage), Noesis.BitmapImage.CreateProxy));
-            AddNativeType(Noesis.BitmapSource.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.BitmapSource), Noesis.BitmapSource.CreateProxy));
-            AddNativeType(Noesis.Border.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Border), Noesis.Border.CreateProxy));
-            AddNativeType(Noesis.Brush.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Brush), Noesis.Brush.CreateProxy));
-            AddNativeType(Noesis.BulletDecorator.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.BulletDecorator), Noesis.BulletDecorator.CreateProxy));
-            AddNativeType(Noesis.Button.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Button), Noesis.Button.CreateProxy));
-            AddNativeType(Noesis.Canvas.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Canvas), Noesis.Canvas.CreateProxy));
-            AddNativeType(Noesis.CheckBox.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.CheckBox), Noesis.CheckBox.CreateProxy));
-            AddNativeType(Noesis.BaseUICollection.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.BaseUICollection), Noesis.BaseUICollection.CreateProxy));
-            AddNativeType(Noesis.CollectionView.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.CollectionView), Noesis.CollectionView.CreateProxy));
-            AddNativeType(Noesis.CollectionViewSource.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.CollectionViewSource), Noesis.CollectionViewSource.CreateProxy));
-            AddNativeType(Noesis.ColumnDefinition.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ColumnDefinition), Noesis.ColumnDefinition.CreateProxy));
-            AddNativeType(Noesis.ColumnDefinitionCollection.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ColumnDefinitionCollection), Noesis.ColumnDefinitionCollection.CreateProxy));
-            AddNativeType(Noesis.CombinedGeometry.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.CombinedGeometry), Noesis.CombinedGeometry.CreateProxy));
-            AddNativeType(Noesis.ComboBox.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ComboBox), Noesis.ComboBox.CreateProxy));
-            AddNativeType(Noesis.ComboBoxItem.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ComboBoxItem), Noesis.ComboBoxItem.CreateProxy));
-            AddNativeType(Noesis.CommandBinding.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.CommandBinding), Noesis.CommandBinding.CreateProxy));
-            AddNativeType(Noesis.CommandBindingCollection.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.CommandBindingCollection), Noesis.CommandBindingCollection.CreateProxy));
-            AddNativeType(Noesis.CompositeTransform.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.CompositeTransform), Noesis.CompositeTransform.CreateProxy));
-            AddNativeType(Noesis.Condition.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Condition), Noesis.Condition.CreateProxy));
-            AddNativeType(Noesis.ConditionCollection.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ConditionCollection), Noesis.ConditionCollection.CreateProxy));
-            AddNativeType(Noesis.ContentControl.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ContentControl), Noesis.ContentControl.CreateProxy));
-            AddNativeType(Noesis.ContentPresenter.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ContentPresenter), Noesis.ContentPresenter.CreateProxy));
-            AddNativeType(Noesis.ContextMenu.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ContextMenu), Noesis.ContextMenu.CreateProxy));
-            AddNativeType(Noesis.Control.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Control), Noesis.Control.CreateProxy));
-            AddNativeType(Noesis.ControlTemplate.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ControlTemplate), Noesis.ControlTemplate.CreateProxy));
-            AddNativeType(Noesis.DashStyle.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.DashStyle), Noesis.DashStyle.CreateProxy));
-            AddNativeType(Noesis.DataTemplate.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.DataTemplate), Noesis.DataTemplate.CreateProxy));
-            AddNativeType(Noesis.DataTemplateSelector.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.DataTemplateSelector), Noesis.DataTemplateSelector.CreateProxy));
-            AddNativeType(Noesis.HierarchicalDataTemplate.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.HierarchicalDataTemplate), Noesis.HierarchicalDataTemplate.CreateProxy));
-            AddNativeType(Noesis.Decorator.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Decorator), Noesis.Decorator.CreateProxy));
-            AddNativeType(Noesis.DockPanel.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.DockPanel), Noesis.DockPanel.CreateProxy));
-            AddNativeType(Noesis.Ellipse.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Ellipse), Noesis.Ellipse.CreateProxy));
-            AddNativeType(Noesis.EllipseGeometry.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.EllipseGeometry), Noesis.EllipseGeometry.CreateProxy));
-            AddNativeType(Noesis.EventTrigger.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.EventTrigger), Noesis.EventTrigger.CreateProxy));
-            AddNativeType(Noesis.Expander.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Expander), Noesis.Expander.CreateProxy));
-            AddNativeType(Noesis.FontFamily.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.FontFamily), Noesis.FontFamily.CreateProxy));
-            AddNativeType(Noesis.FormattedText.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.FormattedText), Noesis.FormattedText.CreateProxy));
-            AddNativeType(Noesis.FrameworkElement.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.FrameworkElement), Noesis.FrameworkElement.CreateProxy));
-            AddNativeType(Noesis.FrameworkTemplate.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.FrameworkTemplate), Noesis.FrameworkTemplate.CreateProxy));
-            AddNativeType(Noesis.FrameworkPropertyMetadata.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.FrameworkPropertyMetadata), Noesis.FrameworkPropertyMetadata.CreateProxy));
-            AddNativeType(Noesis.BaseFreezableCollection.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.BaseFreezableCollection), Noesis.BaseFreezableCollection.CreateProxy));
-            AddNativeType(Noesis.Geometry.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Geometry), Noesis.Geometry.CreateProxy));
-            AddNativeType(Noesis.GeometryCollection.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.GeometryCollection), Noesis.GeometryCollection.CreateProxy));
-            AddNativeType(Noesis.GeometryGroup.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.GeometryGroup), Noesis.GeometryGroup.CreateProxy));
-            AddNativeType(Noesis.GradientBrush.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.GradientBrush), Noesis.GradientBrush.CreateProxy));
-            AddNativeType(Noesis.GradientStop.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.GradientStop), Noesis.GradientStop.CreateProxy));
-            AddNativeType(Noesis.GradientStopCollection.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.GradientStopCollection), Noesis.GradientStopCollection.CreateProxy));
-            AddNativeType(Noesis.Grid.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Grid), Noesis.Grid.CreateProxy));
-            AddNativeType(Noesis.GroupBox.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.GroupBox), Noesis.GroupBox.CreateProxy));
-            AddNativeType(Noesis.HeaderedContentControl.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.HeaderedContentControl), Noesis.HeaderedContentControl.CreateProxy));
-            AddNativeType(Noesis.HeaderedItemsControl.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.HeaderedItemsControl), Noesis.HeaderedItemsControl.CreateProxy));
-            AddNativeType(Noesis.Hyperlink.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Hyperlink), Noesis.Hyperlink.CreateProxy));
-            AddNativeType(Noesis.Image.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Image), Noesis.Image.CreateProxy));
-            AddNativeType(Noesis.ImageBrush.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ImageBrush), Noesis.ImageBrush.CreateProxy));
-            AddNativeType(Noesis.ImageSource.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ImageSource), Noesis.ImageSource.CreateProxy));
-            AddNativeType(Noesis.Inline.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Inline), Noesis.Inline.CreateProxy));
-            AddNativeType(Noesis.InlineCollection.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.InlineCollection), Noesis.InlineCollection.CreateProxy));
-            AddNativeType(Noesis.InlineUIContainer.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.InlineUIContainer), Noesis.InlineUIContainer.CreateProxy));
-            AddNativeType(Noesis.InputBinding.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.InputBinding), Noesis.InputBinding.CreateProxy));
-            AddNativeType(Noesis.InputBindingCollection.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.InputBindingCollection), Noesis.InputBindingCollection.CreateProxy));
-            AddNativeType(Noesis.InputGesture.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.InputGesture), Noesis.InputGesture.CreateProxy));
-            AddNativeType(Noesis.InputGestureCollection.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.InputGestureCollection), Noesis.InputGestureCollection.CreateProxy));
-            AddNativeType(Noesis.Italic.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Italic), Noesis.Italic.CreateProxy));
-            AddNativeType(Noesis.ItemCollection.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ItemCollection), Noesis.ItemCollection.CreateProxy));
-            AddNativeType(Noesis.ItemContainerGenerator.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ItemContainerGenerator), Noesis.ItemContainerGenerator.CreateProxy));
-            AddNativeType(Noesis.ItemsControl.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ItemsControl), Noesis.ItemsControl.CreateProxy));
-            AddNativeType(Noesis.ItemsPanelTemplate.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ItemsPanelTemplate), Noesis.ItemsPanelTemplate.CreateProxy));
-            AddNativeType(Noesis.ItemsPresenter.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ItemsPresenter), Noesis.ItemsPresenter.CreateProxy));
-            AddNativeType(Noesis.KeyBinding.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.KeyBinding), Noesis.KeyBinding.CreateProxy));
-            AddNativeType(Noesis.Keyboard.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Keyboard), Noesis.Keyboard.CreateProxy));
-            AddNativeType(Noesis.KeyboardNavigation.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.KeyboardNavigation), Noesis.KeyboardNavigation.CreateProxy));
-            AddNativeType(Noesis.KeyGesture.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.KeyGesture), Noesis.KeyGesture.CreateProxy));
-            AddNativeType(Noesis.Label.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Label), Noesis.Label.CreateProxy));
-            AddNativeType(Noesis.Line.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Line), Noesis.Line.CreateProxy));
-            AddNativeType(Noesis.LinearGradientBrush.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.LinearGradientBrush), Noesis.LinearGradientBrush.CreateProxy));
-            AddNativeType(Noesis.LineBreak.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.LineBreak), Noesis.LineBreak.CreateProxy));
-            AddNativeType(Noesis.LineGeometry.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.LineGeometry), Noesis.LineGeometry.CreateProxy));
-            AddNativeType(Noesis.ListBox.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ListBox), Noesis.ListBox.CreateProxy));
-            AddNativeType(Noesis.ListBoxItem.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ListBoxItem), Noesis.ListBoxItem.CreateProxy));
-            AddNativeType(Noesis.MarkupExtension.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.MarkupExtension), Noesis.MarkupExtension.CreateProxy));
-            AddNativeType(Noesis.Matrix3DProjection.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Matrix3DProjection), Noesis.Matrix3DProjection.CreateProxy));
-            AddNativeType(Noesis.MatrixTransform.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.MatrixTransform), Noesis.MatrixTransform.CreateProxy));
-            AddNativeType(Noesis.Menu.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Menu), Noesis.Menu.CreateProxy));
-            AddNativeType(Noesis.MenuItem.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.MenuItem), Noesis.MenuItem.CreateProxy));
-            AddNativeType(Noesis.MultiTrigger.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.MultiTrigger), Noesis.MultiTrigger.CreateProxy));
-            AddNativeType(Noesis.NameScope.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.NameScope), Noesis.NameScope.CreateProxy));
-            AddNativeType(Noesis.Page.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Page), Noesis.Page.CreateProxy));
-            AddNativeType(Noesis.Panel.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Panel), Noesis.Panel.CreateProxy));
-            AddNativeType(Noesis.PasswordBox.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.PasswordBox), Noesis.PasswordBox.CreateProxy));
-            AddNativeType(Noesis.Path.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Path), Noesis.Path.CreateProxy));
-            AddNativeType(Noesis.Pen.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Pen), Noesis.Pen.CreateProxy));
-            AddNativeType(Noesis.PlaneProjection.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.PlaneProjection), Noesis.PlaneProjection.CreateProxy));
-            AddNativeType(Noesis.Popup.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Popup), Noesis.Popup.CreateProxy));
-            AddNativeType(Noesis.ProgressBar.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ProgressBar), Noesis.ProgressBar.CreateProxy));
-            AddNativeType(Noesis.Projection.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Projection), Noesis.Projection.CreateProxy));
-            AddNativeType(Noesis.PropertyPath.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.PropertyPath), Noesis.PropertyPath.CreateProxy));
-            AddNativeType(Noesis.RadialGradientBrush.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.RadialGradientBrush), Noesis.RadialGradientBrush.CreateProxy));
-            AddNativeType(Noesis.RadioButton.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.RadioButton), Noesis.RadioButton.CreateProxy));
-            AddNativeType(Noesis.RangeBase.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.RangeBase), Noesis.RangeBase.CreateProxy));
-            AddNativeType(Noesis.Rectangle.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Rectangle), Noesis.Rectangle.CreateProxy));
-            AddNativeType(Noesis.RectangleGeometry.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.RectangleGeometry), Noesis.RectangleGeometry.CreateProxy));
-            AddNativeType(Noesis.RelativeSource.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.RelativeSource), Noesis.RelativeSource.CreateProxy));
-            AddNativeType(Noesis.RepeatButton.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.RepeatButton), Noesis.RepeatButton.CreateProxy));
-            AddNativeType(Noesis.ResourceDictionary.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ResourceDictionary), Noesis.ResourceDictionary.CreateProxy));
-            AddNativeType(Noesis.ResourceDictionaryCollection.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ResourceDictionaryCollection), Noesis.ResourceDictionaryCollection.CreateProxy));
-            AddNativeType(Noesis.ResourceKeyType.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ResourceKeyType), Noesis.ResourceKeyType.CreateProxy));
-            AddNativeType(Noesis.RotateTransform.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.RotateTransform), Noesis.RotateTransform.CreateProxy));
-            AddNativeType(Noesis.RoutedCommand.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.RoutedCommand), Noesis.RoutedCommand.CreateProxy));
-            AddNativeType(Noesis.RoutedEvent.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.RoutedEvent), Noesis.RoutedEvent.CreateProxy));
-            AddNativeType(Noesis.RoutedUICommand.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.RoutedUICommand), Noesis.RoutedUICommand.CreateProxy));
-            AddNativeType(Noesis.RowDefinition.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.RowDefinition), Noesis.RowDefinition.CreateProxy));
-            AddNativeType(Noesis.RowDefinitionCollection.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.RowDefinitionCollection), Noesis.RowDefinitionCollection.CreateProxy));
-            AddNativeType(Noesis.Run.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Run), Noesis.Run.CreateProxy));
-            AddNativeType(Noesis.ScaleTransform.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ScaleTransform), Noesis.ScaleTransform.CreateProxy));
-            AddNativeType(Noesis.ScrollBar.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ScrollBar), Noesis.ScrollBar.CreateProxy));
-            AddNativeType(Noesis.ScrollViewer.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ScrollViewer), Noesis.ScrollViewer.CreateProxy));
-            AddNativeType(Noesis.ScrollContentPresenter.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ScrollContentPresenter), Noesis.ScrollContentPresenter.CreateProxy));
-            AddNativeType(Noesis.Selector.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Selector), Noesis.Selector.CreateProxy));
-            AddNativeType(Noesis.Separator.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Separator), Noesis.Separator.CreateProxy));
-            AddNativeType(Noesis.Setter.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Setter), Noesis.Setter.CreateProxy));
-            AddNativeType(Noesis.Shape.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Shape), Noesis.Shape.CreateProxy));
-            AddNativeType(Noesis.SkewTransform.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.SkewTransform), Noesis.SkewTransform.CreateProxy));
-            AddNativeType(Noesis.Slider.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Slider), Noesis.Slider.CreateProxy));
-            AddNativeType(Noesis.SolidColorBrush.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.SolidColorBrush), Noesis.SolidColorBrush.CreateProxy));
-            AddNativeType(Noesis.Span.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Span), Noesis.Span.CreateProxy));
-            AddNativeType(Noesis.StackPanel.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.StackPanel), Noesis.StackPanel.CreateProxy));
-            AddNativeType(Noesis.StatusBar.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.StatusBar), Noesis.StatusBar.CreateProxy));
-            AddNativeType(Noesis.StatusBarItem.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.StatusBarItem), Noesis.StatusBarItem.CreateProxy));
-            AddNativeType(Noesis.StreamGeometry.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.StreamGeometry), Noesis.StreamGeometry.CreateProxy));
-            AddNativeType(Noesis.Style.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Style), Noesis.Style.CreateProxy));
-            AddNativeType(Noesis.TabControl.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.TabControl), Noesis.TabControl.CreateProxy));
-            AddNativeType(Noesis.TabItem.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.TabItem), Noesis.TabItem.CreateProxy));
-            AddNativeType(Noesis.TabPanel.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.TabPanel), Noesis.TabPanel.CreateProxy));
-            AddNativeType(Noesis.TemplateBindingExpression.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.TemplateBindingExpression), Noesis.TemplateBindingExpression.CreateProxy));
-            AddNativeType(Noesis.TemplateBindingExtension.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.TemplateBindingExtension), Noesis.TemplateBindingExtension.CreateProxy));
-            AddNativeType(Noesis.TextBlock.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.TextBlock), Noesis.TextBlock.CreateProxy));
-            AddNativeType(NoesisGUI_.TextBoxView_GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.TextBlock), Noesis.TextBlock.CreateProxy), false);
-            AddNativeType(Noesis.TextBox.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.TextBox), Noesis.TextBox.CreateProxy));
-            AddNativeType(Noesis.TextElement.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.TextElement), Noesis.TextElement.CreateProxy));
-            AddNativeType(Noesis.TextureSource.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.TextureSource), Noesis.TextureSource.CreateProxy));
-            AddNativeType(Noesis.Thumb.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Thumb), Noesis.Thumb.CreateProxy));
-            AddNativeType(Noesis.TickBar.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.TickBar), Noesis.TickBar.CreateProxy));
-            AddNativeType(Noesis.TileBrush.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.TileBrush), Noesis.TileBrush.CreateProxy));
-            AddNativeType(Noesis.ToggleButton.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ToggleButton), Noesis.ToggleButton.CreateProxy));
-            AddNativeType(Noesis.ToolBar.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ToolBar), Noesis.ToolBar.CreateProxy));
-            AddNativeType(Noesis.ToolBarOverflowPanel.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ToolBarOverflowPanel), Noesis.ToolBarOverflowPanel.CreateProxy));
-            AddNativeType(Noesis.ToolBarPanel.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ToolBarPanel), Noesis.ToolBarPanel.CreateProxy));
-            AddNativeType(Noesis.ToolBarTray.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ToolBarTray), Noesis.ToolBarTray.CreateProxy));
-            AddNativeType(Noesis.ToolTip.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ToolTip), Noesis.ToolTip.CreateProxy));
-            AddNativeType(Noesis.Track.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Track), Noesis.Track.CreateProxy));
-            AddNativeType(Noesis.TransformGroup.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.TransformGroup), Noesis.TransformGroup.CreateProxy));
-            AddNativeType(Noesis.TranslateTransform.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.TranslateTransform), Noesis.TranslateTransform.CreateProxy));
-            AddNativeType(Noesis.Transform.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Transform), Noesis.Transform.CreateProxy));
-            AddNativeType(Noesis.TransformCollection.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.TransformCollection), Noesis.TransformCollection.CreateProxy));
-            AddNativeType(Noesis.TreeView.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.TreeView), Noesis.TreeView.CreateProxy));
-            AddNativeType(Noesis.TreeViewItem.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.TreeViewItem), Noesis.TreeViewItem.CreateProxy));
-            AddNativeType(Noesis.TriggerAction.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.TriggerAction), Noesis.TriggerAction.CreateProxy));
-            AddNativeType(Noesis.Trigger.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Trigger), Noesis.Trigger.CreateProxy));
-            AddNativeType(Noesis.TriggerCollection.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.TriggerCollection), Noesis.TriggerCollection.CreateProxy));
-            AddNativeType(Noesis.UIElement.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.UIElement), Noesis.UIElement.CreateProxy));
-            AddNativeType(Noesis.UIElementCollection.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.UIElementCollection), Noesis.UIElementCollection.CreateProxy));
-            AddNativeType(Noesis.UIPropertyMetadata.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.UIPropertyMetadata), Noesis.UIPropertyMetadata.CreateProxy));
-            AddNativeType(Noesis.Underline.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Underline), Noesis.Underline.CreateProxy));
-            AddNativeType(Noesis.UniformGrid.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.UniformGrid), Noesis.UniformGrid.CreateProxy));
-            AddNativeType(Noesis.UserControl.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.UserControl), Noesis.UserControl.CreateProxy));
-            AddNativeType(Noesis.Viewbox.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Viewbox), Noesis.Viewbox.CreateProxy));
-            AddNativeType(Noesis.VirtualizingPanel.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.VirtualizingPanel), Noesis.VirtualizingPanel.CreateProxy));
-            AddNativeType(Noesis.VirtualizingStackPanel.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.VirtualizingStackPanel), Noesis.VirtualizingStackPanel.CreateProxy));
-            AddNativeType(Noesis.Visual.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Visual), Noesis.Visual.CreateProxy));
-            AddNativeType(Noesis.VisualBrush.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.VisualBrush), Noesis.VisualBrush.CreateProxy));
-            AddNativeType(Noesis.VisualCollection.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.VisualCollection), Noesis.VisualCollection.CreateProxy));
-            AddNativeType(Noesis.WrapPanel.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.WrapPanel), Noesis.WrapPanel.CreateProxy));
-            AddNativeType(Noesis.Texture.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Texture), Noesis.Texture.CreateProxy));
-            AddNativeType(NoesisGUI_.RootVisual_GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Visual), Noesis.Visual.CreateProxy), false);
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Type>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<string>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<bool>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<float>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<double>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<int>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<uint>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<short>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<ushort>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<long>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<ulong>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Color>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Point>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Rect>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Size>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Thickness>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<CornerRadius>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<GridLength>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Duration>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<KeyTime>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<System.TimeSpan>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<VirtualizationCacheLength>)));
 
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<AlignmentX>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<AlignmentY>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<AutoToolTipPlacement>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<BindingMode>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<BitmapScalingMode>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<BrushMappingMode>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<CharacterCasing>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<ClickMode>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<ColorInterpolationMode>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Cursor>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Dock>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<ExpandDirection>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<FillRule>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<FlowDirection>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<FontStretch>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<FontStyle>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<FontWeight>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<GeometryCombineMode>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<GradientSpreadMethod>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<HorizontalAlignment>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<KeyboardNavigationMode>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<LineStackingStrategy>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<ListSortDirection>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<MenuItemRole>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Orientation>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<OverflowMode>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<PenLineCap>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<PenLineJoin>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<PlacementMode>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<PopupAnimation>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<RelativeSourceMode>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<SelectionMode>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<ScrollBarVisibility>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Stretch>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<StretchDirection>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<TextDecorations>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<TextAlignment>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<TextTrimming>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<TextWrapping>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<TickBarPlacement>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<TickPlacement>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<TileMode>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<VerticalAlignment>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Visibility>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<ClockState>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<EasingMode>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<SlipBehavior>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<FillBehavior>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<GridViewColumnHeaderRole>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<HandoffBehavior>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<PanningMode>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<UpdateSourceTrigger>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<ScrollUnit>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<VirtualizationMode>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<VirtualizationCacheLengthUnit>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<PPAAMode>)));
 
-            AddNativeType(Noesis.Clock.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Clock), Noesis.Clock.CreateProxy));
-            AddNativeType(Noesis.ClockGroup.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ClockGroup), Noesis.ClockGroup.CreateProxy));
-            AddNativeType(Noesis.AnimationClock.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.AnimationClock), Noesis.AnimationClock.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(BaseComponent), BaseComponent.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DispatcherObject), DispatcherObject.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DependencyObject), DependencyObject.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DependencyProperty), DependencyProperty.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Freezable), Freezable.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(PropertyMetadata), PropertyMetadata.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Expression), Expression.CreateProxy));
 
-            AddNativeType(Noesis.Timeline.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Timeline), Noesis.Timeline.CreateProxy));
-            AddNativeType(Noesis.TimelineCollection.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.TimelineCollection), Noesis.TimelineCollection.CreateProxy));
-            AddNativeType(Noesis.TimelineGroup.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.TimelineGroup), Noesis.TimelineGroup.CreateProxy));
-            AddNativeType(Noesis.ParallelTimeline.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ParallelTimeline), Noesis.ParallelTimeline.CreateProxy));
-            AddNativeType(Noesis.AnimationTimeline.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.AnimationTimeline), Noesis.AnimationTimeline.CreateProxy));
-            AddNativeType(Noesis.Storyboard.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Storyboard), Noesis.Storyboard.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(View), View.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Renderer), Renderer.CreateProxy));
 
-            AddNativeType(Noesis.Int16Animation.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Int16Animation), Noesis.Int16Animation.CreateProxy));
-            AddNativeType(Noesis.Int32Animation.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Int32Animation), Noesis.Int32Animation.CreateProxy));
-            AddNativeType(Noesis.DoubleAnimation.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.DoubleAnimation), Noesis.DoubleAnimation.CreateProxy));
-            AddNativeType(Noesis.ColorAnimation.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ColorAnimation), Noesis.ColorAnimation.CreateProxy));
-            AddNativeType(Noesis.PointAnimation.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.PointAnimation), Noesis.PointAnimation.CreateProxy));
-            AddNativeType(Noesis.RectAnimation.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.RectAnimation), Noesis.RectAnimation.CreateProxy));
-            AddNativeType(Noesis.SizeAnimation.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.SizeAnimation), Noesis.SizeAnimation.CreateProxy));
-            AddNativeType(Noesis.ThicknessAnimation.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ThicknessAnimation), Noesis.ThicknessAnimation.CreateProxy));
-
-            AddNativeType(Noesis.BooleanAnimationUsingKeyFrames.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.BooleanAnimationUsingKeyFrames), Noesis.BooleanAnimationUsingKeyFrames.CreateProxy));
-            AddNativeType(Noesis.Int16AnimationUsingKeyFrames.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Int16AnimationUsingKeyFrames), Noesis.Int16AnimationUsingKeyFrames.CreateProxy));
-            AddNativeType(Noesis.Int32AnimationUsingKeyFrames.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Int32AnimationUsingKeyFrames), Noesis.Int32AnimationUsingKeyFrames.CreateProxy));
-            AddNativeType(Noesis.DoubleAnimationUsingKeyFrames.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.DoubleAnimationUsingKeyFrames), Noesis.DoubleAnimationUsingKeyFrames.CreateProxy));
-            AddNativeType(Noesis.ColorAnimationUsingKeyFrames.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ColorAnimationUsingKeyFrames), Noesis.ColorAnimationUsingKeyFrames.CreateProxy));
-            AddNativeType(Noesis.PointAnimationUsingKeyFrames.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.PointAnimationUsingKeyFrames), Noesis.PointAnimationUsingKeyFrames.CreateProxy));
-            AddNativeType(Noesis.RectAnimationUsingKeyFrames.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.RectAnimationUsingKeyFrames), Noesis.RectAnimationUsingKeyFrames.CreateProxy));
-            AddNativeType(Noesis.SizeAnimationUsingKeyFrames.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.SizeAnimationUsingKeyFrames), Noesis.SizeAnimationUsingKeyFrames.CreateProxy));
-            AddNativeType(Noesis.ThicknessAnimationUsingKeyFrames.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ThicknessAnimationUsingKeyFrames), Noesis.ThicknessAnimationUsingKeyFrames.CreateProxy));
-            AddNativeType(Noesis.ObjectAnimationUsingKeyFrames.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ObjectAnimationUsingKeyFrames), Noesis.ObjectAnimationUsingKeyFrames.CreateProxy));
-            AddNativeType(Noesis.StringAnimationUsingKeyFrames.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.StringAnimationUsingKeyFrames), Noesis.StringAnimationUsingKeyFrames.CreateProxy));
-
-            AddNativeType(Noesis.BooleanKeyFrameCollection.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.BooleanKeyFrameCollection), Noesis.BooleanKeyFrameCollection.CreateProxy));
-            AddNativeType(Noesis.Int16KeyFrameCollection.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Int16KeyFrameCollection), Noesis.Int16KeyFrameCollection.CreateProxy));
-            AddNativeType(Noesis.Int32KeyFrameCollection.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Int32KeyFrameCollection), Noesis.Int32KeyFrameCollection.CreateProxy));
-            AddNativeType(Noesis.DoubleKeyFrameCollection.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.DoubleKeyFrameCollection), Noesis.DoubleKeyFrameCollection.CreateProxy));
-            AddNativeType(Noesis.ColorKeyFrameCollection.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ColorKeyFrameCollection), Noesis.ColorKeyFrameCollection.CreateProxy));
-            AddNativeType(Noesis.PointKeyFrameCollection.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.PointKeyFrameCollection), Noesis.PointKeyFrameCollection.CreateProxy));
-            AddNativeType(Noesis.RectKeyFrameCollection.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.RectKeyFrameCollection), Noesis.RectKeyFrameCollection.CreateProxy));
-            AddNativeType(Noesis.SizeKeyFrameCollection.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.SizeKeyFrameCollection), Noesis.SizeKeyFrameCollection.CreateProxy));
-            AddNativeType(Noesis.ThicknessKeyFrameCollection.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ThicknessKeyFrameCollection), Noesis.ThicknessKeyFrameCollection.CreateProxy));
-            AddNativeType(Noesis.ObjectKeyFrameCollection.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ObjectKeyFrameCollection), Noesis.ObjectKeyFrameCollection.CreateProxy));
-            AddNativeType(Noesis.StringKeyFrameCollection.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.StringKeyFrameCollection), Noesis.StringKeyFrameCollection.CreateProxy));
-
-            AddNativeType(Noesis.BooleanKeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.BooleanKeyFrame), Noesis.BooleanKeyFrame.CreateProxy));
-            AddNativeType(Noesis.DoubleKeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.DoubleKeyFrame), Noesis.DoubleKeyFrame.CreateProxy));
-            AddNativeType(Noesis.Int16KeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Int16KeyFrame), Noesis.Int16KeyFrame.CreateProxy));
-            AddNativeType(Noesis.Int32KeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.Int32KeyFrame), Noesis.Int32KeyFrame.CreateProxy));
-            AddNativeType(Noesis.ColorKeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ColorKeyFrame), Noesis.ColorKeyFrame.CreateProxy));
-            AddNativeType(Noesis.PointKeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.PointKeyFrame), Noesis.PointKeyFrame.CreateProxy));
-            AddNativeType(Noesis.RectKeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.RectKeyFrame), Noesis.RectKeyFrame.CreateProxy));
-            AddNativeType(Noesis.SizeKeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.SizeKeyFrame), Noesis.SizeKeyFrame.CreateProxy));
-            AddNativeType(Noesis.ThicknessKeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ThicknessKeyFrame), Noesis.ThicknessKeyFrame.CreateProxy));
-            AddNativeType(Noesis.StringKeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.StringKeyFrame), Noesis.StringKeyFrame.CreateProxy));
-
-            AddNativeType(Noesis.DiscreteBooleanKeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.DiscreteBooleanKeyFrame), Noesis.DiscreteBooleanKeyFrame.CreateProxy));
-            AddNativeType(Noesis.DiscreteInt16KeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.DiscreteInt16KeyFrame), Noesis.DiscreteInt16KeyFrame.CreateProxy));
-            AddNativeType(Noesis.DiscreteInt32KeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.DiscreteInt32KeyFrame), Noesis.DiscreteInt32KeyFrame.CreateProxy));
-            AddNativeType(Noesis.DiscreteDoubleKeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.DiscreteDoubleKeyFrame), Noesis.DiscreteDoubleKeyFrame.CreateProxy));
-            AddNativeType(Noesis.DiscreteColorKeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.DiscreteColorKeyFrame), Noesis.DiscreteColorKeyFrame.CreateProxy));
-            AddNativeType(Noesis.DiscretePointKeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.DiscretePointKeyFrame), Noesis.DiscretePointKeyFrame.CreateProxy));
-            AddNativeType(Noesis.DiscreteRectKeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.DiscreteRectKeyFrame), Noesis.DiscreteRectKeyFrame.CreateProxy));
-            AddNativeType(Noesis.DiscreteSizeKeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.DiscreteSizeKeyFrame), Noesis.DiscreteSizeKeyFrame.CreateProxy));
-            AddNativeType(Noesis.DiscreteThicknessKeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.DiscreteThicknessKeyFrame), Noesis.DiscreteThicknessKeyFrame.CreateProxy));
-            AddNativeType(Noesis.DiscreteObjectKeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.DiscreteObjectKeyFrame), Noesis.DiscreteObjectKeyFrame.CreateProxy));
-            AddNativeType(Noesis.DiscreteStringKeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.DiscreteStringKeyFrame), Noesis.DiscreteStringKeyFrame.CreateProxy));
-
-            AddNativeType(Noesis.LinearInt16KeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.LinearInt16KeyFrame), Noesis.LinearInt16KeyFrame.CreateProxy));
-            AddNativeType(Noesis.LinearInt32KeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.LinearInt32KeyFrame), Noesis.LinearInt32KeyFrame.CreateProxy));
-            AddNativeType(Noesis.LinearDoubleKeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.LinearDoubleKeyFrame), Noesis.LinearDoubleKeyFrame.CreateProxy));
-            AddNativeType(Noesis.LinearColorKeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.LinearColorKeyFrame), Noesis.LinearColorKeyFrame.CreateProxy));
-            AddNativeType(Noesis.LinearPointKeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.LinearPointKeyFrame), Noesis.LinearPointKeyFrame.CreateProxy));
-            AddNativeType(Noesis.LinearRectKeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.LinearRectKeyFrame), Noesis.LinearRectKeyFrame.CreateProxy));
-            AddNativeType(Noesis.LinearSizeKeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.LinearSizeKeyFrame), Noesis.LinearSizeKeyFrame.CreateProxy));
-            AddNativeType(Noesis.LinearThicknessKeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.LinearThicknessKeyFrame), Noesis.LinearThicknessKeyFrame.CreateProxy));
-
-            AddNativeType(Noesis.SplineInt16KeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.SplineInt16KeyFrame), Noesis.SplineInt16KeyFrame.CreateProxy));
-            AddNativeType(Noesis.SplineInt32KeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.SplineInt32KeyFrame), Noesis.SplineInt32KeyFrame.CreateProxy));
-            AddNativeType(Noesis.SplineDoubleKeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.SplineDoubleKeyFrame), Noesis.SplineDoubleKeyFrame.CreateProxy));
-            AddNativeType(Noesis.SplineColorKeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.SplineColorKeyFrame), Noesis.SplineColorKeyFrame.CreateProxy));
-            AddNativeType(Noesis.SplinePointKeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.SplinePointKeyFrame), Noesis.SplinePointKeyFrame.CreateProxy));
-            AddNativeType(Noesis.SplineRectKeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.SplineRectKeyFrame), Noesis.SplineRectKeyFrame.CreateProxy));
-            AddNativeType(Noesis.SplineSizeKeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.SplineSizeKeyFrame), Noesis.SplineSizeKeyFrame.CreateProxy));
-            AddNativeType(Noesis.SplineThicknessKeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.SplineThicknessKeyFrame), Noesis.SplineThicknessKeyFrame.CreateProxy));
-
-            AddNativeType(Noesis.KeySpline.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.KeySpline), Noesis.KeySpline.CreateProxy));
-
-            AddNativeType(Noesis.EasingInt16KeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.EasingInt16KeyFrame), Noesis.EasingInt16KeyFrame.CreateProxy));
-            AddNativeType(Noesis.EasingInt32KeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.EasingInt32KeyFrame), Noesis.EasingInt32KeyFrame.CreateProxy));
-            AddNativeType(Noesis.EasingDoubleKeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.EasingDoubleKeyFrame), Noesis.EasingDoubleKeyFrame.CreateProxy));
-            AddNativeType(Noesis.EasingColorKeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.EasingColorKeyFrame), Noesis.EasingColorKeyFrame.CreateProxy));
-            AddNativeType(Noesis.EasingPointKeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.EasingPointKeyFrame), Noesis.EasingPointKeyFrame.CreateProxy));
-            AddNativeType(Noesis.EasingRectKeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.EasingRectKeyFrame), Noesis.EasingRectKeyFrame.CreateProxy));
-            AddNativeType(Noesis.EasingSizeKeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.EasingSizeKeyFrame), Noesis.EasingSizeKeyFrame.CreateProxy));
-            AddNativeType(Noesis.EasingThicknessKeyFrame.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.EasingThicknessKeyFrame), Noesis.EasingThicknessKeyFrame.CreateProxy));
-
-            AddNativeType(Noesis.EasingFunctionBase.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.EasingFunctionBase), Noesis.EasingFunctionBase.CreateProxy));
-            AddNativeType(Noesis.BackEase.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.BackEase), Noesis.BackEase.CreateProxy));
-            AddNativeType(Noesis.BounceEase.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.BounceEase), Noesis.BounceEase.CreateProxy));
-            AddNativeType(Noesis.CircleEase.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.CircleEase), Noesis.CircleEase.CreateProxy));
-            AddNativeType(Noesis.CubicEase.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.CubicEase), Noesis.CubicEase.CreateProxy));
-            AddNativeType(Noesis.ElasticEase.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ElasticEase), Noesis.ElasticEase.CreateProxy));
-            AddNativeType(Noesis.ExponentialEase.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ExponentialEase), Noesis.ExponentialEase.CreateProxy));
-            AddNativeType(Noesis.PowerEase.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.PowerEase), Noesis.PowerEase.CreateProxy));
-            AddNativeType(Noesis.QuadraticEase.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.QuadraticEase), Noesis.QuadraticEase.CreateProxy));
-            AddNativeType(Noesis.QuarticEase.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.QuarticEase), Noesis.QuarticEase.CreateProxy));
-            AddNativeType(Noesis.QuinticEase.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.QuinticEase), Noesis.QuinticEase.CreateProxy));
-            AddNativeType(Noesis.SineEase.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.SineEase), Noesis.SineEase.CreateProxy));
-
-            AddNativeType(Noesis.ControllableStoryboardAction.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ControllableStoryboardAction), Noesis.ControllableStoryboardAction.CreateProxy));
-            AddNativeType(Noesis.BeginStoryboard.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.BeginStoryboard), Noesis.BeginStoryboard.CreateProxy));
-            AddNativeType(Noesis.PauseStoryboard.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.PauseStoryboard), Noesis.PauseStoryboard.CreateProxy));
-            AddNativeType(Noesis.ResumeStoryboard.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ResumeStoryboard), Noesis.ResumeStoryboard.CreateProxy));
-            AddNativeType(Noesis.StopStoryboard.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.StopStoryboard), Noesis.StopStoryboard.CreateProxy));
-
-            AddNativeType(Noesis.VisualStateManager.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.VisualStateManager), Noesis.VisualStateManager.CreateProxy));
-            AddNativeType(Noesis.VisualStateGroup.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.VisualStateGroup), Noesis.VisualStateGroup.CreateProxy));
-            AddNativeType(Noesis.VisualStateGroupCollection.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.VisualStateGroupCollection), Noesis.VisualStateGroupCollection.CreateProxy));
-            AddNativeType(Noesis.VisualTransition.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.VisualTransition), Noesis.VisualTransition.CreateProxy));
-            AddNativeType(Noesis.VisualTransitionCollection.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.VisualTransitionCollection), Noesis.VisualTransitionCollection.CreateProxy));
-            AddNativeType(Noesis.VisualState.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.VisualState), Noesis.VisualState.CreateProxy));
-            AddNativeType(Noesis.VisualStateCollection.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.VisualStateCollection), Noesis.VisualStateCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(AdornerDecorator), AdornerDecorator.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Animatable), Animatable.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ArcSegment), ArcSegment.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(BindingBase), BindingBase.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(BindingExpressionBase), BindingExpressionBase.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(BindingExpression), BindingExpression.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Bold), Bold.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ButtonBase), ButtonBase.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DefinitionBase), DefinitionBase.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(MenuBase), MenuBase.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(SetterBase), SetterBase.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(SetterBaseCollection), SetterBaseCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(TextBoxBase), TextBoxBase.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(TriggerBase), TriggerBase.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(BezierSegment), BezierSegment.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Binding), Binding.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(BindingCollection), BindingCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(BitmapImage), BitmapImage.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(BitmapSource), BitmapSource.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Border), Border.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Brush), Brush.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(BulletDecorator), BulletDecorator.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Button), Button.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Canvas), Canvas.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(CheckBox), CheckBox.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(BaseUICollection), BaseUICollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(CollectionView), CollectionView.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(CollectionViewSource), CollectionViewSource.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ColumnDefinition), ColumnDefinition.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ColumnDefinitionCollection), ColumnDefinitionCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(CombinedGeometry), CombinedGeometry.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ComboBox), ComboBox.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ComboBoxItem), ComboBoxItem.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(CommandBinding), CommandBinding.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(CommandBindingCollection), CommandBindingCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(CompositeTransform), CompositeTransform.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(CompositeTransform3D), CompositeTransform3D.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Condition), Condition.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ConditionCollection), ConditionCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ContentControl), ContentControl.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ContentPresenter), ContentPresenter.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ContextMenu), ContextMenu.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Control), Control.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ControlTemplate), ControlTemplate.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DashStyle), DashStyle.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DataTemplate), DataTemplate.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DataTemplateSelector), DataTemplateSelector.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DataTrigger), DataTrigger.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(HierarchicalDataTemplate), HierarchicalDataTemplate.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Decorator), Decorator.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DockPanel), DockPanel.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Ellipse), Ellipse.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(EllipseGeometry), EllipseGeometry.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(EventTrigger), EventTrigger.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Expander), Expander.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(FontFamily), FontFamily.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(FormattedText), FormattedText.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(FrameworkElement), FrameworkElement.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(FrameworkTemplate), FrameworkTemplate.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(FrameworkPropertyMetadata), FrameworkPropertyMetadata.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(BaseFreezableCollection), BaseFreezableCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Geometry), Geometry.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(GeometryCollection), GeometryCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(GeometryGroup), GeometryGroup.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(GradientBrush), GradientBrush.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(GradientStop), GradientStop.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(GradientStopCollection), GradientStopCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Grid), Grid.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(GroupBox), GroupBox.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(HeaderedContentControl), HeaderedContentControl.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(HeaderedItemsControl), HeaderedItemsControl.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Hyperlink), Hyperlink.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Image), Image.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ImageBrush), ImageBrush.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ImageSource), ImageSource.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Inline), Inline.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(InlineCollection), InlineCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(InlineUIContainer), InlineUIContainer.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(InputBinding), InputBinding.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(InputBindingCollection), InputBindingCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(InputGesture), InputGesture.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(InputGestureCollection), InputGestureCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Italic), Italic.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ItemCollection), ItemCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ItemContainerGenerator), ItemContainerGenerator.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ItemsControl), ItemsControl.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ItemsPanelTemplate), ItemsPanelTemplate.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ItemsPresenter), ItemsPresenter.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(KeyBinding), KeyBinding.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Keyboard), Keyboard.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(KeyboardNavigation), KeyboardNavigation.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(KeyGesture), KeyGesture.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Label), Label.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Line), Line.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(LinearGradientBrush), LinearGradientBrush.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(LineBreak), LineBreak.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(LineGeometry), LineGeometry.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(LineSegment), LineSegment.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ListBox), ListBox.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ListBoxItem), ListBoxItem.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(MarkupExtension), MarkupExtension.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(MatrixTransform), MatrixTransform.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(MatrixTransform3D), MatrixTransform3D.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Menu), Menu.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(MenuItem), MenuItem.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(MultiBinding), MultiBinding.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(MultiBindingExpression), MultiBindingExpression.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(MultiDataTrigger), MultiDataTrigger.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(MultiTrigger), MultiTrigger.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(NameScope), NameScope.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Page), Page.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Panel), Panel.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(PasswordBox), PasswordBox.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Path), Path.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(PathFigure), PathFigure.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(PathFigureCollection), PathFigureCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(PathGeometry), PathGeometry.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(PathSegment), PathSegment.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(PathSegmentCollection), PathSegmentCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Pen), Pen.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(PointCollection), PointCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(PolyBezierSegment), PolyBezierSegment.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(PolyLineSegment), PolyLineSegment.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(PolyQuadraticBezierSegment), PolyQuadraticBezierSegment.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Popup), Popup.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ProgressBar), ProgressBar.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(PropertyPath), PropertyPath.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(QuadraticBezierSegment), QuadraticBezierSegment.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(RadialGradientBrush), RadialGradientBrush.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(RadioButton), RadioButton.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(RangeBase), RangeBase.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Rectangle), Rectangle.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(RectangleGeometry), RectangleGeometry.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(RelativeSource), RelativeSource.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(RepeatButton), RepeatButton.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ResourceDictionary), ResourceDictionary.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ResourceDictionaryCollection), ResourceDictionaryCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(RotateTransform), RotateTransform.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(RoutedCommand), RoutedCommand.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(RoutedEvent), RoutedEvent.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(RoutedUICommand), RoutedUICommand.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(RowDefinition), RowDefinition.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(RowDefinitionCollection), RowDefinitionCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Run), Run.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ScaleTransform), ScaleTransform.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ScrollBar), ScrollBar.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ScrollViewer), ScrollViewer.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ScrollContentPresenter), ScrollContentPresenter.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Selector), Selector.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Separator), Separator.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Setter), Setter.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Shape), Shape.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(SkewTransform), SkewTransform.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Slider), Slider.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(SolidColorBrush), SolidColorBrush.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Span), Span.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(StackPanel), StackPanel.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(StatusBar), StatusBar.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(StatusBarItem), StatusBarItem.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(StreamGeometry), StreamGeometry.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Style), Style.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(TabControl), TabControl.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(TabItem), TabItem.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(TabPanel), TabPanel.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(TemplateBindingExpression), TemplateBindingExpression.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(TemplateBindingExtension), TemplateBindingExtension.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(TextBlock), TextBlock.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(TextBox), TextBox.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(TextElement), TextElement.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(TextureSource), TextureSource.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Thumb), Thumb.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(TickBar), TickBar.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(TileBrush), TileBrush.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ToggleButton), ToggleButton.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ToolBar), ToolBar.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ToolBarOverflowPanel), ToolBarOverflowPanel.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ToolBarPanel), ToolBarPanel.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ToolBarTray), ToolBarTray.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ToolTip), ToolTip.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Track), Track.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(TransformGroup), TransformGroup.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(TranslateTransform), TranslateTransform.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Transform), Transform.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Transform3D), Transform3D.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(TransformCollection), TransformCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(TreeView), TreeView.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(TreeViewItem), TreeViewItem.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(TriggerAction), TriggerAction.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Trigger), Trigger.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(TriggerCollection), TriggerCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(UIElement), UIElement.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(UIElementCollection), UIElementCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(UIPropertyMetadata), UIPropertyMetadata.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Underline), Underline.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(UniformGrid), UniformGrid.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(UserControl), UserControl.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Viewbox), Viewbox.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(VirtualizingPanel), VirtualizingPanel.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(VirtualizingStackPanel), VirtualizingStackPanel.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Visual), Visual.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(VisualBrush), VisualBrush.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(VisualCollection), VisualCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(WrapPanel), WrapPanel.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Texture), Texture.CreateProxy));
 
 
-            AddNativeType(Noesis.ViewBase.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ViewBase), Noesis.ViewBase.CreateProxy));
-            AddNativeType(Noesis.GridView.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.GridView), Noesis.GridView.CreateProxy));
-            AddNativeType(Noesis.GridViewColumn.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.GridViewColumn), Noesis.GridViewColumn.CreateProxy));
-            AddNativeType(Noesis.GridViewColumnCollection.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.GridViewColumnCollection), Noesis.GridViewColumnCollection.CreateProxy));
-            AddNativeType(Noesis.GridViewColumnHeader.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.GridViewColumnHeader), Noesis.GridViewColumnHeader.CreateProxy));
-            AddNativeType(Noesis.GridViewRowPresenterBase.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.GridViewRowPresenterBase), Noesis.GridViewRowPresenterBase.CreateProxy));
-            AddNativeType(Noesis.GridViewRowPresenter.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.GridViewRowPresenter), Noesis.GridViewRowPresenter.CreateProxy));
-            AddNativeType(Noesis.GridViewHeaderRowPresenter.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.GridViewHeaderRowPresenter), Noesis.GridViewHeaderRowPresenter.CreateProxy));
-            AddNativeType(Noesis.ListView.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ListView), Noesis.ListView.CreateProxy));
-            AddNativeType(Noesis.ListViewItem.GetStaticType(), new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Noesis.ListViewItem), Noesis.ListViewItem.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Clock), Clock.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ClockGroup), ClockGroup.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(AnimationClock), AnimationClock.CreateProxy));
 
-            _managedTypes[typeof(object)] = Noesis.BaseComponent.GetStaticType();
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Timeline), Timeline.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(TimelineCollection), TimelineCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(TimelineGroup), TimelineGroup.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ParallelTimeline), ParallelTimeline.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(AnimationTimeline), AnimationTimeline.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Storyboard), Storyboard.CreateProxy));
+
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Int16Animation), Int16Animation.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Int32Animation), Int32Animation.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DoubleAnimation), DoubleAnimation.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ColorAnimation), ColorAnimation.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(PointAnimation), PointAnimation.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(RectAnimation), RectAnimation.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(SizeAnimation), SizeAnimation.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ThicknessAnimation), ThicknessAnimation.CreateProxy));
+
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(BooleanAnimationUsingKeyFrames), BooleanAnimationUsingKeyFrames.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Int16AnimationUsingKeyFrames), Int16AnimationUsingKeyFrames.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Int32AnimationUsingKeyFrames), Int32AnimationUsingKeyFrames.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DoubleAnimationUsingKeyFrames), DoubleAnimationUsingKeyFrames.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ColorAnimationUsingKeyFrames), ColorAnimationUsingKeyFrames.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(PointAnimationUsingKeyFrames), PointAnimationUsingKeyFrames.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(RectAnimationUsingKeyFrames), RectAnimationUsingKeyFrames.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(SizeAnimationUsingKeyFrames), SizeAnimationUsingKeyFrames.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ThicknessAnimationUsingKeyFrames), ThicknessAnimationUsingKeyFrames.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ObjectAnimationUsingKeyFrames), ObjectAnimationUsingKeyFrames.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(StringAnimationUsingKeyFrames), StringAnimationUsingKeyFrames.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(MatrixAnimationUsingKeyFrames), MatrixAnimationUsingKeyFrames.CreateProxy));
+
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(BooleanKeyFrameCollection), BooleanKeyFrameCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Int16KeyFrameCollection), Int16KeyFrameCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Int32KeyFrameCollection), Int32KeyFrameCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DoubleKeyFrameCollection), DoubleKeyFrameCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ColorKeyFrameCollection), ColorKeyFrameCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(PointKeyFrameCollection), PointKeyFrameCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(RectKeyFrameCollection), RectKeyFrameCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(SizeKeyFrameCollection), SizeKeyFrameCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ThicknessKeyFrameCollection), ThicknessKeyFrameCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ObjectKeyFrameCollection), ObjectKeyFrameCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(StringKeyFrameCollection), StringKeyFrameCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(MatrixKeyFrameCollection), MatrixKeyFrameCollection.CreateProxy));
+
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(BooleanKeyFrame), BooleanKeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DoubleKeyFrame), DoubleKeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Int16KeyFrame), Int16KeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Int32KeyFrame), Int32KeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ColorKeyFrame), ColorKeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(PointKeyFrame), PointKeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(RectKeyFrame), RectKeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(SizeKeyFrame), SizeKeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ThicknessKeyFrame), ThicknessKeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(StringKeyFrame), StringKeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(MatrixKeyFrame), MatrixKeyFrame.CreateProxy));
+
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DiscreteBooleanKeyFrame), DiscreteBooleanKeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DiscreteInt16KeyFrame), DiscreteInt16KeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DiscreteInt32KeyFrame), DiscreteInt32KeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DiscreteDoubleKeyFrame), DiscreteDoubleKeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DiscreteColorKeyFrame), DiscreteColorKeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DiscretePointKeyFrame), DiscretePointKeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DiscreteRectKeyFrame), DiscreteRectKeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DiscreteSizeKeyFrame), DiscreteSizeKeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DiscreteThicknessKeyFrame), DiscreteThicknessKeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DiscreteObjectKeyFrame), DiscreteObjectKeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DiscreteStringKeyFrame), DiscreteStringKeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DiscreteMatrixKeyFrame), DiscreteMatrixKeyFrame.CreateProxy));
+
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(LinearInt16KeyFrame), LinearInt16KeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(LinearInt32KeyFrame), LinearInt32KeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(LinearDoubleKeyFrame), LinearDoubleKeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(LinearColorKeyFrame), LinearColorKeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(LinearPointKeyFrame), LinearPointKeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(LinearRectKeyFrame), LinearRectKeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(LinearSizeKeyFrame), LinearSizeKeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(LinearThicknessKeyFrame), LinearThicknessKeyFrame.CreateProxy));
+
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(SplineInt16KeyFrame), SplineInt16KeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(SplineInt32KeyFrame), SplineInt32KeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(SplineDoubleKeyFrame), SplineDoubleKeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(SplineColorKeyFrame), SplineColorKeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(SplinePointKeyFrame), SplinePointKeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(SplineRectKeyFrame), SplineRectKeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(SplineSizeKeyFrame), SplineSizeKeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(SplineThicknessKeyFrame), SplineThicknessKeyFrame.CreateProxy));
+
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(KeySpline), KeySpline.CreateProxy));
+
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(EasingInt16KeyFrame), EasingInt16KeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(EasingInt32KeyFrame), EasingInt32KeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(EasingDoubleKeyFrame), EasingDoubleKeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(EasingColorKeyFrame), EasingColorKeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(EasingPointKeyFrame), EasingPointKeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(EasingRectKeyFrame), EasingRectKeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(EasingSizeKeyFrame), EasingSizeKeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(EasingThicknessKeyFrame), EasingThicknessKeyFrame.CreateProxy));
+
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(EasingFunctionBase), EasingFunctionBase.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(BackEase), BackEase.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(BounceEase), BounceEase.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(CircleEase), CircleEase.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(CubicEase), CubicEase.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ElasticEase), ElasticEase.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ExponentialEase), ExponentialEase.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(PowerEase), PowerEase.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(QuadraticEase), QuadraticEase.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(QuarticEase), QuarticEase.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(QuinticEase), QuinticEase.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(SineEase), SineEase.CreateProxy));
+
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ControllableStoryboardAction), ControllableStoryboardAction.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(BeginStoryboard), BeginStoryboard.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(PauseStoryboard), PauseStoryboard.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ResumeStoryboard), ResumeStoryboard.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(StopStoryboard), StopStoryboard.CreateProxy));
+
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(VisualStateManager), VisualStateManager.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(VisualStateGroup), VisualStateGroup.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(VisualStateGroupCollection), VisualStateGroupCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(VisualTransition), VisualTransition.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(VisualTransitionCollection), VisualTransitionCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(VisualState), VisualState.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(VisualStateCollection), VisualStateCollection.CreateProxy));
+
+
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ViewBase), ViewBase.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(GridView), GridView.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(GridViewColumn), GridViewColumn.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(GridViewColumnCollection), GridViewColumnCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(GridViewColumnHeader), GridViewColumnHeader.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(GridViewRowPresenterBase), GridViewRowPresenterBase.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(GridViewRowPresenter), GridViewRowPresenter.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(GridViewHeaderRowPresenter), GridViewHeaderRowPresenter.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ListView), ListView.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ListViewItem), ListViewItem.CreateProxy));
+
+            _managedTypes[typeof(object)] = BaseComponent.GetStaticType();
+
+            if (i != numTypes)
+            {
+                throw new InvalidOperationException("Invalid registered native types count");
+            }
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1178,99 +1211,109 @@ namespace Noesis
                 return IntPtr.Zero;
             }
 
-            if (type.GetTypeInfo().IsInterface)
+            PropertyInfo[] props;
+            NativeTypeInfo info;
+
+            lock (_managedTypes)
             {
-                nativeType = Noesis.BaseComponent.GetStaticType();
-                _managedTypes[type] = nativeType;
-                return nativeType;
-            }
-            else if (type == typeof(System.Type))
-            {
-                nativeType = Noesis.ResourceKeyType.GetStaticType();
-                _managedTypes[type] = nativeType;
-                return nativeType;
-            }
-            else if (type.GetTypeInfo().IsEnum)
-            {
-                int numEnums;
-                IntPtr enumsData = CreateNativeEnumsData(type, out numEnums);
-                try
+                if (_managedTypes.TryGetValue(type, out nativeType))
                 {
-                    nativeType = Noesis_RegisterEnumType(TypeFullName(type), numEnums, enumsData);
-                }
-                finally
-                {
-                    Marshal.FreeHGlobal(enumsData);
+                    // already registered by other thread
+                    return nativeType;
                 }
 
-                AddNativeType(nativeType, new NativeTypeEnumInfo(NativeTypeKind.Basic, type));
-
-                return nativeType;
-            }
-
-            PropertyInfo indexerInfo = null;
-            IndexerAccessor indexer = null;
-
-            if (type.GetTypeInfo().IsSubclassOf(typeof(Noesis.BaseComponent)))
-            {
-                System.Reflection.MethodInfo extend = FindExtendMethod(type);
-                if (extend != null)
+                if (type.GetTypeInfo().IsInterface)
                 {
-                    object[] typeName = { TypeFullName(type) };
-                    nativeType = (IntPtr)extend.Invoke(null, typeName);
+                    nativeType = Noesis.BaseComponent.GetStaticType();
+                    _managedTypes[type] = nativeType;
+                    return nativeType;
+                }
+                else if (type.GetTypeInfo().IsEnum)
+                {
+                    int numEnums;
+                    IntPtr enumsData = CreateNativeEnumsData(type, out numEnums);
+                    try
+                    {
+                        nativeType = Noesis_RegisterEnumType(TypeFullName(type), numEnums, enumsData);
+                    }
+                    finally
+                    {
+                        Marshal.FreeHGlobal(enumsData);
+                    }
+
+                    AddNativeType(nativeType, new NativeTypeEnumInfo(NativeTypeKind.Basic, type));
+
+                    return nativeType;
+                }
+
+                PropertyInfo indexerInfo = null;
+                IndexerAccessor indexer = null;
+
+                if (type.GetTypeInfo().IsSubclassOf(typeof(Noesis.BaseComponent)))
+                {
+                    System.Reflection.MethodInfo extend = FindExtendMethod(type);
+                    if (extend != null)
+                    {
+                        object[] typeName = { TypeFullName(type) };
+                        nativeType = (IntPtr)extend.Invoke(null, typeName);
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException(
+                            "Can't find Extend method in any base class for " + type.FullName);
+                    }
+                }
+                else if (typeof(System.IO.Stream).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
+                {
+                    nativeType = Noesis.ExtendStream.Extend(TypeFullName(type));
+                }
+                else if (typeof(ICommand).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
+                {
+                    nativeType = Noesis.ExtendCommand.Extend(TypeFullName(type));
+                }
+                else if (typeof(Noesis.IValueConverter).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
+                {
+                    nativeType = Noesis.ExtendConverter.Extend(TypeFullName(type));
+                }
+                else if (typeof(Noesis.IMultiValueConverter).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
+                {
+                    nativeType = Noesis.ExtendMultiConverter.Extend(TypeFullName(type));
+                }
+                else if (typeof(System.Collections.IList).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
+                {
+                    if (typeof(System.Collections.Specialized.INotifyCollectionChanged).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
+                    {
+                        nativeType = Noesis.ExtendObservableList.Extend(TypeFullName(type));
+                    }
+                    else
+                    {
+                        nativeType = Noesis.ExtendList.Extend(TypeFullName(type));
+                    }
+                }
+                else if (typeof(System.Collections.IDictionary).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
+                {
+                    nativeType = Noesis.ExtendDictionary.Extend(TypeFullName(type));
+                }
+                else if ((indexerInfo = FindListIndexer(type)) != null)
+                {
+                    indexer = CreateIndexerAccessor<int>(indexerInfo);
+                    nativeType = Noesis.ExtendListIndexer.Extend(TypeFullName(type));
+                }
+                else if ((indexerInfo = FindDictIndexer(type)) != null)
+                {
+                    indexer = CreateIndexerAccessor<string>(indexerInfo);
+                    nativeType = Noesis.ExtendDictionaryIndexer.Extend(TypeFullName(type));
                 }
                 else
                 {
-                    throw new InvalidOperationException(
-                        "Can't find Extend method in any base class for " + type.FullName);
+                    nativeType = Noesis.BaseComponent.Extend(TypeFullName(type));
                 }
-            }
-            else if (typeof(System.IO.Stream).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
-            {
-                nativeType = Noesis.ExtendStream.Extend(TypeFullName(type));
-            }
-            else if (typeof(ICommand).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
-            {
-                nativeType = Noesis.ExtendCommand.Extend(TypeFullName(type));
-            }
-            else if (typeof(Noesis.IValueConverter).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
-            {
-                nativeType = Noesis.ExtendConverter.Extend(TypeFullName(type));
-            }
-            else if (typeof(System.Collections.IList).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
-            {
-                if (typeof(System.Collections.Specialized.INotifyCollectionChanged).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
-                {
-                    nativeType = Noesis.ExtendObservableList.Extend(TypeFullName(type));
-                }
-                else
-                {
-                    nativeType = Noesis.ExtendList.Extend(TypeFullName(type));
-                }
-            }
-            else if (typeof(System.Collections.IDictionary).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
-            {
-                nativeType = Noesis.ExtendDictionary.Extend(TypeFullName(type));
-            }
-            else if ((indexerInfo = FindListIndexer(type)) != null)
-            {
-                indexer = CreateIndexerAccessor<int>(indexerInfo);
-                nativeType = Noesis.ExtendListIndexer.Extend(TypeFullName(type));
-            }
-            else if ((indexerInfo = FindDictIndexer(type)) != null)
-            {
-                indexer = CreateIndexerAccessor<string>(indexerInfo);
-                nativeType = Noesis.ExtendDictionaryIndexer.Extend(TypeFullName(type));
-            }
-            else
-            {
-                nativeType = Noesis.BaseComponent.Extend(TypeFullName(type));
-            }
 
-            // Register native type
-            PropertyInfo[] props = GetPublicProperties(type);
-            NativeTypeInfo info = CreateNativeTypeInfo(type, indexer, props);
-            AddNativeType(nativeType, info);
+                // Register native type
+                props = GetPublicProperties(type);
+                info = CreateNativeTypeInfo(type, indexer, props);
+                AddNativeType(nativeType, info);
+            }
 
             // Fill native type with C# public properties
             ExtendTypeData typeData = CreateNativeTypeData(type, nativeType);
@@ -1618,20 +1661,6 @@ namespace Noesis
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-        public static ResourceKeyType GetResourceKeyType(System.Type type)
-        {
-            if (type != null)
-            {
-                IntPtr nativeType = EnsureNativeType(type);
-                return new ResourceKeyType(Noesis_GetResourceKeyType(nativeType), false);
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////
         private delegate void Callback_FreeString(IntPtr strPtr);
         private static Callback_FreeString _freeString = FreeString;
 
@@ -1680,31 +1709,7 @@ namespace Noesis
         {
             try
             {
-                // First, look for in the currently executing assembly and in Mscorlib.dll
-                // Note that this step is mandatory in WINRT because in that platform only the
-                // assemblies found in InstalledLocation are manually loaded
-                Type type = Type.GetType(typeName);
-
-                if (type == null)
-                {
-                    if (_assemblies == null)
-                    {
-                        _assemblies = AppDomain.CurrentDomain.GetAssemblies();
-
-                        // We want to use the types from latest loaded assemblies, so we reverse it
-                        Array.Reverse(_assemblies);
-                    }
-
-                    int assembliesLen = _assemblies.Length;
-                    for (int i = 0; i < assembliesLen; ++i)
-                    {
-                        type = _assemblies[i].GetType(typeName);
-                        if (type != null)
-                        {
-                            break;
-                        }
-                    }
-                }
+                Type type = FindType(typeName);
 
                 if (type != null)
                 {
@@ -1715,6 +1720,38 @@ namespace Noesis
             {
                 Error.UnhandledException(e);
             }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        public static Type FindType(string name)
+        {
+            // First, look for in the currently executing assembly and in Mscorlib.dll
+            // Note that this step is mandatory in WINRT because in that platform only the
+            // assemblies found in InstalledLocation are manually loaded
+            Type type = Type.GetType(name);
+
+            if (type == null)
+            {
+                if (_assemblies == null)
+                {
+                    _assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+                    // We want to use the types from latest loaded assemblies, so we reverse it
+                    Array.Reverse(_assemblies);
+                }
+
+                int assembliesLen = _assemblies.Length;
+                for (int i = 0; i < assembliesLen; ++i)
+                {
+                    type = _assemblies[i].GetType(name);
+                    if (type != null)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            return type;
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1841,22 +1878,20 @@ namespace Noesis
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
         private delegate void Callback_FrameworkElementMeasure(IntPtr cPtr,
-            IntPtr availableSizePtr, IntPtr desiredSizePtr, [MarshalAs(UnmanagedType.U1)]ref bool callBase);
+            ref Size availableSize, ref Size desiredSize, [MarshalAs(UnmanagedType.U1)]ref bool callBase);
         private static Callback_FrameworkElementMeasure _frameworkElementMeasure = FrameworkElementMeasure;
 
         [MonoPInvokeCallback(typeof(Callback_FrameworkElementMeasure))]
         private static void FrameworkElementMeasure(IntPtr cPtr,
-            IntPtr availableSizePtr, IntPtr desiredSizePtr, ref bool callBase)
+            ref Size availableSize, ref Size desiredSize, ref bool callBase)
         {
             try
             {
                 FrameworkElement element = (FrameworkElement)GetExtendInstance(cPtr);
                 if (element != null)
                 {
-                    Size availableSize = Marshal.PtrToStructure<Size>(availableSizePtr);
-                    Size desiredSize = element.CallMeasureOverride(availableSize, out callBase);
+                    desiredSize = element.CallMeasureOverride(availableSize, out callBase);
                     if (desiredSize.IsEmpty) desiredSize = new Size(0, 0);
-                    Marshal.StructureToPtr(desiredSize, desiredSizePtr, false);
                 }
             }
             catch (Exception e)
@@ -1867,22 +1902,20 @@ namespace Noesis
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
         private delegate void Callback_FrameworkElementArrange(IntPtr cPtr,
-            IntPtr finalSizePtr, IntPtr renderSizePtr, [MarshalAs(UnmanagedType.U1)]ref bool callBase);
+            ref Size finalSize, ref Size renderSize, [MarshalAs(UnmanagedType.U1)]ref bool callBase);
         private static Callback_FrameworkElementArrange _frameworkElementArrange = FrameworkElementArrange;
 
         [MonoPInvokeCallback(typeof(Callback_FrameworkElementArrange))]
         private static void FrameworkElementArrange(IntPtr cPtr,
-            IntPtr finalSizePtr, IntPtr renderSizePtr, ref bool callBase)
+            ref Size finalSize, ref Size renderSize, ref bool callBase)
         {
             try
             {
                 FrameworkElement element = (FrameworkElement)GetExtendInstance(cPtr);
                 if (element != null)
                 {
-                    Size finalSize = Marshal.PtrToStructure<Size>(finalSizePtr);
-                    Size renderSize = element.CallArrangeOverride(finalSize, out callBase);
+                    renderSize = element.CallArrangeOverride(finalSize, out callBase);
                     if (renderSize.IsEmpty) renderSize = new Size(0, 0);
-                    Marshal.StructureToPtr(renderSize, renderSizePtr, false);
                 }
             }
             catch (Exception e)
@@ -2031,24 +2064,26 @@ namespace Noesis
         {
             try
             {
-                var converter = (Noesis.IValueConverter)GetExtendInstance(cPtr);
+                var converter = (IValueConverter)GetExtendInstance(cPtr);
                 if (converter != null)
                 {
-                    NativeTypeInfo targetType = GetNativeTypeInfo(targetTypePtr);
+                    Type targetType = GetNativeTypeInfo(targetTypePtr).Type;
                     object val = GetProxy(valType, valPtr, false);
                     object param = GetProxy(paramType, paramPtr, false);
 
-                    object obj = converter.Convert(val, targetType.Type, param, CultureInfo.CurrentCulture);
+                    object obj = converter.Convert(val, targetType, param, CultureInfo.CurrentCulture);
 
-                    if (AreCompatibleTypes(obj, targetType.Type))
+                    if (AreCompatibleTypes(obj, targetType))
                     {
-                        result = GetInstanceHandle(obj).Handle;
+                        HandleRef res = GetInstanceHandle(obj);
+                        BaseComponent.AddReference(res.Handle); // released by native bindings
+                        result = res.Handle;
                         return true;
                     }
                     else
                     {
                         Log.Error(string.Format("{0} Convert() expects {1} and {2} is returned",
-                            converter.GetType().FullName, targetType.Type.FullName,
+                            converter.GetType().FullName, targetType.FullName,
                             obj != null ? obj.GetType().FullName : "null"));
                     }
                 }
@@ -2075,24 +2110,26 @@ namespace Noesis
         {
             try
             {
-                var converter = (Noesis.IValueConverter)GetExtendInstance(cPtr);
+                var converter = (IValueConverter)GetExtendInstance(cPtr);
                 if (converter != null)
                 {
-                    NativeTypeInfo targetType = GetNativeTypeInfo(targetTypePtr);
+                    Type targetType = GetNativeTypeInfo(targetTypePtr).Type;
                     object val = GetProxy(valType, valPtr, false);
                     object param = GetProxy(paramType, paramPtr, false);
 
-                    object obj = converter.ConvertBack(val, targetType.Type, param, CultureInfo.CurrentCulture);
+                    object obj = converter.ConvertBack(val, targetType, param, CultureInfo.CurrentCulture);
 
-                    if (AreCompatibleTypes(obj, targetType.Type))
+                    if (AreCompatibleTypes(obj, targetType))
                     {
-                        result = GetInstanceHandle(obj).Handle;
+                        HandleRef res = GetInstanceHandle(obj);
+                        BaseComponent.AddReference(res.Handle); // released by native bindings
+                        result = res.Handle;
                         return true;
                     }
                     else
                     {
                         Log.Error(string.Format("{0} ConvertBack() expects {1} and {2} is returned",
-                            converter.GetType().FullName, targetType.Type.FullName,
+                            converter.GetType().FullName, targetType.FullName,
                             obj != null ? obj.GetType().FullName : "null"));
                     }
                 }
@@ -2103,6 +2140,111 @@ namespace Noesis
             }
 
             result = IntPtr.Zero;
+            return false;
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate bool Callback_MultiConverterConvert(IntPtr cPtr,
+            int numSources, IntPtr valTypes, IntPtr valPtrs, IntPtr targetTypePtr,
+            IntPtr paramType, IntPtr paramPtr, out IntPtr result);
+        private static Callback_MultiConverterConvert _multiConverterConvert = MultiConverterConvert;
+
+        [MonoPInvokeCallback(typeof(Callback_MultiConverterConvert))]
+        private static bool MultiConverterConvert(IntPtr cPtr,
+            int numSources, IntPtr valTypes, IntPtr valPtrs, IntPtr targetTypePtr,
+            IntPtr paramType, IntPtr paramPtr, out IntPtr result)
+        {
+            try
+            {
+                var converter = (IMultiValueConverter)GetExtendInstance(cPtr);
+                if (converter != null)
+                {
+                    int elementSize = Marshal.SizeOf<IntPtr>();
+                    object[] values = new object[numSources];
+                    for (int i = 0; i < numSources; ++i)
+                    {
+                        IntPtr valType = Marshal.ReadIntPtr(valTypes, i * elementSize);
+                        IntPtr val = Marshal.ReadIntPtr(valPtrs, i * elementSize);
+                        values[i] = GetProxy(valType, val, false);
+                    }
+
+                    Type targetType = GetNativeTypeInfo(targetTypePtr).Type;
+                    object param = GetProxy(paramType, paramPtr, false);
+
+                    object obj = converter.Convert(values, targetType, param, CultureInfo.CurrentCulture);
+
+                    if (AreCompatibleTypes(obj, targetType))
+                    {
+                        HandleRef res = GetInstanceHandle(obj);
+                        BaseComponent.AddReference(res.Handle); // released by native bindings
+                        result = res.Handle;
+                        return true;
+                    }
+                    else
+                    {
+                        Log.Error(string.Format("{0} Convert() expects {1} and {2} is returned",
+                            converter.GetType().FullName, targetType.FullName,
+                            obj != null ? obj.GetType().FullName : "null"));
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+
+            result = IntPtr.Zero;
+            return false;
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate bool Callback_MultiConverterConvertBack(IntPtr cPtr,
+            int numSources, IntPtr valType, IntPtr valPtr, IntPtr targetTypePtrs,
+            IntPtr paramType, IntPtr paramPtr, IntPtr results);
+        private static Callback_MultiConverterConvertBack _multiConverterConvertBack = MultiConverterConvertBack;
+
+        [MonoPInvokeCallback(typeof(Callback_MultiConverterConvertBack))]
+        private static bool MultiConverterConvertBack(IntPtr cPtr,
+            int numSources, IntPtr valType, IntPtr valPtr, IntPtr targetTypePtrs,
+            IntPtr paramType, IntPtr paramPtr, IntPtr results)
+        {
+            try
+            {
+                var converter = (IMultiValueConverter)GetExtendInstance(cPtr);
+                if (converter != null)
+                {
+                    int elementSize = Marshal.SizeOf<IntPtr>();
+                    Type[] types = new Type[numSources];
+                    for (int i = 0; i < numSources; ++i)
+                    {
+                        IntPtr targetType = Marshal.ReadIntPtr(targetTypePtrs, i * elementSize);
+                        types[i] = GetNativeTypeInfo(targetType).Type;
+                    }
+
+                    object val = GetProxy(valType, valPtr, false);
+                    object param = GetProxy(paramType, paramPtr, false);
+
+                    object[] objs = converter.ConvertBack(val, types, param, CultureInfo.CurrentCulture);
+
+                    if (objs != null)
+                    {
+                        for (int i = 0; i < numSources; ++i)
+                        {
+                            object obj = i < objs.Length ? objs[i] : null;
+                            HandleRef res = GetInstanceHandle(obj);
+                            BaseComponent.AddReference(res.Handle); // released by native bindings
+                            Marshal.WriteIntPtr(results, i * elementSize, res.Handle);
+                        }
+
+                        return true;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+
             return false;
         }
 
@@ -2524,6 +2666,27 @@ namespace Noesis
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void Callback_StreamClose(IntPtr cPtr);
+        private static Callback_StreamClose _streamClose = StreamClose;
+
+        [MonoPInvokeCallback(typeof(Callback_StreamClose))]
+        private static void StreamClose(IntPtr cPtr)
+        {
+            try
+            {
+                var stream = (System.IO.Stream)GetExtendInstance(cPtr);
+                if (stream != null)
+                {
+                    stream.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
         private delegate IntPtr Callback_ProviderLoadXaml(IntPtr cPtr, IntPtr filename);
         private static Callback_ProviderLoadXaml _providerLoadXaml = ProviderLoadXaml;
 
@@ -2718,6 +2881,7 @@ namespace Noesis
             Enum,
             String,
             Uri,
+            Type,
             BaseComponent,
             Event
         };
@@ -2966,47 +3130,17 @@ namespace Noesis
         private static T GetPropertyValueNullable<T>(PropertyAccessor prop, object instance,
             out bool isNull) where T: struct
         {
-            if (instance != null)
+            if (!prop.IsNullable)
             {
-                if (!prop.IsNullable)
-                {
-                    isNull = false;
-                    return GetPropertyValue<T>(prop, instance);
-                }
-                else
-                {
-                    T? value = ((PropertyAccessorT<T?>)prop).Get(instance);
-                    isNull = !value.HasValue;
-                    return value.GetValueOrDefault();
-                }
+                isNull = false;
+                return GetPropertyValue<T>(prop, instance);
             }
-
-            isNull = false;
-            return default(T);
-        }
-
-        private static void GetPropertyValueStruct<T>(PropertyAccessor prop, object instance,
-            IntPtr valuePtr, out bool isNull) where T: struct
-        {
-            if (instance != null)
+            else
             {
-                if (!prop.IsNullable)
-                {
-                    isNull = false;
-                    Marshal.StructureToPtr(((PropertyAccessorT<T>)prop).Get(instance), valuePtr, false);
-                }
-                else
-                {
-                    T? value = ((PropertyAccessorT<T?>)prop).Get(instance);
-                    isNull = !value.HasValue;
-                    if (value.HasValue)
-                    {
-                        Marshal.StructureToPtr(value.Value, valuePtr, false);
-                    }
-                }
+                T? value = GetPropertyValue<T?>(prop, instance);
+                isNull = !value.HasValue;
+                return value.GetValueOrDefault();
             }
-
-            isNull = false;
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3192,17 +3326,17 @@ namespace Noesis
         }
 
         private delegate void Callback_GetPropertyValue_Color(IntPtr nativeType, int propertyIndex,
-            IntPtr cPtr, IntPtr valuePtr, [MarshalAs(UnmanagedType.U1)]ref bool isNull);
+            IntPtr cPtr, ref Color value, [MarshalAs(UnmanagedType.U1)]ref bool isNull);
         private static Callback_GetPropertyValue_Color _getPropertyValue_Color = GetPropertyValue_Color;
 
         [MonoPInvokeCallback(typeof(Callback_GetPropertyValue_Color))]
         private static void GetPropertyValue_Color(IntPtr nativeType, int propertyIndex,
-            IntPtr cPtr, IntPtr valuePtr, ref bool isNull)
+            IntPtr cPtr, ref Color value, ref bool isNull)
         {
             try
             {
-                GetPropertyValueStruct<Noesis.Color>(GetProperty(nativeType, propertyIndex),
-                    GetExtendInstance(cPtr), valuePtr, out isNull);
+                value = GetPropertyValueNullable<Color>(GetProperty(nativeType, propertyIndex),
+                    GetExtendInstance(cPtr), out isNull);
             }
             catch (Exception e)
             {
@@ -3211,17 +3345,17 @@ namespace Noesis
         }
 
         private delegate void Callback_GetPropertyValue_Point(IntPtr nativeType, int propertyIndex,
-            IntPtr cPtr, IntPtr valuePtr, [MarshalAs(UnmanagedType.U1)]ref bool isNull);
+            IntPtr cPtr, ref Point value, [MarshalAs(UnmanagedType.U1)]ref bool isNull);
         private static Callback_GetPropertyValue_Point _getPropertyValue_Point = GetPropertyValue_Point;
 
         [MonoPInvokeCallback(typeof(Callback_GetPropertyValue_Point))]
         private static void GetPropertyValue_Point(IntPtr nativeType, int propertyIndex,
-            IntPtr cPtr, IntPtr valuePtr, ref bool isNull)
+            IntPtr cPtr, ref Point value, ref bool isNull)
         {
             try
             {
-                GetPropertyValueStruct<Noesis.Point>(GetProperty(nativeType, propertyIndex),
-                    GetExtendInstance(cPtr), valuePtr, out isNull);
+                value = GetPropertyValueNullable<Point>(GetProperty(nativeType, propertyIndex),
+                    GetExtendInstance(cPtr), out isNull);
             }
             catch (Exception e)
             {
@@ -3230,17 +3364,17 @@ namespace Noesis
         }
 
         private delegate void Callback_GetPropertyValue_Rect(IntPtr nativeType, int propertyIndex,
-            IntPtr cPtr, IntPtr valuePtr, [MarshalAs(UnmanagedType.U1)]ref bool isNull);
+            IntPtr cPtr, ref Rect value, [MarshalAs(UnmanagedType.U1)]ref bool isNull);
         private static Callback_GetPropertyValue_Rect _getPropertyValue_Rect = GetPropertyValue_Rect;
 
         [MonoPInvokeCallback(typeof(Callback_GetPropertyValue_Rect))]
         private static void GetPropertyValue_Rect(IntPtr nativeType, int propertyIndex,
-            IntPtr cPtr, IntPtr valuePtr, ref bool isNull)
+            IntPtr cPtr, ref Rect value, ref bool isNull)
         {
             try
             {
-                GetPropertyValueStruct<Noesis.Rect>(GetProperty(nativeType, propertyIndex),
-                    GetExtendInstance(cPtr), valuePtr, out isNull);
+                value = GetPropertyValueNullable<Rect>(GetProperty(nativeType, propertyIndex),
+                    GetExtendInstance(cPtr), out isNull);
             }
             catch (Exception e)
             {
@@ -3249,17 +3383,17 @@ namespace Noesis
         }
 
         private delegate void Callback_GetPropertyValue_Size(IntPtr nativeType, int propertyIndex,
-            IntPtr cPtr, IntPtr valuePtr, [MarshalAs(UnmanagedType.U1)]ref bool isNull);
+            IntPtr cPtr, ref Size value, [MarshalAs(UnmanagedType.U1)]ref bool isNull);
         private static Callback_GetPropertyValue_Size _getPropertyValue_Size = GetPropertyValue_Size;
 
         [MonoPInvokeCallback(typeof(Callback_GetPropertyValue_Size))]
         private static void GetPropertyValue_Size(IntPtr nativeType, int propertyIndex,
-            IntPtr cPtr, IntPtr valuePtr, ref bool isNull)
+            IntPtr cPtr, ref Size value, ref bool isNull)
         {
             try
             {
-                GetPropertyValueStruct<Noesis.Size>(GetProperty(nativeType, propertyIndex),
-                    GetExtendInstance(cPtr), valuePtr, out isNull);
+                value = GetPropertyValueNullable<Size>(GetProperty(nativeType, propertyIndex),
+                    GetExtendInstance(cPtr), out isNull);
             }
             catch (Exception e)
             {
@@ -3268,17 +3402,17 @@ namespace Noesis
         }
 
         private delegate void Callback_GetPropertyValue_Thickness(IntPtr nativeType, int propertyIndex,
-            IntPtr cPtr, IntPtr valuePtr, [MarshalAs(UnmanagedType.U1)]ref bool isNull);
+            IntPtr cPtr, ref Thickness value, [MarshalAs(UnmanagedType.U1)]ref bool isNull);
         private static Callback_GetPropertyValue_Thickness _getPropertyValue_Thickness = GetPropertyValue_Thickness;
 
         [MonoPInvokeCallback(typeof(Callback_GetPropertyValue_Thickness))]
         private static void GetPropertyValue_Thickness(IntPtr nativeType, int propertyIndex,
-            IntPtr cPtr, IntPtr valuePtr, ref bool isNull)
+            IntPtr cPtr, ref Thickness value, ref bool isNull)
         {
             try
             {
-                GetPropertyValueStruct<Noesis.Thickness>(GetProperty(nativeType, propertyIndex),
-                    GetExtendInstance(cPtr), valuePtr, out isNull);
+                value = GetPropertyValueNullable<Thickness>(GetProperty(nativeType, propertyIndex),
+                    GetExtendInstance(cPtr), out isNull);
             }
             catch (Exception e)
             {
@@ -3287,17 +3421,17 @@ namespace Noesis
         }
 
         private delegate void Callback_GetPropertyValue_CornerRadius(IntPtr nativeType, int propertyIndex,
-            IntPtr cPtr, IntPtr valuePtr, [MarshalAs(UnmanagedType.U1)]ref bool isNull);
+            IntPtr cPtr, ref CornerRadius value, [MarshalAs(UnmanagedType.U1)]ref bool isNull);
         private static Callback_GetPropertyValue_CornerRadius _getPropertyValue_CornerRadius = GetPropertyValue_CornerRadius;
 
         [MonoPInvokeCallback(typeof(Callback_GetPropertyValue_CornerRadius))]
         private static void GetPropertyValue_CornerRadius(IntPtr nativeType, int propertyIndex,
-            IntPtr cPtr, IntPtr valuePtr, ref bool isNull)
+            IntPtr cPtr, ref CornerRadius value, ref bool isNull)
         {
             try
             {
-                GetPropertyValueStruct<Noesis.CornerRadius>(GetProperty(nativeType, propertyIndex),
-                    GetExtendInstance(cPtr), valuePtr, out isNull);
+                value = GetPropertyValueNullable<CornerRadius>(GetProperty(nativeType, propertyIndex),
+                    GetExtendInstance(cPtr), out isNull);
             }
             catch (Exception e)
             {
@@ -3306,17 +3440,17 @@ namespace Noesis
         }
 
         private delegate void Callback_GetPropertyValue_TimeSpan(IntPtr nativeType, int propertyIndex,
-            IntPtr cPtr, IntPtr valuePtr, [MarshalAs(UnmanagedType.U1)]ref bool isNull);
+            IntPtr cPtr, ref TimeSpanStruct value, [MarshalAs(UnmanagedType.U1)]ref bool isNull);
         private static Callback_GetPropertyValue_TimeSpan _getPropertyValue_TimeSpan = GetPropertyValue_TimeSpan;
 
         [MonoPInvokeCallback(typeof(Callback_GetPropertyValue_TimeSpan))]
         private static void GetPropertyValue_TimeSpan(IntPtr nativeType, int propertyIndex,
-            IntPtr cPtr, IntPtr valuePtr, ref bool isNull)
+            IntPtr cPtr, ref TimeSpanStruct value, ref bool isNull)
         {
             try
             {
-                GetPropertyValueStruct<Noesis.TimeSpanStruct>(GetProperty(nativeType, propertyIndex),
-                    GetExtendInstance(cPtr), valuePtr, out isNull);
+                value = GetPropertyValueNullable<TimeSpanStruct>(GetProperty(nativeType, propertyIndex),
+                    GetExtendInstance(cPtr), out isNull);
             }
             catch (Exception e)
             {
@@ -3325,17 +3459,17 @@ namespace Noesis
         }
 
         private delegate void Callback_GetPropertyValue_Duration(IntPtr nativeType, int propertyIndex,
-            IntPtr cPtr, IntPtr valuePtr, [MarshalAs(UnmanagedType.U1)]ref bool isNull);
+            IntPtr cPtr, ref Duration value, [MarshalAs(UnmanagedType.U1)]ref bool isNull);
         private static Callback_GetPropertyValue_Duration _getPropertyValue_Duration = GetPropertyValue_Duration;
 
         [MonoPInvokeCallback(typeof(Callback_GetPropertyValue_Duration))]
         private static void GetPropertyValue_Duration(IntPtr nativeType, int propertyIndex,
-            IntPtr cPtr, IntPtr valuePtr, ref bool isNull)
+            IntPtr cPtr, ref Duration value, ref bool isNull)
         {
             try
             {
-                GetPropertyValueStruct<Noesis.Duration>(GetProperty(nativeType, propertyIndex),
-                    GetExtendInstance(cPtr), valuePtr, out isNull);
+                value = GetPropertyValueNullable<Duration>(GetProperty(nativeType, propertyIndex),
+                    GetExtendInstance(cPtr), out isNull);
             }
             catch (Exception e)
             {
@@ -3344,21 +3478,42 @@ namespace Noesis
         }
 
         private delegate void Callback_GetPropertyValue_KeyTime(IntPtr nativeType, int propertyIndex,
-            IntPtr cPtr, IntPtr valuePtr, [MarshalAs(UnmanagedType.U1)]ref bool isNull);
+            IntPtr cPtr, ref KeyTime value, [MarshalAs(UnmanagedType.U1)]ref bool isNull);
         private static Callback_GetPropertyValue_KeyTime _getPropertyValue_KeyTime = GetPropertyValue_KeyTime;
 
         [MonoPInvokeCallback(typeof(Callback_GetPropertyValue_KeyTime))]
         private static void GetPropertyValue_KeyTime(IntPtr nativeType, int propertyIndex,
-            IntPtr cPtr, IntPtr valuePtr, ref bool isNull)
+            IntPtr cPtr, ref KeyTime value, ref bool isNull)
         {
             try
             {
-                GetPropertyValueStruct<Noesis.KeyTime>(GetProperty(nativeType, propertyIndex),
-                    GetExtendInstance(cPtr), valuePtr, out isNull);
+                value = GetPropertyValueNullable<KeyTime>(GetProperty(nativeType, propertyIndex),
+                    GetExtendInstance(cPtr), out isNull);
             }
             catch (Exception e)
             {
                 Error.UnhandledException(e);
+            }
+        }
+
+        private delegate IntPtr Callback_GetPropertyValue_Type(IntPtr nativeType, int propertyIndex,
+            IntPtr cPtr);
+        private static Callback_GetPropertyValue_Type _getPropertyValue_Type = GetPropertyValue_Type;
+
+        [MonoPInvokeCallback(typeof(Callback_GetPropertyValue_Type))]
+        private static IntPtr GetPropertyValue_Type(IntPtr nativeType, int propertyIndex,
+            IntPtr cPtr)
+        {
+            try
+            {
+                Type type = GetPropertyValue<Type>(GetProperty(nativeType, propertyIndex),
+                    GetExtendInstance(cPtr));
+                return GetNativeType(type);
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+                return IntPtr.Zero;
             }
         }
 
@@ -3367,11 +3522,13 @@ namespace Noesis
         private static Callback_GetPropertyValue_BaseComponent _getPropertyValue_BaseComponent = GetPropertyValue_BaseComponent;
 
         [MonoPInvokeCallback(typeof(Callback_GetPropertyValue_BaseComponent))]
-        private static IntPtr GetPropertyValue_BaseComponent(IntPtr nativeType, int propertyIndex, IntPtr cPtr)
+        private static IntPtr GetPropertyValue_BaseComponent(IntPtr nativeType, int propertyIndex,
+            IntPtr cPtr)
         {
             try
             {
-                object obj = GetPropertyValue<object>(GetProperty(nativeType, propertyIndex), GetExtendInstance(cPtr));
+                object obj = GetPropertyValue<object>(GetProperty(nativeType, propertyIndex),
+                    GetExtendInstance(cPtr));
                 return GetInstanceHandle(obj).Handle;
             }
             catch (Exception e)
@@ -3393,33 +3550,13 @@ namespace Noesis
         private static void SetPropertyValueNullable<T>(PropertyAccessor prop, object instance,
             T value, bool isNull) where T: struct
         {
-            if (instance != null)
+            if (!prop.IsNullable)
             {
-                if (!prop.IsNullable)
-                {
-                    SetPropertyValue<T>(prop, instance, value);
-                }
-                else
-                {
-                    ((PropertyAccessorT<T?>)prop).Set(instance, isNull ? (T?)null : (T?)value);
-                }
+                SetPropertyValue<T>(prop, instance, value);
             }
-        }
-
-        private static void SetPropertyValueStruct<T>(PropertyAccessor prop, object instance,
-            IntPtr valuePtr, bool isNull) where T: struct
-        {
-            if (instance != null)
+            else
             {
-                if (!prop.IsNullable)
-                {
-                    ((PropertyAccessorT<T>)prop).Set(instance, Marshal.PtrToStructure<T>(valuePtr));
-                }
-                else
-                {
-                    ((PropertyAccessorT<T?>)prop).Set(instance, isNull ? (T?)null :
-                        (T?)Marshal.PtrToStructure<T>(valuePtr));
-                }
+                SetPropertyValue<T?>(prop, instance, isNull ? null : (T?)value);
             }
         }
 
@@ -3604,17 +3741,16 @@ namespace Noesis
         }
 
         private delegate void Callback_SetPropertyValue_Color(IntPtr nativeType, int propertyIndex,
-            IntPtr cPtr, IntPtr val,
-            [MarshalAs(UnmanagedType.U1)] bool isNull);
+            IntPtr cPtr, ref Color val, [MarshalAs(UnmanagedType.U1)] bool isNull);
         private static Callback_SetPropertyValue_Color _setPropertyValue_Color = SetPropertyValue_Color;
 
         [MonoPInvokeCallback(typeof(Callback_SetPropertyValue_Color))]
         private static void SetPropertyValue_Color(IntPtr nativeType, int propertyIndex,
-            IntPtr cPtr, IntPtr val, bool isNull)
+            IntPtr cPtr, ref Color val, bool isNull)
         {
             try
             {
-                SetPropertyValueStruct<Noesis.Color>(GetProperty(nativeType, propertyIndex),
+                SetPropertyValueNullable<Color>(GetProperty(nativeType, propertyIndex),
                     GetExtendInstance(cPtr), val, isNull);
             }
             catch (Exception e)
@@ -3624,17 +3760,16 @@ namespace Noesis
         }
 
         private delegate void Callback_SetPropertyValue_Point(IntPtr nativeType, int propertyIndex,
-            IntPtr cPtr, IntPtr val,
-            [MarshalAs(UnmanagedType.U1)] bool isNull);
+            IntPtr cPtr, ref Point val, [MarshalAs(UnmanagedType.U1)] bool isNull);
         private static Callback_SetPropertyValue_Point _setPropertyValue_Point = SetPropertyValue_Point;
 
         [MonoPInvokeCallback(typeof(Callback_SetPropertyValue_Point))]
         private static void SetPropertyValue_Point(IntPtr nativeType, int propertyIndex,
-            IntPtr cPtr, IntPtr val, bool isNull)
+            IntPtr cPtr, ref Point val, bool isNull)
         {
             try
             {
-                SetPropertyValueStruct<Noesis.Point>(GetProperty(nativeType, propertyIndex),
+                SetPropertyValueNullable<Point>(GetProperty(nativeType, propertyIndex),
                     GetExtendInstance(cPtr), val, isNull);
             }
             catch (Exception e)
@@ -3644,17 +3779,16 @@ namespace Noesis
         }
 
         private delegate void Callback_SetPropertyValue_Rect(IntPtr nativeType, int propertyIndex,
-            IntPtr cPtr, IntPtr val,
-            [MarshalAs(UnmanagedType.U1)] bool isNull);
+            IntPtr cPtr, ref Rect val, [MarshalAs(UnmanagedType.U1)] bool isNull);
         private static Callback_SetPropertyValue_Rect _setPropertyValue_Rect = SetPropertyValue_Rect;
 
         [MonoPInvokeCallback(typeof(Callback_SetPropertyValue_Rect))]
         private static void SetPropertyValue_Rect(IntPtr nativeType, int propertyIndex,
-            IntPtr cPtr, IntPtr val, bool isNull)
+            IntPtr cPtr, ref Rect val, bool isNull)
         {
             try
             {
-                SetPropertyValueStruct<Noesis.Rect>(GetProperty(nativeType, propertyIndex),
+                SetPropertyValueNullable<Rect>(GetProperty(nativeType, propertyIndex),
                     GetExtendInstance(cPtr), val, isNull);
             }
             catch (Exception e)
@@ -3664,17 +3798,16 @@ namespace Noesis
         }
 
         private delegate void Callback_SetPropertyValue_Size(IntPtr nativeType, int propertyIndex,
-            IntPtr cPtr, IntPtr val,
-            [MarshalAs(UnmanagedType.U1)] bool isNull);
+            IntPtr cPtr, ref Size val, [MarshalAs(UnmanagedType.U1)] bool isNull);
         private static Callback_SetPropertyValue_Size _setPropertyValue_Size = SetPropertyValue_Size;
 
         [MonoPInvokeCallback(typeof(Callback_SetPropertyValue_Size))]
         private static void SetPropertyValue_Size(IntPtr nativeType, int propertyIndex,
-            IntPtr cPtr, IntPtr val, bool isNull)
+            IntPtr cPtr, ref Size val, bool isNull)
         {
             try
             {
-                SetPropertyValueStruct<Noesis.Size>(GetProperty(nativeType, propertyIndex),
+                SetPropertyValueNullable<Size>(GetProperty(nativeType, propertyIndex),
                     GetExtendInstance(cPtr), val, isNull);
             }
             catch (Exception e)
@@ -3684,17 +3817,16 @@ namespace Noesis
         }
 
         private delegate void Callback_SetPropertyValue_Thickness(IntPtr nativeType, int propertyIndex,
-            IntPtr cPtr, IntPtr val,
-            [MarshalAs(UnmanagedType.U1)] bool isNull);
+            IntPtr cPtr, ref Thickness val, [MarshalAs(UnmanagedType.U1)] bool isNull);
         private static Callback_SetPropertyValue_Thickness _setPropertyValue_Thickness = SetPropertyValue_Thickness;
 
         [MonoPInvokeCallback(typeof(Callback_SetPropertyValue_Thickness))]
         private static void SetPropertyValue_Thickness(IntPtr nativeType, int propertyIndex,
-            IntPtr cPtr, IntPtr val, bool isNull)
+            IntPtr cPtr, ref Thickness val, bool isNull)
         {
             try
             {
-                SetPropertyValueStruct<Noesis.Thickness>(GetProperty(nativeType, propertyIndex),
+                SetPropertyValueNullable<Thickness>(GetProperty(nativeType, propertyIndex),
                     GetExtendInstance(cPtr), val, isNull);
             }
             catch (Exception e)
@@ -3704,17 +3836,16 @@ namespace Noesis
         }
 
         private delegate void Callback_SetPropertyValue_CornerRadius(IntPtr nativeType, int propertyIndex,
-            IntPtr cPtr, IntPtr val,
-            [MarshalAs(UnmanagedType.U1)] bool isNull);
+            IntPtr cPtr, ref CornerRadius val, [MarshalAs(UnmanagedType.U1)] bool isNull);
         private static Callback_SetPropertyValue_CornerRadius _setPropertyValue_CornerRadius = SetPropertyValue_CornerRadius;
 
         [MonoPInvokeCallback(typeof(Callback_SetPropertyValue_CornerRadius))]
         private static void SetPropertyValue_CornerRadius(IntPtr nativeType, int propertyIndex,
-            IntPtr cPtr, IntPtr val, bool isNull)
+            IntPtr cPtr, ref CornerRadius val, bool isNull)
         {
             try
             {
-                SetPropertyValueStruct<Noesis.CornerRadius>(GetProperty(nativeType, propertyIndex),
+                SetPropertyValueNullable<CornerRadius>(GetProperty(nativeType, propertyIndex),
                     GetExtendInstance(cPtr), val, isNull);
             }
             catch (Exception e)
@@ -3724,17 +3855,16 @@ namespace Noesis
         }
 
         private delegate void Callback_SetPropertyValue_TimeSpan(IntPtr nativeType, int propertyIndex,
-            IntPtr cPtr, IntPtr val,
-            [MarshalAs(UnmanagedType.U1)] bool isNull);
+            IntPtr cPtr, ref TimeSpanStruct val, [MarshalAs(UnmanagedType.U1)] bool isNull);
         private static Callback_SetPropertyValue_TimeSpan _setPropertyValue_TimeSpan = SetPropertyValue_TimeSpan;
 
         [MonoPInvokeCallback(typeof(Callback_SetPropertyValue_TimeSpan))]
         private static void SetPropertyValue_TimeSpan(IntPtr nativeType, int propertyIndex,
-            IntPtr cPtr, IntPtr val, bool isNull)
+            IntPtr cPtr, ref TimeSpanStruct val, bool isNull)
         {
             try
             {
-                SetPropertyValueStruct<Noesis.TimeSpanStruct>(GetProperty(nativeType, propertyIndex),
+                SetPropertyValueNullable<TimeSpanStruct>(GetProperty(nativeType, propertyIndex),
                     GetExtendInstance(cPtr), val, isNull);
             }
             catch (Exception e)
@@ -3744,17 +3874,16 @@ namespace Noesis
         }
 
         private delegate void Callback_SetPropertyValue_Duration(IntPtr nativeType, int propertyIndex,
-            IntPtr cPtr, IntPtr val,
-            [MarshalAs(UnmanagedType.U1)] bool isNull);
+            IntPtr cPtr, ref Duration val, [MarshalAs(UnmanagedType.U1)] bool isNull);
         private static Callback_SetPropertyValue_Duration _setPropertyValue_Duration = SetPropertyValue_Duration;
 
         [MonoPInvokeCallback(typeof(Callback_SetPropertyValue_Duration))]
         private static void SetPropertyValue_Duration(IntPtr nativeType, int propertyIndex,
-            IntPtr cPtr, IntPtr val, bool isNull)
+            IntPtr cPtr, ref Duration val, bool isNull)
         {
             try
             {
-                SetPropertyValueStruct<Noesis.Duration>(GetProperty(nativeType, propertyIndex),
+                SetPropertyValueNullable<Duration>(GetProperty(nativeType, propertyIndex),
                     GetExtendInstance(cPtr), val, isNull);
             }
             catch (Exception e)
@@ -3764,18 +3893,37 @@ namespace Noesis
         }
 
         private delegate void Callback_SetPropertyValue_KeyTime(IntPtr nativeType, int propertyIndex,
-            IntPtr cPtr, IntPtr val,
-            [MarshalAs(UnmanagedType.U1)] bool isNull);
+            IntPtr cPtr, ref KeyTime val, [MarshalAs(UnmanagedType.U1)] bool isNull);
         private static Callback_SetPropertyValue_KeyTime _setPropertyValue_KeyTime = SetPropertyValue_KeyTime;
 
         [MonoPInvokeCallback(typeof(Callback_SetPropertyValue_KeyTime))]
         private static void SetPropertyValue_KeyTime(IntPtr nativeType, int propertyIndex,
-            IntPtr cPtr, IntPtr val, bool isNull)
+            IntPtr cPtr, ref KeyTime val, bool isNull)
         {
             try
             {
-                SetPropertyValueStruct<Noesis.KeyTime>(GetProperty(nativeType, propertyIndex),
+                SetPropertyValueNullable<KeyTime>(GetProperty(nativeType, propertyIndex),
                     GetExtendInstance(cPtr), val, isNull);
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        private delegate void Callback_SetPropertyValue_Type(IntPtr nativeType, int propertyIndex,
+            IntPtr cPtr, IntPtr val);
+        private static Callback_SetPropertyValue_Type _setPropertyValue_Type = SetPropertyValue_Type;
+
+        [MonoPInvokeCallback(typeof(Callback_SetPropertyValue_Type))]
+        private static void SetPropertyValue_Type(IntPtr nativeType, int propertyIndex,
+            IntPtr cPtr, IntPtr val)
+        {
+            try
+            {
+                NativeTypeInfo info = GetNativeTypeInfo(cPtr);
+                SetPropertyValue<Type>(GetProperty(nativeType, propertyIndex),
+                    GetExtendInstance(cPtr), info.Type);
             }
             catch (Exception e)
             {
@@ -3938,22 +4086,6 @@ namespace Noesis
                         else
                         {
                             extend.instance = null;
-                        }
-                    }
-                }
-                else if (!grab)
-                {
-                    ExtendInfo extend;
-                    if (_extends.TryGetValue(cPtr.ToInt64(), out extend))
-                    {
-                        object instance = extend.weak.Target;
-                        if (instance == null && !_pendingRelease.Contains(cPtr))
-                        {
-                            // During shutdown C# proxies are all converted to weak references, so
-                            // they can be marked for finalize. In this situation we need to force
-                            // the release of C++ instance for proxies that are already destroyed
-
-                            BaseComponent.Release(cPtr);
                         }
                     }
                 }

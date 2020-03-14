@@ -92,11 +92,6 @@ public class NameScope : BaseComponent {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.NameScope_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

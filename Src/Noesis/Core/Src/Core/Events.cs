@@ -442,14 +442,18 @@ namespace Noesis
 
         private static void EnsureEventsProperty()
         {
-            if (BaseComponent.getCPtr(EventsProperty).Handle == IntPtr.Zero)
+            lock (EventsPropertyLock)
             {
-                EventsProperty = DependencyProperty.Register(
-                   "Events", typeof(EventHandlerStore), typeof(EventHandlerStore),
-                    new PropertyMetadata(null));
+                if (BaseComponent.getCPtr(EventsProperty).Handle == IntPtr.Zero)
+                {
+                    EventsProperty = DependencyProperty.Register(
+                       "Events", typeof(EventHandlerStore), typeof(EventHandlerStore),
+                        new PropertyMetadata(null));
+                }
             }
         }
 
+        private static object EventsPropertyLock = new object();
         private static DependencyProperty EventsProperty = null;
 
         private IntPtr _element;

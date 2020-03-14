@@ -55,11 +55,6 @@ public class ImageBrush : TileBrush {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ImageBrush_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

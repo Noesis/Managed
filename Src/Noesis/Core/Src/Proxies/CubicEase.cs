@@ -35,11 +35,6 @@ public class CubicEase : EasingFunctionBase {
     return NoesisGUI_PINVOKE.new_CubicEase();
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.CubicEase_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

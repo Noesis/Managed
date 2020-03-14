@@ -38,11 +38,6 @@ public class ViewBase : Animatable {
     NoesisGUI_PINVOKE.ViewBase_PrepareItem(swigCPtr, ListViewItem.getCPtr(item));
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ViewBase_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

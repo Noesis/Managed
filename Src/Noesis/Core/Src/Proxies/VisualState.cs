@@ -56,11 +56,6 @@ public class VisualState : DependencyObject {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.VisualState_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

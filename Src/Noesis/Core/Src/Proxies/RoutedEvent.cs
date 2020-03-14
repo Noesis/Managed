@@ -30,13 +30,7 @@ public class RoutedEvent : BaseComponent {
   protected RoutedEvent() {
   }
 
-  public Type OwnerType {
-    get {
-      return Noesis.Extend.GetNativeTypeInfo(GetOwnerTypeHelper()).Type;
-    }
-  }
-
-  public RoutedEvent(string name) : this(NoesisGUI_PINVOKE.new_RoutedEvent__SWIG_0(name != null ? name : string.Empty), true) {
+  public RoutedEvent(string name, Type ownerType, RoutingStrategy routingStrategy) : this(NoesisGUI_PINVOKE.new_RoutedEvent(name != null ? name : string.Empty, ownerType != null ? Noesis.Extend.EnsureNativeType(ownerType) : IntPtr.Zero, (int)routingStrategy), true) {
   }
 
   public string Name {
@@ -47,24 +41,22 @@ public class RoutedEvent : BaseComponent {
     }
   }
 
+  public Type OwnerType {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.RoutedEvent_OwnerType_get(swigCPtr);
+      if (cPtr != IntPtr.Zero) {
+        Noesis.Extend.NativeTypeInfo info = Noesis.Extend.GetNativeTypeInfo(cPtr);
+        return info.Type;
+      }
+      return null;
+    }
+  }
+
   public RoutingStrategy RoutingStrategy {
-    set {
-      NoesisGUI_PINVOKE.RoutedEvent_RoutingStrategy_set(swigCPtr, (int)value);
-    } 
     get {
       RoutingStrategy ret = (RoutingStrategy)NoesisGUI_PINVOKE.RoutedEvent_RoutingStrategy_get(swigCPtr);
       return ret;
     } 
-  }
-
-  private IntPtr GetOwnerTypeHelper() {
-    IntPtr ret = NoesisGUI_PINVOKE.RoutedEvent_GetOwnerTypeHelper(swigCPtr);
-    return ret;
-  }
-
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.RoutedEvent_GetStaticType();
-    return ret;
   }
 
 }

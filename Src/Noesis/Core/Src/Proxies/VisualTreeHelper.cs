@@ -114,6 +114,16 @@ public static class VisualTreeHelper {
     }
   }
 
+  public static float GetDescendantBoundsMinZ(Visual visual) {
+    float ret = NoesisGUI_PINVOKE.VisualTreeHelper_GetDescendantBoundsMinZ(Visual.getCPtr(visual));
+    return ret;
+  }
+
+  public static float GetDescendantBoundsMaxZ(Visual visual) {
+    float ret = NoesisGUI_PINVOKE.VisualTreeHelper_GetDescendantBoundsMaxZ(Visual.getCPtr(visual));
+    return ret;
+  }
+
   public static Point GetOffset(Visual visual) {
     IntPtr ret = NoesisGUI_PINVOKE.VisualTreeHelper_GetOffset(Visual.getCPtr(visual));
     if (ret != IntPtr.Zero) {

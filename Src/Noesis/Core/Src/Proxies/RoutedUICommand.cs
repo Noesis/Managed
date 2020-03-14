@@ -35,6 +35,12 @@ public class RoutedUICommand : RoutedCommand {
     return NoesisGUI_PINVOKE.new_RoutedUICommand__SWIG_0();
   }
 
+  public RoutedUICommand(string text, string name, Type owner) : this(NoesisGUI_PINVOKE.new_RoutedUICommand__SWIG_1(text != null ? text : string.Empty, name != null ? name : string.Empty, owner != null ? Noesis.Extend.EnsureNativeType(owner) : IntPtr.Zero), true) {
+  }
+
+  public RoutedUICommand(string text, string name, Type owner, InputGestureCollection inputGestures) : this(NoesisGUI_PINVOKE.new_RoutedUICommand__SWIG_2(text != null ? text : string.Empty, name != null ? name : string.Empty, owner != null ? Noesis.Extend.EnsureNativeType(owner) : IntPtr.Zero, InputGestureCollection.getCPtr(inputGestures)), true) {
+  }
+
   public string Text {
     set {
       NoesisGUI_PINVOKE.RoutedUICommand_Text_set(swigCPtr, value != null ? value : string.Empty);
@@ -44,11 +50,6 @@ public class RoutedUICommand : RoutedCommand {
       string str = Noesis.Extend.StringFromNativeUtf8(strPtr);
       return str;
     }
-  }
-
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.RoutedUICommand_GetStaticType();
-    return ret;
   }
 
 }

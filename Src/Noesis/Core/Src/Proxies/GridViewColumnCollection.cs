@@ -27,11 +27,6 @@ public class GridViewColumnCollection : FreezableCollection<GridViewColumn> {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.GridViewColumnCollection_GetStaticType();
-    return ret;
-  }
-
   public GridViewColumnCollection() {
   }
 

@@ -71,7 +71,7 @@ public class MouseButtonEventArgs : MouseEventArgs {
     } 
   }
 
-  public MouseButtonEventArgs(object s, RoutedEvent e, MouseButton button, MouseButtonState state, uint clicks) : this(NoesisGUI_PINVOKE.new_MouseButtonEventArgs(Noesis.Extend.GetInstanceHandle(s), RoutedEvent.getCPtr(e), (int)button, (int)state, clicks), true) {
+  public MouseButtonEventArgs(object source, RoutedEvent arg1, MouseButton button, MouseButtonState state, uint clickCount) : this(NoesisGUI_PINVOKE.new_MouseButtonEventArgs(Noesis.Extend.GetInstanceHandle(source), RoutedEvent.getCPtr(arg1), (int)button, (int)state, clickCount), true) {
   }
 
   private int GetClickCountHelper() {

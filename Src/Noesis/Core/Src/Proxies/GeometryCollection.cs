@@ -27,11 +27,6 @@ public class GeometryCollection : FreezableCollection<Geometry> {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.GeometryCollection_GetStaticType();
-    return ret;
-  }
-
   public GeometryCollection() {
   }
 

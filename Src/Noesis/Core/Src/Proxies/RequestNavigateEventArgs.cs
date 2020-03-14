@@ -67,7 +67,7 @@ public class RequestNavigateEventArgs : RoutedEventArgs {
     }
   }
 
-  public RequestNavigateEventArgs(object source_, RoutedEvent event_, string uri_, string target_) : this(NoesisGUI_PINVOKE.new_RequestNavigateEventArgs(Noesis.Extend.GetInstanceHandle(source_), RoutedEvent.getCPtr(event_), uri_ != null ? uri_ : string.Empty, target_ != null ? target_ : string.Empty), true) {
+  public RequestNavigateEventArgs(object source, RoutedEvent arg1, string uri, string target) : this(NoesisGUI_PINVOKE.new_RequestNavigateEventArgs(Noesis.Extend.GetInstanceHandle(source), RoutedEvent.getCPtr(arg1), uri != null ? uri : string.Empty, target != null ? target : string.Empty), true) {
   }
 
 }

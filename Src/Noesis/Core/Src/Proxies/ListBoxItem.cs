@@ -98,11 +98,6 @@ public class ListBoxItem : ContentControl {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ListBoxItem_GetStaticType();
-    return ret;
-  }
-
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_ListBoxItem(Marshal.StringToHGlobalAnsi(typeName));
   }

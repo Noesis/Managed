@@ -348,11 +348,6 @@ public class MenuItem : HeaderedItemsControl {
     NoesisGUI_PINVOKE.MenuItem_SetCommandHelper(swigCPtr, Noesis.Extend.GetInstanceHandle(command));
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.MenuItem_GetStaticType();
-    return ret;
-  }
-
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_MenuItem(Marshal.StringToHGlobalAnsi(typeName));
   }

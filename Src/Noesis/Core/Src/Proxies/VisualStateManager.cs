@@ -89,11 +89,6 @@ public class VisualStateManager : DependencyObject {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.VisualStateManager_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

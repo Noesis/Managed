@@ -83,11 +83,6 @@ public class LinearGradientBrush : GradientBrush {
 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.LinearGradientBrush_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

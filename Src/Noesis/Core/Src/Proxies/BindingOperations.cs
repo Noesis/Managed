@@ -42,8 +42,7 @@ public static class BindingOperations {
 
   public static BindingExpression GetBindingExpression(DependencyObject target, DependencyProperty dp) {
     IntPtr cPtr = NoesisGUI_PINVOKE.BindingOperations_GetBindingExpression(DependencyObject.getCPtr(target), DependencyProperty.getCPtr(dp));
-    BindingExpression ret = (cPtr == IntPtr.Zero) ? null : new BindingExpression(cPtr, false);
-    return ret;
+    return (BindingExpression)Noesis.Extend.GetProxy(cPtr, false);
   }
 
   public static bool IsDataBound(DependencyObject target, DependencyProperty dp) {

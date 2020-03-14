@@ -73,11 +73,6 @@ public class Trigger : TriggerBase {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Trigger_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

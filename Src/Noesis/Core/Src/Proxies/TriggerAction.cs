@@ -30,11 +30,6 @@ public class TriggerAction : DependencyObject {
   protected TriggerAction() {
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.TriggerAction_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

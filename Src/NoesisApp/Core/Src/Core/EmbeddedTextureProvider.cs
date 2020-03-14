@@ -29,7 +29,7 @@ namespace NoesisApp
 
             if (stream == null)
             {
-                stream = EmbeddedProviderHelper.GetResource(_assembly, _namespace, filename);
+                stream = Application.GetAssemblyResource(_assembly, _namespace, filename);
             }
 
             return stream;

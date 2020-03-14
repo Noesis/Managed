@@ -35,11 +35,6 @@ public class DiscreteSizeKeyFrame : SizeKeyFrame {
     return NoesisGUI_PINVOKE.new_DiscreteSizeKeyFrame();
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.DiscreteSizeKeyFrame_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

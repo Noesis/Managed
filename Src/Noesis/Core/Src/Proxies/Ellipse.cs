@@ -35,11 +35,6 @@ public class Ellipse : Shape {
     return NoesisGUI_PINVOKE.new_Ellipse();
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Ellipse_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

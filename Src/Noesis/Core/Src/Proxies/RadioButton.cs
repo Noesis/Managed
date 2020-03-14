@@ -58,11 +58,6 @@ public class RadioButton : ToggleButton {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.RadioButton_GetStaticType();
-    return ret;
-  }
-
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_RadioButton(Marshal.StringToHGlobalAnsi(typeName));
   }

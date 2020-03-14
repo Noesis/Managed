@@ -40,11 +40,6 @@ public class ToolBarPanel : StackPanel {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ToolBarPanel_GetStaticType();
-    return ret;
-  }
-
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_ToolBarPanel(Marshal.StringToHGlobalAnsi(typeName));
   }

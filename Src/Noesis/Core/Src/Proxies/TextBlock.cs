@@ -358,11 +358,6 @@ public class TextBlock : FrameworkElement {
     return str;
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.TextBlock_GetStaticType();
-    return ret;
-  }
-
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_TextBlock(Marshal.StringToHGlobalAnsi(typeName));
   }

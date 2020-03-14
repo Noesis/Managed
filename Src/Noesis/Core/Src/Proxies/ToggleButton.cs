@@ -142,11 +142,6 @@ public class ToggleButton : ButtonBase {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ToggleButton_GetStaticType();
-    return ret;
-  }
-
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_ToggleButton(Marshal.StringToHGlobalAnsi(typeName));
   }

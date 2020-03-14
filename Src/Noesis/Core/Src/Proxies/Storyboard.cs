@@ -236,11 +236,6 @@ public class Storyboard : ParallelTimeline {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Storyboard_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

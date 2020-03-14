@@ -52,11 +52,6 @@ public class BackEase : EasingFunctionBase {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.BackEase_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

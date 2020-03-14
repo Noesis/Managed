@@ -30,11 +30,6 @@ public class MenuBase : ItemsControl {
   protected MenuBase() {
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.MenuBase_GetStaticType();
-    return ret;
-  }
-
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_MenuBase(Marshal.StringToHGlobalAnsi(typeName));
   }

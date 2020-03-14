@@ -144,7 +144,7 @@ public class SelectionChangedEventArgs : RoutedEventArgs {
     }
   }
 
-  public SelectionChangedEventArgs(object s) : this(NoesisGUI_PINVOKE.new_SelectionChangedEventArgs(Noesis.Extend.GetInstanceHandle(s)), true) {
+  public SelectionChangedEventArgs(object source) : this(NoesisGUI_PINVOKE.new_SelectionChangedEventArgs(Noesis.Extend.GetInstanceHandle(source)), true) {
   }
 
   private bool ContainsListHelper(int listId, object value) {

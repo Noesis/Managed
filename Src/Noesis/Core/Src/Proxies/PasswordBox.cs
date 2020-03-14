@@ -166,11 +166,6 @@ public class PasswordBox : Control {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.PasswordBox_GetStaticType();
-    return ret;
-  }
-
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_PasswordBox(Marshal.StringToHGlobalAnsi(typeName));
   }

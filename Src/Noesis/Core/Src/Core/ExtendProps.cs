@@ -753,6 +753,12 @@ namespace Noesis
                 return CreatePropertyData(p, NativePropertyType.Uri);
             };
 
+            addPropFunctions[typeof(System.Type)] = (info, p, usePropertyInfo) =>
+            {
+                AddPropertyAccessor<System.Type>(info, p, usePropertyInfo);
+                return CreatePropertyData(p, NativePropertyType.Type);
+            };
+
             return addPropFunctions;
         }
 
@@ -779,17 +785,7 @@ namespace Noesis
             }
             else
             {
-                if (p.PropertyType == typeof(System.Type))
-                {
-                    AddPropertyAccessor<object, object>(info, p,
-                        (v) => Noesis.Extend.GetResourceKeyType((Type)v),
-                        (v) => v != null ? ((ResourceKeyType)v).Type : null,
-                        true);
-                }
-                else
-                {
-                    AddPropertyAccessor<object>(info, p, true);
-                }
+                AddPropertyAccessor<object>(info, p, true);
 
                 return CreatePropertyData(p, NativePropertyType.BaseComponent, propertyType);
             }

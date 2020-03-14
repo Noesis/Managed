@@ -118,11 +118,6 @@ public class Thumb : Control {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Thumb_GetStaticType();
-    return ret;
-  }
-
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_Thumb(Marshal.StringToHGlobalAnsi(typeName));
   }

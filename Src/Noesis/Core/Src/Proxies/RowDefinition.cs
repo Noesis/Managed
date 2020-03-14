@@ -102,11 +102,6 @@ public class RowDefinition : DefinitionBase {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.RowDefinition_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

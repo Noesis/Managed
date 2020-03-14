@@ -101,7 +101,7 @@ public class ManipulationDeltaEventArgs : InputEventArgs {
     } 
   }
 
-  public ManipulationDeltaEventArgs(object s, RoutedEvent e, Visual manipulationContainer, Point manipulationOrigin, ManipulationDelta deltaManipulation, ManipulationDelta cumulativeManipulation, ManipulationVelocities velocities, bool isInertial) : this(NoesisGUI_PINVOKE.new_ManipulationDeltaEventArgs(Noesis.Extend.GetInstanceHandle(s), RoutedEvent.getCPtr(e), Visual.getCPtr(manipulationContainer), ref manipulationOrigin, ManipulationDelta.getCPtr(deltaManipulation), ManipulationDelta.getCPtr(cumulativeManipulation), ManipulationVelocities.getCPtr(velocities), isInertial), true) {
+  public ManipulationDeltaEventArgs(object source, RoutedEvent arg1, Visual container, Point origin, ManipulationDelta delta, ManipulationDelta cumulative, ManipulationVelocities velocities, bool isInertial) : this(NoesisGUI_PINVOKE.new_ManipulationDeltaEventArgs(Noesis.Extend.GetInstanceHandle(source), RoutedEvent.getCPtr(arg1), Visual.getCPtr(container), ref origin, ManipulationDelta.getCPtr(delta), ManipulationDelta.getCPtr(cumulative), ManipulationVelocities.getCPtr(velocities), isInertial), true) {
   }
 
   public bool Cancel() {

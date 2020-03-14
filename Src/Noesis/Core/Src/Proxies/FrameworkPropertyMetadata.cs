@@ -147,11 +147,6 @@ public partial class FrameworkPropertyMetadata : UIPropertyMetadata {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.FrameworkPropertyMetadata_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

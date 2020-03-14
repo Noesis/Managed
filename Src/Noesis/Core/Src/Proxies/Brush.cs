@@ -81,11 +81,6 @@ public class Brush : Animatable {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Brush_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

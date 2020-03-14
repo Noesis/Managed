@@ -93,7 +93,7 @@ public class ManipulationCompletedEventArgs : InputEventArgs {
     } 
   }
 
-  public ManipulationCompletedEventArgs(object s, RoutedEvent e, Visual manipulationContainer, Point manipulationOrigin, ManipulationVelocities finalVelocities, ManipulationDelta totalManipulation, bool isInertial) : this(NoesisGUI_PINVOKE.new_ManipulationCompletedEventArgs(Noesis.Extend.GetInstanceHandle(s), RoutedEvent.getCPtr(e), Visual.getCPtr(manipulationContainer), ref manipulationOrigin, ManipulationVelocities.getCPtr(finalVelocities), ManipulationDelta.getCPtr(totalManipulation), isInertial), true) {
+  public ManipulationCompletedEventArgs(object source, RoutedEvent arg1, Visual container, Point origin, ManipulationVelocities velocities, ManipulationDelta totalManipulation, bool isInertial) : this(NoesisGUI_PINVOKE.new_ManipulationCompletedEventArgs(Noesis.Extend.GetInstanceHandle(source), RoutedEvent.getCPtr(arg1), Visual.getCPtr(container), ref origin, ManipulationVelocities.getCPtr(velocities), ManipulationDelta.getCPtr(totalManipulation), isInertial), true) {
   }
 
   public bool Cancel() {

@@ -32,6 +32,24 @@ namespace Noesis
 
         public void OverrideMetadata(Type forType, PropertyMetadata typeMetadata)
         {
+            if (forType == null)
+            {
+                throw new ArgumentNullException("forType");
+            }
+            if (typeMetadata == null)
+            {
+                throw new ArgumentNullException("typeMetadata");
+            }
+            if (!typeof(DependencyObject).IsAssignableFrom(forType))
+            {
+                throw new ArgumentException(string.Format(
+                    "OverrideMetadata type '{0}' must inherit from DependencyObject", forType.FullName));
+            }
+            if (typeMetadata.HasDefaultValue)
+            {
+                ValidateDefaultValue(Name, PropertyType, OwnerType, typeMetadata.DefaultValue);
+            }
+
             IntPtr forTypePtr = Noesis.Extend.EnsureNativeType(forType, false);
 
             Noesis_OverrideMetadata(forTypePtr, swigCPtr.Handle,
@@ -54,6 +72,8 @@ namespace Noesis
             // Check property type is supported and get the registered native type
             Type originalPropertyType = propertyType;
             IntPtr nativeType = ValidatePropertyType(ref propertyType);
+
+            ValidateMetadata(name, propertyType, ownerType, ref propertyMetadata);
 
             // Create and register dependency property
             IntPtr dependencyPtr = Noesis_RegisterDependencyProperty(ownerTypePtr,
@@ -90,6 +110,86 @@ namespace Noesis
             }
         }
 
+        private static void ValidateMetadata(string name, Type type, Type owner, ref PropertyMetadata metadata)
+        {
+            if (metadata == null)
+            {
+                metadata = new PropertyMetadata(GenerateDefaultValue(type));
+            }
+            else if (!metadata.HasDefaultValue || (type == typeof(string) && metadata.DefaultValue == null))
+            {
+                metadata.DefaultValue = GenerateDefaultValue(type);
+            }
+            else
+            {
+                ValidateDefaultValue(name, type, owner, metadata.DefaultValue);
+            }
+        }
+
+        private static object GenerateDefaultValue(Type type)
+        {
+            if (type == typeof(string))
+            {
+                return string.Empty;
+            }
+            if (type.IsValueType)
+            {
+                return Activator.CreateInstance(type);
+            }
+            return null;
+        }
+
+        private static void ValidateDefaultValue(string name, Type type, Type owner, object value)
+        {
+            if (!IsValidType(value, type))
+            {
+                throw new ArgumentException(string.Format(
+                    "Invalid default value type for dependency property '{0}.{1}'",
+                    owner.FullName, name));
+            }
+
+            if (value is Expression)
+            {
+                throw new ArgumentException(string.Format(
+                    "Dependency property '{0}.{1}' default value can't be an Expression",
+                    owner.FullName, name));
+            }
+
+            DispatcherObject dispatcherObject = value as DispatcherObject;
+            if (dispatcherObject != null && dispatcherObject.Dispatcher != null)
+            {
+                Freezable freezable = value as Freezable;
+                if (freezable != null && freezable.CanFreeze)
+                {
+                    freezable.Freeze();
+                    return;
+                }
+
+                throw new ArgumentException(string.Format(
+                    "Dependency property '{0}.{1}' default value must be free threaded",
+                    owner.FullName, name));
+            }
+        }
+
+        private static bool IsValidType(object value, Type type)
+        {
+            if (value == null)
+            {
+                if (type.IsValueType && (!type.IsGenericType || !(type.GetGenericTypeDefinition() == NullableType)))
+                {
+                    return false;
+                }
+            }
+            else if (!type.IsInstanceOfType(value) && (!type.IsEnum || !(value.GetType() == IntType)))
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private static Type NullableType = typeof(Nullable<>);
+        private static Type IntType = typeof(int);
+
         private Type OriginalPropertyType { get; set; }
 
         private static IntPtr ValidatePropertyType(ref Type propertyType)
@@ -123,19 +223,12 @@ namespace Noesis
             validTypes[typeof(sbyte?)] = typeof(short?);
             validTypes[typeof(byte?)] = typeof(ushort?);
 
-            validTypes[typeof(Type)] = typeof(ResourceKeyType);
-
             return validTypes;
         }
 
         #endregion
 
         #region Imports
-
-        static DependencyProperty()
-        {
-            Noesis.GUI.Init();
-        }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
         [DllImport(Library.Name)]

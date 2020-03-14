@@ -94,11 +94,6 @@ public class CombinedGeometry : Geometry {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.CombinedGeometry_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

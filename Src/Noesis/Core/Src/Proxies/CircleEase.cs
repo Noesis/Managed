@@ -35,11 +35,6 @@ public class CircleEase : EasingFunctionBase {
     return NoesisGUI_PINVOKE.new_CircleEase();
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.CircleEase_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

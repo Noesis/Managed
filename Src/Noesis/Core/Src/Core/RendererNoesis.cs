@@ -49,22 +49,14 @@ namespace Noesis
         }
 
         /// <summary>
-        /// Indicates if offscreen textures are needed at the current render tree state. When this
-        /// function returns true, it is mandatory to call RenderOffscreen() before Render()
-        /// </summary>
-        public bool NeedsOffscreen()
-        {
-            return Noesis_Renderer_NeedsOffscreen(CPtr);
-        }
-
-        /// <summary>
         /// Generates offscreen textures. This function fills internal textures and must be invoked
         /// before binding the main render target. This is especially critical in tiled
-        /// architectures.
+        /// architectures. Returns 'false' when no commands are generated and restoring the GPU state
+        /// is not needed.
         /// </summary>
-        public void RenderOffscreen()
+        public bool RenderOffscreen()
         {
-            Noesis_Renderer_RenderOffscreen(CPtr);
+            return Noesis_Renderer_RenderOffscreen(CPtr);
         }
 
         /// <summary>
@@ -85,18 +77,10 @@ namespace Noesis
             return new Renderer(cPtr, cMemoryOwn);
         }
 
-        new internal static IntPtr GetStaticType()
-        {
-            return Noesis_Renderer_GetStaticType();
-        }
-
         private HandleRef CPtr { get { return BaseComponent.getCPtr(this); } }
         #endregion
 
         #region Imports
-        [DllImport(Library.Name)]
-        static extern IntPtr Noesis_Renderer_GetStaticType();
-
         [DllImport(Library.Name)]
         static extern void Noesis_Renderer_Init(HandleRef renderer, HandleRef device);
 
@@ -113,10 +97,7 @@ namespace Noesis
 
         [DllImport(Library.Name)]
         [return: MarshalAs(UnmanagedType.U1)]
-        static extern bool Noesis_Renderer_NeedsOffscreen(HandleRef renderer);
-
-        [DllImport(Library.Name)]
-        static extern void Noesis_Renderer_RenderOffscreen(HandleRef renderer);
+        static extern bool Noesis_Renderer_RenderOffscreen(HandleRef renderer);
 
         [DllImport(Library.Name)]
         static extern void Noesis_Renderer_Render(HandleRef renderer);

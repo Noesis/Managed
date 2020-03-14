@@ -76,11 +76,6 @@ public class Condition : BaseComponent {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Condition_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

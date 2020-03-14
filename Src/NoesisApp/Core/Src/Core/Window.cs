@@ -132,6 +132,7 @@ namespace NoesisApp
         public RenderContext RenderContext { get; private set; }
         public uint Samples { get; private set; }
         public bool PPAA { get; private set; }
+        public bool LCD { get; private set; }
 
         /// <summary>
         /// Event raised when window surface is cleared and ready to start rendering
@@ -154,12 +155,14 @@ namespace NoesisApp
             _renderingArgs = new WindowRenderingEventArgs();
         }
 
-        public void Init(Display display, RenderContext renderContext, uint samples, bool ppaa)
+        public void Init(Display display, RenderContext renderContext, uint samples, bool ppaa, bool lcd)
         {
             Display = display;
             RenderContext = renderContext;
             Samples = samples;
             PPAA = ppaa;
+            LCD = lcd;
+            RenderFlags flags = (ppaa ? RenderFlags.PPAA : 0) | (lcd ? RenderFlags.LCD : 0);
 
             // Set display properties
             Display.SetTitle(Title);
@@ -182,7 +185,7 @@ namespace NoesisApp
 
             // Create View
             _view = GUI.CreateView(this);
-            _view.SetIsPPAAEnabled(ppaa);
+            _view.SetFlags(flags);
             _view.SetTessellationMaxPixelError(TessellationMaxPixelError.HighQuality);
             _view.Renderer.Init(renderContext.Device);
 
@@ -216,11 +219,7 @@ namespace NoesisApp
 
             Renderer renderer = _view.Renderer;
             renderer.UpdateRenderTree();
-
-            if (renderer.NeedsOffscreen())
-            {
-                renderer.RenderOffscreen();
-            }
+            renderer.RenderOffscreen();
 
             RenderContext.SetDefaultRenderTarget(Display.ClientWidth, Display.ClientHeight, true);
 

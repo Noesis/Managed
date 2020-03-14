@@ -35,11 +35,6 @@ public class QuadraticEase : EasingFunctionBase {
     return NoesisGUI_PINVOKE.new_QuadraticEase();
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.QuadraticEase_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

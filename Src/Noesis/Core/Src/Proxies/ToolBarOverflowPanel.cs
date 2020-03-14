@@ -57,11 +57,6 @@ public class ToolBarOverflowPanel : Panel {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ToolBarOverflowPanel_GetStaticType();
-    return ret;
-  }
-
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_ToolBarOverflowPanel(Marshal.StringToHGlobalAnsi(typeName));
   }

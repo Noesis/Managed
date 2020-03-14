@@ -58,11 +58,6 @@ public class TemplateBindingExtension : MarkupExtension {
     return ret;
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.TemplateBindingExtension_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

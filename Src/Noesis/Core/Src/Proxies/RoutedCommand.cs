@@ -28,19 +28,6 @@ public class RoutedCommand : BaseComponent, ICommand {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
-  public string Name {
-    get {
-      return GetNameHelper();
-    }
-  }
-
-  public Type OwnerType {
-    get {
-      Noesis.Extend.NativeTypeInfo info = Noesis.Extend.GetNativeTypeInfo(GetOwnerTypeHelper());
-      return info.Type;
-    }
-  }
-
   public void RaiseCanExecuteChanged() {
     System.EventHandler handler = CanExecuteChanged;
     if (handler != null) {
@@ -56,6 +43,12 @@ public class RoutedCommand : BaseComponent, ICommand {
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
     registerExtend = false;
     return NoesisGUI_PINVOKE.new_RoutedCommand__SWIG_0();
+  }
+
+  public RoutedCommand(string name, Type owner) : this(NoesisGUI_PINVOKE.new_RoutedCommand__SWIG_1(name != null ? name : string.Empty, owner != null ? Noesis.Extend.EnsureNativeType(owner) : IntPtr.Zero), true) {
+  }
+
+  public RoutedCommand(string name, Type owner, InputGestureCollection inputGestures) : this(NoesisGUI_PINVOKE.new_RoutedCommand__SWIG_2(name != null ? name : string.Empty, owner != null ? Noesis.Extend.EnsureNativeType(owner) : IntPtr.Zero, InputGestureCollection.getCPtr(inputGestures)), true) {
   }
 
   public bool CanExecute(object param, UIElement target) {
@@ -76,27 +69,30 @@ public class RoutedCommand : BaseComponent, ICommand {
     NoesisGUI_PINVOKE.RoutedCommand_Execute__SWIG_1(swigCPtr, Noesis.Extend.GetInstanceHandle(param));
   }
 
+  public string Name {
+    get {
+      IntPtr strPtr = NoesisGUI_PINVOKE.RoutedCommand_Name_get(swigCPtr);
+      string str = Noesis.Extend.StringFromNativeUtf8(strPtr);
+      return str;
+    }
+  }
+
+  public Type OwnerType {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.RoutedCommand_OwnerType_get(swigCPtr);
+      if (cPtr != IntPtr.Zero) {
+        Noesis.Extend.NativeTypeInfo info = Noesis.Extend.GetNativeTypeInfo(cPtr);
+        return info.Type;
+      }
+      return null;
+    }
+  }
+
   public InputGestureCollection InputGestures {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.RoutedCommand_InputGestures_get(swigCPtr);
       return (InputGestureCollection)Noesis.Extend.GetProxy(cPtr, false);
     }
-  }
-
-  private string GetNameHelper() {
-    IntPtr strPtr = NoesisGUI_PINVOKE.RoutedCommand_GetNameHelper(swigCPtr);
-    string str = Noesis.Extend.StringFromNativeUtf8(strPtr);
-    return str;
-  }
-
-  private IntPtr GetOwnerTypeHelper() {
-    IntPtr ret = NoesisGUI_PINVOKE.RoutedCommand_GetOwnerTypeHelper(swigCPtr);
-    return ret;
-  }
-
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.RoutedCommand_GetStaticType();
-    return ret;
   }
 
 }

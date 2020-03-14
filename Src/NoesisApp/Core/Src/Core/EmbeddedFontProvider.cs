@@ -17,13 +17,25 @@ namespace NoesisApp
             _namespace = ns;
             _provider = provider;
 
+            // Register application font resources
+            RegisterFontResources(_assembly, _namespace);
+
+            // Register Theme font resources
+            RegisterFontResources(Theme.Assembly, Theme.Namespace);
+        }
+
+        private void RegisterFontResources(Assembly assembly, string ns)
+        {
+            if (assembly == null) return;
+
+            int skipNs = ns.Length + 1;
             char[] pointSeparator = new char[] { '.' };
 
-            foreach (string resource in _assembly.GetManifestResourceNames())
+            foreach (string resource in assembly.GetManifestResourceNames())
             {
                 if (resource.EndsWith(".ttf") || resource.EndsWith(".ttc") || resource.EndsWith(".otf"))
                 {
-                    string[] tokens = resource.Substring(_namespace.Length + 1).Split(pointSeparator);
+                    string[] tokens = resource.Substring(skipNs).Split(pointSeparator);
 
                     string path = tokens[0];
                     for (int i = 1; i < tokens.Length - 1; ++i)
@@ -49,15 +61,24 @@ namespace NoesisApp
         {
             Stream stream = null;
 
+            // First try with user provider
             if (_provider != null)
             {
                 stream = _provider.OpenFont(folder, id);
             }
 
+            // Next try with application assembly resources
             if (stream == null)
             {
                 string filename = folder + (folder.Length > 0 ? "/" : "") + id;
-                stream = EmbeddedProviderHelper.GetResource(_assembly, _namespace, filename);
+                stream = Application.GetAssemblyResource(_assembly, _namespace, filename);
+            }
+
+            // Last try with Theme assembly resources
+            if (stream == null)
+            {
+                string filename = folder + (folder.Length > 0 ? "/" : "") + id;
+                stream = Application.GetAssemblyResource(Theme.Assembly, "NoesisApp", filename);
             }
 
             return stream;

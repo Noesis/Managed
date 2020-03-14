@@ -74,11 +74,6 @@ public class GeometryGroup : Geometry {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.GeometryGroup_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

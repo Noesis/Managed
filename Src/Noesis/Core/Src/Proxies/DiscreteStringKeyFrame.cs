@@ -35,11 +35,6 @@ public class DiscreteStringKeyFrame : StringKeyFrame {
     return NoesisGUI_PINVOKE.new_DiscreteStringKeyFrame();
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.DiscreteStringKeyFrame_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

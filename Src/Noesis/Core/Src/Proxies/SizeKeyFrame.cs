@@ -32,8 +32,7 @@ public class SizeKeyFrame : Freezable {
 
   public static DependencyProperty KeyTimeProperty {
     get {
-      IntPtr cPtr = NoesisGUI_PINVOKE.SizeKeyFrame_KeyTimeProperty_get();
-      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+      return NoesisGUI_.KeyFrame_KeyTimeProperty();
     }
   }
 
@@ -76,11 +75,6 @@ public class SizeKeyFrame : Freezable {
       }
     }
 
-  }
-
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.SizeKeyFrame_GetStaticType();
-    return ret;
   }
 
 }

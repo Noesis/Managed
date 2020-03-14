@@ -35,11 +35,6 @@ public class ListViewItem : ListBoxItem {
     return NoesisGUI_PINVOKE.new_ListViewItem();
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ListViewItem_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

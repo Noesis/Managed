@@ -38,11 +38,6 @@ public class Underline : Span {
   public Underline(Inline childInline) : this(NoesisGUI_PINVOKE.new_Underline__SWIG_1(Inline.getCPtr(childInline)), true) {
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Underline_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

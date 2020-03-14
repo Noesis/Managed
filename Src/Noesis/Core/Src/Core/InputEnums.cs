@@ -293,4 +293,23 @@ public enum ModifierKeys
     Windows = 8
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+[FlagsAttribute]
+public enum ManipulationModes
+{
+    /// Manipulation events do not occur
+    None = 0,
+    /// A manipulation can translate an object horizontally
+    TranslateX = 1,
+    /// A manipulation can translate an object vertically
+    TranslateY = 2,
+    /// A manipulation can translate an object
+    Translate = TranslateX | TranslateY,
+    /// A manipulation can rotate an object
+    Rotate = 4,
+    /// A manipulation can scale an object
+    Scale = 8,
+    /// A manipulation can scale, translate, or rotate an object
+    All = Translate | Rotate | Scale
+}
 }

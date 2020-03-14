@@ -42,11 +42,6 @@ public class DoubleAnimationUsingKeyFrames : AnimationTimeline {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.DoubleAnimationUsingKeyFrames_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

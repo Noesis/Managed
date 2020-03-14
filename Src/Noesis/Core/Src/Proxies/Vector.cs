@@ -40,7 +40,7 @@ public struct Vector {
   }
 
   public float Length {
-    get { return (float)Math.Sqrt(this._x * this._x + this._y * this._y); }
+    get { return (float)Math.Sqrt(LengthSquared); }
   }
 
   public float LengthSquared {
@@ -62,7 +62,7 @@ public struct Vector {
   }
 
   public static Vector operator-(Vector vector) {
-    return new Vector(-vector._x,-vector._y);
+    return new Vector(-vector._x, -vector._y);
   }
 
   public void Negate() {

@@ -27,14 +27,6 @@ public class SplineRectKeyFrame : RectKeyFrame {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
-  public SplineRectKeyFrame() {
-  }
-
-  protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    registerExtend = false;
-    return NoesisGUI_PINVOKE.new_SplineRectKeyFrame();
-  }
-
   public static DependencyProperty KeySplineProperty {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.SplineRectKeyFrame_KeySplineProperty_get();
@@ -52,9 +44,12 @@ public class SplineRectKeyFrame : RectKeyFrame {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.SplineRectKeyFrame_GetStaticType();
-    return ret;
+  public SplineRectKeyFrame() {
+  }
+
+  protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
+    registerExtend = false;
+    return NoesisGUI_PINVOKE.new_SplineRectKeyFrame();
   }
 
 }

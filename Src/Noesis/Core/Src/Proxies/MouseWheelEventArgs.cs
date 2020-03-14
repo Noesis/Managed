@@ -58,7 +58,7 @@ public class MouseWheelEventArgs : MouseEventArgs {
     } 
   }
 
-  public MouseWheelEventArgs(object s, RoutedEvent e, int delta) : this(NoesisGUI_PINVOKE.new_MouseWheelEventArgs(Noesis.Extend.GetInstanceHandle(s), RoutedEvent.getCPtr(e), delta), true) {
+  public MouseWheelEventArgs(object source, RoutedEvent arg1, int rotation) : this(NoesisGUI_PINVOKE.new_MouseWheelEventArgs(Noesis.Extend.GetInstanceHandle(source), RoutedEvent.getCPtr(arg1), rotation), true) {
   }
 
 }

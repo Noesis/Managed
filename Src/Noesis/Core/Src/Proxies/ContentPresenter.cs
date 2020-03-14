@@ -49,6 +49,13 @@ public class ContentPresenter : FrameworkElement {
     }
   }
 
+  public static DependencyProperty ContentStringFormatProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.ContentPresenter_ContentStringFormatProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
   public static DependencyProperty ContentTemplateProperty {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ContentPresenter_ContentTemplateProperty_get();
@@ -84,6 +91,17 @@ public class ContentPresenter : FrameworkElement {
     }
   }
 
+  public string ContentStringFormat {
+    set {
+      NoesisGUI_PINVOKE.ContentPresenter_ContentStringFormat_set(swigCPtr, value != null ? value : string.Empty);
+    }
+    get {
+      IntPtr strPtr = NoesisGUI_PINVOKE.ContentPresenter_ContentStringFormat_get(swigCPtr);
+      string str = Noesis.Extend.StringFromNativeUtf8(strPtr);
+      return str;
+    }
+  }
+
   public DataTemplate ContentTemplate {
     set {
       NoesisGUI_PINVOKE.ContentPresenter_ContentTemplate_set(swigCPtr, DataTemplate.getCPtr(value));
@@ -102,11 +120,6 @@ public class ContentPresenter : FrameworkElement {
       IntPtr cPtr = NoesisGUI_PINVOKE.ContentPresenter_ContentTemplateSelector_get(swigCPtr);
       return (DataTemplateSelector)Noesis.Extend.GetProxy(cPtr, false);
     }
-  }
-
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ContentPresenter_GetStaticType();
-    return ret;
   }
 
 }

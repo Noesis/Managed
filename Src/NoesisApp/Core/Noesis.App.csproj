@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>2.2.6</Version>
+    <Version>3.0.0-beta1</Version>
     <Authors>Noesis Technologies</Authors>
     <Description>NoesisGUI Application Framework</Description>
     <Copyright>Copyright (c) 2013 Noesis Technologies S.L.</Copyright>
@@ -22,6 +22,7 @@
     <ProjectReference Include="..\..\Noesis\Core\Noesis.GUI.csproj">
       <PrivateAssets>contentfiles;analyzers</PrivateAssets>
     </ProjectReference>
+    <ProjectReference Include="..\Theme\Noesis.App.Theme.csproj" />
   </ItemGroup>
 
   <PropertyGroup Condition="Exists('$(SolutionDir)LICENSE.txt')">
@@ -30,6 +31,9 @@
   </PropertyGroup>
   <ItemGroup Condition="Exists('$(SolutionDir)LICENSE.txt')">
     <Content Include="$(SolutionDir)LICENSE.txt" PackagePath="" Pack="true" />
+  </ItemGroup>
+  <ItemGroup Condition="Exists('$(SolutionDir)THIRD_PARTY.txt')">
+    <Content Include="$(SolutionDir)THIRD_PARTY.txt" PackagePath="" Pack="true" />
   </ItemGroup>
 
 </Project>

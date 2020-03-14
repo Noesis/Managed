@@ -113,11 +113,6 @@ public class InputBinding : Freezable {
     NoesisGUI_PINVOKE.InputBinding_SetCommandHelper(swigCPtr, Noesis.Extend.GetInstanceHandle(command));
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.InputBinding_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

@@ -494,11 +494,6 @@ public class ScrollViewer : ContentControl {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ScrollViewer_GetStaticType();
-    return ret;
-  }
-
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_ScrollViewer(Marshal.StringToHGlobalAnsi(typeName));
   }

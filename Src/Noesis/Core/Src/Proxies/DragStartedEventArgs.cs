@@ -65,7 +65,7 @@ public class DragStartedEventArgs : RoutedEventArgs {
     } 
   }
 
-  public DragStartedEventArgs(object s, float h, float v) : this(NoesisGUI_PINVOKE.new_DragStartedEventArgs(Noesis.Extend.GetInstanceHandle(s), h, v), true) {
+  public DragStartedEventArgs(object source, float hOffset, float voffset) : this(NoesisGUI_PINVOKE.new_DragStartedEventArgs(Noesis.Extend.GetInstanceHandle(source), hOffset, voffset), true) {
   }
 
 }

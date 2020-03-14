@@ -55,11 +55,6 @@ public class Animatable : Freezable {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Animatable_GetStaticType();
-    return ret;
-  }
-
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_Animatable(Marshal.StringToHGlobalAnsi(typeName));
   }

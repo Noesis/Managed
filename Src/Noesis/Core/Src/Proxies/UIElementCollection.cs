@@ -33,11 +33,6 @@ public class UIElementCollection : UICollection<UIElement> {
   public UIElementCollection(UIElement visualParent, FrameworkElement logicalParent) : this(NoesisGUI_PINVOKE.new_UIElementCollection(UIElement.getCPtr(visualParent), FrameworkElement.getCPtr(logicalParent)), true) {
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.UIElementCollection_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

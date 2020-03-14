@@ -115,6 +115,11 @@ namespace NoesisApp
             _device.SetOnScreenEncoder(_cmdEncoder.Handle, (uint)_layer.PixelFormat, (uint)MTLPixelFormat.Stencil8, _samples);
         }
 
+        public override ImageCapture CaptureRenderTarget(RenderTarget surface)
+        {
+            throw new NotImplementedException();
+        }
+
         public override void Swap()
         {
             _cmdBuffer.PresentDrawable(_drawable);

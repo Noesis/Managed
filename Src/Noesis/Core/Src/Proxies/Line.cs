@@ -103,11 +103,6 @@ public class Line : Shape {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Line_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

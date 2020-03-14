@@ -86,11 +86,6 @@ public class UniformGrid : Panel {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.UniformGrid_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

@@ -45,11 +45,6 @@ public class VisualCollection : UICollection<Visual> {
     return ret;
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.VisualCollection_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

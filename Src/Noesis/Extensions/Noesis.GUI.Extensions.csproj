@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net45</TargetFramework>
-    <Version>2.2.6</Version>
+    <Version>3.0.0-beta6</Version>
     <Authors>Noesis Technologies</Authors>
     <Description>Extends Blend with new attached properties and types that expose features included in NoesisGUI.</Description>
     <Copyright>Copyright (c) 2013 Noesis Technologies S.L.</Copyright>
@@ -24,6 +24,20 @@
   </PropertyGroup>
   <ItemGroup Condition="Exists('$(SolutionDir)LICENSE.txt')">
     <Content Include="$(SolutionDir)LICENSE.txt" PackagePath="" Pack="true" />
+  </ItemGroup>
+  <ItemGroup Condition="Exists('$(SolutionDir)THIRD_PARTY.txt')">
+    <Content Include="$(SolutionDir)THIRD_PARTY.txt" PackagePath="" Pack="true" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Theme\*.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Theme\*.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Theme\Fonts\*.otf" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Expression.Blend.Sdk.WPF" Version="1.0.1" />

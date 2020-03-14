@@ -107,11 +107,6 @@ public class RectangleGeometry : Geometry {
 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.RectangleGeometry_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

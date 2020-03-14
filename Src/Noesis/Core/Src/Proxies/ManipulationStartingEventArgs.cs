@@ -70,7 +70,7 @@ public class ManipulationStartingEventArgs : InputEventArgs {
     } 
   }
 
-  public ManipulationStartingEventArgs(object s, RoutedEvent e, Visual manipulationContainer) : this(NoesisGUI_PINVOKE.new_ManipulationStartingEventArgs(Noesis.Extend.GetInstanceHandle(s), RoutedEvent.getCPtr(e), Visual.getCPtr(manipulationContainer)), true) {
+  public ManipulationStartingEventArgs(object source, RoutedEvent arg1, Visual container) : this(NoesisGUI_PINVOKE.new_ManipulationStartingEventArgs(Noesis.Extend.GetInstanceHandle(source), RoutedEvent.getCPtr(arg1), Visual.getCPtr(container)), true) {
   }
 
   public bool Cancel() {

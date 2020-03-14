@@ -89,11 +89,6 @@ public class RotateTransform : Transform {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.RotateTransform_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

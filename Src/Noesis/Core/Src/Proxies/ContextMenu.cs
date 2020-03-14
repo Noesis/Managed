@@ -224,11 +224,6 @@ public class ContextMenu : MenuBase {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ContextMenu_GetStaticType();
-    return ret;
-  }
-
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_ContextMenu(Marshal.StringToHGlobalAnsi(typeName));
   }

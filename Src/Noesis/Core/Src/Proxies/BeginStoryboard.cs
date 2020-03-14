@@ -73,11 +73,6 @@ public class BeginStoryboard : TriggerAction {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.BeginStoryboard_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

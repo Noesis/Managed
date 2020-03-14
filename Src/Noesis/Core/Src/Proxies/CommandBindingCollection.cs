@@ -27,11 +27,6 @@ public class CommandBindingCollection : UICollection<CommandBinding> {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.CommandBindingCollection_GetStaticType();
-    return ret;
-  }
-
   public CommandBindingCollection() {
   }
 

@@ -41,7 +41,7 @@ public class Style : BaseComponent {
 
   public Type TargetType {
     set {
-      NoesisGUI_PINVOKE.Style_TargetType_set(swigCPtr, new HandleRef(value, (value != null ? Noesis.Extend.GetNativeType(value) : IntPtr.Zero)));
+      NoesisGUI_PINVOKE.Style_TargetType_set(swigCPtr, value != null ? Noesis.Extend.EnsureNativeType(value) : IntPtr.Zero);
     }
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Style_TargetType_get(swigCPtr);
@@ -99,11 +99,6 @@ public class Style : BaseComponent {
       bool ret = NoesisGUI_PINVOKE.Style_IsSealed_get(swigCPtr);
       return ret;
     } 
-  }
-
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Style_GetStaticType();
-    return ret;
   }
 
 }

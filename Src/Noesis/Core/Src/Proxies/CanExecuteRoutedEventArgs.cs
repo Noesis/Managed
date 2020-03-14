@@ -11,6 +11,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Windows.Input;
 
 namespace Noesis
 {
@@ -44,24 +45,53 @@ public class CanExecuteRoutedEventArgs : RoutedEventArgs {
     }
   }
 
-  public bool canExecute {
+  internal static new void InvokeHandler(Delegate handler, IntPtr sender, IntPtr args) {
+    CanExecuteRoutedEventHandler handler_ = (CanExecuteRoutedEventHandler)handler;
+    if (handler_ != null) {
+      handler_(Extend.GetProxy(sender, false), new CanExecuteRoutedEventArgs(args, false));
+    }
+  }
+
+  public ICommand Command {
+    get {
+      return GetCommandHelper() as ICommand;
+    }
+  }
+
+  public object Parameter {
+    get {
+      return GetParameterHelper();
+    }
+  }
+
+  public bool CanExecute {
     set {
-      NoesisGUI_PINVOKE.CanExecuteRoutedEventArgs_canExecute_set(swigCPtr, value);
+      NoesisGUI_PINVOKE.CanExecuteRoutedEventArgs_CanExecute_set(swigCPtr, value);
     } 
     get {
-      bool ret = NoesisGUI_PINVOKE.CanExecuteRoutedEventArgs_canExecute_get(swigCPtr);
+      bool ret = NoesisGUI_PINVOKE.CanExecuteRoutedEventArgs_CanExecute_get(swigCPtr);
       return ret;
     } 
   }
 
-  public bool continueRouting {
+  public bool ContinueRouting {
     set {
-      NoesisGUI_PINVOKE.CanExecuteRoutedEventArgs_continueRouting_set(swigCPtr, value);
+      NoesisGUI_PINVOKE.CanExecuteRoutedEventArgs_ContinueRouting_set(swigCPtr, value);
     } 
     get {
-      bool ret = NoesisGUI_PINVOKE.CanExecuteRoutedEventArgs_continueRouting_get(swigCPtr);
+      bool ret = NoesisGUI_PINVOKE.CanExecuteRoutedEventArgs_ContinueRouting_get(swigCPtr);
       return ret;
     } 
+  }
+
+  private object GetCommandHelper() {
+    IntPtr cPtr = NoesisGUI_PINVOKE.CanExecuteRoutedEventArgs_GetCommandHelper(swigCPtr);
+    return Noesis.Extend.GetProxy(cPtr, false);
+  }
+
+  private object GetParameterHelper() {
+    IntPtr cPtr = NoesisGUI_PINVOKE.CanExecuteRoutedEventArgs_GetParameterHelper(swigCPtr);
+    return Noesis.Extend.GetProxy(cPtr, false);
   }
 
 }

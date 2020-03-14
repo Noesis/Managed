@@ -27,14 +27,6 @@ public class EasingDoubleKeyFrame : DoubleKeyFrame {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
-  public EasingDoubleKeyFrame() {
-  }
-
-  protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    registerExtend = false;
-    return NoesisGUI_PINVOKE.new_EasingDoubleKeyFrame();
-  }
-
   public static DependencyProperty EasingFunctionProperty {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.EasingDoubleKeyFrame_EasingFunctionProperty_get();
@@ -52,9 +44,12 @@ public class EasingDoubleKeyFrame : DoubleKeyFrame {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.EasingDoubleKeyFrame_GetStaticType();
-    return ret;
+  public EasingDoubleKeyFrame() {
+  }
+
+  protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
+    registerExtend = false;
+    return NoesisGUI_PINVOKE.new_EasingDoubleKeyFrame();
   }
 
 }

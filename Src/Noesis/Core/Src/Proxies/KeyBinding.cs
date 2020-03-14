@@ -83,11 +83,6 @@ public class KeyBinding : InputBinding {
     return ret;
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.KeyBinding_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

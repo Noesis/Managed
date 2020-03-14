@@ -57,7 +57,7 @@ public class TextCompositionEventArgs : InputEventArgs {
     }
   }
 
-  public TextCompositionEventArgs(object s, RoutedEvent e, uint ch) : this(NoesisGUI_PINVOKE.new_TextCompositionEventArgs(Noesis.Extend.GetInstanceHandle(s), RoutedEvent.getCPtr(e), ch), true) {
+  public TextCompositionEventArgs(object source, RoutedEvent arg1, uint ch) : this(NoesisGUI_PINVOKE.new_TextCompositionEventArgs(Noesis.Extend.GetInstanceHandle(source), RoutedEvent.getCPtr(arg1), ch), true) {
   }
 
   private uint GetTextHelper() {

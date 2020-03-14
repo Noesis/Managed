@@ -64,11 +64,6 @@ public class KeyGesture : InputGesture {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.KeyGesture_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

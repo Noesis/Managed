@@ -30,7 +30,7 @@ namespace Noesis
         /// <summary>
         /// Gets the synchronization context associated with this Dispatcher.
         /// </summary>
-        internal SynchronizationContext SynchronizationContext
+        public SynchronizationContext SynchronizationContext
         {
             get { return _context; }
         }
@@ -87,7 +87,7 @@ namespace Noesis
         {
             if (CheckAccess())
             {
-                DispatcherOperation.Invoke(d, args);
+                DispatcherOperation.Invoke(d, args, _context);
             }
             else
             {
@@ -134,17 +134,7 @@ namespace Noesis
                     operation = _operations.Dequeue();
                 }
 
-                SynchronizationContext currentContext = SynchronizationContext.Current;
-                try
-                {
-                    SynchronizationContext.SetSynchronizationContext(_context);
-
-                    operation.Invoke();
-                }
-                finally
-                {
-                    SynchronizationContext.SetSynchronizationContext(currentContext);
-                }
+                operation.Invoke(_context);
             }
         }
         #endregion
@@ -196,28 +186,38 @@ namespace Noesis
             public object Args;
             public AutoResetEvent WaitEvent;
 
-            public static void Invoke(Delegate callback, object args)
+            public static void Invoke(Delegate callback, object args, SynchronizationContext context)
             {
-                if (callback is Action)
+                SynchronizationContext currentContext = SynchronizationContext.Current;
+                try
                 {
-                    Action action = (Action)callback;
-                    action();
+                    SynchronizationContext.SetSynchronizationContext(context);
+
+                    if (callback is Action)
+                    {
+                        Action action = (Action)callback;
+                        action();
+                    }
+                    else if (callback is SendOrPostCallback)
+                    {
+                        SendOrPostCallback sendOrPost = (SendOrPostCallback)callback;
+                        sendOrPost(args);
+                    }
+                    else
+                    {
+                        callback.DynamicInvoke(args);
+                    }
                 }
-                else if (callback is SendOrPostCallback)
+                finally
                 {
-                    SendOrPostCallback sendOrPost = (SendOrPostCallback)callback;
-                    sendOrPost(args);
-                }
-                else
-                {
-                    callback.DynamicInvoke(args);
+                    SynchronizationContext.SetSynchronizationContext(currentContext);
                 }
             }
 
-            public void Invoke()
+            public void Invoke(SynchronizationContext context)
             {
                 // Invoke callback
-                Invoke(Callback, Args);
+                Invoke(Callback, Args, context);
 
                 // Signal waiting event
                 if (WaitEvent != null)

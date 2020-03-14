@@ -46,11 +46,6 @@ public class AdornerDecorator : Decorator {
     NoesisGUI_PINVOKE.AdornerDecorator_RemoveLayer(swigCPtr, Visual.getCPtr(layerRoot));
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.AdornerDecorator_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

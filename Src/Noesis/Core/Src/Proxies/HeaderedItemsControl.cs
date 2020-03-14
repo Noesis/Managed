@@ -123,11 +123,6 @@ public class HeaderedItemsControl : ItemsControl {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.HeaderedItemsControl_GetStaticType();
-    return ret;
-  }
-
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_HeaderedItemsControl(Marshal.StringToHGlobalAnsi(typeName));
   }

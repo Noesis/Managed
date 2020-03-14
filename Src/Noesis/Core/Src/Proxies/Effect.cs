@@ -15,15 +15,21 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-[System.FlagsAttribute]
-public enum ManipulationModes {
-  None = 0,
-  TranslateX = 1,
-  TranslateY = 2,
-  Translate = TranslateX|TranslateY,
-  Rotate = 4,
-  Scale = 8,
-  All = Translate|Rotate|Scale
+public class Effect : Animatable {
+  internal new static Effect CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
+    return new Effect(cPtr, cMemoryOwn);
+  }
+
+  internal Effect(IntPtr cPtr, bool cMemoryOwn) : base(cPtr, cMemoryOwn) {
+  }
+
+  internal static HandleRef getCPtr(Effect obj) {
+    return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
+  }
+
+  protected Effect() {
+  }
+
 }
 
 }

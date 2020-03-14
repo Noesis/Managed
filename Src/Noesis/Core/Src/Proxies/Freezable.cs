@@ -89,11 +89,6 @@ public class Freezable : DependencyObject {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Freezable_GetStaticType();
-    return ret;
-  }
-
   private IntPtr CloneHelper() {
     IntPtr ret = NoesisGUI_PINVOKE.Freezable_CloneHelper(swigCPtr);
     return ret;

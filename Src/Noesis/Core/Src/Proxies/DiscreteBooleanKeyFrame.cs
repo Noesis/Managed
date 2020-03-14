@@ -35,11 +35,6 @@ public class DiscreteBooleanKeyFrame : BooleanKeyFrame {
     return NoesisGUI_PINVOKE.new_DiscreteBooleanKeyFrame();
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.DiscreteBooleanKeyFrame_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

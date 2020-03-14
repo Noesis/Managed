@@ -35,11 +35,6 @@ public class GradientStopCollection : FreezableCollection<GradientStop> {
     return NoesisGUI_PINVOKE.new_GradientStopCollection();
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.GradientStopCollection_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

@@ -45,11 +45,6 @@ public class BindingExpression : BindingExpressionBase {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.BindingExpression_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

@@ -95,6 +95,11 @@ namespace NoesisApp
             glClear(mask);
         }
 
+        public override ImageCapture CaptureRenderTarget(RenderTarget surface)
+        {
+            throw new NotImplementedException();
+        }
+
         public override void Swap()
         {
             _context.FlushBuffer();

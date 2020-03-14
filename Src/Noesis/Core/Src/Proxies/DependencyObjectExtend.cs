@@ -386,16 +386,13 @@ namespace Noesis
             getFunctions[typeof(Type)] = (cPtr, dp) =>
             {
                 CheckProperty(cPtr, dp, "get");
-                IntPtr ptr = Noesis_DependencyGet_BaseComponent(cPtr, dp);
+                IntPtr ptr = Noesis_DependencyGet_Type(cPtr, dp);
                 if (ptr != IntPtr.Zero)
                 {
-                    ResourceKeyType key = new ResourceKeyType(ptr, false);
-                    return key.Type;
+                    Noesis.Extend.NativeTypeInfo info = Noesis.Extend.GetNativeTypeInfo(cPtr);
+                    return info.Type;
                 }
-                else
-                {
-                    return null;
-                }
+                return null;
             };
 
             return getFunctions;
@@ -819,8 +816,9 @@ namespace Noesis
             setFunctions[typeof(Type)] = (cPtr, dp, value) =>
             {
                 CheckProperty(cPtr, dp, "set");
-                ResourceKeyType key = Noesis.Extend.GetResourceKeyType((Type)value);
-                Noesis_DependencySet_BaseComponent(cPtr, dp, Noesis.Extend.GetInstanceHandle(key).Handle);
+                System.Type value_ = (System.Type)value;
+                IntPtr ptr = value != null ? Noesis.Extend.GetNativeType(value_) : IntPtr.Zero;
+                Noesis_DependencySet_Type(cPtr, dp, ptr);
             };
 
             return setFunctions;
@@ -829,11 +827,6 @@ namespace Noesis
         #endregion
 
         #region Imports
-
-        static DependencyObject()
-        {
-            Noesis.GUI.Init();
-        }
 
         private static void CheckProperty(IntPtr dependencyObject, IntPtr dependencyProperty, string msg)
         {
@@ -921,6 +914,9 @@ namespace Noesis
             bool isNullable, [MarshalAs(UnmanagedType.U1)]out bool isNull);
 
         [DllImport(Library.Name)]
+        private static extern IntPtr Noesis_DependencyGet_Type(IntPtr dependencyObject, IntPtr dependencyProperty);
+
+        [DllImport(Library.Name)]
         private static extern IntPtr Noesis_DependencyGet_BaseComponent(IntPtr dependencyObject, IntPtr dependencyProperty);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -995,6 +991,10 @@ namespace Noesis
         [DllImport(Library.Name)]
         private static extern void Noesis_DependencySet_KeyTime(IntPtr dependencyObject, IntPtr dependencyProperty,
             ref Noesis.KeyTime val, bool isNullable, bool isNull);
+
+        [DllImport(Library.Name)]
+        private static extern void Noesis_DependencySet_Type(IntPtr dependencyObject, IntPtr dependencyProperty,
+            IntPtr val);
 
         [DllImport(Library.Name)]
         private static extern void Noesis_DependencySet_BaseComponent(IntPtr dependencyObject, IntPtr dependencyProperty,

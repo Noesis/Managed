@@ -27,14 +27,6 @@ public class SplineThicknessKeyFrame : ThicknessKeyFrame {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
-  public SplineThicknessKeyFrame() {
-  }
-
-  protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    registerExtend = false;
-    return NoesisGUI_PINVOKE.new_SplineThicknessKeyFrame();
-  }
-
   public static DependencyProperty KeySplineProperty {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.SplineThicknessKeyFrame_KeySplineProperty_get();
@@ -52,9 +44,12 @@ public class SplineThicknessKeyFrame : ThicknessKeyFrame {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.SplineThicknessKeyFrame_GetStaticType();
-    return ret;
+  public SplineThicknessKeyFrame() {
+  }
+
+  protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
+    registerExtend = false;
+    return NoesisGUI_PINVOKE.new_SplineThicknessKeyFrame();
   }
 
 }

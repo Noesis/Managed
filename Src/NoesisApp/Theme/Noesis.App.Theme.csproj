@@ -1,0 +1,125 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>3.0.0-beta1</Version>
+    <Authors>Noesis Technologies</Authors>
+    <Description>NoesisGUI Theme</Description>
+    <Copyright>Copyright (c) 2013 Noesis Technologies S.L.</Copyright>
+    <PackageProjectUrl>https://www.noesisengine.com</PackageProjectUrl>
+    <PackageIconUrl>https://www.noesisengine.com/images/logos/Icon-256.png</PackageIconUrl>
+    <RepositoryUrl>https://github.com/Noesis/Managed/tree/master/Src/NoesisApp/Theme</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>NoesisGUI XAML GUI Application C# Theme</PackageTags>
+    <PackageReleaseNotes>https://www.noesisengine.com/docs/Gui.Core.Changelog.html</PackageReleaseNotes>
+    <RootNamespace>NoesisApp</RootNamespace>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageOutputPath>$(SolutionDir)NuGet\</PackageOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Noesis\Core\Noesis.GUI.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Theme\Fonts\PT Root UI_Bold.otf" />
+    <None Remove="Theme\Fonts\PT Root UI_Regular.otf" />
+    <None Remove="Theme\NoesisTheme.Brushes.DarkAqua.xaml" />
+    <None Remove="Theme\NoesisTheme.Brushes.DarkBlue.xaml" />
+    <None Remove="Theme\NoesisTheme.Brushes.DarkCrimson.xaml" />
+    <None Remove="Theme\NoesisTheme.Brushes.DarkEmerald.xaml" />
+    <None Remove="Theme\NoesisTheme.Brushes.DarkGreen.xaml" />
+    <None Remove="Theme\NoesisTheme.Brushes.DarkLime.xaml" />
+    <None Remove="Theme\NoesisTheme.Brushes.DarkOrange.xaml" />
+    <None Remove="Theme\NoesisTheme.Brushes.DarkPurple.xaml" />
+    <None Remove="Theme\NoesisTheme.Brushes.DarkRed.xaml" />
+    <None Remove="Theme\NoesisTheme.Brushes.LightAqua.xaml" />
+    <None Remove="Theme\NoesisTheme.Brushes.LightBlue.xaml" />
+    <None Remove="Theme\NoesisTheme.Brushes.LightCrimson.xaml" />
+    <None Remove="Theme\NoesisTheme.Brushes.LightEmerald.xaml" />
+    <None Remove="Theme\NoesisTheme.Brushes.LightGreen.xaml" />
+    <None Remove="Theme\NoesisTheme.Brushes.LightLime.xaml" />
+    <None Remove="Theme\NoesisTheme.Brushes.LightOrange.xaml" />
+    <None Remove="Theme\NoesisTheme.Brushes.LightPurple.xaml" />
+    <None Remove="Theme\NoesisTheme.Brushes.LightRed.xaml" />
+    <None Remove="Theme\NoesisTheme.Colors.Dark.xaml" />
+    <None Remove="Theme\NoesisTheme.Colors.Light.xaml" />
+    <None Remove="Theme\NoesisTheme.DarkAqua.xaml" />
+    <None Remove="Theme\NoesisTheme.DarkBlue.xaml" />
+    <None Remove="Theme\NoesisTheme.DarkCrimson.xaml" />
+    <None Remove="Theme\NoesisTheme.DarkEmerald.xaml" />
+    <None Remove="Theme\NoesisTheme.DarkGreen.xaml" />
+    <None Remove="Theme\NoesisTheme.DarkLime.xaml" />
+    <None Remove="Theme\NoesisTheme.DarkOrange.xaml" />
+    <None Remove="Theme\NoesisTheme.DarkPurple.xaml" />
+    <None Remove="Theme\NoesisTheme.DarkRed.xaml" />
+    <None Remove="Theme\NoesisTheme.Fonts.xaml" />
+    <None Remove="Theme\NoesisTheme.LightAqua.xaml" />
+    <None Remove="Theme\NoesisTheme.LightBlue.xaml" />
+    <None Remove="Theme\NoesisTheme.LightCrimson.xaml" />
+    <None Remove="Theme\NoesisTheme.LightEmerald.xaml" />
+    <None Remove="Theme\NoesisTheme.LightGreen.xaml" />
+    <None Remove="Theme\NoesisTheme.LightLime.xaml" />
+    <None Remove="Theme\NoesisTheme.LightOrange.xaml" />
+    <None Remove="Theme\NoesisTheme.LightPurple.xaml" />
+    <None Remove="Theme\NoesisTheme.LightRed.xaml" />
+    <None Remove="Theme\NoesisTheme.Styles.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Theme\Fonts\PT Root UI_Bold.otf" />
+    <EmbeddedResource Include="Theme\Fonts\PT Root UI_Regular.otf" />
+    <EmbeddedResource Include="Theme\NoesisTheme.Brushes.DarkAqua.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.Brushes.DarkBlue.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.Brushes.DarkCrimson.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.Brushes.DarkEmerald.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.Brushes.DarkGreen.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.Brushes.DarkLime.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.Brushes.DarkOrange.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.Brushes.DarkPurple.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.Brushes.DarkRed.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.Brushes.LightAqua.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.Brushes.LightBlue.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.Brushes.LightCrimson.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.Brushes.LightEmerald.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.Brushes.LightGreen.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.Brushes.LightLime.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.Brushes.LightOrange.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.Brushes.LightPurple.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.Brushes.LightRed.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.Colors.Dark.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.Colors.Light.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.DarkAqua.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.DarkBlue.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.DarkCrimson.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.DarkEmerald.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.DarkGreen.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.DarkLime.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.DarkOrange.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.DarkPurple.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.DarkRed.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.Fonts.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.LightAqua.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.LightBlue.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.LightCrimson.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.LightEmerald.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.LightGreen.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.LightLime.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.LightOrange.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.LightPurple.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.LightRed.xaml" />
+    <EmbeddedResource Include="Theme\NoesisTheme.Styles.xaml" />
+  </ItemGroup>
+
+  <PropertyGroup Condition="Exists('$(SolutionDir)LICENSE.txt')">
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+  </PropertyGroup>
+  <ItemGroup Condition="Exists('$(SolutionDir)LICENSE.txt')">
+    <Content Include="$(SolutionDir)LICENSE.txt" PackagePath="" Pack="true" />
+  </ItemGroup>
+  <ItemGroup Condition="Exists('$(SolutionDir)THIRD_PARTY.txt')">
+    <Content Include="$(SolutionDir)THIRD_PARTY.txt" PackagePath="" Pack="true" />
+  </ItemGroup>
+
+</Project>

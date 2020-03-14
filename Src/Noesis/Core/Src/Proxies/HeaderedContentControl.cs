@@ -54,6 +54,13 @@ public class HeaderedContentControl : ContentControl {
     }
   }
 
+  public static DependencyProperty HeaderStringFormatProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.HeaderedContentControl_HeaderStringFormatProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
   public static DependencyProperty HeaderTemplateProperty {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.HeaderedContentControl_HeaderTemplateProperty_get();
@@ -85,6 +92,17 @@ public class HeaderedContentControl : ContentControl {
     }
   }
 
+  public string HeaderStringFormat {
+    set {
+      NoesisGUI_PINVOKE.HeaderedContentControl_HeaderStringFormat_set(swigCPtr, value != null ? value : string.Empty);
+    }
+    get {
+      IntPtr strPtr = NoesisGUI_PINVOKE.HeaderedContentControl_HeaderStringFormat_get(swigCPtr);
+      string str = Noesis.Extend.StringFromNativeUtf8(strPtr);
+      return str;
+    }
+  }
+
   public DataTemplate HeaderTemplate {
     set {
       NoesisGUI_PINVOKE.HeaderedContentControl_HeaderTemplate_set(swigCPtr, DataTemplate.getCPtr(value));
@@ -103,11 +121,6 @@ public class HeaderedContentControl : ContentControl {
       IntPtr cPtr = NoesisGUI_PINVOKE.HeaderedContentControl_HeaderTemplateSelector_get(swigCPtr);
       return (DataTemplateSelector)Noesis.Extend.GetProxy(cPtr, false);
     }
-  }
-
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.HeaderedContentControl_GetStaticType();
-    return ret;
   }
 
   internal new static IntPtr Extend(string typeName) {

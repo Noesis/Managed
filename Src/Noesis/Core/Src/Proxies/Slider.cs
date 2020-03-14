@@ -305,11 +305,6 @@ public class Slider : RangeBase {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Slider_GetStaticType();
-    return ret;
-  }
-
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_Slider(Marshal.StringToHGlobalAnsi(typeName));
   }

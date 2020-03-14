@@ -40,11 +40,6 @@ public class GroupBox : HeaderedContentControl {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.GroupBox_GetStaticType();
-    return ret;
-  }
-
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_GroupBox(Marshal.StringToHGlobalAnsi(typeName));
   }

@@ -72,13 +72,13 @@ public class ContextMenuEventArgs : RoutedEventArgs {
     } 
   }
 
-  public ContextMenuEventArgs(object s, RoutedEvent e, float left, float top) : this(NoesisGUI_PINVOKE.new_ContextMenuEventArgs__SWIG_0(Noesis.Extend.GetInstanceHandle(s), RoutedEvent.getCPtr(e), left, top), true) {
+  public ContextMenuEventArgs(object source, RoutedEvent arg1, float cursorLeft, float cursorTop) : this(NoesisGUI_PINVOKE.new_ContextMenuEventArgs__SWIG_0(Noesis.Extend.GetInstanceHandle(source), RoutedEvent.getCPtr(arg1), cursorLeft, cursorTop), true) {
   }
 
-  public ContextMenuEventArgs(object s, RoutedEvent e, float left) : this(NoesisGUI_PINVOKE.new_ContextMenuEventArgs__SWIG_1(Noesis.Extend.GetInstanceHandle(s), RoutedEvent.getCPtr(e), left), true) {
+  public ContextMenuEventArgs(object source, RoutedEvent arg1, float cursorLeft) : this(NoesisGUI_PINVOKE.new_ContextMenuEventArgs__SWIG_1(Noesis.Extend.GetInstanceHandle(source), RoutedEvent.getCPtr(arg1), cursorLeft), true) {
   }
 
-  public ContextMenuEventArgs(object s, RoutedEvent e) : this(NoesisGUI_PINVOKE.new_ContextMenuEventArgs__SWIG_2(Noesis.Extend.GetInstanceHandle(s), RoutedEvent.getCPtr(e)), true) {
+  public ContextMenuEventArgs(object source, RoutedEvent arg1) : this(NoesisGUI_PINVOKE.new_ContextMenuEventArgs__SWIG_2(Noesis.Extend.GetInstanceHandle(source), RoutedEvent.getCPtr(arg1)), true) {
   }
 
 }

@@ -42,11 +42,6 @@ public class ThicknessAnimationUsingKeyFrames : AnimationTimeline {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ThicknessAnimationUsingKeyFrames_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

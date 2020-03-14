@@ -184,11 +184,6 @@ public class GridView : ViewBase {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.GridView_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

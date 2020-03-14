@@ -70,6 +70,11 @@ public class NoesisGUI_ {
     return ret;
   }
 
+  public static IntPtr Type_GetStaticType() {
+    IntPtr ret = NoesisGUI_PINVOKE.Type_GetStaticType();
+    return ret;
+  }
+
   public static IntPtr Boxed_Bool_GetStaticType() {
     IntPtr ret = NoesisGUI_PINVOKE.Boxed_Bool_GetStaticType();
     return ret;
@@ -117,6 +122,11 @@ public class NoesisGUI_ {
 
   public static IntPtr Boxed_String_GetStaticType() {
     IntPtr ret = NoesisGUI_PINVOKE.Boxed_String_GetStaticType();
+    return ret;
+  }
+
+  public static IntPtr Boxed_Type_GetStaticType() {
+    IntPtr ret = NoesisGUI_PINVOKE.Boxed_Type_GetStaticType();
     return ret;
   }
 
@@ -171,6 +181,15 @@ public class NoesisGUI_ {
     return str;
   }
 
+  public static Type Unbox_Type(IntPtr val) {
+    IntPtr cPtr = NoesisGUI_PINVOKE.Unbox_Type(val);
+    if (cPtr != IntPtr.Zero) {
+      Noesis.Extend.NativeTypeInfo info = Noesis.Extend.GetNativeTypeInfo(cPtr);
+      return info.Type;
+    }
+    return null;
+  }
+
   public static IntPtr Box_Bool(bool val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_Bool(val);
     return ret;
@@ -218,6 +237,11 @@ public class NoesisGUI_ {
 
   public static IntPtr Box_String(string val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_String(val != null ? val : string.Empty);
+    return ret;
+  }
+
+  public static IntPtr Box_Type(Type val) {
+    IntPtr ret = NoesisGUI_PINVOKE.Box_Type(val != null ? Noesis.Extend.EnsureNativeType(val) : IntPtr.Zero);
     return ret;
   }
 
@@ -511,16 +535,6 @@ public class NoesisGUI_ {
     return ret;
   }
 
-  public static IntPtr UpdateSourceTrigger_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.UpdateSourceTrigger_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_UpdateSourceTrigger_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_UpdateSourceTrigger_GetStaticType();
-    return ret;
-  }
-
   public static UpdateSourceTrigger Unbox_UpdateSourceTrigger(IntPtr val) {
     UpdateSourceTrigger ret = (UpdateSourceTrigger)NoesisGUI_PINVOKE.Unbox_UpdateSourceTrigger(val);
     return ret;
@@ -528,16 +542,6 @@ public class NoesisGUI_ {
 
   public static IntPtr Box_UpdateSourceTrigger(UpdateSourceTrigger val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_UpdateSourceTrigger((int)val);
-    return ret;
-  }
-
-  public static IntPtr AlignmentX_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.AlignmentX_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_AlignmentX_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_AlignmentX_GetStaticType();
     return ret;
   }
 
@@ -551,16 +555,6 @@ public class NoesisGUI_ {
     return ret;
   }
 
-  public static IntPtr AlignmentY_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.AlignmentY_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_AlignmentY_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_AlignmentY_GetStaticType();
-    return ret;
-  }
-
   public static AlignmentY Unbox_AlignmentY(IntPtr val) {
     AlignmentY ret = (AlignmentY)NoesisGUI_PINVOKE.Unbox_AlignmentY(val);
     return ret;
@@ -568,16 +562,6 @@ public class NoesisGUI_ {
 
   public static IntPtr Box_AlignmentY(AlignmentY val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_AlignmentY((int)val);
-    return ret;
-  }
-
-  public static IntPtr AutoToolTipPlacement_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.AutoToolTipPlacement_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_AutoToolTipPlacement_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_AutoToolTipPlacement_GetStaticType();
     return ret;
   }
 
@@ -591,16 +575,6 @@ public class NoesisGUI_ {
     return ret;
   }
 
-  public static IntPtr BindingMode_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.BindingMode_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_BindingMode_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_BindingMode_GetStaticType();
-    return ret;
-  }
-
   public static BindingMode Unbox_BindingMode(IntPtr val) {
     BindingMode ret = (BindingMode)NoesisGUI_PINVOKE.Unbox_BindingMode(val);
     return ret;
@@ -608,16 +582,6 @@ public class NoesisGUI_ {
 
   public static IntPtr Box_BindingMode(BindingMode val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_BindingMode((int)val);
-    return ret;
-  }
-
-  public static IntPtr BitmapScalingMode_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.BitmapScalingMode_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_BitmapScalingMode_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_BitmapScalingMode_GetStaticType();
     return ret;
   }
 
@@ -631,16 +595,6 @@ public class NoesisGUI_ {
     return ret;
   }
 
-  public static IntPtr BrushMappingMode_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.BrushMappingMode_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_BrushMappingMode_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_BrushMappingMode_GetStaticType();
-    return ret;
-  }
-
   public static BrushMappingMode Unbox_BrushMappingMode(IntPtr val) {
     BrushMappingMode ret = (BrushMappingMode)NoesisGUI_PINVOKE.Unbox_BrushMappingMode(val);
     return ret;
@@ -648,16 +602,6 @@ public class NoesisGUI_ {
 
   public static IntPtr Box_BrushMappingMode(BrushMappingMode val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_BrushMappingMode((int)val);
-    return ret;
-  }
-
-  public static IntPtr CharacterCasing_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.CharacterCasing_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_CharacterCasing_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_CharacterCasing_GetStaticType();
     return ret;
   }
 
@@ -671,16 +615,6 @@ public class NoesisGUI_ {
     return ret;
   }
 
-  public static IntPtr ClickMode_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ClickMode_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_ClickMode_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_ClickMode_GetStaticType();
-    return ret;
-  }
-
   public static ClickMode Unbox_ClickMode(IntPtr val) {
     ClickMode ret = (ClickMode)NoesisGUI_PINVOKE.Unbox_ClickMode(val);
     return ret;
@@ -688,16 +622,6 @@ public class NoesisGUI_ {
 
   public static IntPtr Box_ClickMode(ClickMode val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_ClickMode((int)val);
-    return ret;
-  }
-
-  public static IntPtr ColorInterpolationMode_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ColorInterpolationMode_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_ColorInterpolationMode_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_ColorInterpolationMode_GetStaticType();
     return ret;
   }
 
@@ -711,16 +635,6 @@ public class NoesisGUI_ {
     return ret;
   }
 
-  public static IntPtr Cursor_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Cursor_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_Cursor_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_Cursor_GetStaticType();
-    return ret;
-  }
-
   public static Cursor Unbox_Cursor(IntPtr val) {
     Cursor ret = (Cursor)NoesisGUI_PINVOKE.Unbox_Cursor(val);
     return ret;
@@ -728,16 +642,6 @@ public class NoesisGUI_ {
 
   public static IntPtr Box_Cursor(Cursor val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_Cursor((int)val);
-    return ret;
-  }
-
-  public static IntPtr Dock_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Dock_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_Dock_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_Dock_GetStaticType();
     return ret;
   }
 
@@ -751,16 +655,6 @@ public class NoesisGUI_ {
     return ret;
   }
 
-  public static IntPtr ExpandDirection_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ExpandDirection_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_ExpandDirection_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_ExpandDirection_GetStaticType();
-    return ret;
-  }
-
   public static ExpandDirection Unbox_ExpandDirection(IntPtr val) {
     ExpandDirection ret = (ExpandDirection)NoesisGUI_PINVOKE.Unbox_ExpandDirection(val);
     return ret;
@@ -768,16 +662,6 @@ public class NoesisGUI_ {
 
   public static IntPtr Box_ExpandDirection(ExpandDirection val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_ExpandDirection((int)val);
-    return ret;
-  }
-
-  public static IntPtr FillRule_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.FillRule_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_FillRule_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_FillRule_GetStaticType();
     return ret;
   }
 
@@ -791,16 +675,6 @@ public class NoesisGUI_ {
     return ret;
   }
 
-  public static IntPtr FlowDirection_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.FlowDirection_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_FlowDirection_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_FlowDirection_GetStaticType();
-    return ret;
-  }
-
   public static FlowDirection Unbox_FlowDirection(IntPtr val) {
     FlowDirection ret = (FlowDirection)NoesisGUI_PINVOKE.Unbox_FlowDirection(val);
     return ret;
@@ -808,16 +682,6 @@ public class NoesisGUI_ {
 
   public static IntPtr Box_FlowDirection(FlowDirection val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_FlowDirection((int)val);
-    return ret;
-  }
-
-  public static IntPtr FontStretch_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.FontStretch_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_FontStretch_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_FontStretch_GetStaticType();
     return ret;
   }
 
@@ -831,16 +695,6 @@ public class NoesisGUI_ {
     return ret;
   }
 
-  public static IntPtr FontStyle_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.FontStyle_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_FontStyle_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_FontStyle_GetStaticType();
-    return ret;
-  }
-
   public static FontStyle Unbox_FontStyle(IntPtr val) {
     FontStyle ret = (FontStyle)NoesisGUI_PINVOKE.Unbox_FontStyle(val);
     return ret;
@@ -848,16 +702,6 @@ public class NoesisGUI_ {
 
   public static IntPtr Box_FontStyle(FontStyle val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_FontStyle((int)val);
-    return ret;
-  }
-
-  public static IntPtr FontWeight_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.FontWeight_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_FontWeight_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_FontWeight_GetStaticType();
     return ret;
   }
 
@@ -871,16 +715,6 @@ public class NoesisGUI_ {
     return ret;
   }
 
-  public static IntPtr GeometryCombineMode_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.GeometryCombineMode_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_GeometryCombineMode_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_GeometryCombineMode_GetStaticType();
-    return ret;
-  }
-
   public static GeometryCombineMode Unbox_GeometryCombineMode(IntPtr val) {
     GeometryCombineMode ret = (GeometryCombineMode)NoesisGUI_PINVOKE.Unbox_GeometryCombineMode(val);
     return ret;
@@ -888,16 +722,6 @@ public class NoesisGUI_ {
 
   public static IntPtr Box_GeometryCombineMode(GeometryCombineMode val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_GeometryCombineMode((int)val);
-    return ret;
-  }
-
-  public static IntPtr GradientSpreadMethod_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.GradientSpreadMethod_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_GradientSpreadMethod_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_GradientSpreadMethod_GetStaticType();
     return ret;
   }
 
@@ -911,16 +735,6 @@ public class NoesisGUI_ {
     return ret;
   }
 
-  public static IntPtr HorizontalAlignment_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.HorizontalAlignment_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_HorizontalAlignment_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_HorizontalAlignment_GetStaticType();
-    return ret;
-  }
-
   public static HorizontalAlignment Unbox_HorizontalAlignment(IntPtr val) {
     HorizontalAlignment ret = (HorizontalAlignment)NoesisGUI_PINVOKE.Unbox_HorizontalAlignment(val);
     return ret;
@@ -928,16 +742,6 @@ public class NoesisGUI_ {
 
   public static IntPtr Box_HorizontalAlignment(HorizontalAlignment val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_HorizontalAlignment((int)val);
-    return ret;
-  }
-
-  public static IntPtr InputScope_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.InputScope_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_InputScope_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_InputScope_GetStaticType();
     return ret;
   }
 
@@ -951,16 +755,6 @@ public class NoesisGUI_ {
     return ret;
   }
 
-  public static IntPtr KeyboardNavigationMode_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.KeyboardNavigationMode_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_KeyboardNavigationMode_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_KeyboardNavigationMode_GetStaticType();
-    return ret;
-  }
-
   public static KeyboardNavigationMode Unbox_KeyboardNavigationMode(IntPtr val) {
     KeyboardNavigationMode ret = (KeyboardNavigationMode)NoesisGUI_PINVOKE.Unbox_KeyboardNavigationMode(val);
     return ret;
@@ -968,16 +762,6 @@ public class NoesisGUI_ {
 
   public static IntPtr Box_KeyboardNavigationMode(KeyboardNavigationMode val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_KeyboardNavigationMode((int)val);
-    return ret;
-  }
-
-  public static IntPtr LineStackingStrategy_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.LineStackingStrategy_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_LineStackingStrategy_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_LineStackingStrategy_GetStaticType();
     return ret;
   }
 
@@ -991,16 +775,6 @@ public class NoesisGUI_ {
     return ret;
   }
 
-  public static IntPtr ListSortDirection_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ListSortDirection_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_ListSortDirection_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_ListSortDirection_GetStaticType();
-    return ret;
-  }
-
   public static ListSortDirection Unbox_ListSortDirection(IntPtr val) {
     ListSortDirection ret = (ListSortDirection)NoesisGUI_PINVOKE.Unbox_ListSortDirection(val);
     return ret;
@@ -1008,16 +782,6 @@ public class NoesisGUI_ {
 
   public static IntPtr Box_ListSortDirection(ListSortDirection val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_ListSortDirection((int)val);
-    return ret;
-  }
-
-  public static IntPtr MenuItemRole_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.MenuItemRole_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_MenuItemRole_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_MenuItemRole_GetStaticType();
     return ret;
   }
 
@@ -1031,16 +795,6 @@ public class NoesisGUI_ {
     return ret;
   }
 
-  public static IntPtr Orientation_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Orientation_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_Orientation_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_Orientation_GetStaticType();
-    return ret;
-  }
-
   public static Orientation Unbox_Orientation(IntPtr val) {
     Orientation ret = (Orientation)NoesisGUI_PINVOKE.Unbox_Orientation(val);
     return ret;
@@ -1048,16 +802,6 @@ public class NoesisGUI_ {
 
   public static IntPtr Box_Orientation(Orientation val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_Orientation((int)val);
-    return ret;
-  }
-
-  public static IntPtr OverflowMode_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.OverflowMode_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_OverflowMode_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_OverflowMode_GetStaticType();
     return ret;
   }
 
@@ -1071,16 +815,6 @@ public class NoesisGUI_ {
     return ret;
   }
 
-  public static IntPtr PenLineCap_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.PenLineCap_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_PenLineCap_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_PenLineCap_GetStaticType();
-    return ret;
-  }
-
   public static PenLineCap Unbox_PenLineCap(IntPtr val) {
     PenLineCap ret = (PenLineCap)NoesisGUI_PINVOKE.Unbox_PenLineCap(val);
     return ret;
@@ -1088,16 +822,6 @@ public class NoesisGUI_ {
 
   public static IntPtr Box_PenLineCap(PenLineCap val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_PenLineCap((int)val);
-    return ret;
-  }
-
-  public static IntPtr PenLineJoin_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.PenLineJoin_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_PenLineJoin_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_PenLineJoin_GetStaticType();
     return ret;
   }
 
@@ -1111,16 +835,6 @@ public class NoesisGUI_ {
     return ret;
   }
 
-  public static IntPtr PlacementMode_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.PlacementMode_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_PlacementMode_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_PlacementMode_GetStaticType();
-    return ret;
-  }
-
   public static PlacementMode Unbox_PlacementMode(IntPtr val) {
     PlacementMode ret = (PlacementMode)NoesisGUI_PINVOKE.Unbox_PlacementMode(val);
     return ret;
@@ -1128,16 +842,6 @@ public class NoesisGUI_ {
 
   public static IntPtr Box_PlacementMode(PlacementMode val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_PlacementMode((int)val);
-    return ret;
-  }
-
-  public static IntPtr PopupAnimation_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.PopupAnimation_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_PopupAnimation_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_PopupAnimation_GetStaticType();
     return ret;
   }
 
@@ -1151,16 +855,6 @@ public class NoesisGUI_ {
     return ret;
   }
 
-  public static IntPtr RelativeSourceMode_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.RelativeSourceMode_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_RelativeSourceMode_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_RelativeSourceMode_GetStaticType();
-    return ret;
-  }
-
   public static RelativeSourceMode Unbox_RelativeSourceMode(IntPtr val) {
     RelativeSourceMode ret = (RelativeSourceMode)NoesisGUI_PINVOKE.Unbox_RelativeSourceMode(val);
     return ret;
@@ -1168,16 +862,6 @@ public class NoesisGUI_ {
 
   public static IntPtr Box_RelativeSourceMode(RelativeSourceMode val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_RelativeSourceMode((int)val);
-    return ret;
-  }
-
-  public static IntPtr SelectionMode_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.SelectionMode_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_SelectionMode_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_SelectionMode_GetStaticType();
     return ret;
   }
 
@@ -1191,16 +875,6 @@ public class NoesisGUI_ {
     return ret;
   }
 
-  public static IntPtr ScrollBarVisibility_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ScrollBarVisibility_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_ScrollBarVisibility_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_ScrollBarVisibility_GetStaticType();
-    return ret;
-  }
-
   public static ScrollBarVisibility Unbox_ScrollBarVisibility(IntPtr val) {
     ScrollBarVisibility ret = (ScrollBarVisibility)NoesisGUI_PINVOKE.Unbox_ScrollBarVisibility(val);
     return ret;
@@ -1208,16 +882,6 @@ public class NoesisGUI_ {
 
   public static IntPtr Box_ScrollBarVisibility(ScrollBarVisibility val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_ScrollBarVisibility((int)val);
-    return ret;
-  }
-
-  public static IntPtr Stretch_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Stretch_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_Stretch_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_Stretch_GetStaticType();
     return ret;
   }
 
@@ -1231,16 +895,6 @@ public class NoesisGUI_ {
     return ret;
   }
 
-  public static IntPtr StretchDirection_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.StretchDirection_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_StretchDirection_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_StretchDirection_GetStaticType();
-    return ret;
-  }
-
   public static StretchDirection Unbox_StretchDirection(IntPtr val) {
     StretchDirection ret = (StretchDirection)NoesisGUI_PINVOKE.Unbox_StretchDirection(val);
     return ret;
@@ -1248,16 +902,6 @@ public class NoesisGUI_ {
 
   public static IntPtr Box_StretchDirection(StretchDirection val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_StretchDirection((int)val);
-    return ret;
-  }
-
-  public static IntPtr TextDecorations_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.TextDecorations_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_TextDecorations_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_TextDecorations_GetStaticType();
     return ret;
   }
 
@@ -1271,16 +915,6 @@ public class NoesisGUI_ {
     return ret;
   }
 
-  public static IntPtr TextAlignment_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.TextAlignment_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_TextAlignment_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_TextAlignment_GetStaticType();
-    return ret;
-  }
-
   public static TextAlignment Unbox_TextAlignment(IntPtr val) {
     TextAlignment ret = (TextAlignment)NoesisGUI_PINVOKE.Unbox_TextAlignment(val);
     return ret;
@@ -1288,16 +922,6 @@ public class NoesisGUI_ {
 
   public static IntPtr Box_TextAlignment(TextAlignment val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_TextAlignment((int)val);
-    return ret;
-  }
-
-  public static IntPtr TextTrimming_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.TextTrimming_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_TextTrimming_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_TextTrimming_GetStaticType();
     return ret;
   }
 
@@ -1311,16 +935,6 @@ public class NoesisGUI_ {
     return ret;
   }
 
-  public static IntPtr TextWrapping_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.TextWrapping_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_TextWrapping_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_TextWrapping_GetStaticType();
-    return ret;
-  }
-
   public static TextWrapping Unbox_TextWrapping(IntPtr val) {
     TextWrapping ret = (TextWrapping)NoesisGUI_PINVOKE.Unbox_TextWrapping(val);
     return ret;
@@ -1328,16 +942,6 @@ public class NoesisGUI_ {
 
   public static IntPtr Box_TextWrapping(TextWrapping val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_TextWrapping((int)val);
-    return ret;
-  }
-
-  public static IntPtr TickBarPlacement_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.TickBarPlacement_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_TickBarPlacement_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_TickBarPlacement_GetStaticType();
     return ret;
   }
 
@@ -1351,16 +955,6 @@ public class NoesisGUI_ {
     return ret;
   }
 
-  public static IntPtr TickPlacement_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.TickPlacement_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_TickPlacement_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_TickPlacement_GetStaticType();
-    return ret;
-  }
-
   public static TickPlacement Unbox_TickPlacement(IntPtr val) {
     TickPlacement ret = (TickPlacement)NoesisGUI_PINVOKE.Unbox_TickPlacement(val);
     return ret;
@@ -1368,16 +962,6 @@ public class NoesisGUI_ {
 
   public static IntPtr Box_TickPlacement(TickPlacement val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_TickPlacement((int)val);
-    return ret;
-  }
-
-  public static IntPtr TileMode_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.TileMode_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_TileMode_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_TileMode_GetStaticType();
     return ret;
   }
 
@@ -1391,16 +975,6 @@ public class NoesisGUI_ {
     return ret;
   }
 
-  public static IntPtr VerticalAlignment_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.VerticalAlignment_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_VerticalAlignment_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_VerticalAlignment_GetStaticType();
-    return ret;
-  }
-
   public static VerticalAlignment Unbox_VerticalAlignment(IntPtr val) {
     VerticalAlignment ret = (VerticalAlignment)NoesisGUI_PINVOKE.Unbox_VerticalAlignment(val);
     return ret;
@@ -1411,16 +985,6 @@ public class NoesisGUI_ {
     return ret;
   }
 
-  public static IntPtr Visibility_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Visibility_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_Visibility_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_Visibility_GetStaticType();
-    return ret;
-  }
-
   public static Visibility Unbox_Visibility(IntPtr val) {
     Visibility ret = (Visibility)NoesisGUI_PINVOKE.Unbox_Visibility(val);
     return ret;
@@ -1428,6 +992,36 @@ public class NoesisGUI_ {
 
   public static IntPtr Box_Visibility(Visibility val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_Visibility((int)val);
+    return ret;
+  }
+
+  public static DragDropEffects Unbox_DragDropEffects(IntPtr val) {
+    DragDropEffects ret = (DragDropEffects)NoesisGUI_PINVOKE.Unbox_DragDropEffects(val);
+    return ret;
+  }
+
+  public static IntPtr Box_DragDropEffects(DragDropEffects val) {
+    IntPtr ret = NoesisGUI_PINVOKE.Box_DragDropEffects((int)val);
+    return ret;
+  }
+
+  public static DragDropKeyStates Unbox_DragDropKeyStates(IntPtr val) {
+    DragDropKeyStates ret = (DragDropKeyStates)NoesisGUI_PINVOKE.Unbox_DragDropKeyStates(val);
+    return ret;
+  }
+
+  public static IntPtr Box_DragDropKeyStates(DragDropKeyStates val) {
+    IntPtr ret = NoesisGUI_PINVOKE.Box_DragDropKeyStates((int)val);
+    return ret;
+  }
+
+  public static DragAction Unbox_DragAction(IntPtr val) {
+    DragAction ret = (DragAction)NoesisGUI_PINVOKE.Unbox_DragAction(val);
+    return ret;
+  }
+
+  public static IntPtr Box_DragAction(DragAction val) {
+    IntPtr ret = NoesisGUI_PINVOKE.Box_DragAction((int)val);
     return ret;
   }
 
@@ -1452,81 +1046,6 @@ public class NoesisGUI_ {
     return ret;
   }
 
-  public static IntPtr RootVisual_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.RootVisual_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr DragDropEffects_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.DragDropEffects_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_DragDropEffects_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_DragDropEffects_GetStaticType();
-    return ret;
-  }
-
-  public static DragDropEffects Unbox_DragDropEffects(IntPtr val) {
-    DragDropEffects ret = (DragDropEffects)NoesisGUI_PINVOKE.Unbox_DragDropEffects(val);
-    return ret;
-  }
-
-  public static IntPtr Box_DragDropEffects(DragDropEffects val) {
-    IntPtr ret = NoesisGUI_PINVOKE.Box_DragDropEffects((int)val);
-    return ret;
-  }
-
-  public static IntPtr DragDropKeyStates_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.DragDropKeyStates_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_DragDropKeyStates_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_DragDropKeyStates_GetStaticType();
-    return ret;
-  }
-
-  public static DragDropKeyStates Unbox_DragDropKeyStates(IntPtr val) {
-    DragDropKeyStates ret = (DragDropKeyStates)NoesisGUI_PINVOKE.Unbox_DragDropKeyStates(val);
-    return ret;
-  }
-
-  public static IntPtr Box_DragDropKeyStates(DragDropKeyStates val) {
-    IntPtr ret = NoesisGUI_PINVOKE.Box_DragDropKeyStates((int)val);
-    return ret;
-  }
-
-  public static IntPtr DragAction_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.DragAction_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_DragAction_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_DragAction_GetStaticType();
-    return ret;
-  }
-
-  public static DragAction Unbox_DragAction(IntPtr val) {
-    DragAction ret = (DragAction)NoesisGUI_PINVOKE.Unbox_DragAction(val);
-    return ret;
-  }
-
-  public static IntPtr Box_DragAction(DragAction val) {
-    IntPtr ret = NoesisGUI_PINVOKE.Box_DragAction((int)val);
-    return ret;
-  }
-
-  public static IntPtr PPAAMode_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.PPAAMode_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_PPAAMode_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_PPAAMode_GetStaticType();
-    return ret;
-  }
-
   public static PPAAMode Unbox_PPAAMode(IntPtr val) {
     PPAAMode ret = (PPAAMode)NoesisGUI_PINVOKE.Unbox_PPAAMode(val);
     return ret;
@@ -1534,31 +1053,6 @@ public class NoesisGUI_ {
 
   public static IntPtr Box_PPAAMode(PPAAMode val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_PPAAMode((int)val);
-    return ret;
-  }
-
-  public static IntPtr GeneratorPosition_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.GeneratorPosition_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_GeneratorPosition_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_GeneratorPosition_GetStaticType();
-    return ret;
-  }
-
-  public static GeneratorPosition Unbox_GeneratorPosition(IntPtr val) {
-    IntPtr ret = NoesisGUI_PINVOKE.Unbox_GeneratorPosition(val);
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<GeneratorPosition>(ret);
-    }
-    else {
-      return new GeneratorPosition();
-    }
-  }
-
-  public static IntPtr Box_GeneratorPosition(GeneratorPosition val) {
-    IntPtr ret = NoesisGUI_PINVOKE.Box_GeneratorPosition(ref val);
     return ret;
   }
 
@@ -1584,16 +1078,6 @@ public class NoesisGUI_ {
 
   public static IntPtr Box_GridLength(GridLength val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_GridLength(ref val);
-    return ret;
-  }
-
-  public static IntPtr PanningMode_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.PanningMode_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_PanningMode_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_PanningMode_GetStaticType();
     return ret;
   }
 
@@ -1632,16 +1116,6 @@ public class NoesisGUI_ {
     return ret;
   }
 
-  public static IntPtr VirtualizationCacheLengthUnit_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.VirtualizationCacheLengthUnit_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_VirtualizationCacheLengthUnit_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_VirtualizationCacheLengthUnit_GetStaticType();
-    return ret;
-  }
-
   public static VirtualizationCacheLengthUnit Unbox_VirtualizationCacheLengthUnit(IntPtr val) {
     VirtualizationCacheLengthUnit ret = (VirtualizationCacheLengthUnit)NoesisGUI_PINVOKE.Unbox_VirtualizationCacheLengthUnit(val);
     return ret;
@@ -1649,16 +1123,6 @@ public class NoesisGUI_ {
 
   public static IntPtr Box_VirtualizationCacheLengthUnit(VirtualizationCacheLengthUnit val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_VirtualizationCacheLengthUnit((int)val);
-    return ret;
-  }
-
-  public static IntPtr VirtualizationMode_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.VirtualizationMode_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_VirtualizationMode_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_VirtualizationMode_GetStaticType();
     return ret;
   }
 
@@ -1672,16 +1136,6 @@ public class NoesisGUI_ {
     return ret;
   }
 
-  public static IntPtr ScrollUnit_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ScrollUnit_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_ScrollUnit_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_ScrollUnit_GetStaticType();
-    return ret;
-  }
-
   public static ScrollUnit Unbox_ScrollUnit(IntPtr val) {
     ScrollUnit ret = (ScrollUnit)NoesisGUI_PINVOKE.Unbox_ScrollUnit(val);
     return ret;
@@ -1689,21 +1143,6 @@ public class NoesisGUI_ {
 
   public static IntPtr Box_ScrollUnit(ScrollUnit val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_ScrollUnit((int)val);
-    return ret;
-  }
-
-  public static IntPtr TextBoxView_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.TextBoxView_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr HandoffBehavior_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.HandoffBehavior_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_HandoffBehavior_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_HandoffBehavior_GetStaticType();
     return ret;
   }
 
@@ -1820,16 +1259,6 @@ public class NoesisGUI_ {
     return ret;
   }
 
-  public static IntPtr ClockState_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ClockState_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_ClockState_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_ClockState_GetStaticType();
-    return ret;
-  }
-
   public static ClockState Unbox_ClockState(IntPtr val) {
     ClockState ret = (ClockState)NoesisGUI_PINVOKE.Unbox_ClockState(val);
     return ret;
@@ -1837,16 +1266,6 @@ public class NoesisGUI_ {
 
   public static IntPtr Box_ClockState(ClockState val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_ClockState((int)val);
-    return ret;
-  }
-
-  public static IntPtr FillBehavior_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.FillBehavior_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_FillBehavior_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_FillBehavior_GetStaticType();
     return ret;
   }
 
@@ -1860,16 +1279,6 @@ public class NoesisGUI_ {
     return ret;
   }
 
-  public static IntPtr SlipBehavior_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.SlipBehavior_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_SlipBehavior_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_SlipBehavior_GetStaticType();
-    return ret;
-  }
-
   public static SlipBehavior Unbox_SlipBehavior(IntPtr val) {
     SlipBehavior ret = (SlipBehavior)NoesisGUI_PINVOKE.Unbox_SlipBehavior(val);
     return ret;
@@ -1880,14 +1289,9 @@ public class NoesisGUI_ {
     return ret;
   }
 
-  public static IntPtr EasingMode_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.EasingMode_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_EasingMode_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_EasingMode_GetStaticType();
-    return ret;
+  public static DependencyProperty KeyFrame_KeyTimeProperty() {
+    IntPtr cPtr = NoesisGUI_PINVOKE.KeyFrame_KeyTimeProperty();
+    return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
   }
 
   public static EasingMode Unbox_EasingMode(IntPtr val) {
@@ -1897,16 +1301,6 @@ public class NoesisGUI_ {
 
   public static IntPtr Box_EasingMode(EasingMode val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_EasingMode((int)val);
-    return ret;
-  }
-
-  public static IntPtr GridViewColumnHeaderRole_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.GridViewColumnHeaderRole_GetStaticType();
-    return ret;
-  }
-
-  public static IntPtr Boxed_GridViewColumnHeaderRole_GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Boxed_GridViewColumnHeaderRole_GetStaticType();
     return ret;
   }
 

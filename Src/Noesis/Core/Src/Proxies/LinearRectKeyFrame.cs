@@ -35,11 +35,6 @@ public class LinearRectKeyFrame : RectKeyFrame {
     return NoesisGUI_PINVOKE.new_LinearRectKeyFrame();
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.LinearRectKeyFrame_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

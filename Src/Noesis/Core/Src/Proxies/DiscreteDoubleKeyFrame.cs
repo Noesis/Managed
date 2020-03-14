@@ -35,11 +35,6 @@ public class DiscreteDoubleKeyFrame : DoubleKeyFrame {
     return NoesisGUI_PINVOKE.new_DiscreteDoubleKeyFrame();
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.DiscreteDoubleKeyFrame_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

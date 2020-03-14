@@ -57,7 +57,7 @@ public class TouchEventArgs : InputEventArgs {
     }
   }
 
-  public TouchEventArgs(object s, RoutedEvent e, Point touchPoint, ulong touchDevice) : this(NoesisGUI_PINVOKE.new_TouchEventArgs(Noesis.Extend.GetInstanceHandle(s), RoutedEvent.getCPtr(e), ref touchPoint, touchDevice), true) {
+  public TouchEventArgs(object source, RoutedEvent arg1, Point p, ulong device) : this(NoesisGUI_PINVOKE.new_TouchEventArgs(Noesis.Extend.GetInstanceHandle(source), RoutedEvent.getCPtr(arg1), ref p, device), true) {
   }
 
   public Point GetTouchPoint(UIElement relativeTo) {

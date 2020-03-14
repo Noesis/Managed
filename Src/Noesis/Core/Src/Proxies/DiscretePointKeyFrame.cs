@@ -35,11 +35,6 @@ public class DiscretePointKeyFrame : PointKeyFrame {
     return NoesisGUI_PINVOKE.new_DiscretePointKeyFrame();
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.DiscretePointKeyFrame_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

@@ -47,11 +47,6 @@ public class TimelineGroup : Timeline {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.TimelineGroup_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

@@ -35,11 +35,6 @@ public class Expression : BaseComponent {
     return NoesisGUI_PINVOKE.new_Expression();
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Expression_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

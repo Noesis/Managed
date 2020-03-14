@@ -47,11 +47,6 @@ public class BaseAnimation : AnimationTimeline {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.BaseAnimation_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

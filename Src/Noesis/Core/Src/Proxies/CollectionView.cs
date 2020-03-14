@@ -200,11 +200,6 @@ public class CollectionView : BaseComponent, IEnumerable {
     return Noesis.Extend.GetProxy(cPtr, false);
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.CollectionView_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

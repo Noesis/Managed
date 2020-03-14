@@ -64,11 +64,6 @@ public partial class DependencyObject : DispatcherObject {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.DependencyObject_GetStaticType();
-    return ret;
-  }
-
   private IntPtr ReadLocalValueHelper(DependencyProperty dp) {
     IntPtr ret = NoesisGUI_PINVOKE.DependencyObject_ReadLocalValueHelper(swigCPtr, DependencyProperty.getCPtr(dp));
     return ret;

@@ -125,7 +125,7 @@ namespace NoesisGUIExtensions
 
         private void OnButtonPress(object sender, KeyEventArgs e)
         {
-            if (Button == (GamepadButton)(e.Key - Key.GamepadLeft))
+            if (Button == (GamepadButton)(e.OriginalKey - Key.GamepadLeft))
             {
                 InvokeActions(0);
             }

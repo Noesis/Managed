@@ -279,11 +279,6 @@ public class CommandBinding : BaseComponent {
     NoesisGUI_PINVOKE.CommandBinding_SetCommandHelper(swigCPtr, Noesis.Extend.GetInstanceHandle(command));
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.CommandBinding_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

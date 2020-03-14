@@ -33,11 +33,6 @@ public class AnimationClock : Clock {
   public AnimationClock(AnimationTimeline animation, bool controllable) : this(NoesisGUI_PINVOKE.new_AnimationClock(AnimationTimeline.getCPtr(animation), controllable), true) {
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.AnimationClock_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

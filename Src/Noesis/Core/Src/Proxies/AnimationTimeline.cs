@@ -30,13 +30,6 @@ public class AnimationTimeline : Timeline {
   protected AnimationTimeline() {
   }
 
-  public Type TargetPropertyType {
-    get {
-      Noesis.Extend.NativeTypeInfo info = Noesis.Extend.GetNativeTypeInfo(GetTargetPropertyTypeHelper());
-      return info.Type;
-    }
-  }
-
   public object GetCurrentValue(object defaultOriginValue, object defaultDestinationValue, AnimationClock animationClock) {
     IntPtr cPtr = GetCurrentValueHelper(defaultOriginValue, defaultDestinationValue, animationClock);
     return Noesis.Extend.GetProxy(cPtr, true);
@@ -60,6 +53,17 @@ public class AnimationTimeline : Timeline {
     }
   }
 
+  public Type TargetPropertyType {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.AnimationTimeline_TargetPropertyType_get(swigCPtr);
+      if (cPtr != IntPtr.Zero) {
+        Noesis.Extend.NativeTypeInfo info = Noesis.Extend.GetNativeTypeInfo(cPtr);
+        return info.Type;
+      }
+      return null;
+    }
+  }
+
   public bool IsAdditive {
     set {
       NoesisGUI_PINVOKE.AnimationTimeline_IsAdditive_set(swigCPtr, value);
@@ -80,18 +84,8 @@ public class AnimationTimeline : Timeline {
     } 
   }
 
-  private IntPtr GetTargetPropertyTypeHelper() {
-    IntPtr ret = NoesisGUI_PINVOKE.AnimationTimeline_GetTargetPropertyTypeHelper(swigCPtr);
-    return ret;
-  }
-
   private IntPtr GetCurrentValueHelper(object defValSrc, object defValDest, AnimationClock clock) {
     IntPtr ret = NoesisGUI_PINVOKE.AnimationTimeline_GetCurrentValueHelper(swigCPtr, Noesis.Extend.GetInstanceHandle(defValSrc), Noesis.Extend.GetInstanceHandle(defValDest), AnimationClock.getCPtr(clock));
-    return ret;
-  }
-
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.AnimationTimeline_GetStaticType();
     return ret;
   }
 

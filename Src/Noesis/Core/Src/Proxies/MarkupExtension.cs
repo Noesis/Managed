@@ -30,11 +30,6 @@ public class MarkupExtension : BaseComponent {
   protected MarkupExtension() {
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.MarkupExtension_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

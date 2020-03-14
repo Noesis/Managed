@@ -22,14 +22,22 @@ namespace NoesisApp
         {
             Stream stream = null;
 
+            // First try with user provider
             if (_provider != null)
             {
                 stream = _provider.LoadXaml(filename);
             }
 
+            // Next try with application assembly resources
             if (stream == null)
             {
-                stream = EmbeddedProviderHelper.GetResource(_assembly, _namespace, filename);
+                stream = Application.GetAssemblyResource(_assembly, _namespace, filename);
+            }
+
+            // Last try with Theme assembly resources
+            if (stream == null)
+            {
+                stream = Application.GetAssemblyResource(Theme.Assembly, "NoesisApp", filename);
             }
 
             return stream;

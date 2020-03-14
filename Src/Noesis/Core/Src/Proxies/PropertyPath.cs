@@ -52,11 +52,6 @@ public class PropertyPath : BaseComponent {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.PropertyPath_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

@@ -94,11 +94,6 @@ public class Geometry : Animatable {
     return ret;
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Geometry_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

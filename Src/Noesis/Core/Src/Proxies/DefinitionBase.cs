@@ -53,11 +53,6 @@ public class DefinitionBase : FrameworkElement {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.DefinitionBase_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

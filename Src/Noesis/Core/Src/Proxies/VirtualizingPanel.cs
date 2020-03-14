@@ -182,11 +182,6 @@ public class VirtualizingPanel : Panel {
     return Noesis.Extend.GetProxy(cPtr, false);
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.VirtualizingPanel_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

@@ -1,6 +1,9 @@
 ﻿using System;
 using Noesis;
 using NoesisApp;
+using System.Threading;
+using System.IO;
+using System.Reflection;
 
 namespace NoesisApp
 {
@@ -35,7 +38,32 @@ namespace NoesisApp
 
         public Window MainWindow { get; set; }
 
-        public ResourceDictionary Resources { get; set; }
+        private ResourceDictionary _resources = null;
+        public ResourceDictionary Resources
+        {
+            get { return _resources; }
+            set
+            {
+                if (_resources != value)
+                {
+                    _resources = value;
+                    GUI.SetApplicationResources(_resources);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Installs providers that expose resources for Noesis theme.
+        /// </summary>
+        public static void SetThemeProviders(XamlProvider xamlProvider = null, FontProvider fontProvider = null, TextureProvider textureProvider = null)
+        {
+            GUI.SetXamlProvider(new EmbeddedXamlProvider(null, null, xamlProvider));
+            GUI.SetFontProvider(new EmbeddedFontProvider(null, null, fontProvider));
+            GUI.SetTextureProvider(textureProvider);
+
+            GUI.SetFontFallbacks(Theme.FontFallbacks);
+            GUI.SetFontDefaultProperties(Theme.DefaultFontSize, Theme.DefaultFontWeight, Theme.DefaultFontStretch, Theme.DefaultFontStyle);
+        }
 
         public event StartupEventHandler Startup;
 
@@ -50,12 +78,58 @@ namespace NoesisApp
 
             Current = this;
             Dispatcher = Dispatcher.CurrentDispatcher;
+            SynchronizationContext.SetSynchronizationContext(Dispatcher.SynchronizationContext);
 
             _exitCode = 0;
 
             Log.SetLogCallback(LogCallback);
             Error.SetUnhandledCallback(UnhandledCallback);
-            GUI.Init();
+
+            LicenseInfo license = GetLicenseInfo();
+            GUI.Init(license.Name, license.Key);
+        }
+
+        private struct LicenseInfo
+        {
+            public string Name;
+            public string Key;
+        }
+
+        private LicenseInfo GetLicenseInfo()
+        {
+            Type type = this.GetType();
+            Stream stream = GetAssemblyResource(type.Assembly, type.Namespace, "NoesisLicense.txt");
+            if (stream != null)
+            {
+                string name, key;
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    name = reader.ReadLine();
+                    key = name != null ? reader.ReadLine() : null;
+                }
+
+                if (name != null && key != null)
+                {
+                    return new LicenseInfo { Name = name, Key = key };
+                }
+            }
+
+            return new LicenseInfo { Name = "", Key = "" };
+        }
+
+        public static Stream GetAssemblyResource(Assembly assembly, string ns, string filename)
+        {
+            if (assembly != null)
+            {
+                string resource = ns + "." + filename.Replace("/", ".");
+                try
+                {
+                    return assembly.GetManifestResourceStream(resource);
+                }
+                catch { }
+            }
+
+            return null;
         }
 
         ///<summary>
@@ -131,6 +205,8 @@ namespace NoesisApp
 
             GUI.LoadComponent(this, Uri);
             GUI.SetApplicationResources(Resources);
+            GUI.SetFontFallbacks(GetFontFallbacks());
+            GUI.SetFontDefaultProperties(GetDefaultFontSize(), GetDefaultFontWeight(), GetDefaultFontStretch(), GetDefaultFontStyle());
 
             // Load StartupUri xaml as MainWindow
             if (string.IsNullOrEmpty(StartupUri))
@@ -153,6 +229,7 @@ namespace NoesisApp
             bool vsync = VSync;
             bool sRGB = StandardRGB;
             bool ppaa = PPAA;
+            bool lcd = LCD;
 
             RenderContext renderContext = CreateRenderContext();
             renderContext.Init(Display.NativeHandle, Display.NativeWindow, samples, vsync, sRGB);
@@ -163,7 +240,7 @@ namespace NoesisApp
                 renderContext.SetWindow(window);
             };
 
-            MainWindow.Init(Display, renderContext, samples, ppaa);
+            MainWindow.Init(Display, renderContext, samples, ppaa, lcd);
 
             StartupEventArgs e = new StartupEventArgs();
             OnStartup(e);
@@ -294,6 +371,31 @@ namespace NoesisApp
             return new EmbeddedFontProvider(type.Assembly, type.Namespace);
         }
 
+        protected virtual string[] GetFontFallbacks()
+        {
+            return Theme.FontFallbacks;
+        }
+
+        protected virtual float GetDefaultFontSize()
+        {
+            return Theme.DefaultFontSize;
+        }
+
+        protected virtual FontWeight GetDefaultFontWeight()
+        {
+            return Theme.DefaultFontWeight;
+        }
+
+        protected virtual FontStretch GetDefaultFontStretch()
+        {
+            return Theme.DefaultFontStretch;
+        }
+
+        protected virtual FontStyle GetDefaultFontStyle()
+        {
+            return Theme.DefaultFontStyle;
+        }
+
         protected virtual string Title
         {
             get { return ""; }
@@ -317,6 +419,11 @@ namespace NoesisApp
         protected virtual bool PPAA
         {
             get { return Samples == 1; }
+        }
+
+        protected virtual bool LCD
+        {
+            get { return false; }
         }
 
         protected virtual void OnStartup(StartupEventArgs e)

@@ -27,14 +27,6 @@ public class SplineDoubleKeyFrame : DoubleKeyFrame {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
-  public SplineDoubleKeyFrame() {
-  }
-
-  protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    registerExtend = false;
-    return NoesisGUI_PINVOKE.new_SplineDoubleKeyFrame();
-  }
-
   public static DependencyProperty KeySplineProperty {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.SplineDoubleKeyFrame_KeySplineProperty_get();
@@ -52,9 +44,12 @@ public class SplineDoubleKeyFrame : DoubleKeyFrame {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.SplineDoubleKeyFrame_GetStaticType();
-    return ret;
+  public SplineDoubleKeyFrame() {
+  }
+
+  protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
+    registerExtend = false;
+    return NoesisGUI_PINVOKE.new_SplineDoubleKeyFrame();
   }
 
 }

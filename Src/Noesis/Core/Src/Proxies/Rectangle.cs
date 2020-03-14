@@ -69,11 +69,6 @@ public class Rectangle : Shape {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Rectangle_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

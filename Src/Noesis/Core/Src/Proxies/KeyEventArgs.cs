@@ -72,7 +72,7 @@ public class KeyEventArgs : KeyboardEventArgs {
     } 
   }
 
-  public KeyEventArgs(object s, RoutedEvent e, Key key, KeyStates keyStates) : this(NoesisGUI_PINVOKE.new_KeyEventArgs(Noesis.Extend.GetInstanceHandle(s), RoutedEvent.getCPtr(e), (int)key, (int)keyStates), true) {
+  public KeyEventArgs(object source, RoutedEvent arg1, Key key, KeyStates keyStates) : this(NoesisGUI_PINVOKE.new_KeyEventArgs(Noesis.Extend.GetInstanceHandle(source), RoutedEvent.getCPtr(arg1), (int)key, (int)keyStates), true) {
   }
 
   public bool IsDown {

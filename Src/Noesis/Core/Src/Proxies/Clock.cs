@@ -138,11 +138,6 @@ public class Clock : BaseComponent {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Clock_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

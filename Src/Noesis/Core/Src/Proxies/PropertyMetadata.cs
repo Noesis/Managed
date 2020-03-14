@@ -33,11 +33,7 @@ public partial class PropertyMetadata : BaseComponent {
       return Noesis.Extend.GetProxy(cPtr, true);
     }
     set {
-      object def = value;
-      if (def is Type) {
-        def = Noesis.Extend.GetResourceKeyType((Type)def);
-      }
-      SetDefaultValueHelper(def);
+      SetDefaultValueHelper(value);
     }
   }
 
@@ -46,11 +42,6 @@ public partial class PropertyMetadata : BaseComponent {
       bool ret = NoesisGUI_PINVOKE.PropertyMetadata_HasDefaultValue_get(swigCPtr);
       return ret;
     } 
-  }
-
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.PropertyMetadata_GetStaticType();
-    return ret;
   }
 
   private IntPtr GetDefaultValueHelper() {

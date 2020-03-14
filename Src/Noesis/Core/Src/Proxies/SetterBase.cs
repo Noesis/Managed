@@ -30,11 +30,6 @@ public class SetterBase : BaseComponent {
   protected SetterBase() {
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.SetterBase_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

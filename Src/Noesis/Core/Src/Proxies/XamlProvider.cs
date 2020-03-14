@@ -39,11 +39,6 @@ public class XamlProvider : BaseComponent {
     return null;
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.XamlProvider_GetStaticType();
-    return ret;
-  }
-
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_XamlProvider(Marshal.StringToHGlobalAnsi(typeName));
   }

@@ -69,11 +69,6 @@ public class SolidColorBrush : Brush {
 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.SolidColorBrush_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

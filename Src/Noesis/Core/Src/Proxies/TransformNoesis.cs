@@ -49,11 +49,6 @@ public class Transform : Animatable {
     NoesisGUI_PINVOKE.Transform_GetTransformHelper(swigCPtr, out transform);
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Transform_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

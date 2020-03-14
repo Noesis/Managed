@@ -51,7 +51,7 @@ public class ToolTipEventArgs : RoutedEventArgs {
     }
   }
 
-  public ToolTipEventArgs(object s, RoutedEvent e) : this(NoesisGUI_PINVOKE.new_ToolTipEventArgs(Noesis.Extend.GetInstanceHandle(s), RoutedEvent.getCPtr(e)), true) {
+  public ToolTipEventArgs(object source, RoutedEvent arg1) : this(NoesisGUI_PINVOKE.new_ToolTipEventArgs(Noesis.Extend.GetInstanceHandle(source), RoutedEvent.getCPtr(arg1)), true) {
   }
 
 }

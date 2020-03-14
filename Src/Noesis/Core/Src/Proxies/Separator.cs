@@ -27,11 +27,6 @@ public class Separator : Control {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Separator_GetStaticType();
-    return ret;
-  }
-
   public Separator() {
   }
 

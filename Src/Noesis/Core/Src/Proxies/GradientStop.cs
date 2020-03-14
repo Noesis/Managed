@@ -83,11 +83,6 @@ public class GradientStop : Animatable {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.GradientStop_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

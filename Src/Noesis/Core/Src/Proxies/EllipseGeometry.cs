@@ -101,11 +101,6 @@ public class EllipseGeometry : Geometry {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.EllipseGeometry_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

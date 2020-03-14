@@ -91,11 +91,6 @@ public class Image : FrameworkElement {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Image_GetStaticType();
-    return ret;
-  }
-
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_Image(Marshal.StringToHGlobalAnsi(typeName));
   }

@@ -71,7 +71,7 @@ public class RequestBringIntoViewEventArgs : RoutedEventArgs {
 
   }
 
-  public RequestBringIntoViewEventArgs(object s, DependencyObject arg1, Rect rect) : this(NoesisGUI_PINVOKE.new_RequestBringIntoViewEventArgs(Noesis.Extend.GetInstanceHandle(s), DependencyObject.getCPtr(arg1), ref rect), true) {
+  public RequestBringIntoViewEventArgs(object source, DependencyObject arg1, Rect targetRect) : this(NoesisGUI_PINVOKE.new_RequestBringIntoViewEventArgs(Noesis.Extend.GetInstanceHandle(source), DependencyObject.getCPtr(arg1), ref targetRect), true) {
   }
 
 }

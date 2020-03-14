@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 
 namespace Noesis
 {
@@ -7,29 +8,30 @@ namespace Noesis
     {
         public object FindResource(object key)
         {
-            if (key is string)
+            object resource = TryFindResource(key);
+            if (resource != null)
             {
-                return FindStringResource(key as string);
+                return resource;
             }
 
-            if (key is Type)
-            {
-                return FindTypeResource(key as Type);
-            }
-
-            throw new Exception("Only String or Type resource keys supported.");
+            throw new InvalidOperationException("Resource not found '" + key.ToString() +  "'");
         }
 
         public object TryFindResource(object key)
         {
+            if (key == null)
+            {
+                throw new ArgumentNullException("key");
+            }
+
             if (key is string)
             {
-                return TryFindStringResource(key as string);
+                return FindResourceHelper((string)key);
             }
 
             if (key is Type)
             {
-                return TryFindTypeResource(key as Type);
+                return FindResourceHelper(((Type)key).FullName);
             }
 
             throw new Exception("Only String or Type resource keys supported.");
@@ -54,30 +56,15 @@ namespace Noesis
 
         #region FindResource implementation
 
-        private object FindStringResource(string key)
+        private object FindResourceHelper(string key)
         {
-            IntPtr cPtr = NoesisGUI_PINVOKE.FrameworkElement_FindStringResource(swigCPtr, key);
+            IntPtr cPtr = FrameworkElement_FindResourceHelper(swigCPtr, key);
             return Noesis.Extend.GetProxy(cPtr, false);
         }
 
-        private object FindTypeResource(Type key)
-        {
-            IntPtr nativeType = Noesis.Extend.GetNativeType(key);
-            IntPtr cPtr = NoesisGUI_PINVOKE.FrameworkElement_FindTypeResource(swigCPtr, nativeType);
-            return Noesis.Extend.GetProxy(cPtr, false);
-        }
-        private object TryFindStringResource(string key)
-        {
-            IntPtr cPtr = NoesisGUI_PINVOKE.FrameworkElement_TryFindStringResource(swigCPtr, key);
-            return Noesis.Extend.GetProxy(cPtr, false);
-        }
-
-        private object TryFindTypeResource(Type key)
-        {
-            IntPtr nativeType = Noesis.Extend.GetNativeType(key);
-            IntPtr cPtr = NoesisGUI_PINVOKE.FrameworkElement_TryFindTypeResource(swigCPtr, nativeType);
-            return Noesis.Extend.GetProxy(cPtr, false);
-        }
+        [DllImport(Library.Name)]
+        private static extern IntPtr FrameworkElement_FindResourceHelper(HandleRef element,
+            string key);
 
         #endregion
 

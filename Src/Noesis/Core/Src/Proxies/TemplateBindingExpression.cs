@@ -38,11 +38,6 @@ public class TemplateBindingExpression : Expression {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.TemplateBindingExpression_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

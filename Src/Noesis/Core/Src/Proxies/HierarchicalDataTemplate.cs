@@ -75,11 +75,6 @@ public class HierarchicalDataTemplate : DataTemplate {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.HierarchicalDataTemplate_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

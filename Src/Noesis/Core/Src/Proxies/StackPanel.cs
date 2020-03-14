@@ -211,11 +211,6 @@ public class StackPanel : Panel, Noesis.IScrollInfo {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.StackPanel_GetStaticType();
-    return ret;
-  }
-
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_StackPanel(Marshal.StringToHGlobalAnsi(typeName));
   }

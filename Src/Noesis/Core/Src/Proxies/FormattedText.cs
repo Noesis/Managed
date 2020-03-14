@@ -35,11 +35,6 @@ public class FormattedText : BaseComponent {
     return NoesisGUI_PINVOKE.new_FormattedText();
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.FormattedText_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

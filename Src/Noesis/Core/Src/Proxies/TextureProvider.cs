@@ -47,11 +47,6 @@ public class TextureProvider : BaseComponent {
     return null;
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.TextureProvider_GetStaticType();
-    return ret;
-  }
-
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_TextureProvider(Marshal.StringToHGlobalAnsi(typeName));
   }

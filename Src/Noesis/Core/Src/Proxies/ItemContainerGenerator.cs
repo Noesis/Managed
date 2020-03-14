@@ -145,6 +145,9 @@ public class ItemContainerGenerator : BaseComponent, Noesis.IRecyclingItemContai
   #endregion
 
   ItemContainerGenerator IItemContainerGenerator.GetItemContainerGeneratorForPanel(Panel panel) {
+    if (!panel.IsItemsHost) {
+      throw new ArgumentException("Panel is not an ItemsHost");
+    }
     return GetItemContainerGeneratorForPanelHelper(panel);
   }
 
@@ -153,16 +156,25 @@ public class ItemContainerGenerator : BaseComponent, Noesis.IRecyclingItemContai
   }
 
   IDisposable IItemContainerGenerator.StartAt(GeneratorPosition position, GeneratorDirection direction, bool allowStartAtRealizedItem) {
+    if (Status == GeneratorStatus.GeneratingContainers) {
+        throw new InvalidOperationException("Generation already in progress");
+    }
     StartAtHelper(position, direction, allowStartAtRealizedItem);
     return new Generator(this);
   }
 
   DependencyObject IItemContainerGenerator.GenerateNext() {
+    if (Status != GeneratorStatus.GeneratingContainers) {
+        throw new InvalidOperationException("Generation is not in progress");
+    }
     IntPtr cPtr = GenerateNextHelper();
     return (DependencyObject)Noesis.Extend.GetProxy(cPtr, true);
   }
 
   DependencyObject IItemContainerGenerator.GenerateNext(out bool isNewlyRealized) {
+    if (Status != GeneratorStatus.GeneratingContainers) {
+        throw new InvalidOperationException("Generation is not in progress");
+    }
     isNewlyRealized = false;
     IntPtr cPtr = GenerateNextRealizedHelper(ref isNewlyRealized);
     return (DependencyObject)Noesis.Extend.GetProxy(cPtr, true);
@@ -177,6 +189,20 @@ public class ItemContainerGenerator : BaseComponent, Noesis.IRecyclingItemContai
   }
 
   void IItemContainerGenerator.Remove(GeneratorPosition position, int count) {
+    if (position.Offset != 0) {
+      throw new ArgumentException("Remove requires a position with offset zero");
+    }
+    if (count <= 0) {
+      throw new ArgumentException("Remove requires a position with positive count");
+    }
+    int index = ((IItemContainerGenerator)this).IndexFromGeneratorPosition(position);
+    if (index < 0) {
+      throw new IndexOutOfRangeException("position");
+    }
+    int numItems = ((IItemContainerGenerator)this).IndexFromGeneratorPosition(new GeneratorPosition(-1, -1)) + 1;
+    if (index >= numItems) {
+      throw new IndexOutOfRangeException("position");
+    }
     RemoveHelper(position, count);
   }
 
@@ -191,6 +217,20 @@ public class ItemContainerGenerator : BaseComponent, Noesis.IRecyclingItemContai
   }
 
   void IRecyclingItemContainerGenerator.Recycle(GeneratorPosition position, int count) {
+    if (position.Offset != 0) {
+      throw new ArgumentException("Remove requires a position with offset zero");
+    }
+    if (count <= 0) {
+      throw new ArgumentException("Remove requires a position with positive count");
+    }
+    int index = ((IItemContainerGenerator)this).IndexFromGeneratorPosition(position);
+    if (index < 0) {
+      throw new IndexOutOfRangeException("position");
+    }
+    int numItems = ((IItemContainerGenerator)this).IndexFromGeneratorPosition(new GeneratorPosition(-1, -1)) + 1;
+    if (index >= numItems) {
+      throw new IndexOutOfRangeException("position");
+    }
     RecycleHelper(position, count);
   }
 
@@ -285,11 +325,6 @@ public class ItemContainerGenerator : BaseComponent, Noesis.IRecyclingItemContai
 
   private void RecycleHelper(GeneratorPosition position, int count) {
     NoesisGUI_PINVOKE.ItemContainerGenerator_RecycleHelper(swigCPtr, ref position, count);
-  }
-
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ItemContainerGenerator_GetStaticType();
-    return ret;
   }
 
 }

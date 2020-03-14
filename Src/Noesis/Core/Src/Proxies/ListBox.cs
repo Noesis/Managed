@@ -88,11 +88,6 @@ public class ListBox : Selector {
     return Noesis.Extend.GetProxy(cPtr, false);
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ListBox_GetStaticType();
-    return ret;
-  }
-
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_ListBox(Marshal.StringToHGlobalAnsi(typeName));
   }

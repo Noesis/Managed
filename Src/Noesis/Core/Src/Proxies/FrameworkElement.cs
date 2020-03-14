@@ -135,8 +135,7 @@ public partial class FrameworkElement : UIElement {
 
   public BindingExpression GetBindingExpression(DependencyProperty dp) {
     IntPtr cPtr = NoesisGUI_PINVOKE.FrameworkElement_GetBindingExpression(swigCPtr, DependencyProperty.getCPtr(dp));
-    BindingExpression ret = (cPtr == IntPtr.Zero) ? null : new BindingExpression(cPtr, false);
-    return ret;
+    return (BindingExpression)Noesis.Extend.GetProxy(cPtr, false);
   }
 
   public BindingExpressionBase SetBinding(DependencyProperty dp, BindingBase binding) {
@@ -147,8 +146,7 @@ public partial class FrameworkElement : UIElement {
 
   public BindingExpression SetBinding(DependencyProperty dp, string path) {
     IntPtr cPtr = NoesisGUI_PINVOKE.FrameworkElement_SetBinding__SWIG_1(swigCPtr, DependencyProperty.getCPtr(dp), path != null ? path : string.Empty);
-    BindingExpression ret = (cPtr == IntPtr.Zero) ? null : new BindingExpression(cPtr, false);
-    return ret;
+    return (BindingExpression)Noesis.Extend.GetProxy(cPtr, false);
   }
 
   public void BringIntoView() {
@@ -157,6 +155,11 @@ public partial class FrameworkElement : UIElement {
 
   public void BringIntoView(Rect targetRectangle) {
     NoesisGUI_PINVOKE.FrameworkElement_BringIntoView__SWIG_1(swigCPtr, ref targetRectangle);
+  }
+
+  public bool ApplyTemplate() {
+    bool ret = NoesisGUI_PINVOKE.FrameworkElement_ApplyTemplate(swigCPtr);
+    return ret;
   }
 
   public object GetTemplateChild(string name) {
@@ -499,7 +502,7 @@ public partial class FrameworkElement : UIElement {
 
   public Type DefaultStyleKey {
     set {
-      NoesisGUI_PINVOKE.FrameworkElement_DefaultStyleKey_set(swigCPtr, new HandleRef(value, (value != null ? Noesis.Extend.GetNativeType(value) : IntPtr.Zero)));
+      NoesisGUI_PINVOKE.FrameworkElement_DefaultStyleKey_set(swigCPtr, value != null ? Noesis.Extend.EnsureNativeType(value) : IntPtr.Zero);
     }
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.FrameworkElement_DefaultStyleKey_get(swigCPtr);
@@ -767,11 +770,6 @@ public partial class FrameworkElement : UIElement {
   public static FrameworkElement FindTreeElement(object instance) {
     IntPtr cPtr = NoesisGUI_PINVOKE.FrameworkElement_FindTreeElement(Noesis.Extend.GetInstanceHandle(instance));
     return (FrameworkElement)Noesis.Extend.GetProxy(cPtr, false);
-  }
-
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.FrameworkElement_GetStaticType();
-    return ret;
   }
 
   internal new static IntPtr Extend(string typeName) {

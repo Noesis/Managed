@@ -35,11 +35,6 @@ public class QuinticEase : EasingFunctionBase {
     return NoesisGUI_PINVOKE.new_QuinticEase();
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.QuinticEase_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

@@ -68,11 +68,6 @@ public class BitmapSource : ImageSource {
     return ret;
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.BitmapSource_GetStaticType();
-    return ret;
-  }
-
   public enum Format {
     BGRA8,
     BGR8,

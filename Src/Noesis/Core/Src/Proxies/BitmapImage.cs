@@ -57,11 +57,6 @@ public class BitmapImage : BitmapSource {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.BitmapImage_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

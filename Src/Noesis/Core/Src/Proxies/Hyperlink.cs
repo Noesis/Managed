@@ -57,6 +57,15 @@ public class Hyperlink : Span {
     }
   }
 
+  public Uri NavigateUri {
+    get {
+      return new Uri(GetNavigateUriHelper());
+    }
+    set {
+      SetNavigateUriHelper(value != null ? value.AbsoluteUri : string.Empty);
+    }
+  }
+
   public Hyperlink() {
   }
 
@@ -143,17 +152,6 @@ public class Hyperlink : Span {
     }
   }
 
-  public string NavigateUri {
-    set {
-      NoesisGUI_PINVOKE.Hyperlink_NavigateUri_set(swigCPtr, value != null ? value : string.Empty);
-    }
-    get {
-      IntPtr strPtr = NoesisGUI_PINVOKE.Hyperlink_NavigateUri_get(swigCPtr);
-      string str = Noesis.Extend.StringFromNativeUtf8(strPtr);
-      return str;
-    }
-  }
-
   public string TargetName {
     set {
       NoesisGUI_PINVOKE.Hyperlink_TargetName_set(swigCPtr, value != null ? value : string.Empty);
@@ -174,9 +172,14 @@ public class Hyperlink : Span {
     NoesisGUI_PINVOKE.Hyperlink_SetCommandHelper(swigCPtr, Noesis.Extend.GetInstanceHandle(command));
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Hyperlink_GetStaticType();
-    return ret;
+  private string GetNavigateUriHelper() {
+    IntPtr strPtr = NoesisGUI_PINVOKE.Hyperlink_GetNavigateUriHelper(swigCPtr);
+    string str = Noesis.Extend.StringFromNativeUtf8(strPtr);
+    return str;
+  }
+
+  private void SetNavigateUriHelper(string uri) {
+    NoesisGUI_PINVOKE.Hyperlink_SetNavigateUriHelper(swigCPtr, uri != null ? uri : string.Empty);
   }
 
 }

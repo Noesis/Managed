@@ -264,6 +264,11 @@ namespace Noesis
             return System.Runtime.InteropServices.Marshal.ReadByte(ptr, offset);
         }
 
+        public static IntPtr ReadIntPtr(IntPtr ptr, int ofs)
+        {
+            return System.Runtime.InteropServices.Marshal.ReadIntPtr(ptr, ofs);
+        }
+
         public static void WriteInt32(IntPtr ptr, int ofs, int val)
         {
             System.Runtime.InteropServices.Marshal.WriteInt32(ptr, ofs, val);
@@ -272,6 +277,11 @@ namespace Noesis
         public static void WriteInt64(IntPtr ptr, int ofs, long val)
         {
             System.Runtime.InteropServices.Marshal.WriteInt64(ptr, ofs, val);
+        }
+
+        public static void WriteIntPtr(IntPtr ptr, int ofs, IntPtr val)
+        {
+            System.Runtime.InteropServices.Marshal.WriteIntPtr(ptr, ofs, val);
         }
 
         public static Delegate GetDelegateForFunctionPointer(IntPtr ptr, Type t)

@@ -80,11 +80,6 @@ public class StreamGeometry : Geometry {
     return str;
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.StreamGeometry_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

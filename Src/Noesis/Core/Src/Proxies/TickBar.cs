@@ -228,11 +228,6 @@ public class TickBar : FrameworkElement {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.TickBar_GetStaticType();
-    return ret;
-  }
-
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_TickBar(Marshal.StringToHGlobalAnsi(typeName));
   }

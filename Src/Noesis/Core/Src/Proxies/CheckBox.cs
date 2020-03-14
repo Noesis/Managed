@@ -27,11 +27,6 @@ public class CheckBox : ToggleButton {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.CheckBox_GetStaticType();
-    return ret;
-  }
-
   public CheckBox() {
   }
 

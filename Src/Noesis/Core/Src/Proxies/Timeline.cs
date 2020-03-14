@@ -281,11 +281,6 @@ public class Timeline : Animatable {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Timeline_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

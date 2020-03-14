@@ -90,11 +90,6 @@ public class FrameworkTemplate : BaseComponent {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.FrameworkTemplate_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

@@ -56,11 +56,6 @@ public class FontProvider : BaseComponent {
     NoesisGUI_PINVOKE.FontProvider_RegisterFontHelper(swigCPtr, folder != null ? folder : string.Empty, id != null ? id : string.Empty);
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.FontProvider_GetStaticType();
-    return ret;
-  }
-
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_FontProvider(Marshal.StringToHGlobalAnsi(typeName));
   }

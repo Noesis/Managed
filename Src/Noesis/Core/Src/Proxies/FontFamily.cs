@@ -74,11 +74,6 @@ public class FontFamily : BaseComponent {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.FontFamily_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

@@ -27,11 +27,6 @@ public class InputGestureCollection : UICollection<InputGesture> {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.InputGestureCollection_GetStaticType();
-    return ret;
-  }
-
   public InputGestureCollection() {
   }
 

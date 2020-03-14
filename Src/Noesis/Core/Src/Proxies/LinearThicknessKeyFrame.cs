@@ -35,11 +35,6 @@ public class LinearThicknessKeyFrame : ThicknessKeyFrame {
     return NoesisGUI_PINVOKE.new_LinearThicknessKeyFrame();
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.LinearThicknessKeyFrame_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

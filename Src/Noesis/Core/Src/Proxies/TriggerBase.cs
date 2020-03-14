@@ -44,11 +44,6 @@ public class TriggerBase : DependencyObject {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.TriggerBase_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

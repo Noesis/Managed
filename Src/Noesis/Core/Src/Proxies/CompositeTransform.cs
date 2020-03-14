@@ -188,11 +188,6 @@ public class CompositeTransform : Transform {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.CompositeTransform_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

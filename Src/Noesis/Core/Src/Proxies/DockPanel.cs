@@ -79,11 +79,6 @@ public class DockPanel : Panel {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.DockPanel_GetStaticType();
-    return ret;
-  }
-
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_DockPanel(Marshal.StringToHGlobalAnsi(typeName));
   }

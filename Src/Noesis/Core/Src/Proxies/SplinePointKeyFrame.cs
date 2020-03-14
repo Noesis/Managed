@@ -27,14 +27,6 @@ public class SplinePointKeyFrame : PointKeyFrame {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
-  public SplinePointKeyFrame() {
-  }
-
-  protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    registerExtend = false;
-    return NoesisGUI_PINVOKE.new_SplinePointKeyFrame();
-  }
-
   public static DependencyProperty KeySplineProperty {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.SplinePointKeyFrame_KeySplineProperty_get();
@@ -52,9 +44,12 @@ public class SplinePointKeyFrame : PointKeyFrame {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.SplinePointKeyFrame_GetStaticType();
-    return ret;
+  public SplinePointKeyFrame() {
+  }
+
+  protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
+    registerExtend = false;
+    return NoesisGUI_PINVOKE.new_SplinePointKeyFrame();
   }
 
 }

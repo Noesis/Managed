@@ -84,11 +84,6 @@ public class Viewbox : FrameworkElement {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Viewbox_GetStaticType();
-    return ret;
-  }
-
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_Viewbox(Marshal.StringToHGlobalAnsi(typeName));
   }

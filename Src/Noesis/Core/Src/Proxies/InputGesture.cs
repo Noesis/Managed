@@ -35,11 +35,6 @@ public class InputGesture : BaseComponent {
     return ret;
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.InputGesture_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

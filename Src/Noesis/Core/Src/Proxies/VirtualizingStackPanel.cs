@@ -206,11 +206,6 @@ public class VirtualizingStackPanel : VirtualizingPanel, Noesis.IScrollInfo {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.VirtualizingStackPanel_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

@@ -71,11 +71,6 @@ public class BindingBase : MarkupExtension {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.BindingBase_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

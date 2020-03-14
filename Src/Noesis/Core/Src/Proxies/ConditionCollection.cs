@@ -27,11 +27,6 @@ public class ConditionCollection : UICollection<Condition> {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ConditionCollection_GetStaticType();
-    return ret;
-  }
-
   public ConditionCollection() {
   }
 

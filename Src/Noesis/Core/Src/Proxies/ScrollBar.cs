@@ -293,11 +293,6 @@ public class ScrollBar : RangeBase {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ScrollBar_GetStaticType();
-    return ret;
-  }
-
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_ScrollBar(Marshal.StringToHGlobalAnsi(typeName));
   }

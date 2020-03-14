@@ -212,11 +212,6 @@ public class ToolBar : HeaderedItemsControl {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ToolBar_GetStaticType();
-    return ret;
-  }
-
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_ToolBar(Marshal.StringToHGlobalAnsi(typeName));
   }

@@ -44,10 +44,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-      <Version>6.2.9</Version>
+      <Version>6.2.8</Version>
     </PackageReference>
     <PackageReference Include="NuGet.CommandLine">
-      <Version>5.4.0</Version>
+      <Version>4.9.4</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -65,6 +65,7 @@
   <ItemGroup>
     <None Include="Noesis.App.Displays.WinRT.nuspec" />
     <None Include="$(SolutionDir)LICENSE.txt" />
+    <None Include="$(SolutionDir)THIRD_PARTY.txt" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
@@ -72,8 +73,8 @@
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
   <PropertyGroup>
     <PackageOutputPath>$(SolutionDir)NuGet\</PackageOutputPath>
-    <PackageVersion>2.2.6</PackageVersion>
-    <NuGetTool>$(NuGetPackageRoot)nuget.commandline\5.4.0\tools\NuGet.exe</NuGetTool>
+    <PackageVersion>3.0.0-beta1</PackageVersion>
+    <NuGetTool>$(NuGetPackageRoot)nuget.commandline\4.9.3\tools\NuGet.exe</NuGetTool>
     <PostBuildEvent>$(NuGetTool) pack $(ProjectDir)$(ProjectFileName) -OutputDirectory $(PackageOutputPath) -Version $(PackageVersion) -Prop Configuration=$(Configuration) -MSBuildVersion 15.9</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -72,7 +72,7 @@ public class DragCompletedEventArgs : RoutedEventArgs {
     } 
   }
 
-  public DragCompletedEventArgs(object s, bool c, float h, float v) : this(NoesisGUI_PINVOKE.new_DragCompletedEventArgs(Noesis.Extend.GetInstanceHandle(s), c, h, v), true) {
+  public DragCompletedEventArgs(object source, bool canceled, float hChange, float vChange) : this(NoesisGUI_PINVOKE.new_DragCompletedEventArgs(Noesis.Extend.GetInstanceHandle(source), canceled, hChange, vChange), true) {
   }
 
 }

@@ -149,11 +149,6 @@ public class Keyboard : BaseComponent {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Keyboard_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

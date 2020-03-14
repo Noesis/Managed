@@ -56,11 +56,6 @@ public class Run : Inline {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.Run_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

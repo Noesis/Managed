@@ -62,11 +62,6 @@ public class MatrixTransform : Transform {
 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.MatrixTransform_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

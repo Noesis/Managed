@@ -52,11 +52,6 @@ public class ListView : ListBox {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ListView_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

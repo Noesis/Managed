@@ -42,11 +42,6 @@ public class PointAnimationUsingKeyFrames : AnimationTimeline {
     }
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.PointAnimationUsingKeyFrames_GetStaticType();
-    return ret;
-  }
-
 }
 
 }

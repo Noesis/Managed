@@ -102,11 +102,6 @@ public class ColumnDefinition : DefinitionBase {
     } 
   }
 
-  new internal static IntPtr GetStaticType() {
-    IntPtr ret = NoesisGUI_PINVOKE.ColumnDefinition_GetStaticType();
-    return ret;
-  }
-
 }
 
 }
