@@ -35,9 +35,20 @@ public class XamlProvider : BaseComponent {
   /// Opens xaml file for reading returning a stream.
   /// </summary>
   /// <param name="filename">Path to the xaml file being opened.</param>
-  public virtual System.IO.Stream LoadXaml(string filename) {
+  public virtual Stream LoadXaml(string filename) {
     return null;
   }
+
+  /// <summary>
+  /// Raises XamlChanged event notifying Noesis that it should reload the specified xaml
+  /// </summary>
+  protected void RaiseXamlChanged(string uri) {
+    Noesis_RaiseXamlChanged(swigCPtr, uri);
+  }
+
+  [DllImport(Library.Name)]
+  private static extern void Noesis_RaiseXamlChanged(HandleRef provider,
+    [MarshalAs(UnmanagedType.LPWStr)]string uri);
 
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_XamlProvider(Marshal.StringToHGlobalAnsi(typeName));

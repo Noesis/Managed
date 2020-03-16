@@ -48,9 +48,26 @@ public class FontProvider : BaseComponent {
     return null;
   }
 
+  /// <summary>
+  /// Registers a font family associated to the specified folder
+  /// </summary>
   protected void RegisterFont(string folder, string id) {
     RegisterFontHelper(folder, id);
   }
+
+  /// <summary>
+  /// Raises XamlChanged event notifying Noesis that it should reload the specified xaml
+  /// </summary>
+  protected void RaiseFontChanged(string baseUri, string familyName, FontWeight weight,
+    FontStretch stretch, FontStyle style) {
+    Noesis_RaiseFontChanged(swigCPtr, baseUri, familyName, (int)weight, (int)stretch, (int)style);
+  }
+
+  [DllImport(Library.Name)]
+  private static extern void Noesis_RaiseFontChanged(HandleRef provider,
+    [MarshalAs(UnmanagedType.LPWStr)]string baseUri,
+    [MarshalAs(UnmanagedType.LPWStr)]string familyName,
+    int weight, int stretch, int style);
 
   private void RegisterFontHelper(string folder, string id) {
     NoesisGUI_PINVOKE.FontProvider_RegisterFontHelper(swigCPtr, folder != null ? folder : string.Empty, id != null ? id : string.Empty);

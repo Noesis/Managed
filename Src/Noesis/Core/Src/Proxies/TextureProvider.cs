@@ -47,6 +47,17 @@ public class TextureProvider : BaseComponent {
     return null;
   }
 
+  /// <summary>
+  /// Raises TextureChanged event notifying Noesis that it should reload the specified texture
+  /// </summary>
+  protected void RaiseTextureChanged(string uri) {
+    Noesis_RaiseTextureChanged(swigCPtr, uri);
+  }
+
+  [DllImport(Library.Name)]
+  private static extern void Noesis_RaiseTextureChanged(HandleRef provider,
+    [MarshalAs(UnmanagedType.LPWStr)]string uri);
+
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_TextureProvider(Marshal.StringToHGlobalAnsi(typeName));
   }
