@@ -39,14 +39,22 @@ namespace Noesis
 
         protected virtual Size MeasureOverride(Size availableSize)
         {
-            _callBaseMeasure = true;
-            return new Size(0f, 0f);
+            Size desiredSize = new Size(0.0f, 0.0f);
+            if (_measureBaseCallback != null)
+            {
+                _measureBaseCallback(swigCPtr, ref availableSize, ref desiredSize);
+            }
+            return desiredSize;
         }
 
         protected virtual Size ArrangeOverride(Size finalSize)
         {
-            _callBaseArrange = true;
-            return new Size(0f, 0f);
+            Size renderSize = new Size(0.0f, 0.0f);
+            if (_measureBaseCallback != null)
+            {
+                _measureBaseCallback(swigCPtr, ref finalSize, ref renderSize);
+            }
+            return renderSize;
         }
 
         protected virtual bool ConnectEvent(object source, string eventName, string handlerName)
@@ -70,21 +78,25 @@ namespace Noesis
 
         #region Extend overrides implementation
 
-        private bool _callBaseMeasure;
-        internal Size CallMeasureOverride(Size availableSize, out bool callBase)
+        internal delegate void MeasureBaseCallback(HandleRef cPtr, ref Size availableSize,
+            ref Size desiredSize);
+        MeasureBaseCallback _measureBaseCallback = null;
+
+        internal Size CallMeasureOverride(Size availableSize, MeasureBaseCallback callback)
         {
-            _callBaseMeasure = false;
+            _measureBaseCallback = callback;
             Size desiredSize = MeasureOverride(availableSize);
-            callBase = _callBaseMeasure;
+            _measureBaseCallback = null;
+
             return desiredSize;
         }
 
-        private bool _callBaseArrange;
-        internal Size CallArrangeOverride(Size finalSize, out bool callBase)
+        internal Size CallArrangeOverride(Size finalSize, MeasureBaseCallback callback)
         {
-            _callBaseArrange = false;
+            _measureBaseCallback = callback;
             Size renderSize = ArrangeOverride(finalSize);
-            callBase = _callBaseArrange;
+            _measureBaseCallback = null;
+
             return renderSize;
         }
 

@@ -12,6 +12,34 @@ namespace NoesisApp
 
     public delegate void WindowRenderingEventHandler(object sender, WindowRenderingEventArgs e);
 
+    public enum SizeToContent
+    {
+        /// <summary>
+        /// Specifies that a window will not automatically set its size to fit the size of its content.
+        /// Instead, the size of a window is determined by other properties, including Width, Height,
+        /// MaxWidth, MaxHeight, MinWidth, MinHeight.
+        /// </summary>
+        Manual,
+
+        /// <summary>
+        /// Specifies that a window will automatically set its width to fit the width of its content,
+        /// but not the height.
+        /// </summary>
+        Width,
+
+        /// <summary>
+        /// Specifies that a window will automatically set its height to fit the height of its content,
+        /// but not the width.
+        /// </summary>
+        Height,
+
+        /// <summary>
+        /// Specifies that a window will automatically set both its width and height to fit the width
+        /// and height of its content.
+        /// </summary>
+        WidthAndHeight
+    }
+
     /// <summary>
     /// Provides the ability to create, configure, show, and manage the lifetime of windows and dialog boxes.
     /// </summary>
@@ -114,6 +142,18 @@ namespace NoesisApp
         }
         #endregion
 
+        #region SizeToContent
+        public static readonly DependencyProperty SizeToContentProperty = DependencyProperty.Register(
+            "SizeToContent", typeof(SizeToContent), typeof(Window),
+            new FrameworkPropertyMetadata(SizeToContent.Manual));
+
+        public SizeToContent SizeToContent
+        {
+            get { return (SizeToContent)GetValue(SizeToContentProperty); }
+            set { SetValue(SizeToContentProperty, value); }
+        }
+        #endregion
+
         #region Topmost
         public static readonly DependencyProperty TopmostProperty = DependencyProperty.Register(
             "Topmost", typeof(bool), typeof(Window),
@@ -178,6 +218,23 @@ namespace NoesisApp
             // Set display Size
             float width = Width;
             float height = Height;
+
+            SizeToContent sizeToContent = SizeToContent;
+            if (sizeToContent != SizeToContent.Manual)
+            {
+                SizeChanged += OnRenderSizeChanged;
+
+                Size contentSize = MeasureContent();
+                if (sizeToContent != SizeToContent.Height)
+                {
+                    width = contentSize.Width;
+                }
+                if (sizeToContent != SizeToContent.Width)
+                {
+                    height = contentSize.Height;
+                }
+            }
+
             if (!float.IsNaN(width) && !float.IsNaN(height))
             {
                 Display.SetSize((int)width, (int)height);
@@ -254,6 +311,8 @@ namespace NoesisApp
             Display.TouchDown -= OnDisplayTouchDown;
             Display.TouchUp -= OnDisplayTouchUp;
 
+            SizeChanged -= OnRenderSizeChanged;
+
             _view.Renderer.Shutdown();
             _view = null;
         }
@@ -266,6 +325,117 @@ namespace NoesisApp
         protected virtual void OnFileDropped(string filename)
         {
 
+        }
+
+        protected override Size MeasureOverride(Size availableSize)
+        {
+            if (Display != null)
+            {
+                float clientW = (float)Display.ClientWidth;
+                float clientH = (float)Display.ClientHeight;
+
+                SizeToContent sizeToContent = SizeToContent;
+                if (sizeToContent == SizeToContent.Manual)
+                {
+                    base.MeasureOverride(new Size(clientW, clientH));
+                    return new Size(Width, Height);
+                }
+                else
+                {
+                    Size constraint = new Size(
+                        sizeToContent == SizeToContent.Height ? clientW : float.PositiveInfinity,
+                        sizeToContent == SizeToContent.Width ? clientH : float.PositiveInfinity);
+
+                    Size desiredSize = base.MeasureOverride(constraint);
+
+                    int desiredWidth = (int)Math.Ceiling(desiredSize.Width);
+                    int desiredHeight = (int)Math.Ceiling(desiredSize.Height);
+                    Display.AdjustWindowSize(ref desiredWidth, ref desiredHeight);
+
+                    return new Size(
+                        sizeToContent == SizeToContent.Height ? Width : desiredWidth,
+                        sizeToContent == SizeToContent.Width ? Height : desiredHeight);
+                }
+            }
+
+            return base.MeasureOverride(availableSize);
+        }
+
+        protected override Size ArrangeOverride(Size finalSize)
+        {
+            if (Display != null)
+            {
+                float clientW = (float)Display.ClientWidth;
+                float clientH = (float)Display.ClientHeight;
+
+                SizeToContent sizeToContent = SizeToContent;
+                if (sizeToContent == SizeToContent.Manual)
+                {
+                    base.ArrangeOverride(new Size(clientW, clientH));
+                    return new Size(Width, Height);
+                }
+                else
+                {
+                    UIElement child = VisualTreeHelper.GetChild(this, 0) as UIElement;
+                    Size desiredSize = child != null ? child.DesiredSize : new Size(0.0f, 0.0f);
+
+                    Size constraint = new Size(
+                        sizeToContent == SizeToContent.Height ? clientW : desiredSize.Width,
+                        sizeToContent == SizeToContent.Width ? clientH : desiredSize.Height);
+
+                    Size size = base.ArrangeOverride(constraint);
+
+                    int finalWidth = (int)Math.Ceiling(size.Width);
+                    int finalHeight = (int)Math.Ceiling(size.Height);
+                    Display.AdjustWindowSize(ref finalWidth, ref finalHeight);
+
+                    return new Size(
+                        sizeToContent == SizeToContent.Height ? Width : finalWidth,
+                        sizeToContent == SizeToContent.Width ? Height : finalHeight);
+                }
+            }
+
+            return base.ArrangeOverride(finalSize);
+        }
+
+        private void OnRenderSizeChanged(object sender, SizeChangedEventArgs args)
+        {
+            SizeToContent sizeToContent = SizeToContent;
+            if (sizeToContent != SizeToContent.Manual)
+            {
+                if (sizeToContent != SizeToContent.Height)
+                {
+                    Width = args.NewSize.Width;
+                }
+                if (sizeToContent != SizeToContent.Width)
+                {
+                    Height = args.NewSize.Height;
+                }
+            }
+        }
+
+        private Size MeasureContent()
+        {
+            // Make sure window is already initialized and template is applied
+            InitObject();
+            ApplyTemplate();
+
+            // Measure window content
+            UIElement child = VisualTreeHelper.GetChild(this, 0) as UIElement;
+            if (child != null)
+            {
+                child.Measure(new Size(float.PositiveInfinity, float.PositiveInfinity));
+
+                Size desiredSize = child.DesiredSize;
+
+                int width = (int)Math.Ceiling(desiredSize.Width);
+                int height = (int)Math.Ceiling(desiredSize.Height);
+                Display.AdjustWindowSize(ref width, ref height);
+
+                return new Size(width, height);
+            }
+
+            return new Size(0.0f, 0.0f);
         }
 
         #region Property changed callbacks

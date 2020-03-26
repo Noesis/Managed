@@ -1878,19 +1878,19 @@ namespace Noesis
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
         private delegate void Callback_FrameworkElementMeasure(IntPtr cPtr,
-            ref Size availableSize, ref Size desiredSize, [MarshalAs(UnmanagedType.U1)]ref bool callBase);
+            ref Size availableSize, ref Size desiredSize, FrameworkElement.MeasureBaseCallback callback);
         private static Callback_FrameworkElementMeasure _frameworkElementMeasure = FrameworkElementMeasure;
 
         [MonoPInvokeCallback(typeof(Callback_FrameworkElementMeasure))]
         private static void FrameworkElementMeasure(IntPtr cPtr,
-            ref Size availableSize, ref Size desiredSize, ref bool callBase)
+            ref Size availableSize, ref Size desiredSize, FrameworkElement.MeasureBaseCallback callback)
         {
             try
             {
                 FrameworkElement element = (FrameworkElement)GetExtendInstance(cPtr);
                 if (element != null)
                 {
-                    desiredSize = element.CallMeasureOverride(availableSize, out callBase);
+                    desiredSize = element.CallMeasureOverride(availableSize, callback);
                     if (desiredSize.IsEmpty) desiredSize = new Size(0, 0);
                 }
             }
@@ -1902,19 +1902,19 @@ namespace Noesis
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
         private delegate void Callback_FrameworkElementArrange(IntPtr cPtr,
-            ref Size finalSize, ref Size renderSize, [MarshalAs(UnmanagedType.U1)]ref bool callBase);
+            ref Size finalSize, ref Size renderSize, FrameworkElement.MeasureBaseCallback callback);
         private static Callback_FrameworkElementArrange _frameworkElementArrange = FrameworkElementArrange;
 
         [MonoPInvokeCallback(typeof(Callback_FrameworkElementArrange))]
         private static void FrameworkElementArrange(IntPtr cPtr,
-            ref Size finalSize, ref Size renderSize, ref bool callBase)
+            ref Size finalSize, ref Size renderSize, FrameworkElement.MeasureBaseCallback callback)
         {
             try
             {
                 FrameworkElement element = (FrameworkElement)GetExtendInstance(cPtr);
                 if (element != null)
                 {
-                    renderSize = element.CallArrangeOverride(finalSize, out callBase);
+                    renderSize = element.CallArrangeOverride(finalSize, callback);
                     if (renderSize.IsEmpty) renderSize = new Size(0, 0);
                 }
             }
@@ -4137,12 +4137,18 @@ namespace Noesis
             {
                 if (!_extends.TryGetValue(cPtr.ToInt64(), out extend))
                 {
-                    Log.Error("Extend already removed");
+                    if (Initialized)
+                    {
+                        Log.Error("Extend already removed");
+                    }
                     return null;
                 }
                 else if (extend == null || extend.weak.Target == null)
                 {
-                    Log.Error("Extend already destroyed");
+                    if (Initialized)
+                    {
+                        Log.Error("Extend already destroyed");
+                    }
                     return null;
                 }
             }

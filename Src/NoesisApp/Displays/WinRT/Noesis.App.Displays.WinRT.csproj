@@ -77,11 +77,70 @@
     <NuGetTool>$(NuGetPackageRoot)nuget.commandline\4.9.3\tools\NuGet.exe</NuGetTool>
     <PostBuildEvent>$(NuGetTool) pack $(ProjectDir)$(ProjectFileName) -OutputDirectory $(PackageOutputPath) -Version $(PackageVersion) -Prop Configuration=$(Configuration) -MSBuildVersion 15.9</PostBuildEvent>
   </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
+  <!-- Custom RegEx task for replacing AssemblyInfo version before building. -->
+  <UsingTask TaskName="RegexUpdateFile" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+    <ParameterGroup>
+        <Files ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+        <Regex ParameterType="System.String" Required="true" />
+        <ReplacementText ParameterType="System.String" Required="true" />
+    </ParameterGroup>
+    <Task>
+        <Reference Include="System.Core" />
+        <Using Namespace="System" />
+        <Using Namespace="System.IO" />
+        <Using Namespace="System.Text.RegularExpressions" />
+        <Using Namespace="Microsoft.Build.Framework" />
+        <Using Namespace="Microsoft.Build.Utilities" />
+        <Code Type="Fragment" Language="cs">
+            <![CDATA[
+            try {
+                var rx = new System.Text.RegularExpressions.Regex(this.Regex);
+                for (int i = 0; i < Files.Length; ++i)
+                {
+                    var path = Files[i].GetMetadata("FullPath");
+                    if (!File.Exists(path)) continue;
+
+                    var txt = File.ReadAllText(path);
+                    txt = rx.Replace(txt, this.ReplacementText);
+                    File.WriteAllText(path, txt);
+                }
+                return true;
+            }
+            catch (Exception ex) {
+                Log.LogErrorFromException(ex);
+                return false;
+            }
+        ]]>
+        </Code>
+    </Task>
+  </UsingTask>
   <Target Name="BeforeBuild">
+    <!-- Find AssemblyInfo.cs in the "Compile" Items. Remove it from "Compile" Items because we will use a modified version instead. -->
+    <ItemGroup>
+        <OriginalAssemblyInfo Include="@(Compile)" Condition="%(Filename) == 'AssemblyInfo' And %(Extension) == '.cs'" />
+        <Compile Remove="**/AssemblyInfo.cs" />
+    </ItemGroup>
+    <!-- Copy the original AssemblyInfo.cs to obj\ folder, i.e. $(IntermediateOutputPath). The copied filepath is saved into @(ModifiedAssemblyInfo) Item. -->
+    <Copy SourceFiles="@(OriginalAssemblyInfo)"
+          DestinationFiles="@(OriginalAssemblyInfo->'$(IntermediateOutputPath)%(Identity)')">
+        <Output TaskParameter="DestinationFiles" ItemName="ModifiedAssemblyInfo"/>
+    </Copy>
+    <!-- Update the version in AssemblyVersion, AssemblyFileVersion and AssemblyInformationalVersion attributes using regular expression. -->
+    <RegexUpdateFile Files="@(ModifiedAssemblyInfo)"
+                Regex="AssemblyVersion\(&quot;(\d+)\.(\d+)(\.(\d+)\.(\d+)|\.*)&quot;\)"
+                ReplacementText="AssemblyVersion(&quot;$(AssemblyVersion)&quot;)"
+                />
+    <RegexUpdateFile Files="@(ModifiedAssemblyInfo)"
+                Regex="AssemblyFileVersion\(&quot;(\d+)\.(\d+)(\.(\d+)\.(\d+)|\.*)&quot;\)"
+                ReplacementText="AssemblyFileVersion(&quot;$(AssemblyVersion)&quot;)"
+                />
+    <RegexUpdateFile Files="@(ModifiedAssemblyInfo)"
+                Regex="AssemblyInformationalVersion\(&quot;(\d+)\.(\d+)(\.(\d+)|\.*)&quot;\)"
+                ReplacementText="AssemblyInformationalVersion(&quot;$(PackageVersion)&quot;)"
+                />
+    <!-- Include the modified AssemblyInfo.cs file in "Compile" items (instead of the original). -->
+    <ItemGroup>
+        <Compile Include="@(ModifiedAssemblyInfo)" />
+    </ItemGroup>
   </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

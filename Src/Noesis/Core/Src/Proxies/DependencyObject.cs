@@ -73,7 +73,7 @@ public partial class DependencyObject : DispatcherObject {
     NoesisGUI_PINVOKE.DependencyObject_SetCurrentValue(swigCPtr, DependencyProperty.getCPtr(dp), Noesis.Extend.GetInstanceHandle(value));
   }
 
-  internal void InitObject() {
+  protected internal void InitObject() {
     NoesisGUI_PINVOKE.DependencyObject_InitObject(swigCPtr);
   }
 

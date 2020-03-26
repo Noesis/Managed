@@ -94,6 +94,11 @@ namespace NoesisApp
         public abstract int ClientHeight { get; }
 
         /// <summary>
+        /// Calculates the required size of the window rectangle, based on the desired client size
+        /// </summary>
+        public virtual void AdjustWindowSize(ref int width, ref int height) { }
+
+        /// <summary>
         /// Changes the text of the title bar (if it has one)
         /// </summary>
         public virtual void SetTitle(string title) { }

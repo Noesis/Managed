@@ -93,6 +93,24 @@ namespace NoesisApp
             }
         }
 
+        public override void AdjustWindowSize(ref int width, ref int height)
+        {
+            WinApi.Rectangle r = new WinApi.Rectangle
+            {
+                Left = 0, Top = 0, Right = width, Bottom = height
+            };
+
+            WinApi.WindowStyles flags = (WinApi.WindowStyles)WinApi.GetWindowLong(NativeWindow,
+                (int)WinApi.WindowLongFlags.GWL_STYLE);
+            WinApi.WindowExStyles flagsEx = (WinApi.WindowExStyles)WinApi.GetWindowLong(NativeWindow,
+                (int)WinApi.WindowLongFlags.GWL_EXSTYLE);
+
+            WinApi.AdjustWindowRectEx(ref r, (uint)flags, false, (uint)flagsEx);
+
+            width = r.Right - r.Left;
+            height = r.Bottom - r.Top;
+        }
+
         public override void SetTitle(string title)
         {
             WinApi.SetWindowText(NativeWindow, title);
@@ -1980,6 +1998,10 @@ namespace NoesisApp
 
             [DllImport("user32", CharSet = CharSet.Auto, ExactSpelling = true)]
             public static extern bool GetWindowRect(IntPtr hwnd, out Rectangle lpRect);
+
+            [DllImport("user32", CharSet = CharSet.Auto, ExactSpelling = true)]
+            public static extern bool AdjustWindowRectEx(ref Rectangle lpRect, uint dwStyle,
+                bool bMenu, uint dwExStyle);
 
             [DllImport("user32", CharSet = CharSet.Auto, ExactSpelling = true)]
             public static extern bool GetClientRect(IntPtr hwnd, out Rectangle lpRect);

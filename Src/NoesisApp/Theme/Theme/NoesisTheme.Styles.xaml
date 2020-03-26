@@ -85,107 +85,21 @@
   </Style>
 
   <!-- Base Control Styles -->
-  <Style TargetType="Control">
-    <Setter Property="OverridesDefaultStyle" Value="True"/>
-    <Setter Property="Foreground" Value="{DynamicResource Brush.Foreground.Normal}"/>
-    <Setter Property="Background" Value="{x:Null}"/>
-    <Setter Property="BorderBrush" Value="{x:Null}"/>
-    <Setter Property="BorderThickness" Value="0"/>
-    <Setter Property="Padding" Value="0"/>
-    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-    <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="Control">
-          <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}"/>
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
+  <Style x:Key="Style.Base">
+    <Setter Property="Control.Foreground" Value="{DynamicResource Brush.Foreground.Normal}"/>
+    <Setter Property="Control.HorizontalContentAlignment" Value="Stretch"/>
+    <Setter Property="Control.VerticalContentAlignment" Value="Stretch"/>
+    <Setter Property="FrameworkElement.FocusVisualStyle" Value="{x:Null}"/>
   </Style>
-  <Style TargetType="ContentControl" BasedOn="{StaticResource {x:Type Control}}">
-    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-    <Setter Property="VerticalContentAlignment" Value="Stretch"/>
-    <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="ContentControl">
-          <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
-            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-          </Border>
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
-  </Style>
-  <Style TargetType="HeaderedContentControl" BasedOn="{StaticResource {x:Type ContentControl}}">
-    <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="HeaderedContentControl">
-          <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
-            <Grid>
-              <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-              </Grid.RowDefinitions>
-              <ContentPresenter Grid.Row="0" ContentSource="Header"/>
-              <ContentPresenter Grid.Row="1" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-            </Grid>
-          </Border>
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
-  </Style>
-  <Style TargetType="ItemsControl" BasedOn="{StaticResource {x:Type Control}}">
-    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-    <Setter Property="VerticalContentAlignment" Value="Stretch"/>
-    <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="ItemsControl">
-          <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
-            <ItemsPresenter />
-          </Border>
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
-  </Style>
-  <Style TargetType="HeaderedItemsControl" BasedOn="{StaticResource {x:Type Control}}">
-    <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="HeaderedItemsControl">
-          <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
-            <Grid>
-              <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-              </Grid.RowDefinitions>
-              <ContentPresenter Grid.Row="0" ContentSource="Header"/>
-              <ItemsPresenter Grid.Row="1"/>
-            </Grid>
-          </Border>
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
-  </Style>
-  <Style TargetType="UserControl" BasedOn="{StaticResource {x:Type ContentControl}}"/>
-  <Style TargetType="Page" BasedOn="{StaticResource {x:Type ContentControl}}">
-    <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="Page">
-          <Border Background="{TemplateBinding Background}">
-            <ContentPresenter />
-          </Border>
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
-  </Style>
+  <Style TargetType="Control" BasedOn="{StaticResource Style.Base}"/>
+  <Style TargetType="ContentControl" BasedOn="{StaticResource Style.Base}"/>
+  <Style TargetType="HeaderedContentControl" BasedOn="{StaticResource Style.Base}"/>
+  <Style TargetType="ItemsControl" BasedOn="{StaticResource Style.Base}"/>
+  <Style TargetType="HeaderedItemsControl" BasedOn="{StaticResource Style.Base}"/>
+  <Style TargetType="UserControl" BasedOn="{StaticResource Style.Base}"/>
+  <Style TargetType="Page" BasedOn="{StaticResource Style.Base}"/>
   <Style TargetType="Separator">
-    <Setter Property="OverridesDefaultStyle" Value="True"/>
     <Setter Property="Background" Value="{DynamicResource Brush.Background.Normal}"/>
-    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-    <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="Separator">
-          <Rectangle Fill="{TemplateBinding Background}" Height="1"/>
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
   </Style>
 
   <!-- ToolTip -->
@@ -204,7 +118,6 @@
     <Setter Property="Padding" Value="8,6"/>
     <Setter Property="Placement" Value="Mouse"/>
     <Setter Property="VerticalOffset" Value="21"/> <!-- Cursor Height -->
-    <Setter Property="HorizontalContentAlignment" Value="Left"/>
     <Setter Property="VerticalContentAlignment" Value="Center"/>
     <Setter Property="Template" Value="{StaticResource Template.ToolTip}"/>
   </Style>
@@ -220,11 +133,10 @@
       </Trigger>
     </ControlTemplate.Triggers>
   </ControlTemplate>
-  <Style TargetType="Label" BasedOn="{StaticResource {x:Type ContentControl}}">
+  <Style TargetType="Label" BasedOn="{StaticResource {x:Type Control}}">
+    <Setter Property="OverridesDefaultStyle" Value="True"/>
     <Setter Property="Background" Value="Transparent"/>
     <Setter Property="BorderBrush" Value="Transparent"/>
-    <Setter Property="HorizontalContentAlignment" Value="Left"/>
-    <Setter Property="VerticalContentAlignment" Value="Top"/>
     <Setter Property="UseLayoutRounding" Value="True"/>
     <Setter Property="Template" Value="{StaticResource Template.Label}"/>
   </Style>
@@ -273,6 +185,7 @@
     </ControlTemplate.Triggers>
   </ControlTemplate>
   <Style x:Key="Style.ButtonBase" TargetType="ButtonBase" BasedOn="{StaticResource {x:Type ContentControl}}">
+    <Setter Property="OverridesDefaultStyle" Value="True"/>
     <Setter Property="Background" Value="{DynamicResource Brush.Background.Normal}"/>
     <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border.Normal}"/>
     <Setter Property="BorderThickness" Value="{DynamicResource Border.Normal}"/>
@@ -342,6 +255,7 @@
     </ControlTemplate.Triggers>
   </ControlTemplate>
   <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ContentControl}}">
+    <Setter Property="OverridesDefaultStyle" Value="True"/>
     <Setter Property="Background" Value="{DynamicResource Brush.Background.Normal}"/>
     <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border.Normal}"/>
     <Setter Property="BorderThickness" Value="{DynamicResource Border.Normal}"/>
@@ -420,6 +334,7 @@
     </ControlTemplate.Triggers>
   </ControlTemplate>
   <Style x:Key="Style.ToggleSwitch" TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ContentControl}}">
+    <Setter Property="OverridesDefaultStyle" Value="True"/>
     <Setter Property="BorderThickness" Value="{DynamicResource Border.Normal}"/>
     <Setter Property="HorizontalContentAlignment" Value="Left"/>
     <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -465,7 +380,7 @@
       </Grid.ColumnDefinitions>
       <Border Grid.ColumnSpan="2" Background="{TemplateBinding Background}"/>
       <Border x:Name="Border" Grid.Column="0" Background="{DynamicResource Brush.Background.Normal}" BorderBrush="{DynamicResource Brush.Border.Normal}" BorderThickness="{DynamicResource Border.Normal}" CornerRadius="{DynamicResource Corner.Border0}" Width="20" Height="20" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-      <Decorator Grid.Column="0" Margin="{TemplateBinding BorderThickness}">
+      <Decorator Grid.Column="0" Margin="{TemplateBinding BorderThickness}" Width="20" Height="20" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
         <Grid>
           <Path x:Name="Check" Data="{StaticResource Geometry.CheckBox.Check}" Width="14" Height="14" Fill="{DynamicResource Brush.Glyph.Checked}" RenderTransformOrigin="0.5,0.5">
             <Path.RenderTransform>
@@ -524,6 +439,7 @@
     </ControlTemplate.Triggers>
   </ControlTemplate>
   <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type ContentControl}}">
+    <Setter Property="OverridesDefaultStyle" Value="True"/>
     <Setter Property="Background" Value="Transparent"/>
     <Setter Property="BorderThickness" Value="{DynamicResource Border.Normal}"/>
     <Setter Property="HorizontalContentAlignment" Value="Left"/>
@@ -569,7 +485,7 @@
       </Grid.ColumnDefinitions>
       <Border Grid.ColumnSpan="2" Background="{TemplateBinding Background}"/>
       <Border x:Name="Border" Grid.Column="0" Background="{DynamicResource Brush.Background.Normal}" BorderBrush="{DynamicResource Brush.Border.Normal}" BorderThickness="{DynamicResource Border.Normal}" Width="20" Height="20" CornerRadius="10" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-      <Decorator Grid.Column="0" Margin="{TemplateBinding BorderThickness}">
+      <Decorator Grid.Column="0" Margin="{TemplateBinding BorderThickness}" Width="20" Height="20" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
         <Ellipse x:Name="Check" Width="10" Height="10" Fill="{DynamicResource Brush.Glyph.Checked}" RenderTransformOrigin="0.5,0.5">
           <Ellipse.RenderTransform>
             <ScaleTransform ScaleX="0" ScaleY="0"/>
@@ -614,6 +530,7 @@
     </ControlTemplate.Triggers>
   </ControlTemplate>
   <Style TargetType="RadioButton" BasedOn="{StaticResource {x:Type ContentControl}}">
+    <Setter Property="OverridesDefaultStyle" Value="True"/>
     <Setter Property="Background" Value="Transparent"/>
     <Setter Property="BorderThickness" Value="{DynamicResource Border.Normal}"/>
     <Setter Property="HorizontalContentAlignment" Value="Left"/>
@@ -671,6 +588,7 @@
     </ControlTemplate.Triggers>
   </ControlTemplate>
   <Style TargetType="ProgressBar" BasedOn="{StaticResource {x:Type Control}}">
+    <Setter Property="OverridesDefaultStyle" Value="True"/>
     <Setter Property="Foreground" Value="{DynamicResource Brush.Background.Checked}"/>
     <Setter Property="Background" Value="{DynamicResource Brush.Background.Normal}"/>
     <Setter Property="Template" Value="{StaticResource Template.ProgressBar}"/>
@@ -816,6 +734,7 @@
     </ControlTemplate.Triggers>
   </ControlTemplate>
   <Style TargetType="Slider" BasedOn="{StaticResource {x:Type Control}}">
+    <Setter Property="OverridesDefaultStyle" Value="True"/>
     <Setter Property="Foreground" Value="{DynamicResource Brush.Background.Checked}"/>
     <Setter Property="Background" Value="{DynamicResource Brush.Background.Normal}"/>
     <Setter Property="FocusVisualStyle" Value="{StaticResource Style.Focus.Outer.Uniform}"/>
@@ -1006,7 +925,6 @@
   </ControlTemplate>
   <Style TargetType="ScrollBar">
     <Setter Property="OverridesDefaultStyle" Value="True"/>
-    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
     <Setter Property="ForceCursor" Value="True"/>
     <Setter Property="Cursor" Value="Arrow"/>
     <Style.Triggers>
@@ -1090,6 +1008,7 @@
     </ControlTemplate.Triggers>
   </ControlTemplate>
   <Style TargetType="ScrollViewer" BasedOn="{StaticResource {x:Type ContentControl}}">
+    <Setter Property="OverridesDefaultStyle" Value="True"/>
     <Setter Property="Background" Value="Transparent"/>
     <Setter Property="Template" Value="{StaticResource Template.ScrollViewer}"/>
   </Style>
@@ -1142,6 +1061,7 @@
     </ControlTemplate.Triggers>
   </ControlTemplate>
   <Style TargetType="GroupBox" BasedOn="{StaticResource {x:Type HeaderedContentControl}}">
+    <Setter Property="OverridesDefaultStyle" Value="True"/>
     <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border.Normal}"/>
     <Setter Property="Padding" Value="4"/>
     <Setter Property="Template" Value="{StaticResource Template.GroupBox}"/>
@@ -1154,7 +1074,6 @@
 
   <!-- Expander -->
   <Style x:Key="Style.Expander.Toggle" TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
-    <Setter Property="Padding" Value="0"/>
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="ToggleButton">
@@ -1480,6 +1399,7 @@
     </ControlTemplate.Triggers>
   </ControlTemplate>
   <Style TargetType="Expander" BasedOn="{StaticResource {x:Type HeaderedContentControl}}">
+    <Setter Property="OverridesDefaultStyle" Value="True"/>
     <Setter Property="Background" Value="{DynamicResource Brush.Header.Normal}"/>
     <Setter Property="BorderBrush" Value="Transparent"/>
     <Setter Property="Padding" Value="8"/>
@@ -1519,6 +1439,7 @@
     <StackPanel Orientation="Horizontal"/>
   </ItemsPanelTemplate>
   <Style TargetType="Menu" BasedOn="{StaticResource {x:Type ItemsControl}}">
+    <Setter Property="OverridesDefaultStyle" Value="True"/>
     <Setter Property="Background" Value="{DynamicResource Brush.ToolBar.Normal}"/>
     <Setter Property="ItemsPanel" Value="{StaticResource Template.Menu.ItemsPanel}"/>
     <Setter Property="Template" Value="{StaticResource Template.Menu}"/>
@@ -1663,6 +1584,7 @@
         <Setter Property="Template" Value="{StaticResource Template.MenuItem.SubmenuItem}"/>
       </Trigger>
     </Style.Triggers>
+    <Setter Property="OverridesDefaultStyle" Value="True"/>
     <Setter Property="Background" Value="Transparent"/>
     <Setter Property="ItemsPanel" Value="{StaticResource Template.MenuItem.ItemsPanel}"/>
   </Style>
@@ -1682,6 +1604,7 @@
     <Style.Resources>
       <Style x:Key="{x:Static MenuItem.SeparatorStyleKey}" TargetType="Separator" BasedOn="{StaticResource Style.MenuItem.Separator}"/>
     </Style.Resources>
+    <Setter Property="OverridesDefaultStyle" Value="True"/>
     <Setter Property="Background" Value="{DynamicResource Brush.Background.Popup}"/>
     <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border.Popup}"/>
     <Setter Property="BorderThickness" Value="1"/>
@@ -1734,6 +1657,7 @@
     </ControlTemplate.Triggers>
   </ControlTemplate>
   <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type Control}}">
+    <Setter Property="OverridesDefaultStyle" Value="True"/>
     <Setter Property="Background" Value="{DynamicResource Brush.TextBox.Normal}"/>
     <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border.Normal}"/>
     <Setter Property="BorderThickness" Value="{DynamicResource Border.Box}"/>
@@ -1741,7 +1665,6 @@
     <Setter Property="SelectionBrush" Value="{DynamicResource Brush.Background.Checked}"/>
     <Setter Property="SelectionOpacity" Value="0.25"/>
     <Setter Property="Padding" Value="6,7"/>
-    <Setter Property="TextAlignment" Value="Left"/>
     <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
     <Setter Property="AllowDrop" Value="True"/>
     <Setter Property="Template" Value="{StaticResource Template.TextBox}"/>
@@ -1797,6 +1720,7 @@
     </ControlTemplate.Triggers>
   </ControlTemplate>
   <Style TargetType="PasswordBox" BasedOn="{StaticResource {x:Type Control}}">
+    <Setter Property="OverridesDefaultStyle" Value="True"/>
     <Setter Property="Background" Value="{DynamicResource Brush.TextBox.Normal}"/>
     <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border.Normal}"/>
     <Setter Property="BorderThickness" Value="{DynamicResource Border.Box}"/>
@@ -1821,6 +1745,7 @@
     </ScrollViewer>
   </ControlTemplate>
   <Style TargetType="ListBox" BasedOn="{StaticResource {x:Type ItemsControl}}">
+    <Setter Property="OverridesDefaultStyle" Value="True"/>
     <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
     <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
     <Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
@@ -1859,6 +1784,7 @@
     </ControlTemplate.Triggers>
   </ControlTemplate>
   <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ContentControl}}">
+    <Setter Property="OverridesDefaultStyle" Value="True"/>
     <Setter Property="Background" Value="Transparent"/>
     <Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ListBox}}}"/>
     <Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ListBox}}}"/>
@@ -1947,6 +1873,7 @@
     </ScrollViewer>
   </ControlTemplate>
   <Style TargetType="ListView" BasedOn="{StaticResource {x:Type ItemsControl}}">
+    <Setter Property="OverridesDefaultStyle" Value="True"/>
     <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
     <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
     <Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
@@ -1985,6 +1912,7 @@
     </ControlTemplate.Triggers>
   </ControlTemplate>
   <Style TargetType="ListViewItem" BasedOn="{StaticResource {x:Type ContentControl}}">
+    <Setter Property="OverridesDefaultStyle" Value="True"/>
     <Setter Property="Background" Value="Transparent"/>
     <Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}"/>
     <Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}"/>
@@ -2046,7 +1974,7 @@
     <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"/>
   </ControlTemplate>
   <Style TargetType="GridViewColumnHeader" BasedOn="{StaticResource {x:Type ContentControl}}">
-    <Setter Property="Foreground" Value="{DynamicResource Brush.Foreground.Normal}"/>
+    <Setter Property="OverridesDefaultStyle" Value="True"/>
     <Setter Property="Background" Value="{DynamicResource Brush.Header.Normal}"/>
     <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border.Normal}"/>
     <Setter Property="BorderThickness" Value="0,0,0,1"/>
@@ -2233,6 +2161,7 @@
     </ControlTemplate.Triggers>
   </ControlTemplate>
   <Style TargetType="ComboBox" BasedOn="{StaticResource {x:Type ItemsControl}}">
+    <Setter Property="OverridesDefaultStyle" Value="True"/>
     <Setter Property="Background" Value="{DynamicResource Brush.TextBox.Normal}"/>
     <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border.Normal}"/>
     <Setter Property="BorderThickness" Value="1"/>
@@ -2279,6 +2208,7 @@
     </ControlTemplate.Triggers>
   </ControlTemplate>
   <Style TargetType="ComboBoxItem" BasedOn="{StaticResource {x:Type ContentControl}}">
+    <Setter Property="OverridesDefaultStyle" Value="True"/>
     <Setter Property="Background" Value="Transparent"/>
     <Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ComboBox}}}"/>
     <Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ComboBox}}}"/>
@@ -2355,6 +2285,7 @@
     </ControlTemplate.Triggers>
   </ControlTemplate>
   <Style TargetType="TabControl" BasedOn="{StaticResource {x:Type ItemsControl}}">
+    <Setter Property="OverridesDefaultStyle" Value="True"/>
     <Setter Property="Background" Value="{DynamicResource Brush.TabControl.Normal}"/>
     <Setter Property="Padding" Value="12"/>
     <Setter Property="Template" Value="{StaticResource Template.TabControl}"/>
@@ -2403,6 +2334,7 @@
     </ControlTemplate.Triggers>
   </ControlTemplate>
   <Style TargetType="TabItem" BasedOn="{StaticResource {x:Type HeaderedContentControl}}">
+    <Setter Property="OverridesDefaultStyle" Value="True"/>
     <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}"/>
     <Setter Property="Background" Value="Transparent"/>
     <Setter Property="Padding" Value="12,7.5"/>
@@ -2417,6 +2349,7 @@
     </ScrollViewer>
   </ControlTemplate>
   <Style TargetType="TreeView" BasedOn="{StaticResource {x:Type ItemsControl}}">
+    <Setter Property="OverridesDefaultStyle" Value="True"/>
     <Setter Property="VerticalContentAlignment" Value="Stretch"/>
     <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
     <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
@@ -2592,6 +2525,7 @@
     </ControlTemplate.Triggers>
   </ControlTemplate>
   <Style TargetType="TreeViewItem" BasedOn="{StaticResource {x:Type HeaderedItemsControl}}">
+    <Setter Property="OverridesDefaultStyle" Value="True"/>
     <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type TreeView}}}"/>
     <Setter Property="Background" Value="Transparent"/>
     <Setter Property="Padding" Value="12,7"/>
@@ -2953,6 +2887,7 @@
       <Style x:Key="{x:Static ToolBar.TextBoxStyleKey}" TargetType="TextBox" BasedOn="{StaticResource Style.ToolBar.TextBox}"/>
       <Style x:Key="{x:Static ToolBar.MenuStyleKey}" TargetType="Menu" BasedOn="{StaticResource Style.ToolBar.Menu}"/>
     </Style.Resources>
+    <Setter Property="OverridesDefaultStyle" Value="True"/>
     <Setter Property="Background" Value="{DynamicResource Brush.ToolBar.Normal}"/>
     <Setter Property="Padding" Value="0,1"/>
     <Setter Property="MinHeight" Value="28"/>
@@ -2974,6 +2909,7 @@
     <Style.Resources>
       <Style x:Key="{x:Static StatusBar.SeparatorStyleKey}" TargetType="Separator" BasedOn="{StaticResource Style.ToolBar.Separator}"/>
     </Style.Resources>
+    <Setter Property="OverridesDefaultStyle" Value="True"/>
     <Setter Property="Background" Value="{DynamicResource Brush.ToolBar.Normal}"/>
     <Setter Property="MinHeight" Value="28"/>
     <Setter Property="Template" Value="{StaticResource Template.StatusBar}"/>
@@ -2986,6 +2922,7 @@
     </Border>
   </ControlTemplate>
   <Style TargetType="StatusBarItem" BasedOn="{StaticResource {x:Type ContentControl}}">
+    <Setter Property="OverridesDefaultStyle" Value="True"/>
     <Setter Property="Background" Value="Transparent"/>
     <Setter Property="Padding" Value="4"/>
     <Setter Property="Template" Value="{StaticResource Template.StatusBarItem}"/>
