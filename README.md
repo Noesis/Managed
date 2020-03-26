@@ -20,6 +20,7 @@ Packages are subdivided into two big categories: **Noesis** the Core library and
   - Core Framework
   - Displays: Win32, WinRT, X11, UIKit, AppKit, Android...
   - RenderContexts: D3D11, GLX, EGL, NSGL, WGL, MTL...
+  - Noesis Theme
 
 Supported platforms
 -------------------
