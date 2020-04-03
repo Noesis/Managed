@@ -208,6 +208,11 @@ namespace Noesis
                         callback.DynamicInvoke(args);
                     }
                 }
+                catch (OperationCanceledException) { }
+                catch (Exception e)
+                {
+                    Error.UnhandledException(e);
+                }
                 finally
                 {
                     SynchronizationContext.SetSynchronizationContext(currentContext);

@@ -111,6 +111,18 @@ namespace Noesis
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
 
+    public class AssemblyLoadEventArgs : EventArgs
+    {
+        public AssemblyLoadEventArgs(Assembly loadedAssembly)
+        {
+            LoadedAssembly = loadedAssembly;
+        }
+
+        public Assembly LoadedAssembly { get; private set; }
+    }
+
+    public delegate void AssemblyLoadEventHandler(object sender, AssemblyLoadEventArgs args);
+
     sealed class AppDomain
     {
         public static AppDomain CurrentDomain { get; private set; }
@@ -124,6 +136,8 @@ namespace Noesis
         {
             return GetAssemblyListAsync().Result.ToArray();
         }
+
+        public event AssemblyLoadEventHandler AssemblyLoad;
 
         private async System.Threading.Tasks.Task<IEnumerable<Assembly>> GetAssemblyListAsync()
         {

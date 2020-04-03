@@ -156,7 +156,7 @@ public class ResourceDictionary : BaseDictionary, IDictionary {
   [DllImport(Library.Name)]
   private static extern void ResourceDictionary_EnumKeys(HandleRef dictionary, int id, ResourceDictionaryEnumKeysCallback callback);
 
-  private struct KeysData {
+  private class KeysData {
     public object[] Keys;
     public int Index;
   }

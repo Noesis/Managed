@@ -55,6 +55,15 @@ public partial class FrameworkElement : UIElement {
     }
   }
 
+  public event RoutedEventHandler Reloaded {
+    add {
+      AddHandler(ReloadedEvent, value);
+    }
+    remove {
+      RemoveHandler(ReloadedEvent, value);
+    }
+  }
+
   public event RequestBringIntoViewEventHandler RequestBringIntoView {
     add {
       AddHandler(RequestBringIntoViewEvent, value);
@@ -402,6 +411,16 @@ public partial class FrameworkElement : UIElement {
     } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.FrameworkElement_LoadedEvent_get();
+      return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static RoutedEvent ReloadedEvent {
+    set {
+      NoesisGUI_PINVOKE.FrameworkElement_ReloadedEvent_set(RoutedEvent.getCPtr(value));
+    } 
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.FrameworkElement_ReloadedEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
     }
   }

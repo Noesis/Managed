@@ -1115,7 +1115,11 @@ namespace Noesis
         {
             Shutdown();
 
-            _assemblies = null;
+            if (_assemblies != null)
+            {
+                AppDomain.CurrentDomain.AssemblyLoad -= AddLoadedAssembly;
+                _assemblies = null;
+            }
 
             Init();
         }
@@ -1702,7 +1706,7 @@ namespace Noesis
         ////////////////////////////////////////////////////////////////////////////////////////////////
         private delegate void Callback_RegisterType(string typeName);
         private static Callback_RegisterType _registerType = RegisterType;
-        private static System.Reflection.Assembly[] _assemblies = null;
+        private static List<Assembly> _assemblies = null;
 
         [MonoPInvokeCallback(typeof(Callback_RegisterType))]
         private static void RegisterType(string typeName)
@@ -1734,14 +1738,15 @@ namespace Noesis
             {
                 if (_assemblies == null)
                 {
-                    _assemblies = AppDomain.CurrentDomain.GetAssemblies();
+                    var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+                    _assemblies = new List<Assembly>(assemblies.Length);
+                    _assemblies.AddRange(assemblies);
 
-                    // We want to use the types from latest loaded assemblies, so we reverse it
-                    Array.Reverse(_assemblies);
+                    AppDomain.CurrentDomain.AssemblyLoad += AddLoadedAssembly;
                 }
 
-                int assembliesLen = _assemblies.Length;
-                for (int i = 0; i < assembliesLen; ++i)
+                // We want to use the types from latest loaded assemblies, so we reverse the lookup
+                for (int i = _assemblies.Count - 1; i >= 0; --i)
                 {
                     type = _assemblies[i].GetType(name);
                     if (type != null)
@@ -1752,6 +1757,11 @@ namespace Noesis
             }
 
             return type;
+        }
+
+        private static void AddLoadedAssembly(object sender, AssemblyLoadEventArgs e)
+        {
+            _assemblies.Add(e.LoadedAssembly);
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////

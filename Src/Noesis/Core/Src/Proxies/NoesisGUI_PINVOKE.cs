@@ -5363,6 +5363,12 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr FrameworkElement_LoadedEvent_get();
 
   [DllImport(Library.Name)]
+  public static extern void FrameworkElement_ReloadedEvent_set(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr FrameworkElement_ReloadedEvent_get();
+
+  [DllImport(Library.Name)]
   public static extern void FrameworkElement_RequestBringIntoViewEvent_set(HandleRef jarg1);
 
   [DllImport(Library.Name)]

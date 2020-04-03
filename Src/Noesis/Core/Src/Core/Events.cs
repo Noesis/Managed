@@ -743,6 +743,7 @@ namespace Noesis
 
             // FrameworkElement
             RegisterRoutedEvent(FrameworkElement.LoadedEvent, typeof(RoutedEventHandler), RoutedEventArgs.InvokeHandler);
+            RegisterRoutedEvent(FrameworkElement.ReloadedEvent, typeof(RoutedEventHandler), RoutedEventArgs.InvokeHandler);
             RegisterRoutedEvent(FrameworkElement.UnloadedEvent, typeof(RoutedEventHandler), RoutedEventArgs.InvokeHandler);
             RegisterRoutedEvent(FrameworkElement.SizeChangedEvent, typeof(SizeChangedEventHandler), SizeChangedEventArgs.InvokeHandler);
             RegisterRoutedEvent(FrameworkElement.RequestBringIntoViewEvent, typeof(RequestBringIntoViewEventHandler), RequestBringIntoViewEventArgs.InvokeHandler);
