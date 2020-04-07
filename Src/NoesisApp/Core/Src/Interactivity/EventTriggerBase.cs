@@ -62,7 +62,8 @@ namespace NoesisApp
         static void OnSourceNameChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             EventTriggerBase trigger = (EventTriggerBase)d;
-            trigger.UpdateSource(trigger.AssociatedObject);
+            Binding binding = new Binding("", trigger.SourceName);
+            BindingOperations.SetBinding(trigger, SourceNameResolverProperty, binding);
         }
 
         /// <summary>
@@ -115,20 +116,13 @@ namespace NoesisApp
             if (associatedObject != null)
             {
                 object sourceObject = SourceObject;
-                string sourceName = SourceName;
-
                 if (sourceObject != null)
                 {
                     newSource = sourceObject;
                 }
-                else if (!string.IsNullOrEmpty(sourceName))
+                else if (!string.IsNullOrEmpty(SourceName))
                 {
-                    FrameworkElement element = associatedObject as FrameworkElement;
-                    object namedElement = element != null ? element.FindName(sourceName) : null;
-                    if (namedElement != null)
-                    {
-                        newSource = namedElement;
-                    }
+                    newSource = SourceNameResolver;
                 }
             }
 
@@ -210,6 +204,21 @@ namespace NoesisApp
                     && typeof(Noesis.EventArgs).IsAssignableFrom(parameters[1].ParameterType);
             }
             return false;
+        }
+
+        public object SourceNameResolver
+        {
+            get { return GetValue(SourceNameResolverProperty); }
+        }
+
+        public static readonly DependencyProperty SourceNameResolverProperty = DependencyProperty.Register(
+            ".SourceNameResolver", typeof(object), typeof(EventTriggerBase),
+            new PropertyMetadata(null, OnSourceNameResolverChanged));
+
+        static void OnSourceNameResolverChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            EventTriggerBase trigger = (EventTriggerBase)d;
+            trigger.UpdateSource(trigger.AssociatedObject);
         }
 
         Type _sourceType;

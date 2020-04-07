@@ -150,8 +150,7 @@ namespace NoesisApp
                 MainWindow.Render((DateTime.Now - startTime).TotalSeconds);
             };
 
-            bool runInBackground = false; // TODO: decide how to get this option
-            Display.EnterMessageLoop(runInBackground);
+            Display.EnterMessageLoop(RunInBackground);
 
             Finish();
 
@@ -422,6 +421,11 @@ namespace NoesisApp
         }
 
         protected virtual bool LCD
+        {
+            get { return false; }
+        }
+
+        protected virtual bool RunInBackground
         {
             get { return false; }
         }

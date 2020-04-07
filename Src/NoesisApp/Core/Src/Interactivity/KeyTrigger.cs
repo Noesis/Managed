@@ -63,7 +63,14 @@ namespace NoesisApp
 
         public static readonly DependencyProperty ActiveOnFocusProperty = DependencyProperty.Register(
             "ActiveOnFocus", typeof(bool), typeof(KeyTrigger),
-            new PropertyMetadata(false));
+            new PropertyMetadata(false, OnActiveOnFocusChanged));
+
+        static void OnActiveOnFocusChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            KeyTrigger trigger = (KeyTrigger)d;
+            trigger.UnregisterSource(trigger.FiredOn);
+            trigger.RegisterSource();
+        }
 
         /// <summary>
         /// Determines whether or not to listen to the KeyDown or KeyUp event
@@ -76,13 +83,40 @@ namespace NoesisApp
 
         public static readonly DependencyProperty FiredOnProperty = DependencyProperty.Register(
             "FiredOn", typeof(KeyTriggerFiredOn), typeof(KeyTrigger),
-            new PropertyMetadata(KeyTriggerFiredOn.KeyDown));
+            new PropertyMetadata(KeyTriggerFiredOn.KeyDown, OnFiredOnChanged));
+
+        static void OnFiredOnChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            KeyTrigger trigger = (KeyTrigger)d;
+            trigger.UnregisterSource((KeyTriggerFiredOn)e.OldValue);
+            trigger.RegisterSource();
+        }
 
         protected override void OnAttached()
         {
             base.OnAttached();
 
-            _source = ActiveOnFocus ? AssociatedObject: GetRoot(AssociatedObject);
+            RegisterSource();
+        }
+
+        protected override void OnDetaching()
+        {
+            UnregisterSource(FiredOn);
+
+            base.OnDetaching();
+        }
+
+        private void OnKeyPress(object sender, KeyEventArgs e)
+        {
+            if (Key == e.Key && Modifiers == _source.Keyboard.Modifiers)
+            {
+                InvokeActions(0);
+            }
+        }
+
+        private void RegisterSource()
+        {
+            _source = ActiveOnFocus ? AssociatedObject : GetRoot(AssociatedObject);
 
             if (_source != null)
             {
@@ -97,11 +131,11 @@ namespace NoesisApp
             }
         }
 
-        protected override void OnDetaching()
+        private void UnregisterSource(KeyTriggerFiredOn firedOn)
         {
             if (_source != null)
             {
-                if (FiredOn == KeyTriggerFiredOn.KeyDown)
+                if (firedOn == KeyTriggerFiredOn.KeyDown)
                 {
                     _source.KeyDown -= OnKeyPress;
                 }
@@ -111,16 +145,6 @@ namespace NoesisApp
                 }
 
                 _source = null;
-            }
-
-            base.OnDetaching();
-        }
-
-        private void OnKeyPress(object sender, KeyEventArgs e)
-        {
-            if (Key == e.Key && Modifiers == _source.Keyboard.Modifiers)
-            {
-                InvokeActions(0);
             }
         }
 

@@ -70,7 +70,14 @@ namespace NoesisGUIExtensions
 
         public static readonly DependencyProperty ActiveOnFocusProperty = DependencyProperty.Register(
             "ActiveOnFocus", typeof(bool), typeof(GamepadTrigger),
-            new PropertyMetadata(false));
+            new PropertyMetadata(false, OnActiveOnFocusChanged));
+
+        static void OnActiveOnFocusChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            GamepadTrigger trigger = (GamepadTrigger)d;
+            trigger.UnregisterSource(trigger.FiredOn);
+            trigger.RegisterSource();
+        }
 
         /// <summary>
         /// Determines if trigger happens when gamepad button is pressed or released
@@ -83,12 +90,39 @@ namespace NoesisGUIExtensions
 
         public static readonly DependencyProperty FiredOnProperty = DependencyProperty.Register(
             "FiredOn", typeof(GamepadTriggerFiredOn), typeof(GamepadTrigger),
-            new PropertyMetadata(GamepadTriggerFiredOn.ButtonDown));
+            new PropertyMetadata(GamepadTriggerFiredOn.ButtonDown, OnFiredOnChanged));
+
+        static void OnFiredOnChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            GamepadTrigger trigger = (GamepadTrigger)d;
+            trigger.UnregisterSource((GamepadTriggerFiredOn)e.OldValue);
+            trigger.RegisterSource();
+        }
 
         protected override void OnAttached()
         {
             base.OnAttached();
 
+            RegisterSource();
+        }
+
+        protected override void OnDetaching()
+        {
+            UnregisterSource(FiredOn);
+
+            base.OnDetaching();
+        }
+
+        private void OnButtonPress(object sender, KeyEventArgs e)
+        {
+            if (Button == (GamepadButton)(e.OriginalKey - Key.GamepadLeft))
+            {
+                InvokeActions(0);
+            }
+        }
+
+        private void RegisterSource()
+        {
             _source = ActiveOnFocus ? AssociatedObject: GetRoot(AssociatedObject);
 
             if (_source != null)
@@ -104,11 +138,11 @@ namespace NoesisGUIExtensions
             }
         }
 
-        protected override void OnDetaching()
+        private void UnregisterSource(GamepadTriggerFiredOn firedOn)
         {
             if (_source != null)
             {
-                if (FiredOn == GamepadTriggerFiredOn.ButtonDown)
+                if (firedOn == GamepadTriggerFiredOn.ButtonDown)
                 {
                     _source.KeyDown -= OnButtonPress;
                 }
@@ -118,16 +152,6 @@ namespace NoesisGUIExtensions
                 }
 
                 _source = null;
-            }
-
-            base.OnDetaching();
-        }
-
-        private void OnButtonPress(object sender, KeyEventArgs e)
-        {
-            if (Button == (GamepadButton)(e.OriginalKey - Key.GamepadLeft))
-            {
-                InvokeActions(0);
             }
         }
 

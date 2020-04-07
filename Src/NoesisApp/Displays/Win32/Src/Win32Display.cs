@@ -312,7 +312,8 @@ namespace NoesisApp
             for (;;)
             {
                 WinApi.Message msg;
-                bool sleep = !runInBackground && NativeWindow != WinApi.GetForegroundWindow();
+                bool inspector = Noesis.GUI.IsInspectorConnected;
+                bool sleep = !inspector && !runInBackground && NativeWindow != WinApi.GetForegroundWindow();
 
                 while (GetNextMessage(sleep, out msg))
                 {
@@ -438,8 +439,21 @@ namespace NoesisApp
 
                     return false;
                 }
+                case WinApi.WM.CLOSE:
+                {
+                    bool cancel = false;
+                    Closing?.Invoke(this, ref cancel);
+                    if (cancel)
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }
                 case WinApi.WM.DESTROY:
                 {
+                    Closed?.Invoke(this);
+
                     WinApi.PostQuitMessage(0);
                     return false;
                 }

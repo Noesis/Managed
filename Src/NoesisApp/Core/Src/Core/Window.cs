@@ -5,6 +5,16 @@ using NoesisApp;
 
 namespace NoesisApp
 {
+    public class CancelEventArgs : System.EventArgs
+    {
+        public bool Cancel { get; set; }
+
+        public CancelEventArgs() : this(false) { }
+        public CancelEventArgs(bool cancel) { Cancel = cancel; }
+    }
+
+    public delegate void CancelEventHandler(object sender, CancelEventArgs e);
+
     public class WindowRenderingEventArgs : System.EventArgs
     {
         public double Timestamp { get; internal set; }
@@ -167,6 +177,38 @@ namespace NoesisApp
         #endregion
         #endregion
 
+        #region Window events
+        /// <summary>
+        /// Occurs when a window becomes the foreground window.
+        /// </summary>
+        public event System.EventHandler Activated;
+
+        /// <summary>
+        /// Occurs when a window becomes a background window.
+        /// </summary>
+        public event System.EventHandler Deactivated;
+
+        /// <summary>
+        /// Occurs directly after Window.Close is called, and can be handled to cancel window closure.
+        /// </summary>
+        public event CancelEventHandler Closing;
+
+        /// <summary>
+        /// Occurs when the window is about to close.
+        /// </summary>
+        public event System.EventHandler Closed;
+
+        /// <summary>
+        /// Occurs when the window's location changes.
+        /// </summary>
+        public event System.EventHandler LocationChanged;
+
+        /// <summary>
+        /// Occurs when the window's WindowState property changes.
+        /// </summary>
+        public event System.EventHandler StateChanged;
+        #endregion
+
         #region Render properties
         public Display Display { get; private set; }
         public RenderContext RenderContext { get; private set; }
@@ -253,6 +295,8 @@ namespace NoesisApp
             Display.FileDropped += OnDisplayFileDropped;
             Display.Activated += OnDisplayActivated;
             Display.Deactivated += OnDisplayDeactivated;
+            Display.Closing += OnDisplayClosing;
+            Display.Closed += OnDisplayClosed;
             Display.MouseMove += OnDisplayMouseMove;
             Display.MouseButtonDown += OnDisplayMouseButtonDown;
             Display.MouseButtonUp += OnDisplayMouseButtonUp;
@@ -566,6 +610,8 @@ namespace NoesisApp
                 Top = y;
                 _flags &= ~WindowFlags.UpdatingWindow;
             }
+
+            LocationChanged?.Invoke(this, System.EventArgs.Empty);
         }
 
         void OnDisplaySizeChanged(Display display, int width, int height)
@@ -593,6 +639,8 @@ namespace NoesisApp
                 WindowState = state;
                 _flags &= ~WindowFlags.UpdatingWindow;
             }
+
+            StateChanged?.Invoke(this, System.EventArgs.Empty);
         }
 
         void OnDisplayFileDropped(Display display, string filename)
@@ -603,11 +651,28 @@ namespace NoesisApp
         void OnDisplayActivated(Display display)
         {
             _view?.Activate();
+
+            Activated?.Invoke(this, System.EventArgs.Empty);
         }
 
         void OnDisplayDeactivated(Display display)
         {
             _view?.Deactivate();
+
+            Deactivated?.Invoke(this, System.EventArgs.Empty);
+        }
+
+        void OnDisplayClosing(Display display, ref bool cancel)
+        {
+            CancelEventArgs args = new CancelEventArgs(cancel);
+            Closing?.Invoke(this, args);
+
+            cancel = args.Cancel;
+        }
+
+        void OnDisplayClosed(Display display)
+        {
+            Closed?.Invoke(this, System.EventArgs.Empty);
         }
 
         void OnDisplayMouseMove(Display display, int x, int y)

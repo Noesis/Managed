@@ -58,7 +58,8 @@ namespace NoesisApp
         private static void OnTargetNameChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             TargetedTriggerAction action = (TargetedTriggerAction)d;
-            action.UpdateTarget(action.AssociatedObject);
+            Binding binding = new Binding("", action.TargetName);
+            BindingOperations.SetBinding(action, TargetNameResolverProperty, binding);
         }
 
         /// <summary>
@@ -96,19 +97,16 @@ namespace NoesisApp
             object oldTarget = _target;
             object newTarget = associatedObject;
 
-            object targetObject = TargetObject;
-            string targetName = TargetName;
-
             if (associatedObject != null)
             {
+                object targetObject = TargetObject;
                 if (targetObject != null)
                 {
                     newTarget = targetObject;
                 }
-                else if (!string.IsNullOrEmpty(targetName))
+                else if (!string.IsNullOrEmpty(TargetName))
                 {
-                    FrameworkElement element = associatedObject as FrameworkElement;
-                    newTarget = element != null ? element.FindName(targetName) : null;
+                    newTarget = TargetNameResolver;
                 }
             }
 
@@ -128,6 +126,21 @@ namespace NoesisApp
                     OnTargetChangedImpl(oldTarget, newTarget);
                 }
             }
+        }
+
+        public object TargetNameResolver
+        {
+            get { return GetValue(TargetNameResolverProperty); }
+        }
+
+        public static readonly DependencyProperty TargetNameResolverProperty = DependencyProperty.Register(
+            ".TargetNameResolver", typeof(object), typeof(EventTriggerBase),
+            new PropertyMetadata(null, OnTargetNameResolverChanged));
+
+        static void OnTargetNameResolverChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            TargetedTriggerAction action = (TargetedTriggerAction)d;
+            action.UpdateTarget(action.AssociatedObject);
         }
 
         Type _targetType;

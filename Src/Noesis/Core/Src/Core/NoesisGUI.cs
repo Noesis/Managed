@@ -35,6 +35,14 @@ namespace Noesis
             return Extend.StringFromNativeUtf8(version);
         }
 
+        /// <summary>
+        /// Returns whether the remote Inspector is currently connected
+        /// </summary>
+        public static bool IsInspectorConnected
+        {
+            get { return Noesis_IsInspectorConnected(); }
+        }
+
         private static bool _initialized = false;
 
         /// <summary>
@@ -437,6 +445,10 @@ namespace Noesis
         #region Imports
         [DllImport(Library.Name)]
         static extern IntPtr Noesis_GetBuildVersion();
+
+        [DllImport(Library.Name)]
+        [return: MarshalAs(UnmanagedType.U1)]
+        static extern bool Noesis_IsInspectorConnected();
 
         [DllImport(Library.Name)]
         static extern void Noesis_Init([MarshalAs(UnmanagedType.LPStr)] string licenseName,

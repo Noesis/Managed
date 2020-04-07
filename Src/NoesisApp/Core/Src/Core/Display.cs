@@ -57,6 +57,8 @@ namespace NoesisApp
     public delegate void FileDroppedEventHandler(Display display, string filename);
     public delegate void ActivatedEventHandler(Display display);
     public delegate void DeactivatedEventHandler(Display display);
+    public delegate void ClosingEventHandler(Display display, ref bool cancel);
+    public delegate void ClosedEventHandler(Display display);
     public delegate void RenderEventHandler(Display display);
     public delegate void MouseMoveEventHandler(Display display, int x, int y);
     public delegate void MouseButtonDownEventHandler(Display display, int x, int y, MouseButton b);
@@ -208,6 +210,12 @@ namespace NoesisApp
 
         /// Occurs when a window becomes a background window
         public DeactivatedEventHandler Deactivated;
+
+        /// Occurs when a window is about to be closed
+        public ClosingEventHandler Closing;
+
+        /// Occurs when a window has been closed
+        public ClosedEventHandler Closed;
 
         /// Occurs when window needs to render a frame
         public RenderEventHandler Render;

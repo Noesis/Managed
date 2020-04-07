@@ -36,10 +36,7 @@ namespace NoesisApp
         static void OnPropertyNameChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             ChangePropertyAction action = (ChangePropertyAction)d;
-            if (action.UpdateProperty())
-            {
-                action.UpdateConvertedValue();
-            }
+            action._property = null;
         }
 
         /// <summary>
@@ -58,7 +55,6 @@ namespace NoesisApp
         static void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             ChangePropertyAction action = (ChangePropertyAction)d;
-            action.UpdateProperty();
             action.UpdateConvertedValue();
         }
 
@@ -98,19 +94,22 @@ namespace NoesisApp
             //ChangePropertyAction action = (ChangePropertyAction)d;
         }
 
-        protected override void OnTargetChanged(object oldTarget, object newTarget)
-        {
-            if (UpdateProperty())
-            {
-                UpdateConvertedValue();
-            }
-        }
-
         protected override void Invoke(object parameter)
         {
-            if (AssociatedObject != null && Target != null && _property != null)
+            if (AssociatedObject != null && Target != null)
             {
-                SetPropertyValue();
+                if (_property == null)
+                {
+                    if (UpdateProperty())
+                    {
+                        UpdateConvertedValue();
+                    }
+                }
+
+                if (_property != null)
+                {
+                    SetPropertyValue();
+                }
             }
         }
 
