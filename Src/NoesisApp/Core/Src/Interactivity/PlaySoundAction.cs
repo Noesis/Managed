@@ -50,7 +50,7 @@ namespace NoesisApp
             if (AssociatedObject != null && source != null &&
                 !string.IsNullOrEmpty(source.OriginalString))
             {
-                GUI.PlaySound(source.OriginalString, (float)Volume);
+                GUI.PlayAudio(source.OriginalString, (float)Volume);
             }
         }
     }

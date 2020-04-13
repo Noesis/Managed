@@ -72,6 +72,7 @@
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
   <PropertyGroup>
+    <AssemblyVersion>3.0.0.0</AssemblyVersion>
     <PackageOutputPath>$(SolutionDir)NuGet\</PackageOutputPath>
     <PackageVersion>3.0.0-beta1</PackageVersion>
     <NuGetTool>$(NuGetPackageRoot)nuget.commandline\4.9.3\tools\NuGet.exe</NuGetTool>

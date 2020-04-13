@@ -15,7 +15,7 @@ namespace Noesis
     public delegate void OpenUrlCallback(string url);
 
     /// <summary> Called when an element wants to play a sound </summary>
-    public delegate void PlaySoundCallback(string filename, float volume);
+    public delegate void PlayAudioCallback(string filename, float volume);
 
     /// <summary> Called for every xaml dependency found </summary>
     public delegate void XamlDependencyCallback(string uri, XamlDependencyType type);
@@ -68,7 +68,7 @@ namespace Noesis
         /// </summary>
         public static void Shutdown()
         {
-            Noesis_SetPlaySoundCallback(null);
+            Noesis_SetPlayAudioCallback(null);
             Noesis_SetOpenUrlCallback(null);
             Noesis_SetCursorCallback(null);
             Noesis_SetSoftwareKeyboardCallback(null);
@@ -191,20 +191,20 @@ namespace Noesis
         /// <summary>
         /// Callback for playing audio.
         /// </summary>
-        public static void SetPlaySoundCallback(PlaySoundCallback callback)
+        public static void SetPlayAudioCallback(PlayAudioCallback callback)
         {
-            _playSoundCallback = callback;
-            Noesis_SetPlaySoundCallback(callback != null ? _playSound : null);
+            _playAudioCallback = callback;
+            Noesis_SetPlayAudioCallback(callback != null ? _playAudio : null);
         }
 
         /// <summary>
         /// Plays the specified sound with the provided callback.
         /// </summary>
-        public static void PlaySound(string filename, float volume)
+        public static void PlayAudio(string filename, float volume)
         {
-            if (_playSoundCallback != null)
+            if (_playAudioCallback != null)
             {
-                _playSoundCallback(filename, volume);
+                _playAudioCallback(filename, volume);
             }
         }
 
@@ -361,19 +361,19 @@ namespace Noesis
         }
         #endregion
 
-        #region PlaySound
-        private static PlaySoundCallback _playSoundCallback;
+        #region PlayAudio
+        private static PlayAudioCallback _playAudioCallback;
 
-        private delegate void NoesisPlaySoundCallback(IntPtr sound, float volume);
-        private static NoesisPlaySoundCallback _playSound = OnPlaySound;
-        [MonoPInvokeCallback(typeof(NoesisPlaySoundCallback))]
-        private static void OnPlaySound(IntPtr sound, float volume)
+        private delegate void NoesisPlayAudioCallback(IntPtr sound, float volume);
+        private static NoesisPlayAudioCallback _playAudio = OnPlayAudio;
+        [MonoPInvokeCallback(typeof(NoesisPlayAudioCallback))]
+        private static void OnPlayAudio(IntPtr sound, float volume)
         {
             try
             {
                 if (_initialized)
                 {
-                    _playSoundCallback(Extend.StringFromNativeUtf8(sound), volume);
+                    _playAudioCallback(Extend.StringFromNativeUtf8(sound), volume);
                 }
             }
             catch (Exception e)
@@ -487,7 +487,7 @@ namespace Noesis
         static extern void Noesis_SetOpenUrlCallback(NoesisOpenUrlCallback callback);
 
         [DllImport(Library.Name)]
-        static extern void Noesis_SetPlaySoundCallback(NoesisPlaySoundCallback callback);
+        static extern void Noesis_SetPlayAudioCallback(NoesisPlayAudioCallback callback);
 
         [DllImport(Library.Name)]
         static extern void Noesis_GetXamlDependencies(HandleRef stream,

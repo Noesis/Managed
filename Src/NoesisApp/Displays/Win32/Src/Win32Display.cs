@@ -303,7 +303,7 @@ namespace NoesisApp
             }
         }
 
-        public override void PlaySound(string filename, float volume)
+        public override void PlayAudio(string filename, float volume)
         {
         }
 

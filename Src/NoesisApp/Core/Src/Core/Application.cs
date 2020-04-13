@@ -185,9 +185,9 @@ namespace NoesisApp
                 Display.OpenUrl(url);
             });
 
-            GUI.SetPlaySoundCallback((string filename, float volume) =>
+            GUI.SetPlayAudioCallback((string filename, float volume) =>
             {
-                Display.PlaySound(filename, volume);
+                Display.PlayAudio(filename, volume);
             });
 
             // Set resource providers

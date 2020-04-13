@@ -10,7 +10,7 @@ namespace NoesisApp
 {
     public class AppKitDisplay : Display
     {
-        public bool Closed { get; set; }
+        public bool IsClosed { get; set; }
 
         private WindowClass _window;
         private WindowDelegate _delegate;
@@ -94,11 +94,11 @@ namespace NoesisApp
                     }
                 } while (evt != null);
 
-                if (!Closed)
+                if (!IsClosed)
                 {
                     OnRender();
                 }
-            } while (!Closed);
+            } while (!IsClosed);
         }
 
         public override void OpenSoftwareKeyboard(Noesis.UIElement focused)
@@ -375,7 +375,7 @@ namespace NoesisApp
             [BindingImpl(BindingImplOptions.GeneratedCode | BindingImplOptions.Optimizable)]
             public new virtual void WillClose(NSNotification notification)
             {
-                _display.Closed = true;
+                _display.IsClosed = true;
             }
 
             [Export("windowDidBecomeKey:")]
