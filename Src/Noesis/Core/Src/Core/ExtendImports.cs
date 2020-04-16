@@ -89,7 +89,6 @@ namespace Noesis
             Callback_ProviderTextureOpen callback_ProviderTextureOpen,
             Callback_ProviderScanFolder callback_ProviderScanFolder,
             Callback_ProviderOpenFont callback_ProviderOpenFont,
-            Callback_GetPropertyInfo callback_GetPropertyInfo,
             Callback_GetPropertyValue_Bool callback_GetPropertyValue_Bool,
             Callback_GetPropertyValue_Float callback_GetPropertyValue_Float,
             Callback_GetPropertyValue_Double callback_GetPropertyValue_Double,

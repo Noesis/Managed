@@ -36,7 +36,17 @@ namespace Noesis
         }
 
         /// <summary>
-        /// Returns whether the remote Inspector is currently connected
+        /// Disables all connections from the remote Inspector tool.
+        /// Must be invoked before Noesis.GUI.Init()
+        /// </summary>
+        public static void DisableInspector()
+        {
+            Noesis_DisableInspector();
+        }
+
+
+        /// <summary>
+        /// Returns whether the remote Inspector is currently connected.
         /// </summary>
         public static bool IsInspectorConnected
         {
@@ -445,6 +455,9 @@ namespace Noesis
         #region Imports
         [DllImport(Library.Name)]
         static extern IntPtr Noesis_GetBuildVersion();
+
+        [DllImport(Library.Name)]
+        static extern void Noesis_DisableInspector();
 
         [DllImport(Library.Name)]
         [return: MarshalAs(UnmanagedType.U1)]

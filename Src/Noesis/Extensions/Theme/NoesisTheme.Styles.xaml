@@ -36,19 +36,19 @@
   <CornerRadius x:Key="Corner.Popup">3</CornerRadius>
 
   <!-- Popup Animations -->
-  <Storyboard x:Key="Anim.Popup.Fade" Storyboard.TargetProperty="(UIElement.Opacity)">
+  <Storyboard x:Key="Anim.Popup.Fade" Storyboard.TargetProperty="Opacity">
     <DoubleAnimationUsingKeyFrames>
       <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
       <EasingDoubleKeyFrame KeyTime="0:0:0.150" Value="1"/>
     </DoubleAnimationUsingKeyFrames>
   </Storyboard>
-  <Storyboard x:Key="Anim.Popup.Slide" Storyboard.TargetProperty="(UIElement.Opacity)">
+  <Storyboard x:Key="Anim.Popup.Slide" Storyboard.TargetProperty="Opacity">
     <DoubleAnimationUsingKeyFrames>
       <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
       <EasingDoubleKeyFrame KeyTime="0:0:0.150" Value="1"/>
     </DoubleAnimationUsingKeyFrames>
   </Storyboard>
-  <Storyboard x:Key="Anim.Popup.Scroll" Storyboard.TargetProperty="(UIElement.Opacity)">
+  <Storyboard x:Key="Anim.Popup.Scroll" Storyboard.TargetProperty="Opacity">
     <DoubleAnimationUsingKeyFrames>
       <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
       <EasingDoubleKeyFrame KeyTime="0:0:0.150" Value="1"/>
@@ -152,12 +152,12 @@
     </Grid>
     <ControlTemplate.Resources>
       <Storyboard x:Key="Anim.Press">
-        <DoubleAnimation Storyboard.TargetName="TemplateRoot" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" To="0.99" Duration="0:0:0.1" DecelerationRatio="0.25"/>
-        <DoubleAnimation Storyboard.TargetName="TemplateRoot" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" To="0.99" Duration="0:0:0.1" DecelerationRatio="0.25"/>
+        <DoubleAnimation Storyboard.TargetName="TemplateRoot" Storyboard.TargetProperty="RenderTransform.ScaleX" To="0.99" Duration="0:0:0.1" DecelerationRatio="0.25"/>
+        <DoubleAnimation Storyboard.TargetName="TemplateRoot" Storyboard.TargetProperty="RenderTransform.ScaleY" To="0.99" Duration="0:0:0.1" DecelerationRatio="0.25"/>
       </Storyboard>
       <Storyboard x:Key="Anim.Release">
-        <DoubleAnimation Storyboard.TargetName="TemplateRoot" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" To="1" Duration="0:0:0.2" DecelerationRatio="1"/>
-        <DoubleAnimation Storyboard.TargetName="TemplateRoot" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" To="1" Duration="0:0:0.2" DecelerationRatio="1"/>
+        <DoubleAnimation Storyboard.TargetName="TemplateRoot" Storyboard.TargetProperty="RenderTransform.ScaleX" To="1" Duration="0:0:0.2" DecelerationRatio="1"/>
+        <DoubleAnimation Storyboard.TargetName="TemplateRoot" Storyboard.TargetProperty="RenderTransform.ScaleY" To="1" Duration="0:0:0.2" DecelerationRatio="1"/>
       </Storyboard>
     </ControlTemplate.Resources>
     <ControlTemplate.Triggers>
@@ -210,12 +210,12 @@
     </Grid>
     <ControlTemplate.Resources>
       <Storyboard x:Key="Anim.Press">
-        <DoubleAnimation Storyboard.TargetName="TemplateRoot" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" To="0.99" Duration="0:0:0.1" DecelerationRatio="0.25"/>
-        <DoubleAnimation Storyboard.TargetName="TemplateRoot" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" To="0.99" Duration="0:0:0.1" DecelerationRatio="0.25"/>
+        <DoubleAnimation Storyboard.TargetName="TemplateRoot" Storyboard.TargetProperty="RenderTransform.ScaleX" To="0.99" Duration="0:0:0.1" DecelerationRatio="0.25"/>
+        <DoubleAnimation Storyboard.TargetName="TemplateRoot" Storyboard.TargetProperty="RenderTransform.ScaleY" To="0.99" Duration="0:0:0.1" DecelerationRatio="0.25"/>
       </Storyboard>
       <Storyboard x:Key="Anim.Release">
-        <DoubleAnimation Storyboard.TargetName="TemplateRoot" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" To="1" Duration="0:0:0.2" DecelerationRatio="1"/>
-        <DoubleAnimation Storyboard.TargetName="TemplateRoot" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" To="1" Duration="0:0:0.2" DecelerationRatio="1"/>
+        <DoubleAnimation Storyboard.TargetName="TemplateRoot" Storyboard.TargetProperty="RenderTransform.ScaleX" To="1" Duration="0:0:0.2" DecelerationRatio="1"/>
+        <DoubleAnimation Storyboard.TargetName="TemplateRoot" Storyboard.TargetProperty="RenderTransform.ScaleY" To="1" Duration="0:0:0.2" DecelerationRatio="1"/>
       </Storyboard>
     </ControlTemplate.Resources>
     <ControlTemplate.Triggers>
@@ -270,6 +270,11 @@
   <!-- ToggleSwitch -->
   <ControlTemplate x:Key="Template.ToggleSwitch" TargetType="ToggleButton">
     <ControlTemplate.Resources>
+      <Storyboard x:Key="Anim.Loaded">
+        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Tag" Storyboard.TargetName="Root">
+          <DiscreteObjectKeyFrame KeyTime="0" Value="1"/>
+        </ObjectAnimationUsingKeyFrames>
+      </Storyboard>
       <Storyboard x:Key="Anim.Check.Loaded">
         <DoubleAnimation Storyboard.TargetProperty="RenderTransform.X" Storyboard.TargetName="Knob" To="24" Duration="0"/>
       </Storyboard>
@@ -280,19 +285,7 @@
         <DoubleAnimation Storyboard.TargetProperty="RenderTransform.X" Storyboard.TargetName="Knob" To="0" Duration="0:0:0.2" DecelerationRatio="1"/>
       </Storyboard>
     </ControlTemplate.Resources>
-    <Grid Background="Transparent">
-      <i:Interaction.Triggers>
-        <i:EventTrigger EventName="Loaded">
-          <i:Interaction.Behaviors>
-            <ei:ConditionBehavior>
-              <ei:ConditionalExpression>
-                <ei:ComparisonCondition LeftOperand="{Binding IsChecked, RelativeSource={RelativeSource TemplatedParent}}" RightOperand="True"/>
-              </ei:ConditionalExpression>
-            </ei:ConditionBehavior>
-          </i:Interaction.Behaviors>
-          <ei:ControlStoryboardAction Storyboard="{StaticResource Anim.Check.Loaded}"/>
-        </i:EventTrigger>
-      </i:Interaction.Triggers>
+    <Grid x:Name="Root" Background="Transparent" Tag="0">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="Auto"/>
         <ColumnDefinition Width="*"/>
@@ -302,13 +295,16 @@
       <Decorator Margin="{TemplateBinding BorderThickness}">
         <Ellipse x:Name="Knob" Grid.Column="0" Width="10" Height="10" Margin="5" HorizontalAlignment="Left" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Fill="{DynamicResource Brush.Glyph.Normal}">
           <Ellipse.RenderTransform>
-            <TranslateTransform X="0"/>
+            <TranslateTransform/>
           </Ellipse.RenderTransform>
         </Ellipse>
       </Decorator>
       <ContentPresenter x:Name="PART_ContentPresenter" Grid.Column="1" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="{TemplateBinding Padding}"/>
     </Grid>
     <ControlTemplate.Triggers>
+      <EventTrigger RoutedEvent="FrameworkElement.Loaded" SourceName="Root">
+        <BeginStoryboard Storyboard="{StaticResource Anim.Loaded}"/>
+      </EventTrigger>
       <Trigger Property="IsMouseOver" Value="True">
         <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border.Over}" TargetName="Border"/>
         <Setter Property="BorderThickness" Value="{DynamicResource Border.Over}" TargetName="Border"/>
@@ -323,16 +319,31 @@
         <Setter Property="Fill" Value="{DynamicResource Brush.Glyph.Pressed}" TargetName="Knob"/>
       </Trigger>
       <Trigger Property="IsChecked" Value="True">
-        <Trigger.EnterActions>
-          <BeginStoryboard Storyboard="{StaticResource Anim.Check}"/>
-        </Trigger.EnterActions>
-        <Trigger.ExitActions>
-          <BeginStoryboard Storyboard="{StaticResource Anim.Uncheck}"/>
-        </Trigger.ExitActions>
         <Setter Property="Background" Value="{DynamicResource Brush.Background.Checked}" TargetName="Border"/>
         <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border.Checked}" TargetName="Border"/>
         <Setter Property="Fill" Value="{DynamicResource Brush.Glyph.Checked}" TargetName="Knob"/>
       </Trigger>
+      <MultiDataTrigger>
+        <MultiDataTrigger.Conditions>
+          <Condition Binding="{Binding Tag, ElementName=Root}" Value="0"/>
+          <Condition Binding="{Binding IsChecked, RelativeSource={RelativeSource Self}}" Value="True"/>
+        </MultiDataTrigger.Conditions>
+        <MultiDataTrigger.EnterActions>
+          <BeginStoryboard Storyboard="{StaticResource Anim.Check.Loaded}"/>
+        </MultiDataTrigger.EnterActions>
+      </MultiDataTrigger>
+      <MultiDataTrigger>
+        <MultiDataTrigger.Conditions>
+          <Condition Binding="{Binding Tag, ElementName=Root}" Value="1"/>
+          <Condition Binding="{Binding IsChecked, RelativeSource={RelativeSource Self}}" Value="True"/>
+        </MultiDataTrigger.Conditions>
+        <MultiDataTrigger.EnterActions>
+          <BeginStoryboard Storyboard="{StaticResource Anim.Check}"/>
+        </MultiDataTrigger.EnterActions>
+        <MultiDataTrigger.ExitActions>
+          <BeginStoryboard Storyboard="{StaticResource Anim.Uncheck}"/>
+        </MultiDataTrigger.ExitActions>
+      </MultiDataTrigger>
       <Trigger Property="IsEnabled" Value="False">
         <Setter Property="Foreground" Value="{DynamicResource Brush.Foreground.Disabled}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border.Disabled}" TargetName="Border"/>
@@ -363,6 +374,11 @@
   <Geometry x:Key="Geometry.CheckBox.Check">M0,7.5L5.5,12.5 14,2.75 11.75,1 5.5,9 1.5,5.5z</Geometry>
   <ControlTemplate x:Key="Template.CheckBox" TargetType="CheckBox">
     <ControlTemplate.Resources>
+      <Storyboard x:Key="Anim.Loaded">
+        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Tag" Storyboard.TargetName="Root">
+          <DiscreteObjectKeyFrame KeyTime="0" Value="1"/>
+        </ObjectAnimationUsingKeyFrames>
+      </Storyboard>
       <Storyboard x:Key="Anim.Check.Loaded">
         <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX" Storyboard.TargetName="Check" To="1" Duration="0"/>
         <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" Storyboard.TargetName="Check" To="1" Duration="0"/>
@@ -376,19 +392,7 @@
         <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" Storyboard.TargetName="Check" To="0" Duration="0:0:0.2" DecelerationRatio="1"/>
       </Storyboard>
     </ControlTemplate.Resources>
-    <Grid Background="Transparent">
-      <i:Interaction.Triggers>
-        <i:EventTrigger EventName="Loaded">
-          <i:Interaction.Behaviors>
-            <ei:ConditionBehavior>
-              <ei:ConditionalExpression>
-                <ei:ComparisonCondition LeftOperand="{Binding IsChecked, RelativeSource={RelativeSource TemplatedParent}}" RightOperand="True"/>
-              </ei:ConditionalExpression>
-            </ei:ConditionBehavior>
-          </i:Interaction.Behaviors>
-          <ei:ControlStoryboardAction Storyboard="{StaticResource Anim.Check.Loaded}"/>
-        </i:EventTrigger>
-      </i:Interaction.Triggers>
+    <Grid x:Name="Root" Background="Transparent" Tag="0">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="Auto"/>
         <ColumnDefinition Width="*"/>
@@ -408,6 +412,9 @@
       <ContentPresenter x:Name="PART_ContentPresenter" Grid.Column="1" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="{TemplateBinding Padding}"/>
     </Grid>
     <ControlTemplate.Triggers>
+      <EventTrigger RoutedEvent="FrameworkElement.Loaded" SourceName="Root">
+        <BeginStoryboard Storyboard="{StaticResource Anim.Loaded}"/>
+      </EventTrigger>
       <Trigger Property="IsMouseOver" Value="True">
         <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border.Over}" TargetName="Border"/>
         <Setter Property="BorderThickness" Value="{DynamicResource Border.Over}" TargetName="Border"/>
@@ -420,15 +427,30 @@
         <Setter Property="CornerRadius" Value="{DynamicResource Corner.Border0}" TargetName="Border"/>
       </Trigger>
       <Trigger Property="IsChecked" Value="True">
-        <Trigger.EnterActions>
-          <BeginStoryboard Storyboard="{StaticResource Anim.Check}"/>
-        </Trigger.EnterActions>
-        <Trigger.ExitActions>
-          <BeginStoryboard Storyboard="{StaticResource Anim.Uncheck}"/>
-        </Trigger.ExitActions>
         <Setter Property="Background" Value="{DynamicResource Brush.Background.Checked}" TargetName="Border"/>
         <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border.Checked}" TargetName="Border"/>
       </Trigger>
+      <MultiDataTrigger>
+        <MultiDataTrigger.Conditions>
+          <Condition Binding="{Binding Tag, ElementName=Root}" Value="0"/>
+          <Condition Binding="{Binding IsChecked, RelativeSource={RelativeSource Self}}" Value="True"/>
+        </MultiDataTrigger.Conditions>
+        <MultiDataTrigger.EnterActions>
+          <BeginStoryboard Storyboard="{StaticResource Anim.Check.Loaded}"/>
+        </MultiDataTrigger.EnterActions>
+      </MultiDataTrigger>
+      <MultiDataTrigger>
+        <MultiDataTrigger.Conditions>
+          <Condition Binding="{Binding Tag, ElementName=Root}" Value="1"/>
+          <Condition Binding="{Binding IsChecked, RelativeSource={RelativeSource Self}}" Value="True"/>
+        </MultiDataTrigger.Conditions>
+        <MultiDataTrigger.EnterActions>
+          <BeginStoryboard Storyboard="{StaticResource Anim.Check}"/>
+        </MultiDataTrigger.EnterActions>
+        <MultiDataTrigger.ExitActions>
+          <BeginStoryboard Storyboard="{StaticResource Anim.Uncheck}"/>
+        </MultiDataTrigger.ExitActions>
+      </MultiDataTrigger>
       <MultiTrigger>
         <MultiTrigger.Conditions>
           <Condition Property="IsThreeState" Value="True"/>
@@ -468,6 +490,11 @@
   <!-- RadioButton -->
   <ControlTemplate x:Key="Template.RadioButton" TargetType="RadioButton">
     <ControlTemplate.Resources>
+      <Storyboard x:Key="Anim.Loaded">
+        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Tag" Storyboard.TargetName="Root">
+          <DiscreteObjectKeyFrame KeyTime="0" Value="1"/>
+        </ObjectAnimationUsingKeyFrames>
+      </Storyboard>
       <Storyboard x:Key="Anim.Check.Loaded">
         <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX" Storyboard.TargetName="Check" To="1" Duration="0"/>
         <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" Storyboard.TargetName="Check" To="1" Duration="0"/>
@@ -481,19 +508,7 @@
         <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" Storyboard.TargetName="Check" To="0" Duration="0:0:0.2" DecelerationRatio="1"/>
       </Storyboard>
     </ControlTemplate.Resources>
-    <Grid Background="Transparent">
-      <i:Interaction.Triggers>
-        <i:EventTrigger EventName="Loaded">
-          <i:Interaction.Behaviors>
-            <ei:ConditionBehavior>
-              <ei:ConditionalExpression>
-                <ei:ComparisonCondition LeftOperand="{Binding IsChecked, RelativeSource={RelativeSource TemplatedParent}}" RightOperand="True"/>
-              </ei:ConditionalExpression>
-            </ei:ConditionBehavior>
-          </i:Interaction.Behaviors>
-          <ei:ControlStoryboardAction Storyboard="{StaticResource Anim.Check.Loaded}"/>
-        </i:EventTrigger>
-      </i:Interaction.Triggers>
+    <Grid x:Name="Root" Background="Transparent" Tag="0">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="Auto"/>
         <ColumnDefinition Width="*"/>
@@ -510,6 +525,9 @@
       <ContentPresenter x:Name="PART_ContentPresenter" Grid.Column="1" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="{TemplateBinding Padding}"/>
     </Grid>
     <ControlTemplate.Triggers>
+      <EventTrigger RoutedEvent="FrameworkElement.Loaded" SourceName="Root">
+        <BeginStoryboard Storyboard="{StaticResource Anim.Loaded}"/>
+      </EventTrigger>
       <Trigger Property="IsMouseOver" Value="True">
         <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border.Over}" TargetName="Border"/>
         <Setter Property="BorderThickness" Value="{DynamicResource Border.Over}" TargetName="Border"/>
@@ -520,15 +538,30 @@
         <Setter Property="BorderThickness" Value="{DynamicResource Border.Normal}" TargetName="Border"/>
       </Trigger>
       <Trigger Property="IsChecked" Value="True">
-        <Trigger.EnterActions>
-          <BeginStoryboard Storyboard="{StaticResource Anim.Check}"/>
-        </Trigger.EnterActions>
-        <Trigger.ExitActions>
-          <BeginStoryboard Storyboard="{StaticResource Anim.Uncheck}"/>
-        </Trigger.ExitActions>
         <Setter Property="Background" Value="{DynamicResource Brush.Background.Checked}" TargetName="Border"/>
         <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border.Checked}" TargetName="Border"/>
       </Trigger>
+      <MultiDataTrigger>
+        <MultiDataTrigger.Conditions>
+          <Condition Binding="{Binding Tag, ElementName=Root}" Value="0"/>
+          <Condition Binding="{Binding IsChecked, RelativeSource={RelativeSource Self}}" Value="True"/>
+        </MultiDataTrigger.Conditions>
+        <MultiDataTrigger.EnterActions>
+          <BeginStoryboard Storyboard="{StaticResource Anim.Check.Loaded}"/>
+        </MultiDataTrigger.EnterActions>
+      </MultiDataTrigger>
+      <MultiDataTrigger>
+        <MultiDataTrigger.Conditions>
+          <Condition Binding="{Binding Tag, ElementName=Root}" Value="1"/>
+          <Condition Binding="{Binding IsChecked, RelativeSource={RelativeSource Self}}" Value="True"/>
+        </MultiDataTrigger.Conditions>
+        <MultiDataTrigger.EnterActions>
+          <BeginStoryboard Storyboard="{StaticResource Anim.Check}"/>
+        </MultiDataTrigger.EnterActions>
+        <MultiDataTrigger.ExitActions>
+          <BeginStoryboard Storyboard="{StaticResource Anim.Uncheck}"/>
+        </MultiDataTrigger.ExitActions>
+      </MultiDataTrigger>
       <Trigger Property="IsEnabled" Value="False">
         <Setter Property="Foreground" Value="{DynamicResource Brush.Foreground.Disabled}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border.Disabled}" TargetName="Border"/>
@@ -1103,118 +1136,85 @@
   <Geometry x:Key="Geometry.Expander.Arrow">M0,0L6,6 0,12</Geometry>
   <ControlTemplate x:Key="Template.Expander" TargetType="Expander">
     <ControlTemplate.Resources>
+      <Storyboard x:Key="Anim.Loaded">
+        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Tag" Storyboard.TargetName="Root">
+          <DiscreteObjectKeyFrame KeyTime="0" Value="1"/>
+        </ObjectAnimationUsingKeyFrames>
+      </Storyboard>
       <Storyboard x:Key="Anim.Expand.Vertical.Loaded">
-        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentBorder" Storyboard.TargetProperty="(UIElement.Visibility)">
+        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentBorder" Storyboard.TargetProperty="Visibility">
           <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
         </ObjectAnimationUsingKeyFrames>
-        <DoubleAnimation Storyboard.TargetName="ContentBg" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" To="1" Duration="0"/>
+        <DoubleAnimation Storyboard.TargetName="ContentBg" Storyboard.TargetProperty="RenderTransform.ScaleX" To="1" Duration="0"/>
+        <DoubleAnimation Storyboard.TargetName="ContentBg" Storyboard.TargetProperty="RenderTransform.ScaleY" To="1" Duration="0"/>
       </Storyboard>
       <Storyboard x:Key="Anim.Expand.Vertical.Up.Loaded">
-        <DoubleAnimation Storyboard.TargetName="Arrow" Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)" To="-90" Duration="0"/>
+        <DoubleAnimation Storyboard.TargetName="Arrow" Storyboard.TargetProperty="RenderTransform.Angle" To="-90" Duration="0"/>
         <StaticResource ResourceKey="Anim.Expand.Vertical.Loaded"/>
       </Storyboard>
       <Storyboard x:Key="Anim.Expand.Vertical.Down.Loaded">
-        <DoubleAnimation Storyboard.TargetName="Arrow" Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)" To="90" Duration="0"/>
+        <DoubleAnimation Storyboard.TargetName="Arrow" Storyboard.TargetProperty="RenderTransform.Angle" To="90" Duration="0"/>
         <StaticResource ResourceKey="Anim.Expand.Vertical.Loaded"/>
       </Storyboard>
       <Storyboard x:Key="Anim.Expand.Horizontal.Loaded">
-        <DoubleAnimation Storyboard.TargetName="Arrow" Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)" To="90" Duration="0"/>
-        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentBorder" Storyboard.TargetProperty="(UIElement.Visibility)">
+        <DoubleAnimation Storyboard.TargetName="Arrow" Storyboard.TargetProperty="RenderTransform.Angle" To="90" Duration="0"/>
+        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentBorder" Storyboard.TargetProperty="Visibility">
           <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
         </ObjectAnimationUsingKeyFrames>
-        <DoubleAnimation Storyboard.TargetName="ContentBg" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" To="1" Duration="0"/>
+        <DoubleAnimation Storyboard.TargetName="ContentBg" Storyboard.TargetProperty="RenderTransform.ScaleX" To="1" Duration="0">
+          <DoubleAnimation.EasingFunction>
+            <BackEase EasingMode="EaseOut" Amplitude="0.2"/>
+          </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+        <DoubleAnimation Storyboard.TargetName="ContentBg" Storyboard.TargetProperty="RenderTransform.ScaleY" To="1" Duration="0"/>
       </Storyboard>
       <Storyboard x:Key="Anim.Expand.Vertical">
-        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentBorder" Storyboard.TargetProperty="(UIElement.Visibility)">
+        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentBorder" Storyboard.TargetProperty="Visibility">
           <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
         </ObjectAnimationUsingKeyFrames>
-        <DoubleAnimation Storyboard.TargetName="ContentBg" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" To="1" Duration="0:0:0.2">
+        <DoubleAnimation Storyboard.TargetName="ContentBg" Storyboard.TargetProperty="RenderTransform.ScaleX" To="1" Duration="0"/>
+        <DoubleAnimation Storyboard.TargetName="ContentBg" Storyboard.TargetProperty="RenderTransform.ScaleY" To="1" Duration="0:0:0.2">
           <DoubleAnimation.EasingFunction>
             <BackEase EasingMode="EaseOut" Amplitude="0.2"/>
           </DoubleAnimation.EasingFunction>
         </DoubleAnimation>
       </Storyboard>
       <Storyboard x:Key="Anim.Expand.Vertical.Up">
-        <DoubleAnimation Storyboard.TargetName="Arrow" Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)" To="-90" Duration="0:0:0.15"/>
+        <DoubleAnimation Storyboard.TargetName="Arrow" Storyboard.TargetProperty="RenderTransform.Angle" To="-90" Duration="0:0:0.15"/>
         <StaticResource ResourceKey="Anim.Expand.Vertical"/>
       </Storyboard>
       <Storyboard x:Key="Anim.Expand.Vertical.Down">
-        <DoubleAnimation Storyboard.TargetName="Arrow" Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)" To="90" Duration="0:0:0.15"/>
+        <DoubleAnimation Storyboard.TargetName="Arrow" Storyboard.TargetProperty="RenderTransform.Angle" To="90" Duration="0:0:0.15"/>
         <StaticResource ResourceKey="Anim.Expand.Vertical"/>
       </Storyboard>
       <Storyboard x:Key="Anim.Collapse.Vertical">
-        <DoubleAnimation Storyboard.TargetName="Arrow" Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)" To="0" Duration="0:0:0.2"/>
-        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentBorder" Storyboard.TargetProperty="(UIElement.Visibility)">
+        <DoubleAnimation Storyboard.TargetName="Arrow" Storyboard.TargetProperty="RenderTransform.Angle" To="0" Duration="0:0:0.2"/>
+        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentBorder" Storyboard.TargetProperty="Visibility">
           <DiscreteObjectKeyFrame KeyTime="0:0:0.2" Value="{x:Static Visibility.Collapsed}"/>
         </ObjectAnimationUsingKeyFrames>
-        <DoubleAnimation Storyboard.TargetName="ContentBg" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" To="0" Duration="0:0:0.2" AccelerationRatio="0.5"/>
+        <DoubleAnimation Storyboard.TargetName="ContentBg" Storyboard.TargetProperty="RenderTransform.ScaleY" To="0" Duration="0:0:0.2" AccelerationRatio="0.5"/>
       </Storyboard>
       <Storyboard x:Key="Anim.Expand.Horizontal">
-        <DoubleAnimation Storyboard.TargetName="Arrow" Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)" To="90" Duration="0:0:0.15"/>
-        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentBorder" Storyboard.TargetProperty="(UIElement.Visibility)">
+        <DoubleAnimation Storyboard.TargetName="Arrow" Storyboard.TargetProperty="RenderTransform.Angle" To="90" Duration="0:0:0.15"/>
+        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentBorder" Storyboard.TargetProperty="Visibility">
           <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
         </ObjectAnimationUsingKeyFrames>
-        <DoubleAnimation Storyboard.TargetName="ContentBg" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" To="1" Duration="0:0:0.2">
+        <DoubleAnimation Storyboard.TargetName="ContentBg" Storyboard.TargetProperty="RenderTransform.ScaleX" To="1" Duration="0:0:0.2">
           <DoubleAnimation.EasingFunction>
             <BackEase EasingMode="EaseOut" Amplitude="0.2"/>
           </DoubleAnimation.EasingFunction>
         </DoubleAnimation>
+        <DoubleAnimation Storyboard.TargetName="ContentBg" Storyboard.TargetProperty="RenderTransform.ScaleY" To="1" Duration="0"/>
       </Storyboard>
       <Storyboard x:Key="Anim.Collapse.Horizontal">
-        <DoubleAnimation Storyboard.TargetName="Arrow" Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)" To="0" Duration="0:0:0.2"/>
-        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentBorder" Storyboard.TargetProperty="(UIElement.Visibility)">
+        <DoubleAnimation Storyboard.TargetName="Arrow" Storyboard.TargetProperty="RenderTransform.Angle" To="0" Duration="0:0:0.2"/>
+        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentBorder" Storyboard.TargetProperty="Visibility">
           <DiscreteObjectKeyFrame KeyTime="0:0:0.2" Value="{x:Static Visibility.Collapsed}"/>
         </ObjectAnimationUsingKeyFrames>
-        <DoubleAnimation Storyboard.TargetName="ContentBg" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" To="0" Duration="0:0:0.2" AccelerationRatio="0.5"/>
+        <DoubleAnimation Storyboard.TargetName="ContentBg" Storyboard.TargetProperty="RenderTransform.ScaleX" To="0" Duration="0:0:0.2" AccelerationRatio="0.5"/>
       </Storyboard>
     </ControlTemplate.Resources>
-    <Grid>
-      <i:Interaction.Triggers>
-        <i:EventTrigger EventName="Loaded">
-          <i:Interaction.Behaviors>
-            <ei:ConditionBehavior>
-              <ei:ConditionalExpression>
-                <ei:ComparisonCondition LeftOperand="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" RightOperand="True"/>
-                <ei:ComparisonCondition LeftOperand="{Binding ExpandDirection, RelativeSource={RelativeSource TemplatedParent}}" RightOperand="Up"/>
-              </ei:ConditionalExpression>
-            </ei:ConditionBehavior>
-          </i:Interaction.Behaviors>
-          <ei:ControlStoryboardAction Storyboard="{StaticResource Anim.Expand.Vertical.Up.Loaded}"/>
-        </i:EventTrigger>
-        <i:EventTrigger EventName="Loaded">
-          <i:Interaction.Behaviors>
-            <ei:ConditionBehavior>
-              <ei:ConditionalExpression>
-                <ei:ComparisonCondition LeftOperand="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" RightOperand="True"/>
-                <ei:ComparisonCondition LeftOperand="{Binding ExpandDirection, RelativeSource={RelativeSource TemplatedParent}}" RightOperand="Down"/>
-              </ei:ConditionalExpression>
-            </ei:ConditionBehavior>
-          </i:Interaction.Behaviors>
-          <ei:ControlStoryboardAction Storyboard="{StaticResource Anim.Expand.Vertical.Down.Loaded}"/>
-        </i:EventTrigger>
-        <i:EventTrigger EventName="Loaded">
-          <i:Interaction.Behaviors>
-            <ei:ConditionBehavior>
-              <ei:ConditionalExpression>
-                <ei:ComparisonCondition LeftOperand="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" RightOperand="True"/>
-                <ei:ComparisonCondition LeftOperand="{Binding ExpandDirection, RelativeSource={RelativeSource TemplatedParent}}" RightOperand="Left"/>
-              </ei:ConditionalExpression>
-            </ei:ConditionBehavior>
-          </i:Interaction.Behaviors>
-          <ei:ControlStoryboardAction Storyboard="{StaticResource Anim.Expand.Horizontal.Loaded}"/>
-        </i:EventTrigger>
-        <i:EventTrigger EventName="Loaded">
-          <i:Interaction.Behaviors>
-            <ei:ConditionBehavior>
-              <ei:ConditionalExpression>
-                <ei:ComparisonCondition LeftOperand="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" RightOperand="True"/>
-                <ei:ComparisonCondition LeftOperand="{Binding ExpandDirection, RelativeSource={RelativeSource TemplatedParent}}" RightOperand="Right"/>
-              </ei:ConditionalExpression>
-            </ei:ConditionBehavior>
-          </i:Interaction.Behaviors>
-          <ei:ControlStoryboardAction Storyboard="{StaticResource Anim.Expand.Horizontal.Loaded}"/>
-        </i:EventTrigger>
-      </i:Interaction.Triggers>
+    <Grid x:Name="Root" Tag="0">
       <Grid.RowDefinitions>
         <RowDefinition Height="Auto"/>
         <RowDefinition Height="*"/>
@@ -1243,11 +1243,17 @@
       </ToggleButton>
       <Decorator x:Name="ContentBorder" Grid.Row="1" Grid.Column="1" Visibility="Collapsed">
         <Border x:Name="ContentBg" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{DynamicResource Corner.Border0.Bottom}" Padding="{TemplateBinding Padding}">
+          <Border.RenderTransform>
+            <ScaleTransform ScaleX="0" ScaleY="0"/>
+          </Border.RenderTransform>
           <ContentPresenter x:Name="ContentHost" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
         </Border>
       </Decorator>
     </Grid>
     <ControlTemplate.Triggers>
+      <EventTrigger RoutedEvent="FrameworkElement.Loaded" SourceName="Root">
+        <BeginStoryboard Storyboard="{StaticResource Anim.Loaded}"/>
+      </EventTrigger>
       <Trigger Property="IsMouseOver" Value="True" SourceName="ExpanderButton">
         <Setter Property="Background" Value="{DynamicResource Brush.Header.Over}" TargetName="HeaderBg"/>
         <Setter Property="Stroke" Value="{DynamicResource Brush.Glyph.Over}" TargetName="Arrow"/>
@@ -1272,87 +1278,124 @@
         </MultiTrigger.Conditions>
         <Setter Property="Background" Value="{DynamicResource Brush.Header.CheckedPressed}" TargetName="HeaderBg"/>
       </MultiTrigger>
-      <MultiTrigger>
-        <MultiTrigger.Conditions>
-          <Condition Property="IsExpanded" Value="True"/>
-          <Condition Property="ExpandDirection" Value="Down"/>
-        </MultiTrigger.Conditions>
-        <MultiTrigger.EnterActions>
-          <BeginStoryboard Storyboard="{StaticResource Anim.Expand.Vertical.Down}"/>
-        </MultiTrigger.EnterActions>
-        <MultiTrigger.ExitActions>
-          <BeginStoryboard Storyboard="{StaticResource Anim.Collapse.Vertical}"/>
-        </MultiTrigger.ExitActions>
-      </MultiTrigger>
-      <MultiTrigger>
-        <MultiTrigger.Conditions>
-          <Condition Property="IsExpanded" Value="True"/>
-          <Condition Property="ExpandDirection" Value="Up"/>
-        </MultiTrigger.Conditions>
-        <MultiTrigger.EnterActions>
+      <MultiDataTrigger>
+        <MultiDataTrigger.Conditions>
+          <Condition Binding="{Binding Tag, ElementName=Root}" Value="0"/>
+          <Condition Binding="{Binding IsExpanded, RelativeSource={RelativeSource Self}}" Value="True"/>
+          <Condition Binding="{Binding ExpandDirection, RelativeSource={RelativeSource Self}}" Value="Up"/>
+        </MultiDataTrigger.Conditions>
+        <MultiDataTrigger.EnterActions>
+          <BeginStoryboard Storyboard="{StaticResource Anim.Expand.Vertical.Up.Loaded}"/>
+        </MultiDataTrigger.EnterActions>
+      </MultiDataTrigger>
+      <MultiDataTrigger>
+        <MultiDataTrigger.Conditions>
+          <Condition Binding="{Binding Tag, ElementName=Root}" Value="0"/>
+          <Condition Binding="{Binding IsExpanded, RelativeSource={RelativeSource Self}}" Value="True"/>
+          <Condition Binding="{Binding ExpandDirection, RelativeSource={RelativeSource Self}}" Value="Down"/>
+        </MultiDataTrigger.Conditions>
+        <MultiDataTrigger.EnterActions>
+          <BeginStoryboard Storyboard="{StaticResource Anim.Expand.Vertical.Down.Loaded}"/>
+        </MultiDataTrigger.EnterActions>
+      </MultiDataTrigger>
+      <MultiDataTrigger>
+        <MultiDataTrigger.Conditions>
+          <Condition Binding="{Binding Tag, ElementName=Root}" Value="0"/>
+          <Condition Binding="{Binding IsExpanded, RelativeSource={RelativeSource Self}}" Value="True"/>
+          <Condition Binding="{Binding ExpandDirection, RelativeSource={RelativeSource Self}}" Value="Left"/>
+        </MultiDataTrigger.Conditions>
+        <MultiDataTrigger.EnterActions>
+          <BeginStoryboard Storyboard="{StaticResource Anim.Expand.Horizontal.Loaded}"/>
+        </MultiDataTrigger.EnterActions>
+      </MultiDataTrigger>
+      <MultiDataTrigger>
+        <MultiDataTrigger.Conditions>
+          <Condition Binding="{Binding Tag, ElementName=Root}" Value="0"/>
+          <Condition Binding="{Binding IsExpanded, RelativeSource={RelativeSource Self}}" Value="True"/>
+          <Condition Binding="{Binding ExpandDirection, RelativeSource={RelativeSource Self}}" Value="Right"/>
+        </MultiDataTrigger.Conditions>
+        <MultiDataTrigger.EnterActions>
+          <BeginStoryboard Storyboard="{StaticResource Anim.Expand.Horizontal.Loaded}"/>
+        </MultiDataTrigger.EnterActions>
+      </MultiDataTrigger>
+      <MultiDataTrigger>
+        <MultiDataTrigger.Conditions>
+          <Condition Binding="{Binding Tag, ElementName=Root}" Value="1"/>
+          <Condition Binding="{Binding IsExpanded, RelativeSource={RelativeSource Self}}" Value="True"/>
+          <Condition Binding="{Binding ExpandDirection, RelativeSource={RelativeSource Self}}" Value="Up"/>
+        </MultiDataTrigger.Conditions>
+        <MultiDataTrigger.EnterActions>
           <BeginStoryboard Storyboard="{StaticResource Anim.Expand.Vertical.Up}"/>
-        </MultiTrigger.EnterActions>
-        <MultiTrigger.ExitActions>
+        </MultiDataTrigger.EnterActions>
+        <MultiDataTrigger.ExitActions>
           <BeginStoryboard Storyboard="{StaticResource Anim.Collapse.Vertical}"/>
-        </MultiTrigger.ExitActions>
-      </MultiTrigger>
-      <MultiTrigger>
-        <MultiTrigger.Conditions>
-          <Condition Property="IsExpanded" Value="True"/>
-          <Condition Property="ExpandDirection" Value="Right"/>
-        </MultiTrigger.Conditions>
-        <MultiTrigger.EnterActions>
+        </MultiDataTrigger.ExitActions>
+      </MultiDataTrigger>
+      <MultiDataTrigger>
+        <MultiDataTrigger.Conditions>
+          <Condition Binding="{Binding Tag, ElementName=Root}" Value="1"/>
+          <Condition Binding="{Binding IsExpanded, RelativeSource={RelativeSource Self}}" Value="True"/>
+          <Condition Binding="{Binding ExpandDirection, RelativeSource={RelativeSource Self}}" Value="Down"/>
+        </MultiDataTrigger.Conditions>
+        <MultiDataTrigger.EnterActions>
+          <BeginStoryboard Storyboard="{StaticResource Anim.Expand.Vertical.Down}"/>
+        </MultiDataTrigger.EnterActions>
+        <MultiDataTrigger.ExitActions>
+          <BeginStoryboard Storyboard="{StaticResource Anim.Collapse.Vertical}"/>
+        </MultiDataTrigger.ExitActions>
+      </MultiDataTrigger>
+      <MultiDataTrigger>
+        <MultiDataTrigger.Conditions>
+          <Condition Binding="{Binding Tag, ElementName=Root}" Value="1"/>
+          <Condition Binding="{Binding IsExpanded, RelativeSource={RelativeSource Self}}" Value="True"/>
+          <Condition Binding="{Binding ExpandDirection, RelativeSource={RelativeSource Self}}" Value="Left"/>
+        </MultiDataTrigger.Conditions>
+        <MultiDataTrigger.EnterActions>
           <BeginStoryboard Storyboard="{StaticResource Anim.Expand.Horizontal}"/>
-        </MultiTrigger.EnterActions>
-        <MultiTrigger.ExitActions>
+        </MultiDataTrigger.EnterActions>
+        <MultiDataTrigger.ExitActions>
           <BeginStoryboard Storyboard="{StaticResource Anim.Collapse.Horizontal}"/>
-        </MultiTrigger.ExitActions>
-      </MultiTrigger>
-      <MultiTrigger>
-        <MultiTrigger.Conditions>
-          <Condition Property="IsExpanded" Value="True"/>
-          <Condition Property="ExpandDirection" Value="Left"/>
-        </MultiTrigger.Conditions>
-        <MultiTrigger.EnterActions>
+        </MultiDataTrigger.ExitActions>
+      </MultiDataTrigger>
+      <MultiDataTrigger>
+        <MultiDataTrigger.Conditions>
+          <Condition Binding="{Binding Tag, ElementName=Root}" Value="1"/>
+          <Condition Binding="{Binding IsExpanded, RelativeSource={RelativeSource Self}}" Value="True"/>
+          <Condition Binding="{Binding ExpandDirection, RelativeSource={RelativeSource Self}}" Value="Right"/>
+        </MultiDataTrigger.Conditions>
+        <MultiDataTrigger.EnterActions>
           <BeginStoryboard Storyboard="{StaticResource Anim.Expand.Horizontal}"/>
-        </MultiTrigger.EnterActions>
-        <MultiTrigger.ExitActions>
+        </MultiDataTrigger.EnterActions>
+        <MultiDataTrigger.ExitActions>
           <BeginStoryboard Storyboard="{StaticResource Anim.Collapse.Horizontal}"/>
-        </MultiTrigger.ExitActions>
-      </MultiTrigger>
+        </MultiDataTrigger.ExitActions>
+      </MultiDataTrigger>
       <Trigger Property="IsEnabled" Value="False">
         <Setter Property="Foreground" Value="{DynamicResource Brush.Foreground.Disabled}"/>
         <Setter Property="Stroke" Value="{DynamicResource Brush.Glyph.Disabled}" TargetName="Arrow"/>
       </Trigger>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="IsEnabled" Value="False"/>
+          <Condition Property="IsExpanded" Value="True"/>
+        </MultiTrigger.Conditions>
+        <Setter Property="Foreground" Value="{DynamicResource Brush.Foreground.DisabledChecked}"/>
+        <Setter Property="Stroke" Value="{DynamicResource Brush.Foreground.DisabledChecked}" TargetName="Arrow"/>
+      </MultiTrigger>
       <Trigger Property="ExpandDirection" Value="Down">
         <Setter Property="Grid.Row" Value="0" TargetName="ExpanderButton"/>
         <Setter Property="Grid.Column" Value="1" TargetName="ExpanderButton"/>
         <Setter Property="RenderTransformOrigin" Value="0.5,0" TargetName="ContentBg"/>
-        <Setter Property="RenderTransform" TargetName="ContentBg">
-          <Setter.Value>
-            <ScaleTransform ScaleY="0"/>
-          </Setter.Value>
-        </Setter>
       </Trigger>
       <Trigger Property="ExpandDirection" Value="Up">
         <Setter Property="Grid.Row" Value="2" TargetName="ExpanderButton"/>
         <Setter Property="Grid.Column" Value="1" TargetName="ExpanderButton"/>
         <Setter Property="RenderTransformOrigin" Value="0.5,1" TargetName="ContentBg"/>
-        <Setter Property="RenderTransform" TargetName="ContentBg">
-          <Setter.Value>
-            <ScaleTransform ScaleY="0"/>
-          </Setter.Value>
-        </Setter>
       </Trigger>
       <Trigger Property="ExpandDirection" Value="Right">
         <Setter Property="Grid.Row" Value="1" TargetName="ExpanderButton"/>
         <Setter Property="Grid.Column" Value="0" TargetName="ExpanderButton"/>
         <Setter Property="RenderTransformOrigin" Value="0,0.5" TargetName="ContentBg"/>
-        <Setter Property="RenderTransform" TargetName="ContentBg">
-          <Setter.Value>
-            <ScaleTransform ScaleX="0"/>
-          </Setter.Value>
-        </Setter>
         <Setter Property="LayoutTransform" TargetName="ExpanderButton">
           <Setter.Value>
             <RotateTransform Angle="-90"/>
@@ -1363,11 +1406,6 @@
         <Setter Property="Grid.Row" Value="1" TargetName="ExpanderButton"/>
         <Setter Property="Grid.Column" Value="2" TargetName="ExpanderButton"/>
         <Setter Property="RenderTransformOrigin" Value="1,0.5" TargetName="ContentBg"/>
-        <Setter Property="RenderTransform" TargetName="ContentBg">
-          <Setter.Value>
-            <ScaleTransform ScaleX="0"/>
-          </Setter.Value>
-        </Setter>
         <Setter Property="LayoutTransform" TargetName="ExpanderButton">
           <Setter.Value>
             <RotateTransform Angle="90"/>
@@ -2017,7 +2055,7 @@
     </Grid>
     <ControlTemplate.Resources>
       <Storyboard x:Key="Anim.Expand">
-        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)">
+        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="RenderTransform.Y">
           <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="2"/>
           <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0">
             <EasingDoubleKeyFrame.EasingFunction>
@@ -2087,7 +2125,7 @@
     </Grid>
     <ControlTemplate.Resources>
       <Storyboard x:Key="Anim.Expand">
-        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)">
+        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="RenderTransform.Y">
           <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="2"/>
           <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0">
             <EasingDoubleKeyFrame.EasingFunction>
@@ -2397,8 +2435,8 @@
       </Trigger>
       <MultiDataTrigger>
         <MultiDataTrigger.Conditions>
-          <Condition Binding="{Binding IsFocusEngaged, RelativeSource={RelativeSource AncestorType={x:Type TreeView}}}" Value="True"/>
-          <Condition Binding="{Binding IsKeyboardFocused, RelativeSource={RelativeSource Self}}" Value="True"/>
+          <Condition Binding="{Binding Path=(local:Element.IsFocusEngaged), RelativeSource={RelativeSource AncestorType={x:Type TreeView}}}" Value="True"/>
+          <Condition Binding="{Binding Path=IsKeyboardFocused, RelativeSource={RelativeSource Self}}" Value="True"/>
         </MultiDataTrigger.Conditions>
         <Setter Property="Visibility" Value="Visible" TargetName="Focus"/>
       </MultiDataTrigger>
@@ -2409,45 +2447,38 @@
   </ControlTemplate>
   <ControlTemplate x:Key="Template.TreeViewItem" TargetType="TreeViewItem">
     <ControlTemplate.Resources>
+      <Storyboard x:Key="Anim.Loaded">
+        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="Tag">
+          <DiscreteObjectKeyFrame KeyTime="0" Value="1"/>
+        </ObjectAnimationUsingKeyFrames>
+      </Storyboard>
       <Storyboard x:Key="Anim.Expand.Loaded">
-        <DoubleAnimation Storyboard.TargetName="Arrow" Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)" To="90" Duration="0"/>
-        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ItemsBorder" Storyboard.TargetProperty="(UIElement.Visibility)">
+        <DoubleAnimation Storyboard.TargetName="Arrow" Storyboard.TargetProperty="RenderTransform.Angle" To="90" Duration="0"/>
+        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ItemsBorder" Storyboard.TargetProperty="Visibility">
           <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
         </ObjectAnimationUsingKeyFrames>
-        <DoubleAnimation Storyboard.TargetName="ItemsHost" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" To="1" Duration="0"/>
+        <DoubleAnimation Storyboard.TargetName="ItemsHost" Storyboard.TargetProperty="RenderTransform.ScaleY" To="1" Duration="0"/>
       </Storyboard>
       <Storyboard x:Key="Anim.Expand">
-        <DoubleAnimation Storyboard.TargetName="Arrow" Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)" To="90" Duration="0:0:0.15"/>
-        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ItemsBorder" Storyboard.TargetProperty="(UIElement.Visibility)">
+        <DoubleAnimation Storyboard.TargetName="Arrow" Storyboard.TargetProperty="RenderTransform.Angle" To="90" Duration="0:0:0.15"/>
+        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ItemsBorder" Storyboard.TargetProperty="Visibility">
           <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
         </ObjectAnimationUsingKeyFrames>
-        <DoubleAnimation Storyboard.TargetName="ItemsHost" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" To="1" Duration="0:0:0.2">
+        <DoubleAnimation Storyboard.TargetName="ItemsHost" Storyboard.TargetProperty="RenderTransform.ScaleY" To="1" Duration="0:0:0.2">
           <DoubleAnimation.EasingFunction>
             <BackEase EasingMode="EaseOut" Amplitude="0.2"/>
           </DoubleAnimation.EasingFunction>
         </DoubleAnimation>
       </Storyboard>
       <Storyboard x:Key="Anim.Collapse">
-        <DoubleAnimation Storyboard.TargetName="Arrow" Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)" To="0" Duration="0:0:0.2"/>
-        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ItemsBorder" Storyboard.TargetProperty="(UIElement.Visibility)">
+        <DoubleAnimation Storyboard.TargetName="Arrow" Storyboard.TargetProperty="RenderTransform.Angle" To="0" Duration="0:0:0.2"/>
+        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ItemsBorder" Storyboard.TargetProperty="Visibility">
           <DiscreteObjectKeyFrame KeyTime="0:0:0.2" Value="{x:Static Visibility.Collapsed}"/>
         </ObjectAnimationUsingKeyFrames>
-        <DoubleAnimation Storyboard.TargetName="ItemsHost" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" To="0" Duration="0:0:0.2" AccelerationRatio="0.5"/>
+        <DoubleAnimation Storyboard.TargetName="ItemsHost" Storyboard.TargetProperty="RenderTransform.ScaleY" To="0" Duration="0:0:0.2" AccelerationRatio="0.5"/>
       </Storyboard>
     </ControlTemplate.Resources>
-    <Grid>
-      <i:Interaction.Triggers>
-        <i:EventTrigger EventName="Loaded">
-          <i:Interaction.Behaviors>
-            <ei:ConditionBehavior>
-              <ei:ConditionalExpression>
-                <ei:ComparisonCondition LeftOperand="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" RightOperand="True"/>
-              </ei:ConditionalExpression>
-            </ei:ConditionBehavior>
-          </i:Interaction.Behaviors>
-          <ei:ControlStoryboardAction Storyboard="{StaticResource Anim.Expand.Loaded}"/>
-        </i:EventTrigger>
-      </i:Interaction.Triggers>
+    <Grid x:Name="Root" Tag="0">
       <Grid.RowDefinitions>
         <RowDefinition Height="Auto"/>
         <RowDefinition Height="*"/>
@@ -2481,18 +2512,36 @@
       </Decorator>
     </Grid>
     <ControlTemplate.Triggers>
+      <EventTrigger RoutedEvent="FrameworkElement.Loaded" SourceName="Root">
+        <BeginStoryboard Storyboard="{StaticResource Anim.Loaded}"/>
+      </EventTrigger>
       <Trigger Property="HasItems" Value="False">
         <Setter Property="Visibility" Value="Hidden" TargetName="ExpandButton"/>
       </Trigger>
       <Trigger Property="IsExpanded" Value="True">
-        <Trigger.EnterActions>
-          <BeginStoryboard Storyboard="{StaticResource Anim.Expand}"/>
-        </Trigger.EnterActions>
-        <Trigger.ExitActions>
-          <BeginStoryboard Storyboard="{StaticResource Anim.Collapse}"/>
-        </Trigger.ExitActions>
         <Setter Property="Stroke" Value="{DynamicResource Brush.TreeView.Expanded}" TargetName="Arrow"/>
       </Trigger>
+      <MultiDataTrigger>
+        <MultiDataTrigger.Conditions>
+          <Condition Binding="{Binding Tag, ElementName=Root}" Value="0"/>
+          <Condition Binding="{Binding IsExpanded, RelativeSource={RelativeSource Self}}" Value="True"/>
+        </MultiDataTrigger.Conditions>
+        <MultiDataTrigger.EnterActions>
+          <BeginStoryboard Storyboard="{StaticResource Anim.Expand.Loaded}"/>
+        </MultiDataTrigger.EnterActions>
+      </MultiDataTrigger>
+      <MultiDataTrigger>
+        <MultiDataTrigger.Conditions>
+          <Condition Binding="{Binding Tag, ElementName=Root}" Value="1"/>
+          <Condition Binding="{Binding IsExpanded, RelativeSource={RelativeSource Self}}" Value="True"/>
+        </MultiDataTrigger.Conditions>
+        <MultiDataTrigger.EnterActions>
+          <BeginStoryboard Storyboard="{StaticResource Anim.Expand}"/>
+        </MultiDataTrigger.EnterActions>
+        <MultiDataTrigger.ExitActions>
+          <BeginStoryboard Storyboard="{StaticResource Anim.Collapse}"/>
+        </MultiDataTrigger.ExitActions>
+      </MultiDataTrigger>
       <Trigger Property="IsMouseOver" Value="True" SourceName="Border">
         <Setter Property="Background" Value="{DynamicResource Brush.Item.Over}" TargetName="Border"/>
       </Trigger>
@@ -2511,8 +2560,8 @@
       </Trigger>
       <MultiDataTrigger>
         <MultiDataTrigger.Conditions>
-          <Condition Binding="{Binding IsFocusEngaged, RelativeSource={RelativeSource AncestorType={x:Type TreeView}}}" Value="True"/>
-          <Condition Binding="{Binding IsKeyboardFocused, RelativeSource={RelativeSource Self}}" Value="True"/>
+          <Condition Binding="{Binding Path=(local:Element.IsFocusEngaged), RelativeSource={RelativeSource AncestorType={x:Type TreeView}}}" Value="True"/>
+          <Condition Binding="{Binding Path=IsKeyboardFocused, RelativeSource={RelativeSource Self}}" Value="True"/>
         </MultiDataTrigger.Conditions>
         <Setter Property="Visibility" Value="Visible" TargetName="Focus"/>
       </MultiDataTrigger>
@@ -2630,7 +2679,7 @@
     </Grid>
     <ControlTemplate.Resources>
       <Storyboard x:Key="Anim.Expand">
-        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)">
+        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="RenderTransform.Y">
           <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="2"/>
           <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0">
             <EasingDoubleKeyFrame.EasingFunction>

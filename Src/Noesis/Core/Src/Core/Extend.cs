@@ -164,8 +164,6 @@ namespace Noesis
                 _providerScanFolder,
                 _providerOpenFont,
 
-                _getPropertyInfo,
-
                 _getPropertyValue_Bool,
                 _getPropertyValue_Float,
                 _getPropertyValue_Double,
@@ -231,7 +229,6 @@ namespace Noesis
                 null,
                 null, null, null, null, null,
                 null, null, null, null, null, null,
-                null,
                 null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
                 null, null, null);
@@ -3083,45 +3080,6 @@ namespace Noesis
             }
 
             return (int)NativePropertyType.BaseComponent;
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////
-        [return: MarshalAs(UnmanagedType.U1)]
-        private delegate bool Callback_GetPropertyInfo(IntPtr nativeType, string propName,
-            ref int propIndex, ref int propType);
-        private static Callback_GetPropertyInfo _getPropertyInfo = GetPropertyInfo;
-
-        [MonoPInvokeCallback(typeof(Callback_GetPropertyInfo))]
-        private static bool GetPropertyInfo(IntPtr nativeType, string propName,
-            ref int propertyIndex, ref int propertyType)
-        {
-            try
-            {
-                NativeTypePropsInfo info = GetNativeTypeInfo(nativeType) as NativeTypePropsInfo;
-                if (info != null)
-                {
-                    propertyIndex = 0;
-                    int propsLen = info.Properties.Count;
-                    for (int i = 0; i < propsLen; ++i)
-                    {
-                        var p = info.Properties[i];
-                        if (p.Property.Name == propName)
-                        {
-                            propertyType = GetNativePropertyType(p.Property.PropertyType);
-                            return true;
-                        }
-
-                        ++propertyIndex;
-                    }
-                }
-
-                return false;
-            }
-            catch (Exception e)
-            {
-                Error.UnhandledException(e);
-                return false;
-            }
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////

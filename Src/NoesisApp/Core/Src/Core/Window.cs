@@ -264,8 +264,6 @@ namespace NoesisApp
             SizeToContent sizeToContent = SizeToContent;
             if (sizeToContent != SizeToContent.Manual)
             {
-                SizeChanged += OnRenderSizeChanged;
-
                 Size contentSize = MeasureContent();
                 if (sizeToContent != SizeToContent.Height)
                 {
@@ -355,8 +353,6 @@ namespace NoesisApp
             Display.TouchDown -= OnDisplayTouchDown;
             Display.TouchUp -= OnDisplayTouchUp;
 
-            SizeChanged -= OnRenderSizeChanged;
-
             _view.Renderer.Shutdown();
             _view = null;
         }
@@ -386,19 +382,38 @@ namespace NoesisApp
                 }
                 else
                 {
+                    // calculate content desired size
                     Size constraint = new Size(
                         sizeToContent == SizeToContent.Height ? clientW : float.PositiveInfinity,
                         sizeToContent == SizeToContent.Width ? clientH : float.PositiveInfinity);
 
                     Size desiredSize = base.MeasureOverride(constraint);
 
+                    // adjust content size to window size (including borders)
                     int desiredWidth = (int)Math.Ceiling(desiredSize.Width);
                     int desiredHeight = (int)Math.Ceiling(desiredSize.Height);
                     Display.AdjustWindowSize(ref desiredWidth, ref desiredHeight);
 
-                    return new Size(
-                        sizeToContent == SizeToContent.Height ? Width : desiredWidth,
-                        sizeToContent == SizeToContent.Width ? Height : desiredHeight);
+                    // update window to the desired size
+                    if (sizeToContent != SizeToContent.Height)
+                    {
+                        Width = desiredWidth;
+                    }
+                    else
+                    {
+                        desiredWidth = (int)Width;
+                    }
+
+                    if (sizeToContent != SizeToContent.Width)
+                    {
+                        Height = desiredHeight;
+                    }
+                    else
+                    {
+                        desiredHeight = (int)Height;
+                    }
+
+                    return new Size(desiredWidth, desiredHeight);
                 }
             }
 
@@ -412,50 +427,11 @@ namespace NoesisApp
                 float clientW = (float)Display.ClientWidth;
                 float clientH = (float)Display.ClientHeight;
 
-                SizeToContent sizeToContent = SizeToContent;
-                if (sizeToContent == SizeToContent.Manual)
-                {
-                    base.ArrangeOverride(new Size(clientW, clientH));
-                    return new Size(Width, Height);
-                }
-                else
-                {
-                    UIElement child = VisualTreeHelper.GetChild(this, 0) as UIElement;
-                    Size desiredSize = child != null ? child.DesiredSize : new Size(0.0f, 0.0f);
-
-                    Size constraint = new Size(
-                        sizeToContent == SizeToContent.Height ? clientW : desiredSize.Width,
-                        sizeToContent == SizeToContent.Width ? clientH : desiredSize.Height);
-
-                    Size size = base.ArrangeOverride(constraint);
-
-                    int finalWidth = (int)Math.Ceiling(size.Width);
-                    int finalHeight = (int)Math.Ceiling(size.Height);
-                    Display.AdjustWindowSize(ref finalWidth, ref finalHeight);
-
-                    return new Size(
-                        sizeToContent == SizeToContent.Height ? Width : finalWidth,
-                        sizeToContent == SizeToContent.Width ? Height : finalHeight);
-                }
+                base.ArrangeOverride(new Size(clientW, clientH));
+                return new Size(Width, Height);
             }
 
             return base.ArrangeOverride(finalSize);
-        }
-
-        private void OnRenderSizeChanged(object sender, SizeChangedEventArgs args)
-        {
-            SizeToContent sizeToContent = SizeToContent;
-            if (sizeToContent != SizeToContent.Manual)
-            {
-                if (sizeToContent != SizeToContent.Height)
-                {
-                    Width = args.NewSize.Width;
-                }
-                if (sizeToContent != SizeToContent.Width)
-                {
-                    Height = args.NewSize.Height;
-                }
-            }
         }
 
         private Size MeasureContent()
