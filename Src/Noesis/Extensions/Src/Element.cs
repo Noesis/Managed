@@ -120,7 +120,7 @@ namespace NoesisGUIExtensions
         /// Determines whether antialiasing geometry is generated for this element. This property is
         /// inherited down the visual tree.
         /// </summary>
-        #region PPAA attached property
+        #region PPAA attached properties
 
         public static readonly DependencyProperty PPAAModeProperty = DependencyProperty.RegisterAttached(
             "PPAAMode", typeof(PPAAMode), typeof(Element),
@@ -134,6 +134,34 @@ namespace NoesisGUIExtensions
         public static PPAAMode GetPPAAMode(FrameworkElement element)
         {
             return (PPAAMode)element.GetValue(PPAAModeProperty);
+        }
+
+        public static readonly DependencyProperty PPAAInProperty = DependencyProperty.RegisterAttached(
+            "PPAAIn", typeof(double), typeof(Element),
+            new PropertyMetadata(0.25));
+
+        public static void SetPPAAIn(FrameworkElement element, double value)
+        {
+            element.SetValue(PPAAInProperty, value);
+        }
+
+        public static double GetPPAAIn(FrameworkElement element)
+        {
+            return (double)element.GetValue(PPAAInProperty);
+        }
+
+        public static readonly DependencyProperty PPAAOutProperty = DependencyProperty.RegisterAttached(
+            "PPAAOut", typeof(double), typeof(Element),
+            new PropertyMetadata(0.75));
+
+        public static void SetPPAAOut(FrameworkElement element, double value)
+        {
+            element.SetValue(PPAAOutProperty, value);
+        }
+
+        public static double GetPPAAOut(FrameworkElement element)
+        {
+            return (double)element.GetValue(PPAAOutProperty);
         }
 
         #endregion

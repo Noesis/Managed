@@ -155,23 +155,28 @@ namespace NoesisApp
 
         private Noesis.MouseButton MouseButton(PointerPointProperties props)
         {
-            if (props.IsLeftButtonPressed)
+            if (props.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed ||
+                props.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
             {
                 return Noesis.MouseButton.Left;
             }
-            if (props.IsMiddleButtonPressed)
+            if (props.PointerUpdateKind == PointerUpdateKind.MiddleButtonPressed ||
+                props.PointerUpdateKind == PointerUpdateKind.MiddleButtonReleased)
             {
                 return Noesis.MouseButton.Middle;
             }
-            if (props.IsRightButtonPressed)
+            if (props.PointerUpdateKind == PointerUpdateKind.RightButtonPressed ||
+                props.PointerUpdateKind == PointerUpdateKind.RightButtonReleased)
             {
                 return Noesis.MouseButton.Right;
             }
-            if (props.IsXButton1Pressed)
+            if (props.PointerUpdateKind == PointerUpdateKind.XButton1Pressed ||
+                props.PointerUpdateKind == PointerUpdateKind.XButton1Released)
             {
                 return Noesis.MouseButton.XButton1;
             }
-            if (props.IsXButton2Pressed)
+            if (props.PointerUpdateKind == PointerUpdateKind.XButton2Pressed ||
+                props.PointerUpdateKind == PointerUpdateKind.XButton2Released)
             {
                 return Noesis.MouseButton.XButton2;
             }
