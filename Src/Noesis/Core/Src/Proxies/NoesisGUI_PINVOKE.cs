@@ -1154,9 +1154,6 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr Box_DragAction(int jarg1);
 
   [DllImport(Library.Name)]
-  public static extern IntPtr XamlProvider_XamlChanged(HandleRef jarg1);
-
-  [DllImport(Library.Name)]
   public static extern void Texture_SetPrivateData(HandleRef jarg1, HandleRef jarg2);
 
   [DllImport(Library.Name)]
@@ -5309,6 +5306,18 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr FrameworkElement_PPAAModeProperty_get();
 
   [DllImport(Library.Name)]
+  public static extern void FrameworkElement_PPAAInProperty_set(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr FrameworkElement_PPAAInProperty_get();
+
+  [DllImport(Library.Name)]
+  public static extern void FrameworkElement_PPAAOutProperty_set(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr FrameworkElement_PPAAOutProperty_get();
+
+  [DllImport(Library.Name)]
   public static extern void FrameworkElement_StyleProperty_set(HandleRef jarg1);
 
   [DllImport(Library.Name)]
@@ -5521,6 +5530,18 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern int FrameworkElement_PPAAMode_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void FrameworkElement_PPAAIn_set(HandleRef jarg1, float jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern float FrameworkElement_PPAAIn_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void FrameworkElement_PPAAOut_set(HandleRef jarg1, float jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern float FrameworkElement_PPAAOut_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern void FrameworkElement_Style_set(HandleRef jarg1, HandleRef jarg2);

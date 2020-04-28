@@ -152,7 +152,7 @@ namespace NoesisGUIExtensions
 
         public static readonly DependencyProperty PPAAOutProperty = DependencyProperty.RegisterAttached(
             "PPAAOut", typeof(double), typeof(Element),
-            new PropertyMetadata(0.75));
+            new PropertyMetadata(0.5));
 
         public static void SetPPAAOut(FrameworkElement element, double value)
         {

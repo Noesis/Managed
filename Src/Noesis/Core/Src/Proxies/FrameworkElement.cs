@@ -343,6 +343,20 @@ public partial class FrameworkElement : UIElement {
     }
   }
 
+  public static DependencyProperty PPAAInProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.FrameworkElement_PPAAInProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static DependencyProperty PPAAOutProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.FrameworkElement_PPAAOutProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
   public static DependencyProperty StyleProperty {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.FrameworkElement_StyleProperty_get();
@@ -691,6 +705,26 @@ public partial class FrameworkElement : UIElement {
     } 
     get {
       PPAAMode ret = (PPAAMode)NoesisGUI_PINVOKE.FrameworkElement_PPAAMode_get(swigCPtr);
+      return ret;
+    } 
+  }
+
+  public float PPAAIn {
+    set {
+      NoesisGUI_PINVOKE.FrameworkElement_PPAAIn_set(swigCPtr, value);
+    } 
+    get {
+      float ret = NoesisGUI_PINVOKE.FrameworkElement_PPAAIn_get(swigCPtr);
+      return ret;
+    } 
+  }
+
+  public float PPAAOut {
+    set {
+      NoesisGUI_PINVOKE.FrameworkElement_PPAAOut_set(swigCPtr, value);
+    } 
+    get {
+      float ret = NoesisGUI_PINVOKE.FrameworkElement_PPAAOut_get(swigCPtr);
       return ret;
     } 
   }

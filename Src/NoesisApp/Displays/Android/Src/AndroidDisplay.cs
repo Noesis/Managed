@@ -56,6 +56,14 @@ namespace NoesisApp
             LocationChanged?.Invoke(this, 0, 0);
         }
 
+        public override void OpenUrl(string url)
+        {
+            var uri = Android.Net.Uri.Parse(url);
+            var intent = new Intent(Intent.ActionView, uri);
+            Activity activity = (Activity)AndroidActivity.Current.View.Context;
+            activity.StartActivity(intent);
+        }
+
         public override void EnterMessageLoop(bool runInBackground)
         {
             while (ProcessMessages())

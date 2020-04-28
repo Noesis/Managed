@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-public class EasingFunctionBase : Freezable {
+public class EasingFunctionBase : Animatable {
   internal new static EasingFunctionBase CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
     return new EasingFunctionBase(cPtr, cMemoryOwn);
   }

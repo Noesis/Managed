@@ -94,8 +94,12 @@
   <Style TargetType="Control" BasedOn="{StaticResource Style.Base}"/>
   <Style TargetType="ContentControl" BasedOn="{StaticResource Style.Base}"/>
   <Style TargetType="HeaderedContentControl" BasedOn="{StaticResource Style.Base}"/>
-  <Style TargetType="ItemsControl" BasedOn="{StaticResource Style.Base}"/>
-  <Style TargetType="HeaderedItemsControl" BasedOn="{StaticResource Style.Base}"/>
+  <Style TargetType="ItemsControl" BasedOn="{StaticResource Style.Base}">
+    <Setter Property="ScrollViewer.PanningMode" Value="VerticalFirst"/>
+  </Style>
+  <Style TargetType="HeaderedItemsControl" BasedOn="{StaticResource Style.Base}">
+    <Setter Property="ScrollViewer.PanningMode" Value="VerticalFirst"/>
+  </Style>
   <Style TargetType="UserControl" BasedOn="{StaticResource Style.Base}"/>
   <Style TargetType="Page" BasedOn="{StaticResource Style.Base}"/>
   <Style TargetType="Separator">
@@ -1682,6 +1686,7 @@
     <Setter Property="SelectionOpacity" Value="0.25"/>
     <Setter Property="Padding" Value="6,7"/>
     <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
+    <Setter Property="ScrollViewer.PanningMode" Value="VerticalFirst"/>
     <Setter Property="AllowDrop" Value="True"/>
     <Setter Property="Template" Value="{StaticResource Template.TextBox}"/>
     <Setter Property="ContextMenu">
@@ -1745,6 +1750,7 @@
     <Setter Property="SelectionOpacity" Value="0.5"/>
     <Setter Property="Padding" Value="6,7"/>
     <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
+    <Setter Property="ScrollViewer.PanningMode" Value="VerticalFirst"/>
     <Setter Property="PasswordChar" Value="•"/>
     <Setter Property="Template" Value="{StaticResource Template.PasswordBox}"/>
     <Style.Triggers>
@@ -2185,7 +2191,7 @@
     <Setter Property="MaxDropDownHeight" Value="200"/>
     <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
     <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
-    <Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
+    <Setter Property="ScrollViewer.CanContentScroll" Value="False"/>
     <Setter Property="ScrollViewer.PanningMode" Value="VerticalFirst"/>
     <Setter Property="VerticalContentAlignment" Value="Center"/>
     <Setter Property="Template" Value="{StaticResource Template.ComboBox}"/>
