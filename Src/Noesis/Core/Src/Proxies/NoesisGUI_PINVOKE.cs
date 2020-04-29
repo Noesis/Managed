@@ -5941,10 +5941,10 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr InlineUIContainer_Child_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
-  public static extern IntPtr LogicalTreeHelper_GetParent(HandleRef jarg1);
+  public static extern IntPtr LogicalTreeHelper_GetParentHelper(HandleRef jarg1);
 
   [DllImport(Library.Name)]
-  public static extern uint LogicalTreeHelper_GetChildrenCount(HandleRef jarg1);
+  public static extern int LogicalTreeHelper_GetChildrenCountHelper(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern IntPtr LogicalTreeHelper_GetChildHelper(HandleRef jarg1, int jarg2);

@@ -407,7 +407,7 @@ namespace NoesisApp
 
         protected virtual bool VSync
         {
-            get { return false; }
+            get { return true; }
         }
 
         protected virtual bool StandardRGB

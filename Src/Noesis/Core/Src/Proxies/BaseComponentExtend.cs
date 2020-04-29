@@ -42,7 +42,7 @@ namespace Noesis
                 Noesis.Extend.AddProxy(this);
             }
 
-            if (cPtr != IntPtr.Zero && !cMemoryOwn)
+            if (cPtr != IntPtr.Zero && !cMemoryOwn && Noesis.Extend.Initialized)
             {
                 AddReference(cPtr);
             }

@@ -11,28 +11,91 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Collections;
 
 namespace Noesis
 {
 
 public static class LogicalTreeHelper {
-  public static FrameworkElement GetParent(FrameworkElement element) {
-    IntPtr cPtr = NoesisGUI_PINVOKE.LogicalTreeHelper_GetParent(FrameworkElement.getCPtr(element));
-    return (FrameworkElement)Noesis.Extend.GetProxy(cPtr, false);
+  public static DependencyObject GetParent(DependencyObject current) {
+    return GetParentHelper(current);
   }
 
-  public static uint GetChildrenCount(FrameworkElement element) {
-    uint ret = NoesisGUI_PINVOKE.LogicalTreeHelper_GetChildrenCount(FrameworkElement.getCPtr(element));
+  public static IEnumerable GetChildren(DependencyObject current) {
+    return new ChildrenEnumerable(current);
+  }
+
+  public static DependencyObject FindLogicalNode(DependencyObject current, string name) {
+    IntPtr cPtr = FindLogicalNodeHelper(current, name);
+    return (DependencyObject)Noesis.Extend.GetProxy(cPtr, true);
+  }
+
+  private struct ChildrenEnumerable : IEnumerable {
+    public ChildrenEnumerable(DependencyObject parent) {
+      this._parent = parent;
+    }
+
+    IEnumerator IEnumerable.GetEnumerator() {
+      return new Enumerator(this._parent);
+    }
+
+    private struct Enumerator : IEnumerator {
+      object IEnumerator.Current {
+        get { return this.Current; }
+      }
+
+      public object Current {
+        get {
+          IntPtr cPtr = LogicalTreeHelper.GetChildHelper(this._parent, this._index);
+          return Noesis.Extend.GetProxy(cPtr, true);
+        }
+      }
+
+      public bool MoveNext() {
+        if (++this._index >= this._count) {
+          return false;
+        }
+        return true;
+      }
+
+      public void Reset() {
+        this._index = -1;
+      }
+
+      public void Dispose() {
+      }
+
+      public Enumerator(DependencyObject parent) {
+        this._parent = parent;
+        this._index = -1;
+        this._count = LogicalTreeHelper.GetChildrenCountHelper(this._parent);
+      }
+
+      private DependencyObject _parent;
+      private int _index;
+      private int _count;
+    }
+
+    private DependencyObject _parent;
+  }
+
+  private static DependencyObject GetParentHelper(DependencyObject current) {
+    IntPtr cPtr = NoesisGUI_PINVOKE.LogicalTreeHelper_GetParentHelper(DependencyObject.getCPtr(current));
+    return (DependencyObject)Noesis.Extend.GetProxy(cPtr, false);
+  }
+
+  private static int GetChildrenCountHelper(DependencyObject current) {
+    int ret = NoesisGUI_PINVOKE.LogicalTreeHelper_GetChildrenCountHelper(DependencyObject.getCPtr(current));
     return ret;
   }
 
-  private static IntPtr GetChildHelper(FrameworkElement element, int index) {
-    IntPtr ret = NoesisGUI_PINVOKE.LogicalTreeHelper_GetChildHelper(FrameworkElement.getCPtr(element), index);
+  private static IntPtr GetChildHelper(DependencyObject current, int index) {
+    IntPtr ret = NoesisGUI_PINVOKE.LogicalTreeHelper_GetChildHelper(DependencyObject.getCPtr(current), index);
     return ret;
   }
 
-  private static IntPtr FindLogicalNodeHelper(FrameworkElement element, string name) {
-    IntPtr ret = NoesisGUI_PINVOKE.LogicalTreeHelper_FindLogicalNodeHelper(FrameworkElement.getCPtr(element), name != null ? name : string.Empty);
+  private static IntPtr FindLogicalNodeHelper(DependencyObject current, string name) {
+    IntPtr ret = NoesisGUI_PINVOKE.LogicalTreeHelper_FindLogicalNodeHelper(DependencyObject.getCPtr(current), name != null ? name : string.Empty);
     return ret;
   }
 

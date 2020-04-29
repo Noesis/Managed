@@ -119,7 +119,7 @@ namespace Noesis
             }
             else if (val is Type)
             {
-                return NoesisGUI_.Box_Type((Type)val);
+                return RegisterPendingRelease(NoesisGUI_.Box_Type((Type)val));
             }
             else
             {
@@ -222,15 +222,26 @@ namespace Noesis
             return unboxFunctions;
         }
 
-        public static object Unbox(IntPtr cPtr, NativeTypeInfo info)
+        public static object Unbox(IntPtr cPtr, bool ownMemory, NativeTypeInfo info)
         {
+            object value = null;
+
             UnboxDelegate unboxFunction;
             if (_unboxFunctions.TryGetValue(info.Type, out unboxFunction))
             {
-                return unboxFunction(cPtr);
+                value = unboxFunction(cPtr);
+            }
+            else
+            {
+                Log.Error("Can't unbox native pointer");
             }
 
-            throw new InvalidOperationException("Can't unbox native pointer");
+            if (ownMemory)
+            {
+                BaseComponent.Release(cPtr);
+            }
+
+            return value;
         }
     }
 }

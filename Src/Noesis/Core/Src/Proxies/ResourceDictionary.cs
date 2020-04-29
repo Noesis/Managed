@@ -34,7 +34,8 @@ public class ResourceDictionary : BaseDictionary, IDictionary {
       if (key == null) {
         throw new ArgumentNullException("key");
       }
-      return GetValueHelper(GetValidKey(key));
+      IntPtr cPtr = GetValueHelper(GetValidKey(key));
+      return Noesis.Extend.GetProxy(cPtr, true);
     }
     set {
       if (key == null) {
@@ -334,9 +335,9 @@ public class ResourceDictionary : BaseDictionary, IDictionary {
     } 
   }
 
-  private object GetValueHelper(string key) {
-    IntPtr cPtr = NoesisGUI_PINVOKE.ResourceDictionary_GetValueHelper(swigCPtr, key != null ? key : string.Empty);
-    return Noesis.Extend.GetProxy(cPtr, false);
+  private IntPtr GetValueHelper(string key) {
+    IntPtr ret = NoesisGUI_PINVOKE.ResourceDictionary_GetValueHelper(swigCPtr, key != null ? key : string.Empty);
+    return ret;
   }
 
   private void SetValueHelper(string key, object value) {
