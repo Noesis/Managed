@@ -134,7 +134,7 @@ namespace NoesisApp
         }
 
         public static readonly DependencyProperty TargetNameResolverProperty = DependencyProperty.Register(
-            ".TargetNameResolver", typeof(object), typeof(EventTriggerBase),
+            ".TargetNameResolver", typeof(object), typeof(TargetedTriggerAction),
             new PropertyMetadata(null, OnTargetNameResolverChanged));
 
         static void OnTargetNameResolverChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

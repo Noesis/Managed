@@ -48,6 +48,8 @@ namespace Noesis
 
                 try
                 {
+                    Initialized = false;
+
                     EventHandlerStore.Clear(_extends
                         .Where(kv => kv.Value.weak.Target is EventHandlerStore)
                         .Select(kv => kv.Value.weak.Target)
@@ -70,8 +72,6 @@ namespace Noesis
                     GC.Collect();
                     GC.WaitForPendingFinalizers();
 
-                    Initialized = false;
-
 #if !NETSTANDARD
                     _weakExtendsIndex = 0;
                     while (_weakExtendsIndex < _weakExtends.Count)
@@ -79,6 +79,10 @@ namespace Noesis
                         AddDestroyedExtends();
                     }
 #endif
+
+                    // NOTE: During release of pending objects new proxies could be created and those
+                    // references will show as leaks when Noesis shuts down.
+                    // TODO: Find a way to track those objects and correctly release them.
 
                     foreach (var kv in pendingReleases)
                     {

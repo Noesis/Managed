@@ -78,6 +78,7 @@ namespace Noesis
 
         #region Extend overrides implementation
 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void MeasureBaseCallback(HandleRef cPtr, ref Size availableSize,
             ref Size desiredSize);
         MeasureBaseCallback _measureBaseCallback = null;

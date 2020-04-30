@@ -42,7 +42,7 @@ namespace Noesis
                 Noesis.Extend.AddProxy(this);
             }
 
-            if (cPtr != IntPtr.Zero && !cMemoryOwn && Noesis.Extend.Initialized)
+            if (cPtr != IntPtr.Zero && !cMemoryOwn)
             {
                 AddReference(cPtr);
             }
@@ -98,14 +98,32 @@ namespace Noesis
                 return true;
             }
 
-            // If one is null, but not both, return false.
-            if ((object)a == null || (object)b == null)
+            if ((object)a != null)
             {
-                return false;
+                if ((object)b != null)
+                {
+                    // will be true if both proxies point to the same native pointer
+                    return a.swigCPtr.Handle == b.swigCPtr.Handle;
+                }
+                else
+                {
+                    // will be true if A is a disposed proxy
+                    return a.swigCPtr.Handle == IntPtr.Zero;
+                }
             }
-
-            // Return true if wrapped c++ objects match:
-            return a.swigCPtr.Handle == b.swigCPtr.Handle;
+            else
+            {
+                if ((object)b != null)
+                {
+                    // will be true if B is a disposed proxy
+                    return b.swigCPtr.Handle == IntPtr.Zero;
+                }
+                else
+                {
+                    // both are null
+                    return true;
+                }
+            }
         }
 
         public static bool operator !=(BaseComponent a, BaseComponent b)

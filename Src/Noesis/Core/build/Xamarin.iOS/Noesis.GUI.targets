@@ -20,11 +20,11 @@
   <PropertyGroup>
 
     <MtouchExtraArgs Condition=" '$(OS)' == 'Windows_NT' ">
-      $(MtouchExtraArgs) --dynamic-symbol-mode=ignore -gcc_flags "${ProjectDir}/Symbols.cpp -framework CoreText -framework Metal"
+      $(MtouchExtraArgs) --dynamic-symbol-mode=code -gcc_flags "${ProjectDir}/Symbols.cpp" -framework CoreText -framework Metal -framework OpenGLES
     </MtouchExtraArgs>
 
     <MtouchExtraArgs Condition=" '$(OS)' == 'Unix' ">
-      $(MtouchExtraArgs) --dynamic-symbol-mode=ignore -gcc_flags "${TargetDir}/Symbols.cpp -framework CoreText -framework Metal"
+      $(MtouchExtraArgs) --dynamic-symbol-mode=code -gcc_flags "${TargetDir}/Symbols.cpp" -framework CoreText -framework Metal -framework OpenGLES
     </MtouchExtraArgs>
 
   </PropertyGroup>

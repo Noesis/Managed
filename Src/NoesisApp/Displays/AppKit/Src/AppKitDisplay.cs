@@ -360,7 +360,7 @@ namespace NoesisApp
             }
         }
 
-        public class WindowDelegate : NSWindow, INSWindowDelegate
+        public class WindowDelegate : NSWindowDelegate
         {
             private AppKitDisplay _display;
             private WindowClass _window;
