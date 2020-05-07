@@ -123,36 +123,38 @@ namespace NoesisGUIExtensions
 
         private void RegisterSource()
         {
-            _source = ActiveOnFocus ? AssociatedObject: GetRoot(AssociatedObject);
-
-            if (_source != null)
+            UIElement source = ActiveOnFocus ? AssociatedObject : GetRoot(AssociatedObject);
+            if (source != null)
             {
                 if (FiredOn == GamepadTriggerFiredOn.ButtonDown)
                 {
-                    _source.KeyDown += OnButtonPress;
+                    source.KeyDown += OnButtonPress;
                 }
                 else
                 {
-                    _source.KeyUp += OnButtonPress;
+                    source.KeyUp += OnButtonPress;
                 }
             }
+
+            _source = GetPtr(source);
         }
 
         private void UnregisterSource(GamepadTriggerFiredOn firedOn)
         {
-            if (_source != null)
+            UIElement source = (UIElement)GetProxy(_source);
+            if (source != null)
             {
                 if (firedOn == GamepadTriggerFiredOn.ButtonDown)
                 {
-                    _source.KeyDown -= OnButtonPress;
+                    source.KeyDown -= OnButtonPress;
                 }
                 else
                 {
-                    _source.KeyUp -= OnButtonPress;
+                    source.KeyUp -= OnButtonPress;
                 }
-
-                _source = null;
             }
+
+            _source = IntPtr.Zero;
         }
 
         private UIElement GetRoot(Visual current)
@@ -166,6 +168,6 @@ namespace NoesisGUIExtensions
             return root;
         }
 
-        private UIElement _source;
+        private IntPtr _source = IntPtr.Zero;
     }
 }

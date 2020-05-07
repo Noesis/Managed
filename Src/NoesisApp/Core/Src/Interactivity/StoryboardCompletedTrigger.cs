@@ -1,5 +1,4 @@
 ﻿using Noesis;
-using System;
 
 namespace NoesisApp
 {
@@ -23,7 +22,7 @@ namespace NoesisApp
             Storyboard storyboard = Storyboard;
             if (storyboard != null)
             {
-                storyboard.Completed -= OnStoryboardCompleted;
+                storyboard.Completed -= _wrapper.Completed;
             }
 
             base.OnDetaching();
@@ -36,17 +35,34 @@ namespace NoesisApp
 
             if (oldStoryboard != null)
             {
-                oldStoryboard.Completed -= OnStoryboardCompleted;
+                oldStoryboard.Completed -= _wrapper.Completed;
             }
             if (newStoryboard != null)
             {
-                newStoryboard.Completed += OnStoryboardCompleted;
+                newStoryboard.Completed += _wrapper.Completed;
             }
         }
 
-        private void OnStoryboardCompleted(object sender, Noesis.EventArgs e)
+        private void OnStoryboardCompleted(object sender, EventArgs e)
         {
             InvokeActions(e);
         }
+
+        public StoryboardCompletedTrigger()
+        {
+            _wrapper = new EventWrapper { wr = new System.WeakReference(this) };
+        }
+
+        private struct EventWrapper
+        {
+            public System.WeakReference wr;
+
+            public void Completed(object sender, EventArgs e)
+            {
+                ((StoryboardCompletedTrigger)wr.Target).OnStoryboardCompleted(sender, e);
+            }
+        }
+
+        private EventWrapper _wrapper;
     }
 }

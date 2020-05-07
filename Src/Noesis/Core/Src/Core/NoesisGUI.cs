@@ -58,7 +58,7 @@ namespace Noesis
         /// <summary>
         /// Initializes NoesisGUI. Use Name and Key provided when you purchased your NoesisGUI license.
         /// </summary>
-        public static void Init(string licenseName, string licenseKey)
+        public static void Init(string licenseName = "", string licenseKey = "")
         {
             if (!_initialized)
             {

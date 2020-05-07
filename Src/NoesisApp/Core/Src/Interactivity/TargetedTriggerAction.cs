@@ -11,6 +11,7 @@ namespace NoesisApp
         protected TargetedTriggerAction(Type targetType) : base(typeof(DependencyObject))
         {
             _targetType = targetType;
+            _target = IntPtr.Zero;
         }
 
         public new TargetedTriggerAction Clone()
@@ -68,7 +69,7 @@ namespace NoesisApp
         /// </summary>
         protected object Target
         {
-            get { return _target; }
+            get { return GetProxy(_target); }
         }
 
         /// <summary>
@@ -94,7 +95,7 @@ namespace NoesisApp
 
         private void UpdateTarget(object associatedObject)
         {
-            object oldTarget = _target;
+            object oldTarget = Target;
             object newTarget = associatedObject;
 
             if (associatedObject != null)
@@ -119,7 +120,7 @@ namespace NoesisApp
                         newTarget.GetType(), GetType()));
                 }
 
-                _target = newTarget;
+                _target = GetPtr(newTarget);
 
                 if (AssociatedObject != null)
                 {
@@ -144,7 +145,7 @@ namespace NoesisApp
         }
 
         Type _targetType;
-        object _target;
+        IntPtr _target;
     }
 
     public abstract class TargetedTriggerAction<T> : TargetedTriggerAction where T : class

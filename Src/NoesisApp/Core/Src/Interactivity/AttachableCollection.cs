@@ -13,7 +13,7 @@ namespace NoesisApp
     {
         protected AttachableCollection()
         {
-            AssociatedObject = null;
+            _associatedObject = IntPtr.Zero;
             _items = new List<T>();
 
             CollectionChanged += OnCollectionChanged;
@@ -24,9 +24,15 @@ namespace NoesisApp
             CollectionChanged -= OnCollectionChanged;
         }
 
-        protected DependencyObject AssociatedObject { get; private set; }
+        protected DependencyObject AssociatedObject
+        {
+            get { return (DependencyObject)GetProxy(_associatedObject); }
+        }
 
-        DependencyObject IAttachedObject.AssociatedObject { get { return this.AssociatedObject; } }
+        DependencyObject IAttachedObject.AssociatedObject
+        {
+            get { return this.AssociatedObject; }
+        }
 
         public void Attach(DependencyObject associatedObject)
         {
@@ -44,7 +50,7 @@ namespace NoesisApp
                     throw new InvalidOperationException("Cannot attach to a null object");
                 }
 
-                AssociatedObject = associatedObject;
+                _associatedObject = GetPtr(associatedObject);
 
                 OnAttached();
             }
@@ -56,7 +62,7 @@ namespace NoesisApp
             {
                 OnDetaching();
 
-                AssociatedObject = null;
+                _associatedObject = IntPtr.Zero;
             }
         }
 
@@ -142,6 +148,7 @@ namespace NoesisApp
             }
         }
 
+        IntPtr _associatedObject;
         List<T> _items;
     }
 }

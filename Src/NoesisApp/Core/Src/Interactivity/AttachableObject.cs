@@ -11,15 +11,24 @@ namespace NoesisApp
         protected AttachableObject(Type associatedType)
         {
             _associatedType = associatedType;
-            _associatedObject = null;
-            _view = null;
+            _associatedObject = IntPtr.Zero;
+            _view = IntPtr.Zero;
         }
 
-        protected Type AssociatedType { get { return _associatedType; } }
+        protected Type AssociatedType
+        {
+            get { return _associatedType; }
+        }
 
-        protected DependencyObject AssociatedObject { get { return _associatedObject; } }
+        protected DependencyObject AssociatedObject
+        {
+            get { return (DependencyObject)GetProxy(_associatedObject); }
+        }
 
-        DependencyObject IAttachedObject.AssociatedObject { get { return this.AssociatedObject; } }
+        DependencyObject IAttachedObject.AssociatedObject
+        {
+            get { return this.AssociatedObject; }
+        }
 
         public void Attach(DependencyObject associatedObject)
         {
@@ -44,8 +53,8 @@ namespace NoesisApp
                         associatedObject.GetType(), GetType()));
                 }
 
-                _associatedObject = associatedObject;
-                _view = View.Find(this);
+                _associatedObject = GetPtr(associatedObject);
+                _view = GetPtr(View.Find(this));
 
                 OnAttached();
             }
@@ -57,8 +66,8 @@ namespace NoesisApp
             {
                 OnDetaching();
 
-                _associatedObject = null;
-                _view = null;
+                _associatedObject = IntPtr.Zero;
+                _view = IntPtr.Zero;
             }
         }
 
@@ -81,11 +90,11 @@ namespace NoesisApp
         /// </summary>
         public View View
         {
-            get { return _view; }
+            get { return (View)GetProxy(_view); }
         }
 
         private Type _associatedType;
-        DependencyObject _associatedObject;
-        View _view;
+        IntPtr _associatedObject;
+        IntPtr _view;
     }
 }

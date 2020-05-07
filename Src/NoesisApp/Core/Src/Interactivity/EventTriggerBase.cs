@@ -12,7 +12,7 @@ namespace NoesisApp
         protected EventTriggerBase(Type sourceType) : base(typeof(DependencyObject))
         {
             _sourceType = sourceType;
-            _source = null;
+            _source = IntPtr.Zero;
             _event = null;
             _handler = null;
         }
@@ -72,7 +72,7 @@ namespace NoesisApp
         /// </summary>
         protected object Source
         {
-            get { return _source; }
+            get { return GetProxy(_source); }
         }
 
         protected virtual void OnSourceChangedImpl(object oldSource, object newSource)
@@ -85,8 +85,8 @@ namespace NoesisApp
 
         protected virtual void OnEventNameChanged(string oldName, string newName)
         {
-            UnregisterEvent(_source);
-            RegisterEvent(_source, newName);
+            UnregisterEvent(Source);
+            RegisterEvent(Source, newName);
         }
 
         protected virtual void OnEvent(object parameter)
@@ -110,7 +110,7 @@ namespace NoesisApp
 
         private void UpdateSource(object associatedObject)
         {
-            object oldSource = _source;
+            object oldSource = Source;
             object newSource = associatedObject;
 
             if (associatedObject != null)
@@ -135,12 +135,25 @@ namespace NoesisApp
                         newSource.GetType(), GetType()));
                 }
 
-                _source = newSource;
+                _source = GetPtr(newSource);
 
                 if (AssociatedObject != null)
                 {
                     OnSourceChangedImpl(oldSource, newSource);
                 }
+            }
+        }
+
+        private struct EventWrapper
+        {
+            public WeakReference weak;
+
+            public static readonly MethodInfo InvokeMethod = typeof(EventWrapper).GetMethod(
+                "Invoke", BindingFlags.Instance | BindingFlags.NonPublic);
+
+            private void Invoke(object sender, Noesis.EventArgs e)
+            {
+                ((EventTriggerBase)weak.Target).OnEventImpl(sender, e);
             }
         }
 
@@ -171,8 +184,10 @@ namespace NoesisApp
                     }
                 }
 
+                EventWrapper wrapper = new EventWrapper { weak = new WeakReference(this) };
+
                 _event = ev;
-                _handler = Delegate.CreateDelegate(ev.EventHandlerType, this, _eventHandlerMethod);
+                _handler = Delegate.CreateDelegate(ev.EventHandlerType, wrapper, EventWrapper.InvokeMethod);
                 _event.AddEventHandler(source, _handler);
             }
         }
@@ -222,12 +237,9 @@ namespace NoesisApp
         }
 
         Type _sourceType;
-        object _source;
+        IntPtr _source;
         Delegate _handler;
         EventInfo _event;
-
-        static readonly MethodInfo _eventHandlerMethod = typeof(EventTriggerBase).GetMethod(
-            "OnEventImpl", BindingFlags.Instance | BindingFlags.NonPublic);
     }
 
     public abstract class EventTriggerBase<T> : EventTriggerBase where T : class

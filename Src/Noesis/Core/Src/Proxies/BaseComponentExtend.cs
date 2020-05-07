@@ -85,6 +85,16 @@ namespace Noesis
             return Noesis.Extend.NewCPtr(type, this);
         }
 
+        public static IntPtr GetPtr(object instance)
+        {
+            return Noesis.Extend.GetInstanceHandle(instance).Handle;
+        }
+
+        public static object GetProxy(IntPtr ptr)
+        {
+            return Noesis.Extend.GetProxy(ptr, false);
+        }
+
         public bool IsDisposed
         {
             get { return swigCPtr.Handle == IntPtr.Zero; }

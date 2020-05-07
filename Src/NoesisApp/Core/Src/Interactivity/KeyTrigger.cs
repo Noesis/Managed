@@ -108,7 +108,8 @@ namespace NoesisApp
 
         private void OnKeyPress(object sender, KeyEventArgs e)
         {
-            if (Key == e.Key && Modifiers == _source.Keyboard.Modifiers)
+            UIElement source = (UIElement)GetProxy(_source);
+            if (Key == e.Key && Modifiers == source.Keyboard.Modifiers)
             {
                 InvokeActions(0);
             }
@@ -116,36 +117,38 @@ namespace NoesisApp
 
         private void RegisterSource()
         {
-            _source = ActiveOnFocus ? AssociatedObject : GetRoot(AssociatedObject);
-
-            if (_source != null)
+            UIElement source = ActiveOnFocus ? AssociatedObject : GetRoot(AssociatedObject);
+            if (source != null)
             {
                 if (FiredOn == KeyTriggerFiredOn.KeyDown)
                 {
-                    _source.KeyDown += OnKeyPress;
+                    source.KeyDown += OnKeyPress;
                 }
                 else
                 {
-                    _source.KeyUp += OnKeyPress;
+                    source.KeyUp += OnKeyPress;
                 }
             }
+
+            _source = GetPtr(source);
         }
 
         private void UnregisterSource(KeyTriggerFiredOn firedOn)
         {
-            if (_source != null)
+            UIElement source = (UIElement)GetProxy(_source);
+            if (source != null)
             {
                 if (firedOn == KeyTriggerFiredOn.KeyDown)
                 {
-                    _source.KeyDown -= OnKeyPress;
+                    source.KeyDown -= OnKeyPress;
                 }
                 else
                 {
-                    _source.KeyUp -= OnKeyPress;
+                    source.KeyUp -= OnKeyPress;
                 }
-
-                _source = null;
             }
+
+            _source = IntPtr.Zero;
         }
 
         private UIElement GetRoot(Visual current)
@@ -159,6 +162,6 @@ namespace NoesisApp
             return root;
         }
 
-        private UIElement _source;
+        private IntPtr _source = IntPtr.Zero;
     }
 }
