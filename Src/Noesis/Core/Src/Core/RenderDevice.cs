@@ -3,6 +3,12 @@ using System.Runtime.InteropServices;
 
 namespace Noesis
 {
+    public enum TextureFormat
+    {
+        RGBA8,
+        R8
+    }
+
     [StructLayoutAttribute(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     public struct Tile
     {
@@ -85,6 +91,39 @@ namespace Noesis
         }
 
         /// <summary>
+        /// Creates a dynamic texture with given dimensions and format. The content will be updated
+        /// using UpdateTexture().
+        /// </summary>
+        public Texture CreateTexture(string label, uint width, uint height, uint numLevels,
+            TextureFormat format)
+        {
+            IntPtr texture = Noesis_RenderDevice_CreateTexture(CPtr, label,
+                width, height, numLevels, (int)format);
+
+            return new Texture(texture, true);
+        }
+
+        /// <summary>
+        /// Updates texture mipmap copying the given data to desired position. The passed data is
+        /// tightly packed (no extra pitch). Origin is located at the left of the first scanline
+        /// </summary>
+        public void UpdateTexture(Texture texture, uint level, uint x, uint y,
+            uint width, uint height, byte[] data)
+        {
+            if (texture == null)
+            {
+                throw new ArgumentNullException("texture");
+            }
+            if (data == null)
+            {
+                throw new ArgumentNullException("data");
+            }
+
+            Noesis_RenderDevice_UpdateTexture(CPtr, BaseComponent.getCPtr(texture),
+                level, x, y, width, height, data);
+        }
+
+        /// <summary>
         /// Clears the given region to transparent (#000000) and sets the scissor rectangle to fit it.
         /// Until next call to EndTile() all rendering commands will only update the extents of the tile.
         /// </summary>
@@ -117,6 +156,11 @@ namespace Noesis
         /// </summary>
         public void SetRenderTarget(RenderTarget surface)
         {
+            if (surface == null)
+            {
+                throw new ArgumentNullException("surface");
+            }
+
             Noesis_RenderDevice_SetRenderTarget(CPtr, surface.CPtr);
         }
 
@@ -125,6 +169,11 @@ namespace Noesis
         /// </summary>
         public void ResolveRenderTarget(RenderTarget surface, Tile[] tiles)
         {
+            if (surface == null)
+            {
+                throw new ArgumentNullException("surface");
+            }
+
             Noesis_RenderDevice_ResolveRenderTarget(CPtr, surface.CPtr, tiles, tiles.Length);
         }
 
@@ -184,6 +233,15 @@ namespace Noesis
         static extern void Noesis_RenderDevice_SetGlyphCacheHeight(HandleRef device, uint w);
 
         [DllImport(Library.Name)]
+        static extern IntPtr Noesis_RenderDevice_CreateTexture(HandleRef device,
+            [MarshalAs(UnmanagedType.LPWStr)]string label, uint width, uint height, uint numLevels,
+            int format);
+
+        [DllImport(Library.Name)]
+        public static extern void Noesis_RenderDevice_UpdateTexture(HandleRef device, HandleRef texture,
+            uint level, uint x, uint y, uint width, uint height, byte[] data);
+
+        [DllImport(Library.Name)]
         static extern void Noesis_RenderDevice_BeginTile(HandleRef device, ref Tile tile,
             uint width, uint height);
 
@@ -191,8 +249,8 @@ namespace Noesis
         static extern void Noesis_RenderDevice_EndTile(HandleRef device);
 
         [DllImport(Library.Name)]
-        static extern IntPtr Noesis_RenderDevice_CreateRenderTarget(HandleRef device, string label,
-            uint width, uint height, uint sampleCount);
+        static extern IntPtr Noesis_RenderDevice_CreateRenderTarget(HandleRef device,
+            [MarshalAs(UnmanagedType.LPWStr)]string label, uint width, uint height, uint sampleCount);
 
         [DllImport(Library.Name)]
         static extern void Noesis_RenderDevice_SetRenderTarget(HandleRef device, HandleRef surface);

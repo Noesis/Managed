@@ -61,7 +61,7 @@ namespace Noesis
         /// </summary>
         public void BeginInvoke(Action action)
         {
-            BeginInvoke(action, null);
+            BeginInvoke(DispatcherPriority.Normal, action, null);
         }
 
         /// <summary>
@@ -69,7 +69,23 @@ namespace Noesis
         /// </summary>
         public void BeginInvoke(Delegate d, object args)
         {
-            AddOperation(d, args);
+            BeginInvoke(DispatcherPriority.Normal, d, args);
+        }
+
+        /// <summary>
+        /// Executes the specified delegate asynchronously on the thread the Dispatcher is associated with.
+        /// </summary>
+        public void BeginInvoke(DispatcherPriority priority, Action action)
+        {
+            BeginInvoke(priority, action, null);
+        }
+
+        /// <summary>
+        /// Executes the specified delegate asynchronously on the thread the Dispatcher is associated with.
+        /// </summary>
+        public void BeginInvoke(DispatcherPriority priority, Delegate d, object args)
+        {
+            AddOperation(priority, d, args);
         }
 
         /// <summary>
@@ -77,7 +93,7 @@ namespace Noesis
         /// </summary>
         public void Invoke(Action action)
         {
-            Invoke(action, null);
+            Invoke(DispatcherPriority.Send, action, null);
         }
 
         /// <summary>
@@ -85,34 +101,75 @@ namespace Noesis
         /// </summary>
         public void Invoke(Delegate d, object args)
         {
-            if (CheckAccess())
-            {
-                DispatcherOperation.Invoke(d, args, _context);
-            }
-            else
-            {
-                DispatcherOperation operation = AddOperation(d, args, new AutoResetEvent(false));
-                operation.Wait();
-            }
+            Invoke(DispatcherPriority.Send, d, args);
+        }
+
+        /// <summary>
+        /// Executes the specified delegate synchronously on the thread the Dispatcher is associated with.
+        /// </summary>
+        public void Invoke(DispatcherPriority priority, Action action)
+        {
+            Invoke(priority, action, null);
+        }
+
+        /// <summary>
+        /// Executes the specified delegate synchronously on the thread the Dispatcher is associated with.
+        /// </summary>
+        public void Invoke(DispatcherPriority priority, Delegate d, object args)
+        {
+            AddOperation(priority, d, args, new AutoResetEvent(false));
         }
         #endregion
 
         #region Queue processing
-        private DispatcherOperation AddOperation(Delegate d, object args, AutoResetEvent wait = null)
+        private void AddOperation(DispatcherPriority priority, Delegate d, object args, AutoResetEvent wait = null)
         {
-            DispatcherOperation operation = new DispatcherOperation
+            if (priority == DispatcherPriority.Invalid ||
+                priority == DispatcherPriority.Inactive)
             {
-                Callback = d,
-                Args = args,
-                WaitEvent = wait
-            };
-
-            lock (_operations)
-            {
-                _operations.Enqueue(operation);
+                throw new ArgumentException("Invalid Priority");
             }
 
-            return operation;
+            if (d == null)
+            {
+                throw new ArgumentNullException("Null method");
+            }
+
+            if (priority == DispatcherPriority.Send && CheckAccess())
+            {
+                // Fast path: invoking at Send priority
+                DispatcherOperation.Invoke(d, args, _context);
+            }
+            else
+            {
+                // Slow path: going through the queue
+                DispatcherOperation operation = new DispatcherOperation
+                {
+                    Priority = priority,
+                    Callback = d,
+                    Args = args,
+                    WaitEvent = wait
+                };
+
+                lock (_operations)
+                {
+                    _operations.Enqueue(operation);
+                }
+
+                if (wait != null)
+                {
+                    if (CheckAccess())
+                    {
+                        // We cannot lock this thread, so process the queue now
+                        ProcessQueue();
+                    }
+                    else
+                    {
+                        // Block this thread and wait for the operation to get finished
+                        operation.Wait();
+                    }
+                }
+            }
         }
 
         internal void ProcessQueue()
@@ -182,6 +239,7 @@ namespace Noesis
 
         private struct DispatcherOperation
         {
+            public DispatcherPriority Priority;
             public Delegate Callback;
             public object Args;
             public AutoResetEvent WaitEvent;
@@ -240,5 +298,53 @@ namespace Noesis
             }
         }
         #endregion
+    }
+
+    /// <summary>
+    ///     An enunmeration describing the priorities at which
+    ///     operations can be invoked via the Dispatcher.
+    /// </summary>
+    ///
+    public enum DispatcherPriority
+    {
+        /// <summary> This is an invalid priority.</summary>
+        Invalid = -1,
+
+        /// <summary>Operations at this priority are not processed.</summary>
+        Inactive = 0,
+
+        /// <summary>Operations at this priority are processed when the system is idle.</summary>
+        SystemIdle,
+
+        /// <summary>Operations at this priority are processed when the application is idle.</summary>
+        ApplicationIdle,
+
+        /// <summary>Operations at this priority are processed when the context is idle.</summary>
+        ContextIdle,
+
+        /// <summary>Operations at this priority are processed after all other non-idle operations are done.</summary>
+        Background,
+
+        /// <summary>Operations at this priority are processed at the same priority as input.</summary>
+        Input,
+
+        /// <summary>
+        ///     Operations at this priority are processed when layout and render is
+        ///     done but just before items at input priority are serviced. Specifically
+        ///     this is used while firing the Loaded event
+        /// </summary>
+        Loaded,
+
+        /// <summary>Operations at this priority are processed at the same priority as rendering.</summary>
+        Render,
+
+        /// <summary>Operations at this priority are processed at the same priority as data binding.</summary>
+        DataBind,
+
+        /// <summary>Operations at this priority are processed at normal priority.</summary>
+        Normal,
+
+        /// <summary>Operations at this priority are processed before other asynchronous operations.</summary>
+        Send
     }
 }

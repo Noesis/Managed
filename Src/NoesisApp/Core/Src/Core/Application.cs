@@ -202,10 +202,11 @@ namespace NoesisApp
                 throw new InvalidOperationException("App xaml uri not defined");
             }
 
-            GUI.LoadComponent(this, Uri);
-            GUI.SetApplicationResources(Resources);
             GUI.SetFontFallbacks(GetFontFallbacks());
             GUI.SetFontDefaultProperties(GetDefaultFontSize(), GetDefaultFontWeight(), GetDefaultFontStretch(), GetDefaultFontStyle());
+
+            GUI.LoadComponent(this, Uri);
+            GUI.SetApplicationResources(Resources);
 
             // Load StartupUri xaml as MainWindow
             if (string.IsNullOrEmpty(StartupUri))
