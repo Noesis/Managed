@@ -3,7 +3,7 @@
 
   <Target Name="CopyNoesisBundleLibrary" AfterTargets="BeforeBuild">
     <Copy
-      SourceFiles="$(MSBuildThisFileDirectory)..\..\runtimes\osx-x64\native\Noesis.bundle\Contents\MacOS\Noesis"
+      SourceFiles="$(MSBuildThisFileDirectory)..\..\runtimes\osx-x64\native\Noesis.dylib"
       DestinationFiles="$(AppBundleDir)/Contents/MonoBundle/libNoesis"/>
   </Target>
 
