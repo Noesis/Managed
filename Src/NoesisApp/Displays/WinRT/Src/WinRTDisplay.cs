@@ -5,6 +5,7 @@ using Windows.System;
 using Windows.UI.Input;
 using Windows.Devices.Input;
 using Windows.ApplicationModel.Core;
+using Windows.Graphics.Display;
 
 namespace NoesisApp
 {
@@ -28,6 +29,7 @@ namespace NoesisApp
 
             _window = GCHandle.Alloc(window);
 
+            _active = false;
             _lastClickTime = 0;
             _lastClickButton = Noesis.MouseButton.Left;
         }
@@ -53,12 +55,25 @@ namespace NoesisApp
 
         public override int ClientWidth
         {
-            get { return (int)CoreWindow.GetForCurrentThread().Bounds.Width; }
+            get
+            {
+                double scale = DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+                return (int)(scale * CoreWindow.GetForCurrentThread().Bounds.Width);
+            }
         }
 
         public override int ClientHeight
         {
-            get { return (int)CoreWindow.GetForCurrentThread().Bounds.Height; }
+            get
+            {
+                double scale = DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+                return (int)(scale * CoreWindow.GetForCurrentThread().Bounds.Height);
+            }
+        }
+
+        public override float Scale
+        {
+            get { return (float)DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel; }
         }
 
         public override void Show()
@@ -77,8 +92,18 @@ namespace NoesisApp
         {
             for (;;)
             {
+                bool inspector = Noesis.GUI.IsInspectorConnected;
+                bool sleep = !inspector && !runInBackground && !_active;
                 CoreDispatcher dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
-                dispatcher.ProcessEvents(CoreProcessEventsOption.ProcessAllIfPresent);
+
+                if (sleep)
+                {
+                    dispatcher.ProcessEvents(CoreProcessEventsOption.ProcessOneAndAllPending);
+                }
+                else
+                {
+                    dispatcher.ProcessEvents(CoreProcessEventsOption.ProcessAllIfPresent);
+                }
 
                 Render(this);
             }
@@ -93,11 +118,13 @@ namespace NoesisApp
                 case CoreWindowActivationState.CodeActivated:
                 case CoreWindowActivationState.PointerActivated:
                 {
+                    _active = true;
                     Activated(this);
                     break;
                 }
                 case CoreWindowActivationState.Deactivated:
                 {
+                    _active = false;
                     Deactivated(this);
                     break;
                 }
@@ -106,7 +133,9 @@ namespace NoesisApp
 
         private void OnSizeChanged(CoreWindow window, WindowSizeChangedEventArgs args)
         {
-            SizeChanged(this, (int)args.Size.Width, (int)args.Size.Height);
+            Windows.Foundation.Rect r = window.Bounds;
+            double scale = DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+            SizeChanged(this, (int)(scale * r.Width), (int)(scale * r.Height));
         }
 
         private void OnKeyDown(CoreWindow window, KeyEventArgs args)
@@ -136,18 +165,21 @@ namespace NoesisApp
         {
             PointerPoint p = args.CurrentPoint;
             PointerDevice device = p.PointerDevice;
+            double scale = DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+            int x = (int)(scale * p.Position.X);
+            int y = (int)(scale * p.Position.Y);
 
             switch (device.PointerDeviceType)
             {
                 case PointerDeviceType.Touch:
                 case PointerDeviceType.Pen:
                 {
-                    TouchMove(this, (int)p.Position.X, (int)p.Position.Y, p.PointerId);
+                    TouchMove(this, x, y, p.PointerId);
                     break;
                 }
                 case PointerDeviceType.Mouse:
                 {
-                    MouseMove(this, (int)p.Position.X, (int)p.Position.Y);
+                    MouseMove(this, x, y);
                     break;
                 }
             }
@@ -187,13 +219,16 @@ namespace NoesisApp
         {
             PointerPoint p = args.CurrentPoint;
             PointerDevice device = p.PointerDevice;
+            double scale = DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+            int x = (int)(scale * p.Position.X);
+            int y = (int)(scale * p.Position.Y);
 
             switch (device.PointerDeviceType)
             {
                 case PointerDeviceType.Touch:
                 case PointerDeviceType.Pen:
                 {
-                    TouchDown(this, (int)p.Position.X, (int)p.Position.Y, p.PointerId);
+                    TouchDown(this, x, y, p.PointerId);
                     break;
                 }
                 case PointerDeviceType.Mouse:
@@ -203,12 +238,12 @@ namespace NoesisApp
                     Noesis.MouseButton button = MouseButton(p.Properties);
                     if (elapsedTime <= (ulong)GetDoubleClickTime() && button == _lastClickButton)
                     {
-                        MouseDoubleClick(this, (int)p.Position.X, (int)p.Position.Y, button);
+                        MouseDoubleClick(this, x, y, button);
                         _lastClickTime = 0;
                     }
                     else
                     {
-                        MouseButtonDown(this, (int)p.Position.X, (int)p.Position.Y, button);
+                        MouseButtonDown(this, x, y, button);
                         _lastClickTime = time;
                     }
                     _lastClickButton = button;
@@ -221,18 +256,21 @@ namespace NoesisApp
         {
             PointerPoint p = args.CurrentPoint;
             PointerDevice device = p.PointerDevice;
+            double scale = DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+            int x = (int)(scale * p.Position.X);
+            int y = (int)(scale * p.Position.Y);
 
             switch (device.PointerDeviceType)
             {
                 case PointerDeviceType.Touch:
                 case PointerDeviceType.Pen:
                 {
-                    TouchUp(this, (int)p.Position.X, (int)p.Position.Y, p.PointerId);
+                    TouchUp(this, x, y, p.PointerId);
                     break;
                 }
                 case PointerDeviceType.Mouse:
                 {
-                    MouseButtonUp(this, (int)p.Position.X, (int)p.Position.Y, MouseButton(p.Properties));
+                    MouseButtonUp(this, x, y, MouseButton(p.Properties));
                     break;
                 }
             }
@@ -242,14 +280,17 @@ namespace NoesisApp
         {
             PointerPoint p = args.CurrentPoint;
             PointerDevice device = p.PointerDevice;
+            double scale = DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+            int x = (int)(scale * p.Position.X);
+            int y = (int)(scale * p.Position.Y);
 
             if (p.Properties.IsHorizontalMouseWheel)
             {
-                MouseHWheel(this, (int)p.Position.X, (int)p.Position.Y, p.Properties.MouseWheelDelta);
+                MouseHWheel(this, x, y, p.Properties.MouseWheelDelta);
             }
             else
             {
-                MouseWheel(this, (int)p.Position.X, (int)p.Position.Y, p.Properties.MouseWheelDelta);
+                MouseWheel(this, x, y, p.Properties.MouseWheelDelta);
             }
         }
         #endregion
@@ -440,6 +481,7 @@ namespace NoesisApp
         #endregion
 
         GCHandle _window;
+        bool _active;
         ulong _lastClickTime;
         Noesis.MouseButton _lastClickButton;
     }

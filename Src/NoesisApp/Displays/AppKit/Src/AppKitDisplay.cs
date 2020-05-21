@@ -68,6 +68,11 @@ namespace NoesisApp
             get { return (int)(_window.ContentView.Bounds.Size.Height); }
         }
 
+        public override float Scale
+        {
+            get { return (float)_window.BackingScaleFactor; }
+        }
+
         public override void Show()
         {
             SizeChanged?.Invoke(this, ClientWidth, ClientHeight);

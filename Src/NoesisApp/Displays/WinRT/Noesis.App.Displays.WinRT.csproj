@@ -74,7 +74,7 @@
   <PropertyGroup>
     <AssemblyVersion>3.0.0.0</AssemblyVersion>
     <PackageOutputPath>$(SolutionDir)NuGet\</PackageOutputPath>
-    <PackageVersion>3.0.0-beta1</PackageVersion>
+    <PackageVersion>3.0.0</PackageVersion>
     <NuGetTool>$(NuGetPackageRoot)nuget.commandline\4.9.3\tools\NuGet.exe</NuGetTool>
     <PostBuildEvent>$(NuGetTool) pack $(ProjectDir)$(ProjectFileName) -OutputDirectory $(PackageOutputPath) -Version $(PackageVersion) -Prop Configuration=$(Configuration) -MSBuildVersion 15.9</PostBuildEvent>
   </PropertyGroup>

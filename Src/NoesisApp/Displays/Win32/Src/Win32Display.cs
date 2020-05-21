@@ -11,6 +11,8 @@ namespace NoesisApp
 
         public Win32Display()
         {
+            WinApi.SetProcessDpiAwareness(WinApi.ProcessDpiAwareness.PROCESS_PER_MONITOR_DPI_AWARE);
+
             IntPtr hInstance = WinApi.GetModuleHandle(null);
             WinApi.WindowClassEx windowClass;
             if (!WinApi.GetClassInfoEx(hInstance, ClassName, out windowClass))
@@ -90,6 +92,17 @@ namespace NoesisApp
                 WinApi.Rectangle r;
                 WinApi.GetClientRect(NativeWindow, out r);
                 return r.Bottom - r.Top;
+            }
+        }
+
+        public override float Scale
+        {
+            get
+            {
+                IntPtr hMonitor = WinApi.MonitorFromWindow(NativeWindow, WinApi.MonitorFlag.MONITOR_DEFAULTTONEAREST);
+                uint dpiX, dpiY;
+                WinApi.GetDpiForMonitor(hMonitor, WinApi.MonitorDpiType.MDT_EFFECTIVE_DPI, out dpiX, out dpiY);
+                return dpiX / 96.0f;
             }
         }
 
@@ -1358,6 +1371,20 @@ namespace NoesisApp
                 MONITORINFOF_PRIMARY = 0x00000001
             }
 
+            public enum MonitorDpiType
+            {
+                MDT_EFFECTIVE_DPI = 0,
+                MDT_ANGULAR_DPI = 1,
+                MDT_RAW_DPI = 2,
+            }
+
+            public enum ProcessDpiAwareness
+            {
+                PROCESS_DPI_UNAWARE = 0,
+                PROCESS_SYSTEM_DPI_AWARE = 1,
+                PROCESS_PER_MONITOR_DPI_AWARE = 2
+            }
+
             public enum WM
             {
                 NULL = 0x0000,
@@ -1996,6 +2023,12 @@ namespace NoesisApp
 
             [DllImport("user32", CharSet = CharSet.Auto)]
             public static extern bool GetMonitorInfo(IntPtr hMonitor, ref MonitorInfo lpmi);
+
+            [DllImport("shcore")]
+            public static extern uint GetDpiForMonitor(IntPtr hmonitor, MonitorDpiType dpiType, out uint dpiX, out uint dpiY);
+
+            [DllImport("shcore")]
+            public static extern uint SetProcessDpiAwareness(ProcessDpiAwareness dpi);
 
             [DllImport("user32", CharSet = CharSet.Auto)]
             public static extern int GetWindowLong(IntPtr hwnd, int nIndex);

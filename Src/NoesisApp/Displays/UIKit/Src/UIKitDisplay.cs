@@ -205,6 +205,11 @@ namespace NoesisApp
             get { return (int)(Window.Bounds.Size.Height * UIScreen.MainScreen.Scale); }
         }
 
+        public override float Scale
+        {
+            get { return (float)UIScreen.MainScreen.Scale; }
+        }
+
         public override void Show()
         {
             SizeChanged?.Invoke(this, ClientWidth, ClientHeight);

@@ -251,7 +251,9 @@ namespace Noesis
 
         #region Render process
         /// <summary>
-        /// Performs a layout pass and sends updates to the render tree.
+        /// Performs layout pass and calculates changes to be consumed by the renderer.
+        /// Returns false if there are no changes since last frame (meaning render can be avoided).
+        /// This function will block when invoked many times without the corresponding UpdateRenderTree.
         /// </summary>
         /// <param name="timeInSeconds">Time elapsed since the start of the application.</param>
         public bool Update(double timeInSeconds)

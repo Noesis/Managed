@@ -96,6 +96,11 @@ namespace NoesisApp
         public abstract int ClientHeight { get; }
 
         /// <summary>
+        /// Returns DPI scale required for UI elements
+        /// </summary>
+        public virtual float Scale { get { return 1.0F; } }
+
+        /// <summary>
         /// Calculates the required size of the window rectangle, based on the desired client size
         /// </summary>
         public virtual void AdjustWindowSize(ref int width, ref int height) { }

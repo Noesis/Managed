@@ -3,6 +3,7 @@ using Android.Views;
 using Android.Views.InputMethods;
 using Android.Content;
 using Android.App;
+using Android.Util;
 
 namespace NoesisApp
 {
@@ -39,6 +40,11 @@ namespace NoesisApp
         public override int ClientHeight
         {
             get { return AndroidActivity.Current.View.Height; }
+        }
+
+        public override float Scale
+        {
+            get { return AndroidActivity.Current.Resources.DisplayMetrics.Density; }
         }
 
         public override void OpenSoftwareKeyboard(Noesis.UIElement focused)
