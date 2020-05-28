@@ -11,7 +11,25 @@ namespace NoesisApp
 
         public Win32Display()
         {
-            WinApi.SetProcessDpiAwareness(WinApi.ProcessDpiAwareness.PROCESS_PER_MONITOR_DPI_AWARE);
+            _shcore = WinApi.LoadLibrary("shcore.dll");
+            if (_shcore != IntPtr.Zero)
+            {
+                IntPtr setProcessDpiAwarePtr = WinApi.GetProcAddress(_shcore, "SetProcessDpiAwareness");
+                if (setProcessDpiAwarePtr != IntPtr.Zero)
+                {
+                    WinApi.SetProcessDpiAwareness setProcessDpiAwareness =
+                        Marshal.GetDelegateForFunctionPointer<WinApi.SetProcessDpiAwareness>(setProcessDpiAwarePtr);
+
+                    setProcessDpiAwareness(WinApi.ProcessDpiAwareness.PROCESS_PER_MONITOR_DPI_AWARE);
+                }
+
+                IntPtr getDpiForMonitorPtr = WinApi.GetProcAddress(_shcore, "GetDpiForMonitor");
+                if (getDpiForMonitorPtr != IntPtr.Zero)
+                {
+                    _getDpiForMonitor = Marshal.GetDelegateForFunctionPointer<WinApi.GetDpiForMonitor>(getDpiForMonitorPtr);
+                }
+            }
+
 
             IntPtr hInstance = WinApi.GetModuleHandle(null);
             WinApi.WindowClassEx windowClass;
@@ -62,6 +80,11 @@ namespace NoesisApp
             WinApi.ReleaseDC(_hWnd, _hDC);
             _hDC = IntPtr.Zero;
             RemoveDisplay(NativeWindow);
+
+            if (_shcore != IntPtr.Zero)
+            {
+                WinApi.FreeLibrary(_shcore);
+            }
         }
 
         #region Display overrides
@@ -99,9 +122,12 @@ namespace NoesisApp
         {
             get
             {
-                IntPtr hMonitor = WinApi.MonitorFromWindow(NativeWindow, WinApi.MonitorFlag.MONITOR_DEFAULTTONEAREST);
-                uint dpiX, dpiY;
-                WinApi.GetDpiForMonitor(hMonitor, WinApi.MonitorDpiType.MDT_EFFECTIVE_DPI, out dpiX, out dpiY);
+                uint dpiX = 96, dpiY = 96;
+                if (_getDpiForMonitor != null)
+                {
+                    IntPtr hMonitor = WinApi.MonitorFromWindow(NativeWindow, WinApi.MonitorFlag.MONITOR_DEFAULTTONEAREST);
+                    _getDpiForMonitor(hMonitor, WinApi.MonitorDpiType.MDT_EFFECTIVE_DPI, out dpiX, out dpiY);
+                }
                 return dpiX / 96.0f;
             }
         }
@@ -1163,8 +1189,10 @@ namespace NoesisApp
         #region Private members
         private IntPtr _hWnd = IntPtr.Zero;
         private IntPtr _hDC = IntPtr.Zero;
-        WindowStartupLocation _startupLocation = WindowStartupLocation.Manual;
-        Noesis.Cursor _cursor = Noesis.Cursor.Arrow;
+        private WindowStartupLocation _startupLocation = WindowStartupLocation.Manual;
+        private Noesis.Cursor _cursor = Noesis.Cursor.Arrow;
+        private WinApi.GetDpiForMonitor _getDpiForMonitor = null;
+        private IntPtr _shcore = IntPtr.Zero;
         #endregion
 
         private static class WinApi
@@ -1964,9 +1992,22 @@ namespace NoesisApp
                 public int X;
                 public int Y;
             }
+
+            public delegate uint SetProcessDpiAwareness(WinApi.ProcessDpiAwareness dpi);
+            public delegate uint GetDpiForMonitor(IntPtr hmonitor, WinApi.MonitorDpiType dpiType, out uint dpiX, out uint dpiY);
             #endregion
 
             #region Imports
+            [DllImport("kernel32", SetLastError = true, CharSet = CharSet.Ansi)]
+            public static extern IntPtr LoadLibrary([MarshalAs(UnmanagedType.LPStr)]string lpFileName);
+
+            [DllImport("kernel32", CharSet = CharSet.Ansi, ExactSpelling = true, SetLastError = true)]
+            public static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
+
+            [DllImport("kernel32", SetLastError = true)]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            public static extern bool FreeLibrary(IntPtr hModule);
+
             [DllImport("kernel32", CharSet = CharSet.Auto)]
             public static extern IntPtr GetModuleHandle(string lpModuleName);
 
@@ -2023,12 +2064,6 @@ namespace NoesisApp
 
             [DllImport("user32", CharSet = CharSet.Auto)]
             public static extern bool GetMonitorInfo(IntPtr hMonitor, ref MonitorInfo lpmi);
-
-            [DllImport("shcore")]
-            public static extern uint GetDpiForMonitor(IntPtr hmonitor, MonitorDpiType dpiType, out uint dpiX, out uint dpiY);
-
-            [DllImport("shcore")]
-            public static extern uint SetProcessDpiAwareness(ProcessDpiAwareness dpi);
 
             [DllImport("user32", CharSet = CharSet.Auto)]
             public static extern int GetWindowLong(IntPtr hwnd, int nIndex);
