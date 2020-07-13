@@ -36,6 +36,13 @@ public class VirtualizingPanel : Panel {
     }
   }
 
+  public void BringIndexIntoViewPublic(int index) {
+    BringIndexIntoView(index);
+  }
+
+  protected virtual void BringIndexIntoView(int index) {
+  }
+
   public static VirtualizationCacheLength GetCacheLength(DependencyObject element) {
     if (element == null) throw new ArgumentNullException("element");
     {
@@ -129,10 +136,6 @@ public class VirtualizingPanel : Panel {
     {
       NoesisGUI_PINVOKE.VirtualizingPanel_SetVirtualizationMode(DependencyObject.getCPtr(element), (int)mode);
     }
-  }
-
-  public void BringIndexIntoView(int index) {
-    NoesisGUI_PINVOKE.VirtualizingPanel_BringIndexIntoView(swigCPtr, index);
   }
 
   public static DependencyProperty CacheLengthProperty {

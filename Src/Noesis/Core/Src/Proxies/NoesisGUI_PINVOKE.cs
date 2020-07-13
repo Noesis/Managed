@@ -58,6 +58,12 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr Extend_ExtendStream(IntPtr typeName);
 
   [DllImport(Library.Name)]
+  public static extern IntPtr Extend_ExtendScrollInfo(IntPtr typeName);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Extend_ExtendVirtualScrollInfo(IntPtr typeName);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr Extend_XamlProvider(IntPtr typeName);
 
   [DllImport(Library.Name)]
@@ -10950,9 +10956,6 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern void VirtualizingPanel_SetVirtualizationMode(HandleRef jarg1, int jarg2);
-
-  [DllImport(Library.Name)]
-  public static extern void VirtualizingPanel_BringIndexIntoView(HandleRef jarg1, int jarg2);
 
   [DllImport(Library.Name)]
   public static extern void VirtualizingPanel_CacheLengthProperty_set(HandleRef jarg1);

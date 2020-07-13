@@ -168,6 +168,35 @@ namespace Noesis
                 _providerScanFolder,
                 _providerOpenFont,
 
+                _scrollInfoBringIntoView,
+                _scrollInfoGetCanHorizontalScroll,
+                _scrollInfoSetCanHorizontalScroll,
+                _scrollInfoGetCanVerticalScroll,
+                _scrollInfoSetCanVerticalScroll,
+                _scrollInfoGetExtentWidth,
+                _scrollInfoGetExtentHeight,
+                _scrollInfoGetViewportWidth,
+                _scrollInfoGetViewportHeight,
+                _scrollInfoGetHorizontalOffset,
+                _scrollInfoGetVerticalOffset,
+                _scrollInfoGetScrollOwner,
+                _scrollInfoSetScrollOwner,
+                _scrollInfoLineLeft,
+                _scrollInfoLineRight,
+                _scrollInfoLineUp,
+                _scrollInfoLineDown,
+                _scrollInfoPageLeft,
+                _scrollInfoPageRight,
+                _scrollInfoPageUp,
+                _scrollInfoPageDown,
+                _scrollInfoMouseWheelLeft,
+                _scrollInfoMouseWheelRight,
+                _scrollInfoMouseWheelUp,
+                _scrollInfoMouseWheelDown,
+                _scrollInfoSetHorizontalOffset,
+                _scrollInfoSetVerticalOffset,
+                _scrollInfoMakeVisible,
+
                 _getPropertyValue_Bool,
                 _getPropertyValue_Float,
                 _getPropertyValue_Double,
@@ -233,6 +262,7 @@ namespace Noesis
                 null,
                 null, null, null, null, null,
                 null, null, null, null, null, null,
+                null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
                 null, null, null);
@@ -1258,7 +1288,17 @@ namespace Noesis
                 PropertyInfo indexerInfo = null;
                 IndexerAccessor indexer = null;
 
-                if (type.GetTypeInfo().IsSubclassOf(typeof(Noesis.BaseComponent)))
+                if (typeof(Noesis.IScrollInfo).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()) &&
+                    typeof(Noesis.VirtualizingPanel).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
+                {
+                    nativeType = Noesis.ExtendVirtualScrollInfo.Extend(TypeFullName(type));
+                }
+                else if (typeof(Noesis.IScrollInfo).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()) &&
+                    typeof(Noesis.Panel).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
+                {
+                    nativeType = Noesis.ExtendScrollInfo.Extend(TypeFullName(type));
+                }
+                else if (type.GetTypeInfo().IsSubclassOf(typeof(Noesis.BaseComponent)))
                 {
                     System.Reflection.MethodInfo extend = FindExtendMethod(type);
                     if (extend != null)
@@ -2856,6 +2896,622 @@ namespace Noesis
             }
 
             return IntPtr.Zero;
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void Callback_ScrollInfoBringIntoView(IntPtr cPtr, int index);
+        private static Callback_ScrollInfoBringIntoView _scrollInfoBringIntoView = ScrollInfoBringIntoView;
+
+        [MonoPInvokeCallback(typeof(Callback_ScrollInfoBringIntoView))]
+        private static void ScrollInfoBringIntoView(IntPtr cPtr, int index)
+        {
+            try
+            {
+                VirtualizingPanel panel = (VirtualizingPanel)GetExtendInstance(cPtr);
+                if (panel != null)
+                {
+                    panel.BringIndexIntoViewPublic(index);
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate bool Callback_ScrollInfoGetCanHorizontalScroll(IntPtr cPtr);
+        private static Callback_ScrollInfoGetCanHorizontalScroll _scrollInfoGetCanHorizontalScroll = ScrollInfoGetCanHorizontalScroll;
+
+        [MonoPInvokeCallback(typeof(Callback_ScrollInfoGetCanHorizontalScroll))]
+        [return: MarshalAs(UnmanagedType.U1)]
+        private static bool ScrollInfoGetCanHorizontalScroll(IntPtr cPtr)
+        {
+            try
+            {
+                IScrollInfo scrollInfo = (IScrollInfo)GetExtendInstance(cPtr);
+                if (scrollInfo != null)
+                {
+                    return scrollInfo.CanHorizontallyScroll;
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+
+            return false;
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void Callback_ScrollInfoSetCanHorizontalScroll(IntPtr cPtr,
+            [MarshalAs(UnmanagedType.U1)] bool canScroll);
+        private static Callback_ScrollInfoSetCanHorizontalScroll _scrollInfoSetCanHorizontalScroll = ScrollInfoSetCanHorizontalScroll;
+
+        [MonoPInvokeCallback(typeof(Callback_ScrollInfoSetCanHorizontalScroll))]
+        private static void ScrollInfoSetCanHorizontalScroll(IntPtr cPtr, bool canScroll)
+        {
+            try
+            {
+                IScrollInfo scrollInfo = (IScrollInfo)GetExtendInstance(cPtr);
+                if (scrollInfo != null)
+                {
+                    scrollInfo.CanHorizontallyScroll = canScroll;
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate bool Callback_ScrollInfoGetCanVerticalScroll(IntPtr cPtr);
+        private static Callback_ScrollInfoGetCanVerticalScroll _scrollInfoGetCanVerticalScroll = ScrollInfoGetCanVerticalScroll;
+
+        [MonoPInvokeCallback(typeof(Callback_ScrollInfoGetCanVerticalScroll))]
+        [return: MarshalAs(UnmanagedType.U1)]
+        private static bool ScrollInfoGetCanVerticalScroll(IntPtr cPtr)
+        {
+            try
+            {
+                IScrollInfo scrollInfo = (IScrollInfo)GetExtendInstance(cPtr);
+                if (scrollInfo != null)
+                {
+                    return scrollInfo.CanVerticallyScroll;
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+
+            return false;
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void Callback_ScrollInfoSetCanVerticalScroll(IntPtr cPtr,
+            [MarshalAs(UnmanagedType.U1)] bool canScroll);
+        private static Callback_ScrollInfoSetCanVerticalScroll _scrollInfoSetCanVerticalScroll = ScrollInfoSetCanVerticalScroll;
+
+        [MonoPInvokeCallback(typeof(Callback_ScrollInfoSetCanVerticalScroll))]
+        private static void ScrollInfoSetCanVerticalScroll(IntPtr cPtr, bool canScroll)
+        {
+            try
+            {
+                IScrollInfo scrollInfo = (IScrollInfo)GetExtendInstance(cPtr);
+                if (scrollInfo != null)
+                {
+                    scrollInfo.CanVerticallyScroll = canScroll;
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate float Callback_ScrollInfoGetExtentWidth(IntPtr cPtr);
+        private static Callback_ScrollInfoGetExtentWidth _scrollInfoGetExtentWidth = ScrollInfoGetExtentWidth;
+
+        [MonoPInvokeCallback(typeof(Callback_ScrollInfoGetExtentWidth))]
+        private static float ScrollInfoGetExtentWidth(IntPtr cPtr)
+        {
+            try
+            {
+                IScrollInfo scrollInfo = (IScrollInfo)GetExtendInstance(cPtr);
+                if (scrollInfo != null)
+                {
+                    return scrollInfo.ExtentWidth;
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+
+            return 0.0f;
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate float Callback_ScrollInfoGetExtentHeight(IntPtr cPtr);
+        private static Callback_ScrollInfoGetExtentHeight _scrollInfoGetExtentHeight = ScrollInfoGetExtentHeight;
+
+        [MonoPInvokeCallback(typeof(Callback_ScrollInfoGetExtentHeight))]
+        private static float ScrollInfoGetExtentHeight(IntPtr cPtr)
+        {
+            try
+            {
+                IScrollInfo scrollInfo = (IScrollInfo)GetExtendInstance(cPtr);
+                if (scrollInfo != null)
+                {
+                    return scrollInfo.ExtentHeight;
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+
+            return 0.0f;
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate float Callback_ScrollInfoGetViewportWidth(IntPtr cPtr);
+        private static Callback_ScrollInfoGetViewportWidth _scrollInfoGetViewportWidth = ScrollInfoGetViewportWidth;
+
+        [MonoPInvokeCallback(typeof(Callback_ScrollInfoGetViewportWidth))]
+        private static float ScrollInfoGetViewportWidth(IntPtr cPtr)
+        {
+            try
+            {
+                IScrollInfo scrollInfo = (IScrollInfo)GetExtendInstance(cPtr);
+                if (scrollInfo != null)
+                {
+                    return scrollInfo.ViewportWidth;
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+
+            return 0.0f;
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate float Callback_ScrollInfoGetViewportHeight(IntPtr cPtr);
+        private static Callback_ScrollInfoGetViewportHeight _scrollInfoGetViewportHeight = ScrollInfoGetViewportHeight;
+
+        [MonoPInvokeCallback(typeof(Callback_ScrollInfoGetViewportHeight))]
+        private static float ScrollInfoGetViewportHeight(IntPtr cPtr)
+        {
+            try
+            {
+                IScrollInfo scrollInfo = (IScrollInfo)GetExtendInstance(cPtr);
+                if (scrollInfo != null)
+                {
+                    return scrollInfo.ViewportHeight;
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+
+            return 0.0f;
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate float Callback_ScrollInfoGetHorizontalOffset(IntPtr cPtr);
+        private static Callback_ScrollInfoGetHorizontalOffset _scrollInfoGetHorizontalOffset = ScrollInfoGetHorizontalOffset;
+
+        [MonoPInvokeCallback(typeof(Callback_ScrollInfoGetHorizontalOffset))]
+        private static float ScrollInfoGetHorizontalOffset(IntPtr cPtr)
+        {
+            try
+            {
+                IScrollInfo scrollInfo = (IScrollInfo)GetExtendInstance(cPtr);
+                if (scrollInfo != null)
+                {
+                    return scrollInfo.HorizontalOffset;
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+
+            return 0.0f;
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate float Callback_ScrollInfoGetVerticalOffset(IntPtr cPtr);
+        private static Callback_ScrollInfoGetVerticalOffset _scrollInfoGetVerticalOffset = ScrollInfoGetVerticalOffset;
+
+        [MonoPInvokeCallback(typeof(Callback_ScrollInfoGetVerticalOffset))]
+        private static float ScrollInfoGetVerticalOffset(IntPtr cPtr)
+        {
+            try
+            {
+                IScrollInfo scrollInfo = (IScrollInfo)GetExtendInstance(cPtr);
+                if (scrollInfo != null)
+                {
+                    return scrollInfo.VerticalOffset;
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+
+            return 0.0f;
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate IntPtr Callback_ScrollInfoGetScrollOwner(IntPtr cPtr);
+        private static Callback_ScrollInfoGetScrollOwner _scrollInfoGetScrollOwner = ScrollInfoGetScrollOwner;
+
+        [MonoPInvokeCallback(typeof(Callback_ScrollInfoGetScrollOwner))]
+        private static IntPtr ScrollInfoGetScrollOwner(IntPtr cPtr)
+        {
+            try
+            {
+                IScrollInfo scrollInfo = (IScrollInfo)GetExtendInstance(cPtr);
+                if (scrollInfo != null)
+                {
+                    ScrollViewer scrollViewer = scrollInfo.ScrollOwner;
+                    return GetInstanceHandle(scrollViewer).Handle;
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+
+            return IntPtr.Zero;
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void Callback_ScrollInfoSetScrollOwner(IntPtr cPtr, IntPtr typeOwner,
+            IntPtr cPtrOwner);
+        private static Callback_ScrollInfoSetScrollOwner _scrollInfoSetScrollOwner = ScrollInfoSetScrollOwner;
+
+        [MonoPInvokeCallback(typeof(Callback_ScrollInfoSetScrollOwner))]
+        private static void ScrollInfoSetScrollOwner(IntPtr cPtr, IntPtr typeOwner, IntPtr cPtrOwner)
+        {
+            try
+            {
+                IScrollInfo scrollInfo = (IScrollInfo)GetExtendInstance(cPtr);
+                if (scrollInfo != null)
+                {
+                    ScrollViewer owner = (ScrollViewer)GetProxy(typeOwner, cPtrOwner, false);
+                    scrollInfo.ScrollOwner = owner;
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void Callback_ScrollInfoLineLeft(IntPtr cPtr);
+        private static Callback_ScrollInfoLineLeft _scrollInfoLineLeft = ScrollInfoLineLeft;
+
+        [MonoPInvokeCallback(typeof(Callback_ScrollInfoLineLeft))]
+        private static void ScrollInfoLineLeft(IntPtr cPtr)
+        {
+            try
+            {
+                IScrollInfo scrollInfo = (IScrollInfo)GetExtendInstance(cPtr);
+                if (scrollInfo != null)
+                {
+                    scrollInfo.LineLeft();
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void Callback_ScrollInfoLineRight(IntPtr cPtr);
+        private static Callback_ScrollInfoLineRight _scrollInfoLineRight = ScrollInfoLineRight;
+
+        [MonoPInvokeCallback(typeof(Callback_ScrollInfoLineRight))]
+        private static void ScrollInfoLineRight(IntPtr cPtr)
+        {
+            try
+            {
+                IScrollInfo scrollInfo = (IScrollInfo)GetExtendInstance(cPtr);
+                if (scrollInfo != null)
+                {
+                    scrollInfo.LineRight();
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void Callback_ScrollInfoLineUp(IntPtr cPtr);
+        private static Callback_ScrollInfoLineUp _scrollInfoLineUp = ScrollInfoLineUp;
+
+        [MonoPInvokeCallback(typeof(Callback_ScrollInfoLineUp))]
+        private static void ScrollInfoLineUp(IntPtr cPtr)
+        {
+            try
+            {
+                IScrollInfo scrollInfo = (IScrollInfo)GetExtendInstance(cPtr);
+                if (scrollInfo != null)
+                {
+                    scrollInfo.LineUp();
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void Callback_ScrollInfoLineDown(IntPtr cPtr);
+        private static Callback_ScrollInfoLineDown _scrollInfoLineDown = ScrollInfoLineDown;
+
+        [MonoPInvokeCallback(typeof(Callback_ScrollInfoLineDown))]
+        private static void ScrollInfoLineDown(IntPtr cPtr)
+        {
+            try
+            {
+                IScrollInfo scrollInfo = (IScrollInfo)GetExtendInstance(cPtr);
+                if (scrollInfo != null)
+                {
+                    scrollInfo.LineDown();
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void Callback_ScrollInfoPageLeft(IntPtr cPtr);
+        private static Callback_ScrollInfoPageLeft _scrollInfoPageLeft = ScrollInfoPageLeft;
+
+        [MonoPInvokeCallback(typeof(Callback_ScrollInfoPageLeft))]
+        private static void ScrollInfoPageLeft(IntPtr cPtr)
+        {
+            try
+            {
+                IScrollInfo scrollInfo = (IScrollInfo)GetExtendInstance(cPtr);
+                if (scrollInfo != null)
+                {
+                    scrollInfo.PageLeft();
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void Callback_ScrollInfoPageRight(IntPtr cPtr);
+        private static Callback_ScrollInfoPageRight _scrollInfoPageRight = ScrollInfoPageRight;
+
+        [MonoPInvokeCallback(typeof(Callback_ScrollInfoPageRight))]
+        private static void ScrollInfoPageRight(IntPtr cPtr)
+        {
+            try
+            {
+                IScrollInfo scrollInfo = (IScrollInfo)GetExtendInstance(cPtr);
+                if (scrollInfo != null)
+                {
+                    scrollInfo.PageRight();
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void Callback_ScrollInfoPageUp(IntPtr cPtr);
+        private static Callback_ScrollInfoPageUp _scrollInfoPageUp = ScrollInfoPageUp;
+
+        [MonoPInvokeCallback(typeof(Callback_ScrollInfoPageUp))]
+        private static void ScrollInfoPageUp(IntPtr cPtr)
+        {
+            try
+            {
+                IScrollInfo scrollInfo = (IScrollInfo)GetExtendInstance(cPtr);
+                if (scrollInfo != null)
+                {
+                    scrollInfo.PageUp();
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void Callback_ScrollInfoPageDown(IntPtr cPtr);
+        private static Callback_ScrollInfoPageDown _scrollInfoPageDown = ScrollInfoPageDown;
+
+        [MonoPInvokeCallback(typeof(Callback_ScrollInfoPageDown))]
+        private static void ScrollInfoPageDown(IntPtr cPtr)
+        {
+            try
+            {
+                IScrollInfo scrollInfo = (IScrollInfo)GetExtendInstance(cPtr);
+                if (scrollInfo != null)
+                {
+                    scrollInfo.PageDown();
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void Callback_ScrollInfoMouseWheelLeft(IntPtr cPtr, float delta);
+        private static Callback_ScrollInfoMouseWheelLeft _scrollInfoMouseWheelLeft = ScrollInfoMouseWheelLeft;
+
+        [MonoPInvokeCallback(typeof(Callback_ScrollInfoMouseWheelLeft))]
+        private static void ScrollInfoMouseWheelLeft(IntPtr cPtr, float delta)
+        {
+            try
+            {
+                IScrollInfo scrollInfo = (IScrollInfo)GetExtendInstance(cPtr);
+                if (scrollInfo != null)
+                {
+                    scrollInfo.MouseWheelLeft(delta);
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void Callback_ScrollInfoMouseWheelRight(IntPtr cPtr, float delta);
+        private static Callback_ScrollInfoMouseWheelRight _scrollInfoMouseWheelRight = ScrollInfoMouseWheelRight;
+
+        [MonoPInvokeCallback(typeof(Callback_ScrollInfoMouseWheelRight))]
+        private static void ScrollInfoMouseWheelRight(IntPtr cPtr, float delta)
+        {
+            try
+            {
+                IScrollInfo scrollInfo = (IScrollInfo)GetExtendInstance(cPtr);
+                if (scrollInfo != null)
+                {
+                    scrollInfo.MouseWheelRight(delta);
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void Callback_ScrollInfoMouseWheelUp(IntPtr cPtr, float delta);
+        private static Callback_ScrollInfoMouseWheelUp _scrollInfoMouseWheelUp = ScrollInfoMouseWheelUp;
+
+        [MonoPInvokeCallback(typeof(Callback_ScrollInfoMouseWheelUp))]
+        private static void ScrollInfoMouseWheelUp(IntPtr cPtr, float delta)
+        {
+            try
+            {
+                IScrollInfo scrollInfo = (IScrollInfo)GetExtendInstance(cPtr);
+                if (scrollInfo != null)
+                {
+                    scrollInfo.MouseWheelUp(delta);
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void Callback_ScrollInfoMouseWheelDown(IntPtr cPtr, float delta);
+        private static Callback_ScrollInfoMouseWheelDown _scrollInfoMouseWheelDown = ScrollInfoMouseWheelDown;
+
+        [MonoPInvokeCallback(typeof(Callback_ScrollInfoMouseWheelDown))]
+        private static void ScrollInfoMouseWheelDown(IntPtr cPtr, float delta)
+        {
+            try
+            {
+                IScrollInfo scrollInfo = (IScrollInfo)GetExtendInstance(cPtr);
+                if (scrollInfo != null)
+                {
+                    scrollInfo.MouseWheelDown(delta);
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void Callback_ScrollInfoSetHorizontalOffset(IntPtr cPtr, float offset);
+        private static Callback_ScrollInfoSetHorizontalOffset _scrollInfoSetHorizontalOffset = ScrollInfoSetHorizontalOffset;
+
+        [MonoPInvokeCallback(typeof(Callback_ScrollInfoSetHorizontalOffset))]
+        private static void ScrollInfoSetHorizontalOffset(IntPtr cPtr, float offset)
+        {
+            try
+            {
+                IScrollInfo scrollInfo = (IScrollInfo)GetExtendInstance(cPtr);
+                if (scrollInfo != null)
+                {
+                    scrollInfo.SetHorizontalOffset(offset);
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void Callback_ScrollInfoSetVerticalOffset(IntPtr cPtr, float offset);
+        private static Callback_ScrollInfoSetVerticalOffset _scrollInfoSetVerticalOffset = ScrollInfoSetVerticalOffset;
+
+        [MonoPInvokeCallback(typeof(Callback_ScrollInfoSetVerticalOffset))]
+        private static void ScrollInfoSetVerticalOffset(IntPtr cPtr, float offset)
+        {
+            try
+            {
+                IScrollInfo scrollInfo = (IScrollInfo)GetExtendInstance(cPtr);
+                if (scrollInfo != null)
+                {
+                    scrollInfo.SetVerticalOffset(offset);
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void Callback_ScrollInfoMakeVisible(IntPtr cPtr, IntPtr visualType,
+            IntPtr visualPtr, ref Rect rectangle, ref Rect result);
+        private static Callback_ScrollInfoMakeVisible _scrollInfoMakeVisible = ScrollInfoMakeVisible;
+
+        [MonoPInvokeCallback(typeof(Callback_ScrollInfoMakeVisible))]
+        private static void ScrollInfoMakeVisible(IntPtr cPtr, IntPtr visualType, IntPtr visualPtr,
+            ref Rect rectangle, ref Rect result)
+        {
+            try
+            {
+                IScrollInfo scrollInfo = (IScrollInfo)GetExtendInstance(cPtr);
+                if (scrollInfo != null)
+                {
+                    Visual visual = (Visual)GetProxy(visualType, visualPtr, false);
+                    result = scrollInfo.MakeVisible(visual, rectangle);
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////

@@ -38,12 +38,25 @@ namespace NoesisApp
             trigger.EvaluateBindingChange(e);
         }
 
+        protected override void OnAttached()
+        {
+            base.OnAttached();
+
+            if (Binding != null)
+            {
+                EvaluateBindingChange(null);
+            }
+        }
+
         /// <summary>
         /// Called when the binding property has changed
         /// </summary>
         protected virtual void EvaluateBindingChange(object args)
         {
-            InvokeActions(args);
+            if (AssociatedObject != null)
+            {
+                InvokeActions(args);
+            }
         }
     }
 }

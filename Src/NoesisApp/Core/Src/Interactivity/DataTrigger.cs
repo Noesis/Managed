@@ -68,6 +68,13 @@ namespace NoesisApp
             trigger.Evaluate(e);
         }
 
+        protected override void OnAttached()
+        {
+            base.OnAttached();
+
+            EvaluateBindingChange(null);
+        }
+
         protected override void EvaluateBindingChange(object args)
         {
             Evaluate(args);
@@ -75,17 +82,20 @@ namespace NoesisApp
 
         private void Evaluate(object args)
         {
-            EnsureBindingValues();
-
-            bool sourceChanged = UpdateSourceType();
-            bool valueChanged = UpdateTriggerValue();
-            bool comparisonChanged = UpdateComparison();
-
-            if (sourceChanged || valueChanged || comparisonChanged)
+            if (AssociatedObject != null)
             {
-                if (Compare())
+                EnsureBindingValues();
+
+                bool sourceChanged = UpdateSourceType();
+                bool valueChanged = UpdateTriggerValue();
+                bool comparisonChanged = UpdateComparison();
+
+                if (sourceChanged || valueChanged || comparisonChanged)
                 {
-                    InvokeActions(args);
+                    if (Compare())
+                    {
+                        InvokeActions(args);
+                    }
                 }
             }
         }

@@ -52,6 +52,8 @@ namespace NoesisApp
 
                 _associatedObject = GetPtr(associatedObject);
 
+                InitObject();
+
                 OnAttached();
             }
         }

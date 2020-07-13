@@ -181,7 +181,8 @@ namespace Noesis
                 Error.UnhandledException(exception);
             }
 
-            return IntPtr.Zero;
+            BaseComponent.AddReference(baseValue); // released by native bindings
+            return baseValue;
         }
 
         static protected Dictionary<IntPtr, CoerceValueCallback> _CoerceValueCallback =
