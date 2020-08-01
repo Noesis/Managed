@@ -54,6 +54,13 @@ public class TextBlock : FrameworkElement {
     }
   }
 
+  public static DependencyProperty CharacterSpacingProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.TextBlock_CharacterSpacingProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
   public static DependencyProperty FontFamilyProperty {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.TextBlock_FontFamilyProperty_get();
@@ -174,6 +181,16 @@ public class TextBlock : FrameworkElement {
       IntPtr cPtr = NoesisGUI_PINVOKE.TextBlock_Background_get(swigCPtr);
       return (Brush)Noesis.Extend.GetProxy(cPtr, false);
     }
+  }
+
+  public int CharacterSpacing {
+    set {
+      NoesisGUI_PINVOKE.TextBlock_CharacterSpacing_set(swigCPtr, value);
+    } 
+    get {
+      int ret = NoesisGUI_PINVOKE.TextBlock_CharacterSpacing_get(swigCPtr);
+      return ret;
+    } 
   }
 
   public FontFamily FontFamily {

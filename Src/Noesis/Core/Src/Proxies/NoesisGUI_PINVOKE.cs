@@ -5605,12 +5605,6 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr FrameworkElement_FindTreeElement(HandleRef jarg1);
 
   [DllImport(Library.Name)]
-  public static extern IntPtr TextElement_GetBackground(HandleRef jarg1);
-
-  [DllImport(Library.Name)]
-  public static extern void TextElement_SetBackground(HandleRef jarg1, HandleRef jarg2);
-
-  [DllImport(Library.Name)]
   public static extern IntPtr TextElement_GetFontFamily(HandleRef jarg1);
 
   [DllImport(Library.Name)]
@@ -5665,6 +5659,12 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr TextElement_BackgroundProperty_get();
 
   [DllImport(Library.Name)]
+  public static extern void TextElement_CharacterSpacingProperty_set(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr TextElement_CharacterSpacingProperty_get();
+
+  [DllImport(Library.Name)]
   public static extern void TextElement_FontFamilyProperty_set(HandleRef jarg1);
 
   [DllImport(Library.Name)]
@@ -5717,6 +5717,12 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr TextElement_Background_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void TextElement_CharacterSpacing_set(HandleRef jarg1, int jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern int TextElement_CharacterSpacing_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern void TextElement_FontFamily_set(HandleRef jarg1, HandleRef jarg2);
@@ -11314,6 +11320,12 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr TextBlock_BackgroundProperty_get();
 
   [DllImport(Library.Name)]
+  public static extern void TextBlock_CharacterSpacingProperty_set(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr TextBlock_CharacterSpacingProperty_get();
+
+  [DllImport(Library.Name)]
   public static extern void TextBlock_FontFamilyProperty_set(HandleRef jarg1);
 
   [DllImport(Library.Name)]
@@ -11414,6 +11426,12 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr TextBlock_Background_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void TextBlock_CharacterSpacing_set(HandleRef jarg1, int jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern int TextBlock_CharacterSpacing_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern void TextBlock_FontFamily_set(HandleRef jarg1, HandleRef jarg2);

@@ -11,22 +11,53 @@ using System.Windows.Media;
 namespace NoesisGUIExtensions
 {
     /// <summary>
-    /// Adds stroke capabilities to text elements.
-    ///
-    /// Usage:
-    ///
-    ///     <Grid 
-    ///       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    ///       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    ///       xmlns:noesis="clr-namespace:NoesisGUIExtensions">
-    ///         <TextBlock noesis:Text.Stroke="Red" noesis:Text.StrokeThickness="1" Text="Hello"/>
-    ///     </Grid>
-    ///
+    /// Adds new features as attached properties to text elements.
     /// </summary>
     public static class Text
     {
         /// <summary>
+        /// Gets or sets the uniform spacing between characters, in units of 1/1000 of an em
+        ///
+        /// Usage:
+        ///
+        ///     <Grid 
+        ///       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        ///       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        ///       xmlns:noesis="clr-namespace:NoesisGUIExtensions;assembly=Noesis.GUI.Extensions">
+        ///         <TextBlock Text="Hello" noesis:Text.CharacterSpacing="10"/>
+        ///     </Grid>
+        ///
+        /// </summary>
+        #region CharacterSpacing attached property
+
+        public static readonly DependencyProperty CharacterSpacingProperty =
+            DependencyProperty.RegisterAttached("CharacterSpacing", typeof(int), typeof(Text),
+            new FrameworkPropertyMetadata((int)0));
+
+        public static void SetCharacterSpacing(UIElement element, int value)
+        {
+            element.SetValue(CharacterSpacingProperty, value);
+        }
+
+        public static int GetCharacterSpacing(UIElement element)
+        {
+            return (int)element.GetValue(CharacterSpacingProperty);
+        }
+
+        #endregion
+
+        /// <summary>
         /// Specifies the brush used to stroke the text
+        ///
+        /// Usage:
+        ///
+        ///     <Grid 
+        ///       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        ///       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        ///       xmlns:noesis="clr-namespace:NoesisGUIExtensions;assembly=Noesis.GUI.Extensions">
+        ///         <TextBlock Text="Hello" noesis:Text.Stroke="Red" noesis:Text.StrokeThickness="1"/>
+        ///     </Grid>
+        ///
         /// </summary>
         #region Stroke attached property
 
@@ -69,6 +100,16 @@ namespace NoesisGUIExtensions
 
         /// <summary>
         /// Specifies the placeholder text for TextBoxes and PasswordBoxes
+        ///
+        /// Usage:
+        ///
+        ///     <Grid 
+        ///       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        ///       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        ///       xmlns:noesis="clr-namespace:NoesisGUIExtensions;assembly=Noesis.GUI.Extensions">
+        ///         <TextBox noesis:Text.Placeholder="Type your name"/>
+        ///     </Grid>
+        ///
         /// </summary>
         #region Placeholder attached property
 

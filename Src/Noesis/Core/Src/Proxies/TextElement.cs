@@ -27,21 +27,6 @@ public class TextElement : FrameworkElement {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
-  public static Brush GetBackground(DependencyObject element) {
-    if (element == null) throw new ArgumentNullException("element");
-    {
-      IntPtr cPtr = NoesisGUI_PINVOKE.TextElement_GetBackground(DependencyObject.getCPtr(element));
-      return (Brush)Noesis.Extend.GetProxy(cPtr, false);
-    }
-  }
-
-  public static void SetBackground(DependencyObject element, Brush background) {
-    if (element == null) throw new ArgumentNullException("element");
-    {
-      NoesisGUI_PINVOKE.TextElement_SetBackground(DependencyObject.getCPtr(element), Brush.getCPtr(background));
-    }
-  }
-
   public static FontFamily GetFontFamily(DependencyObject element) {
     if (element == null) throw new ArgumentNullException("element");
     {
@@ -169,6 +154,13 @@ public class TextElement : FrameworkElement {
     }
   }
 
+  public static DependencyProperty CharacterSpacingProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.TextElement_CharacterSpacingProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
   public static DependencyProperty FontFamilyProperty {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.TextElement_FontFamilyProperty_get();
@@ -233,6 +225,16 @@ public class TextElement : FrameworkElement {
       IntPtr cPtr = NoesisGUI_PINVOKE.TextElement_Background_get(swigCPtr);
       return (Brush)Noesis.Extend.GetProxy(cPtr, false);
     }
+  }
+
+  public int CharacterSpacing {
+    set {
+      NoesisGUI_PINVOKE.TextElement_CharacterSpacing_set(swigCPtr, value);
+    } 
+    get {
+      int ret = NoesisGUI_PINVOKE.TextElement_CharacterSpacing_get(swigCPtr);
+      return ret;
+    } 
   }
 
   public FontFamily FontFamily {
