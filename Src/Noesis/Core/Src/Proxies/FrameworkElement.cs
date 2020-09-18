@@ -400,9 +400,6 @@ public partial class FrameworkElement : UIElement {
   }
 
   public static RoutedEvent ContextMenuClosingEvent {
-    set {
-      NoesisGUI_PINVOKE.FrameworkElement_ContextMenuClosingEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.FrameworkElement_ContextMenuClosingEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -410,9 +407,6 @@ public partial class FrameworkElement : UIElement {
   }
 
   public static RoutedEvent ContextMenuOpeningEvent {
-    set {
-      NoesisGUI_PINVOKE.FrameworkElement_ContextMenuOpeningEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.FrameworkElement_ContextMenuOpeningEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -420,9 +414,6 @@ public partial class FrameworkElement : UIElement {
   }
 
   public static RoutedEvent LoadedEvent {
-    set {
-      NoesisGUI_PINVOKE.FrameworkElement_LoadedEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.FrameworkElement_LoadedEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -430,9 +421,6 @@ public partial class FrameworkElement : UIElement {
   }
 
   public static RoutedEvent ReloadedEvent {
-    set {
-      NoesisGUI_PINVOKE.FrameworkElement_ReloadedEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.FrameworkElement_ReloadedEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -440,9 +428,6 @@ public partial class FrameworkElement : UIElement {
   }
 
   public static RoutedEvent RequestBringIntoViewEvent {
-    set {
-      NoesisGUI_PINVOKE.FrameworkElement_RequestBringIntoViewEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.FrameworkElement_RequestBringIntoViewEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -450,9 +435,6 @@ public partial class FrameworkElement : UIElement {
   }
 
   public static RoutedEvent SizeChangedEvent {
-    set {
-      NoesisGUI_PINVOKE.FrameworkElement_SizeChangedEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.FrameworkElement_SizeChangedEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -460,9 +442,6 @@ public partial class FrameworkElement : UIElement {
   }
 
   public static RoutedEvent ToolTipClosingEvent {
-    set {
-      NoesisGUI_PINVOKE.FrameworkElement_ToolTipClosingEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.FrameworkElement_ToolTipClosingEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -470,9 +449,6 @@ public partial class FrameworkElement : UIElement {
   }
 
   public static RoutedEvent ToolTipOpeningEvent {
-    set {
-      NoesisGUI_PINVOKE.FrameworkElement_ToolTipOpeningEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.FrameworkElement_ToolTipOpeningEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -480,9 +456,6 @@ public partial class FrameworkElement : UIElement {
   }
 
   public static RoutedEvent UnloadedEvent {
-    set {
-      NoesisGUI_PINVOKE.FrameworkElement_UnloadedEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.FrameworkElement_UnloadedEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);

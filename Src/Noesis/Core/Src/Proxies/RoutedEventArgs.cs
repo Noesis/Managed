@@ -75,7 +75,7 @@ public class RoutedEventArgs : EventArgs {
     } 
   }
 
-  public RoutedEventArgs(object source, RoutedEvent arg1) : this(NoesisGUI_PINVOKE.new_RoutedEventArgs(Noesis.Extend.GetInstanceHandle(source), RoutedEvent.getCPtr(arg1)), true) {
+  public RoutedEventArgs(RoutedEvent routedEvent, object source) : this(NoesisGUI_PINVOKE.new_RoutedEventArgs(RoutedEvent.getCPtr(routedEvent), Noesis.Extend.GetInstanceHandle(source)), true) {
   }
 
 }

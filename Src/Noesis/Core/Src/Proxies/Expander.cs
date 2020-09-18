@@ -76,9 +76,6 @@ public class Expander : HeaderedContentControl {
   }
 
   public static RoutedEvent CollapsedEvent {
-    set {
-      NoesisGUI_PINVOKE.Expander_CollapsedEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Expander_CollapsedEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -86,9 +83,6 @@ public class Expander : HeaderedContentControl {
   }
 
   public static RoutedEvent ExpandedEvent {
-    set {
-      NoesisGUI_PINVOKE.Expander_ExpandedEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Expander_ExpandedEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);

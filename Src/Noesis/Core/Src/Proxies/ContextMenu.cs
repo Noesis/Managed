@@ -118,9 +118,6 @@ public class ContextMenu : MenuBase {
   }
 
   public static RoutedEvent ClosedEvent {
-    set {
-      NoesisGUI_PINVOKE.ContextMenu_ClosedEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ContextMenu_ClosedEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -128,9 +125,6 @@ public class ContextMenu : MenuBase {
   }
 
   public static RoutedEvent OpenedEvent {
-    set {
-      NoesisGUI_PINVOKE.ContextMenu_OpenedEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ContextMenu_OpenedEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);

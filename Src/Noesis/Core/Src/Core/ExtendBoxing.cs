@@ -114,8 +114,9 @@ namespace Noesis
             }
             else if (val.GetType().GetTypeInfo().IsEnum)
             {
-                _boxFunctions.TryGetValue(typeof(int), out boxFunction);
-                return RegisterPendingRelease(boxFunction((int)Convert.ToInt64(val)));
+                IntPtr nativeType = EnsureNativeType(val.GetType());
+                int enumValue = (int)Convert.ToInt64(val);
+                return RegisterPendingRelease(NoesisGUI_.Box_CustomEnum(nativeType, enumValue));
             }
             else if (val is Type)
             {
@@ -230,6 +231,13 @@ namespace Noesis
             if (_unboxFunctions.TryGetValue(info.Type, out unboxFunction))
             {
                 value = unboxFunction(cPtr);
+            }
+            else if (info.Type == typeof(Boxed<Enum>))
+            {
+                int enumValue = 0;
+                IntPtr enumType = NoesisGUI_.Unbox_CustomEnum(cPtr, ref enumValue);
+                NativeTypeInfo enumTypeInfo = GetNativeTypeInfo(enumType);
+                value = Enum.ToObject(enumTypeInfo.Type, enumValue);
             }
             else
             {

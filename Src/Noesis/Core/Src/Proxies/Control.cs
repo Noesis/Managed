@@ -181,9 +181,6 @@ public class Control : FrameworkElement {
   }
 
   public static RoutedEvent MouseDoubleClickEvent {
-    set {
-      NoesisGUI_PINVOKE.Control_MouseDoubleClickEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Control_MouseDoubleClickEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -191,9 +188,6 @@ public class Control : FrameworkElement {
   }
 
   public static RoutedEvent PreviewMouseDoubleClickEvent {
-    set {
-      NoesisGUI_PINVOKE.Control_PreviewMouseDoubleClickEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Control_PreviewMouseDoubleClickEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);

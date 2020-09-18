@@ -113,9 +113,6 @@ public class Hyperlink : Span {
   }
 
   public static RoutedEvent ClickEvent {
-    set {
-      NoesisGUI_PINVOKE.Hyperlink_ClickEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Hyperlink_ClickEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -123,9 +120,6 @@ public class Hyperlink : Span {
   }
 
   public static RoutedEvent RequestNavigateEvent {
-    set {
-      NoesisGUI_PINVOKE.Hyperlink_RequestNavigateEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Hyperlink_RequestNavigateEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);

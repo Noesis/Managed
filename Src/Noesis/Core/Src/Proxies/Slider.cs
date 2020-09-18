@@ -125,9 +125,6 @@ public class Slider : RangeBase {
   }
 
   public static RoutedCommand DecreaseLargeCommand {
-    set {
-      NoesisGUI_PINVOKE.Slider_DecreaseLargeCommand_set(RoutedCommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Slider_DecreaseLargeCommand_get();
       return (RoutedCommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -135,9 +132,6 @@ public class Slider : RangeBase {
   }
 
   public static RoutedCommand DecreaseSmallCommand {
-    set {
-      NoesisGUI_PINVOKE.Slider_DecreaseSmallCommand_set(RoutedCommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Slider_DecreaseSmallCommand_get();
       return (RoutedCommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -145,9 +139,6 @@ public class Slider : RangeBase {
   }
 
   public static RoutedCommand IncreaseLargeCommand {
-    set {
-      NoesisGUI_PINVOKE.Slider_IncreaseLargeCommand_set(RoutedCommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Slider_IncreaseLargeCommand_get();
       return (RoutedCommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -155,9 +146,6 @@ public class Slider : RangeBase {
   }
 
   public static RoutedCommand IncreaseSmallCommand {
-    set {
-      NoesisGUI_PINVOKE.Slider_IncreaseSmallCommand_set(RoutedCommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Slider_IncreaseSmallCommand_get();
       return (RoutedCommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -165,9 +153,6 @@ public class Slider : RangeBase {
   }
 
   public static RoutedCommand MaximizeValueCommand {
-    set {
-      NoesisGUI_PINVOKE.Slider_MaximizeValueCommand_set(RoutedCommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Slider_MaximizeValueCommand_get();
       return (RoutedCommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -175,9 +160,6 @@ public class Slider : RangeBase {
   }
 
   public static RoutedCommand MinimizeValueCommand {
-    set {
-      NoesisGUI_PINVOKE.Slider_MinimizeValueCommand_set(RoutedCommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Slider_MinimizeValueCommand_get();
       return (RoutedCommand)Noesis.Extend.GetProxy(cPtr, false);

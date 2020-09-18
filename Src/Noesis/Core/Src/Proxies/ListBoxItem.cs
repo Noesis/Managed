@@ -69,9 +69,6 @@ public class ListBoxItem : ContentControl {
   }
 
   public static RoutedEvent SelectedEvent {
-    set {
-      NoesisGUI_PINVOKE.ListBoxItem_SelectedEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ListBoxItem_SelectedEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -79,9 +76,6 @@ public class ListBoxItem : ContentControl {
   }
 
   public static RoutedEvent UnselectedEvent {
-    set {
-      NoesisGUI_PINVOKE.ListBoxItem_UnselectedEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ListBoxItem_UnselectedEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);

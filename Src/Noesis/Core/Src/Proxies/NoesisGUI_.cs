@@ -1025,6 +1025,16 @@ public class NoesisGUI_ {
     return ret;
   }
 
+  public static IntPtr Box_CustomEnum(IntPtr type, int val) {
+    IntPtr ret = NoesisGUI_PINVOKE.Box_CustomEnum(type, val);
+    return ret;
+  }
+
+  public static IntPtr Unbox_CustomEnum(IntPtr val, ref int enumVal) {
+    IntPtr ret = NoesisGUI_PINVOKE.Unbox_CustomEnum(val, ref enumVal);
+    return ret;
+  }
+
   public static IntPtr Uri_GetStaticType() {
     IntPtr ret = NoesisGUI_PINVOKE.Uri_GetStaticType();
     return ret;

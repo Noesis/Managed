@@ -101,9 +101,6 @@ public class TreeViewItem : HeaderedItemsControl {
   }
 
   public static RoutedEvent CollapsedEvent {
-    set {
-      NoesisGUI_PINVOKE.TreeViewItem_CollapsedEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.TreeViewItem_CollapsedEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -111,9 +108,6 @@ public class TreeViewItem : HeaderedItemsControl {
   }
 
   public static RoutedEvent ExpandedEvent {
-    set {
-      NoesisGUI_PINVOKE.TreeViewItem_ExpandedEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.TreeViewItem_ExpandedEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -121,9 +115,6 @@ public class TreeViewItem : HeaderedItemsControl {
   }
 
   public static RoutedEvent SelectedEvent {
-    set {
-      NoesisGUI_PINVOKE.TreeViewItem_SelectedEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.TreeViewItem_SelectedEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -131,9 +122,6 @@ public class TreeViewItem : HeaderedItemsControl {
   }
 
   public static RoutedEvent UnselectedEvent {
-    set {
-      NoesisGUI_PINVOKE.TreeViewItem_UnselectedEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.TreeViewItem_UnselectedEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);

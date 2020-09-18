@@ -64,9 +64,6 @@ public class Mouse : BaseComponent {
   }
 
   public static RoutedEvent GotMouseCaptureEvent {
-    set {
-      NoesisGUI_PINVOKE.Mouse_GotMouseCaptureEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Mouse_GotMouseCaptureEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -74,9 +71,6 @@ public class Mouse : BaseComponent {
   }
 
   public static RoutedEvent LostMouseCaptureEvent {
-    set {
-      NoesisGUI_PINVOKE.Mouse_LostMouseCaptureEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Mouse_LostMouseCaptureEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -84,9 +78,6 @@ public class Mouse : BaseComponent {
   }
 
   public static RoutedEvent MouseDownEvent {
-    set {
-      NoesisGUI_PINVOKE.Mouse_MouseDownEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Mouse_MouseDownEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -94,9 +85,6 @@ public class Mouse : BaseComponent {
   }
 
   public static RoutedEvent MouseEnterEvent {
-    set {
-      NoesisGUI_PINVOKE.Mouse_MouseEnterEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Mouse_MouseEnterEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -104,9 +92,6 @@ public class Mouse : BaseComponent {
   }
 
   public static RoutedEvent MouseLeaveEvent {
-    set {
-      NoesisGUI_PINVOKE.Mouse_MouseLeaveEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Mouse_MouseLeaveEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -114,9 +99,6 @@ public class Mouse : BaseComponent {
   }
 
   public static RoutedEvent MouseMoveEvent {
-    set {
-      NoesisGUI_PINVOKE.Mouse_MouseMoveEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Mouse_MouseMoveEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -124,9 +106,6 @@ public class Mouse : BaseComponent {
   }
 
   public static RoutedEvent MouseUpEvent {
-    set {
-      NoesisGUI_PINVOKE.Mouse_MouseUpEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Mouse_MouseUpEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -134,9 +113,6 @@ public class Mouse : BaseComponent {
   }
 
   public static RoutedEvent MouseWheelEvent {
-    set {
-      NoesisGUI_PINVOKE.Mouse_MouseWheelEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Mouse_MouseWheelEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -144,9 +120,6 @@ public class Mouse : BaseComponent {
   }
 
   public static RoutedEvent PreviewMouseDownEvent {
-    set {
-      NoesisGUI_PINVOKE.Mouse_PreviewMouseDownEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Mouse_PreviewMouseDownEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -154,9 +127,6 @@ public class Mouse : BaseComponent {
   }
 
   public static RoutedEvent PreviewMouseMoveEvent {
-    set {
-      NoesisGUI_PINVOKE.Mouse_PreviewMouseMoveEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Mouse_PreviewMouseMoveEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -164,9 +134,6 @@ public class Mouse : BaseComponent {
   }
 
   public static RoutedEvent PreviewMouseUpEvent {
-    set {
-      NoesisGUI_PINVOKE.Mouse_PreviewMouseUpEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Mouse_PreviewMouseUpEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -174,9 +141,6 @@ public class Mouse : BaseComponent {
   }
 
   public static RoutedEvent PreviewMouseWheelEvent {
-    set {
-      NoesisGUI_PINVOKE.Mouse_PreviewMouseWheelEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Mouse_PreviewMouseWheelEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -184,9 +148,6 @@ public class Mouse : BaseComponent {
   }
 
   public static RoutedEvent QueryCursorEvent {
-    set {
-      NoesisGUI_PINVOKE.Mouse_QueryCursorEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Mouse_QueryCursorEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);

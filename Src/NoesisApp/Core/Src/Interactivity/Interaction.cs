@@ -43,7 +43,8 @@ namespace NoesisApp
             BehaviorCollection newBehaviors = (BehaviorCollection)e.NewValue;
             if (newBehaviors != null)
             {
-                if (((IAttachedObject)newBehaviors).AssociatedObject != null)
+                FrameworkElement element = FrameworkElement.FindTreeElement(newBehaviors);
+                if (element != null && !element.IsInitialized)
                 {
                     // assigned from a template, collection must be cloned
                     d.SetValue(BehaviorsProperty, newBehaviors.Clone());
@@ -90,7 +91,8 @@ namespace NoesisApp
             TriggerCollection newTriggers = (TriggerCollection)e.NewValue;
             if (newTriggers != null)
             {
-                if (((IAttachedObject)newTriggers).AssociatedObject != null)
+                FrameworkElement element = FrameworkElement.FindTreeElement(newTriggers);
+                if (element != null && !element.IsInitialized)
                 {
                     // assigned from a template, collection must be cloned
                     d.SetValue(TriggersProperty, newTriggers.Clone());

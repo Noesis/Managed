@@ -188,6 +188,12 @@ namespace Noesis
 
                 lock (_operations)
                 {
+                    if (_operations.Count == 0)
+                    {
+                        // queue already processed by a synchronous Invoke
+                        break;
+                    }
+
                     operation = _operations.Dequeue();
                 }
 

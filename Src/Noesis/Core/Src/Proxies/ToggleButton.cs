@@ -85,9 +85,6 @@ public class ToggleButton : ButtonBase {
   }
 
   public static RoutedEvent CheckedEvent {
-    set {
-      NoesisGUI_PINVOKE.ToggleButton_CheckedEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ToggleButton_CheckedEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -95,9 +92,6 @@ public class ToggleButton : ButtonBase {
   }
 
   public static RoutedEvent IndeterminateEvent {
-    set {
-      NoesisGUI_PINVOKE.ToggleButton_IndeterminateEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ToggleButton_IndeterminateEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -105,9 +99,6 @@ public class ToggleButton : ButtonBase {
   }
 
   public static RoutedEvent UncheckedEvent {
-    set {
-      NoesisGUI_PINVOKE.ToggleButton_UncheckedEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ToggleButton_UncheckedEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);

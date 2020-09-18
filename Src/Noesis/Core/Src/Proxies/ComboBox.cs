@@ -40,6 +40,10 @@ public class ComboBox : Selector {
     }
   }
 
+  public void ScrollIntoView(object item) {
+    NoesisGUI_PINVOKE.ComboBox_ScrollIntoView(swigCPtr, Noesis.Extend.GetInstanceHandle(item));
+  }
+
   public static DependencyProperty IsDropDownOpenProperty {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ComboBox_IsDropDownOpenProperty_get();

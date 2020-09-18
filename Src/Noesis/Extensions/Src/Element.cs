@@ -6,6 +6,7 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace NoesisGUIExtensions
 {
@@ -165,5 +166,199 @@ namespace NoesisGUIExtensions
         }
 
         #endregion
+
+        /// <summary>
+        /// Adds extra properties and events for high-level touch events:
+        /// Tapped, DoubleTapped, Holding, RightTapped
+        /// </summary>
+        #region Touch extensions
+
+        #region Properties
+        public static readonly DependencyProperty IsTapEnabledProperty = DependencyProperty.RegisterAttached(
+            "IsTapEnabled", typeof(bool), typeof(Element), new PropertyMetadata(true));
+
+        public static bool GetIsTapEnabled(UIElement element)
+        {
+            return (bool)element.GetValue(IsTapEnabledProperty);
+        }
+
+        public static void SetIsTapEnabled(UIElement element, bool value)
+        {
+            element.SetValue(IsTapEnabledProperty, value);
+        }
+
+        public static readonly DependencyProperty IsDoubleTapEnabledProperty = DependencyProperty.RegisterAttached(
+            "IsDoubleTapEnabled", typeof(bool), typeof(Element), new PropertyMetadata(true));
+
+        public static bool GetIsDoubleTapEnabled(UIElement element)
+        {
+            return (bool)element.GetValue(IsDoubleTapEnabledProperty);
+        }
+
+        public static void SetIsDoubleTapEnabled(UIElement element, bool value)
+        {
+            element.SetValue(IsDoubleTapEnabledProperty, value);
+        }
+
+        public static readonly DependencyProperty IsHoldingEnabledProperty = DependencyProperty.RegisterAttached(
+            "IsHoldingEnabled", typeof(bool), typeof(Element), new PropertyMetadata(true));
+
+        public static bool GetIsHoldingEnabled(UIElement element)
+        {
+            return (bool)element.GetValue(IsHoldingEnabledProperty);
+        }
+
+        public static void SetIsHoldingEnabled(UIElement element, bool value)
+        {
+            element.SetValue(IsHoldingEnabledProperty, value);
+        }
+
+        public static readonly DependencyProperty IsRightTapEnabledProperty = DependencyProperty.RegisterAttached(
+            "IsRightTapEnabled", typeof(bool), typeof(Element), new PropertyMetadata(true));
+
+        public static bool GetIsRightTapEnabled(UIElement element)
+        {
+            return (bool)element.GetValue(IsRightTapEnabledProperty);
+        }
+
+        public static void SetIsRightTapEnabled(UIElement element, bool value)
+        {
+            element.SetValue(IsRightTapEnabledProperty, value);
+        }
+        #endregion
+
+        #region Events
+        public static readonly RoutedEvent TappedEvent = EventManager.RegisterRoutedEvent(
+            "Tapped", RoutingStrategy.Bubble, typeof(TappedEventHandler), typeof(Element));
+
+        public static void AddTappedHandler(DependencyObject d, TappedEventHandler handler)
+        {
+            UIElement element = d as UIElement;
+            if (element != null)
+            {
+                element.AddHandler(TappedEvent, handler);
+            }
+        }
+
+        public static void RemoveTappedHandler(DependencyObject d, TappedEventHandler handler)
+        {
+            UIElement element = d as UIElement;
+            if (element != null)
+            {
+                element.RemoveHandler(TappedEvent, handler);
+            }
+        }
+
+        public static readonly RoutedEvent DoubleTappedEvent = EventManager.RegisterRoutedEvent(
+            "DoubleTapped", RoutingStrategy.Bubble, typeof(DoubleTappedEventHandler), typeof(Element));
+
+        public static void AddDoubleTappedHandler(DependencyObject d, DoubleTappedEventHandler handler)
+        {
+            UIElement element = d as UIElement;
+            if (element != null)
+            {
+                element.AddHandler(DoubleTappedEvent, handler);
+            }
+        }
+
+        public static void RemoveDoubleTappedHandler(DependencyObject d, DoubleTappedEventHandler handler)
+        {
+            UIElement element = d as UIElement;
+            if (element != null)
+            {
+                element.RemoveHandler(DoubleTappedEvent, handler);
+            }
+        }
+
+        public static readonly RoutedEvent HoldingEvent = EventManager.RegisterRoutedEvent(
+            "Holding", RoutingStrategy.Bubble, typeof(HoldingEventHandler), typeof(Element));
+
+        public static void AddHoldingHandler(DependencyObject d, HoldingEventHandler handler)
+        {
+            UIElement element = d as UIElement;
+            if (element != null)
+            {
+                element.AddHandler(HoldingEvent, handler);
+            }
+        }
+
+        public static void RemoveHoldingHandler(DependencyObject d, HoldingEventHandler handler)
+        {
+            UIElement element = d as UIElement;
+            if (element != null)
+            {
+                element.RemoveHandler(HoldingEvent, handler);
+            }
+        }
+
+        public static readonly RoutedEvent RightTappedEvent = EventManager.RegisterRoutedEvent(
+            "RightTapped", RoutingStrategy.Bubble, typeof(RightTappedEventHandler), typeof(Element));
+
+        public static void AddRightTappedHandler(DependencyObject d, RightTappedEventHandler handler)
+        {
+            UIElement element = d as UIElement;
+            if (element != null)
+            {
+                element.AddHandler(RightTappedEvent, handler);
+            }
+        }
+
+        public static void RemoveTRightappedHandler(DependencyObject d, RightTappedEventHandler handler)
+        {
+            UIElement element = d as UIElement;
+            if (element != null)
+            {
+                element.RemoveHandler(RightTappedEvent, handler);
+            }
+        }
+        #endregion
+
+        #endregion
     }
 }
+
+namespace System.Windows.Input
+{
+    public delegate void TappedEventHandler(object sender, TappedEventArgs e);
+    public delegate void DoubleTappedEventHandler(object sender, DoubleTappedEventArgs e);
+    public delegate void HoldingEventHandler(object sender, HoldingEventArgs e);
+    public delegate void RightTappedEventHandler(object sender, RightTappedEventArgs e);
+
+    public class TappedEventArgs : TouchEventArgs
+    {
+        public TappedEventArgs(TouchDevice touchDevice, int timestamp) : base(touchDevice, timestamp)
+        {
+        }
+    }
+
+    public class DoubleTappedEventArgs : TouchEventArgs
+    {
+        public DoubleTappedEventArgs(TouchDevice touchDevice, int timestamp) : base(touchDevice, timestamp)
+        {
+        }
+    }
+
+    public class HoldingEventArgs : TouchEventArgs
+    {
+        public HoldingEventArgs(TouchDevice touchDevice, int timestamp) : base(touchDevice, timestamp)
+        {
+        }
+
+        public HoldingState HoldingState { get; }
+    }
+
+    public class RightTappedEventArgs : TouchEventArgs
+    {
+        public RightTappedEventArgs(TouchDevice touchDevice, int timestamp) : base(touchDevice, timestamp)
+        {
+        }
+    }
+
+    public enum HoldingState
+    {
+        Started,
+        Completed,
+        Canceled
+    }
+}
+

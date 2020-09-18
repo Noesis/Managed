@@ -36,9 +36,6 @@ public class RowDefinition : DefinitionBase {
   }
 
   public new static DependencyProperty HeightProperty {
-    set {
-      NoesisGUI_PINVOKE.RowDefinition_HeightProperty_set(DependencyProperty.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.RowDefinition_HeightProperty_get();
       return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
@@ -46,9 +43,6 @@ public class RowDefinition : DefinitionBase {
   }
 
   public new static DependencyProperty MinHeightProperty {
-    set {
-      NoesisGUI_PINVOKE.RowDefinition_MinHeightProperty_set(DependencyProperty.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.RowDefinition_MinHeightProperty_get();
       return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
@@ -56,9 +50,6 @@ public class RowDefinition : DefinitionBase {
   }
 
   public new static DependencyProperty MaxHeightProperty {
-    set {
-      NoesisGUI_PINVOKE.RowDefinition_MaxHeightProperty_set(DependencyProperty.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.RowDefinition_MaxHeightProperty_get();
       return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);

@@ -17,9 +17,6 @@ namespace Noesis
 
 public static class ContextMenuService {
   public static DependencyProperty ContextMenuProperty {
-    set {
-      NoesisGUI_PINVOKE.ContextMenuService_ContextMenuProperty_set(DependencyProperty.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ContextMenuService_ContextMenuProperty_get();
       return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
@@ -27,9 +24,6 @@ public static class ContextMenuService {
   }
 
   public static DependencyProperty HasDropShadowProperty {
-    set {
-      NoesisGUI_PINVOKE.ContextMenuService_HasDropShadowProperty_set(DependencyProperty.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ContextMenuService_HasDropShadowProperty_get();
       return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
@@ -37,9 +31,6 @@ public static class ContextMenuService {
   }
 
   public static DependencyProperty HorizontalOffsetProperty {
-    set {
-      NoesisGUI_PINVOKE.ContextMenuService_HorizontalOffsetProperty_set(DependencyProperty.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ContextMenuService_HorizontalOffsetProperty_get();
       return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
@@ -47,9 +38,6 @@ public static class ContextMenuService {
   }
 
   public static DependencyProperty IsEnabledProperty {
-    set {
-      NoesisGUI_PINVOKE.ContextMenuService_IsEnabledProperty_set(DependencyProperty.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ContextMenuService_IsEnabledProperty_get();
       return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
@@ -57,9 +45,6 @@ public static class ContextMenuService {
   }
 
   public static DependencyProperty PlacementProperty {
-    set {
-      NoesisGUI_PINVOKE.ContextMenuService_PlacementProperty_set(DependencyProperty.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ContextMenuService_PlacementProperty_get();
       return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
@@ -67,9 +52,6 @@ public static class ContextMenuService {
   }
 
   public static DependencyProperty PlacementRectangleProperty {
-    set {
-      NoesisGUI_PINVOKE.ContextMenuService_PlacementRectangleProperty_set(DependencyProperty.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ContextMenuService_PlacementRectangleProperty_get();
       return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
@@ -77,9 +59,6 @@ public static class ContextMenuService {
   }
 
   public static DependencyProperty PlacementTargetProperty {
-    set {
-      NoesisGUI_PINVOKE.ContextMenuService_PlacementTargetProperty_set(DependencyProperty.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ContextMenuService_PlacementTargetProperty_get();
       return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
@@ -87,9 +66,6 @@ public static class ContextMenuService {
   }
 
   public static DependencyProperty ShowOnDisabledProperty {
-    set {
-      NoesisGUI_PINVOKE.ContextMenuService_ShowOnDisabledProperty_set(DependencyProperty.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ContextMenuService_ShowOnDisabledProperty_get();
       return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
@@ -97,9 +73,6 @@ public static class ContextMenuService {
   }
 
   public static DependencyProperty VerticalOffsetProperty {
-    set {
-      NoesisGUI_PINVOKE.ContextMenuService_VerticalOffsetProperty_set(DependencyProperty.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ContextMenuService_VerticalOffsetProperty_get();
       return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
@@ -107,9 +80,6 @@ public static class ContextMenuService {
   }
 
   public static RoutedEvent ContextMenuClosingEvent {
-    set {
-      NoesisGUI_PINVOKE.ContextMenuService_ContextMenuClosingEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ContextMenuService_ContextMenuClosingEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -117,9 +87,6 @@ public static class ContextMenuService {
   }
 
   public static RoutedEvent ContextMenuOpeningEvent {
-    set {
-      NoesisGUI_PINVOKE.ContextMenuService_ContextMenuOpeningEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ContextMenuService_ContextMenuOpeningEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);

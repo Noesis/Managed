@@ -87,9 +87,6 @@ public class ButtonBase : ContentControl {
   }
 
   public static RoutedEvent ClickEvent {
-    set {
-      NoesisGUI_PINVOKE.ButtonBase_ClickEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ButtonBase_ClickEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);

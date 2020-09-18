@@ -17,9 +17,6 @@ namespace Noesis
 
 public static class ApplicationCommands {
   public static RoutedUICommand CancelPrintCommand {
-    set {
-      NoesisGUI_PINVOKE.ApplicationCommands_CancelPrintCommand_set(RoutedUICommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ApplicationCommands_CancelPrintCommand_get();
       return (RoutedUICommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -27,9 +24,6 @@ public static class ApplicationCommands {
   }
 
   public static RoutedUICommand CloseCommand {
-    set {
-      NoesisGUI_PINVOKE.ApplicationCommands_CloseCommand_set(RoutedUICommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ApplicationCommands_CloseCommand_get();
       return (RoutedUICommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -37,9 +31,6 @@ public static class ApplicationCommands {
   }
 
   public static RoutedUICommand ContextMenuCommand {
-    set {
-      NoesisGUI_PINVOKE.ApplicationCommands_ContextMenuCommand_set(RoutedUICommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ApplicationCommands_ContextMenuCommand_get();
       return (RoutedUICommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -47,9 +38,6 @@ public static class ApplicationCommands {
   }
 
   public static RoutedUICommand CopyCommand {
-    set {
-      NoesisGUI_PINVOKE.ApplicationCommands_CopyCommand_set(RoutedUICommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ApplicationCommands_CopyCommand_get();
       return (RoutedUICommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -57,9 +45,6 @@ public static class ApplicationCommands {
   }
 
   public static RoutedUICommand CorrectionListCommand {
-    set {
-      NoesisGUI_PINVOKE.ApplicationCommands_CorrectionListCommand_set(RoutedUICommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ApplicationCommands_CorrectionListCommand_get();
       return (RoutedUICommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -67,9 +52,6 @@ public static class ApplicationCommands {
   }
 
   public static RoutedUICommand CutCommand {
-    set {
-      NoesisGUI_PINVOKE.ApplicationCommands_CutCommand_set(RoutedUICommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ApplicationCommands_CutCommand_get();
       return (RoutedUICommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -77,9 +59,6 @@ public static class ApplicationCommands {
   }
 
   public static RoutedUICommand DeleteCommand {
-    set {
-      NoesisGUI_PINVOKE.ApplicationCommands_DeleteCommand_set(RoutedUICommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ApplicationCommands_DeleteCommand_get();
       return (RoutedUICommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -87,9 +66,6 @@ public static class ApplicationCommands {
   }
 
   public static RoutedUICommand FindCommand {
-    set {
-      NoesisGUI_PINVOKE.ApplicationCommands_FindCommand_set(RoutedUICommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ApplicationCommands_FindCommand_get();
       return (RoutedUICommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -97,9 +73,6 @@ public static class ApplicationCommands {
   }
 
   public static RoutedUICommand HelpCommand {
-    set {
-      NoesisGUI_PINVOKE.ApplicationCommands_HelpCommand_set(RoutedUICommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ApplicationCommands_HelpCommand_get();
       return (RoutedUICommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -107,9 +80,6 @@ public static class ApplicationCommands {
   }
 
   public static RoutedUICommand NewCommand {
-    set {
-      NoesisGUI_PINVOKE.ApplicationCommands_NewCommand_set(RoutedUICommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ApplicationCommands_NewCommand_get();
       return (RoutedUICommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -117,9 +87,6 @@ public static class ApplicationCommands {
   }
 
   public static RoutedUICommand OpenCommand {
-    set {
-      NoesisGUI_PINVOKE.ApplicationCommands_OpenCommand_set(RoutedUICommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ApplicationCommands_OpenCommand_get();
       return (RoutedUICommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -127,9 +94,6 @@ public static class ApplicationCommands {
   }
 
   public static RoutedUICommand PasteCommand {
-    set {
-      NoesisGUI_PINVOKE.ApplicationCommands_PasteCommand_set(RoutedUICommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ApplicationCommands_PasteCommand_get();
       return (RoutedUICommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -137,9 +101,6 @@ public static class ApplicationCommands {
   }
 
   public static RoutedUICommand PrintCommand {
-    set {
-      NoesisGUI_PINVOKE.ApplicationCommands_PrintCommand_set(RoutedUICommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ApplicationCommands_PrintCommand_get();
       return (RoutedUICommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -147,9 +108,6 @@ public static class ApplicationCommands {
   }
 
   public static RoutedUICommand PrintPreviewCommand {
-    set {
-      NoesisGUI_PINVOKE.ApplicationCommands_PrintPreviewCommand_set(RoutedUICommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ApplicationCommands_PrintPreviewCommand_get();
       return (RoutedUICommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -157,9 +115,6 @@ public static class ApplicationCommands {
   }
 
   public static RoutedUICommand PropertiesCommand {
-    set {
-      NoesisGUI_PINVOKE.ApplicationCommands_PropertiesCommand_set(RoutedUICommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ApplicationCommands_PropertiesCommand_get();
       return (RoutedUICommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -167,9 +122,6 @@ public static class ApplicationCommands {
   }
 
   public static RoutedUICommand RedoCommand {
-    set {
-      NoesisGUI_PINVOKE.ApplicationCommands_RedoCommand_set(RoutedUICommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ApplicationCommands_RedoCommand_get();
       return (RoutedUICommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -177,9 +129,6 @@ public static class ApplicationCommands {
   }
 
   public static RoutedUICommand ReplaceCommand {
-    set {
-      NoesisGUI_PINVOKE.ApplicationCommands_ReplaceCommand_set(RoutedUICommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ApplicationCommands_ReplaceCommand_get();
       return (RoutedUICommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -187,9 +136,6 @@ public static class ApplicationCommands {
   }
 
   public static RoutedUICommand SaveCommand {
-    set {
-      NoesisGUI_PINVOKE.ApplicationCommands_SaveCommand_set(RoutedUICommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ApplicationCommands_SaveCommand_get();
       return (RoutedUICommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -197,9 +143,6 @@ public static class ApplicationCommands {
   }
 
   public static RoutedUICommand SaveAsCommand {
-    set {
-      NoesisGUI_PINVOKE.ApplicationCommands_SaveAsCommand_set(RoutedUICommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ApplicationCommands_SaveAsCommand_get();
       return (RoutedUICommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -207,9 +150,6 @@ public static class ApplicationCommands {
   }
 
   public static RoutedUICommand SelectAllCommand {
-    set {
-      NoesisGUI_PINVOKE.ApplicationCommands_SelectAllCommand_set(RoutedUICommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ApplicationCommands_SelectAllCommand_get();
       return (RoutedUICommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -217,9 +157,6 @@ public static class ApplicationCommands {
   }
 
   public static RoutedUICommand StopCommand {
-    set {
-      NoesisGUI_PINVOKE.ApplicationCommands_StopCommand_set(RoutedUICommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ApplicationCommands_StopCommand_get();
       return (RoutedUICommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -227,9 +164,6 @@ public static class ApplicationCommands {
   }
 
   public static RoutedUICommand UndoCommand {
-    set {
-      NoesisGUI_PINVOKE.ApplicationCommands_UndoCommand_set(RoutedUICommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ApplicationCommands_UndoCommand_get();
       return (RoutedUICommand)Noesis.Extend.GetProxy(cPtr, false);

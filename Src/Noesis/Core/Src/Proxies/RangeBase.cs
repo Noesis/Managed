@@ -78,9 +78,6 @@ public class RangeBase : Control {
   }
 
   public static RoutedEvent ValueChangedEvent {
-    set {
-      NoesisGUI_PINVOKE.RangeBase_ValueChangedEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.RangeBase_ValueChangedEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);

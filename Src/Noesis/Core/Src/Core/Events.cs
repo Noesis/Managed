@@ -20,6 +20,10 @@ namespace Noesis
     public delegate void KeyEventHandler(object sender, KeyEventArgs args);
     public delegate void TextCompositionEventHandler(object sender, TextCompositionEventArgs args);
     public delegate void TouchEventHandler(object sender, TouchEventArgs args);
+    public delegate void TappedEventHandler(object sender, TappedEventArgs args);
+    public delegate void DoubleTappedEventHandler(object sender, DoubleTappedEventArgs args);
+    public delegate void HoldingEventHandler(object sender, HoldingEventArgs args);
+    public delegate void RightTappedEventHandler(object sender, RightTappedEventArgs args);
     public delegate void ManipulationStartingEventHandler(object sender, ManipulationStartingEventArgs args);
     public delegate void ManipulationStartedEventHandler(object sender, ManipulationStartedEventArgs args);
     public delegate void ManipulationDeltaEventHandler(object sender, ManipulationDeltaEventArgs args);
@@ -713,6 +717,10 @@ namespace Noesis
             RegisterRoutedEvent(UIElement.TouchDownEvent, typeof(TouchEventHandler), TouchEventArgs.InvokeHandler);
             RegisterRoutedEvent(UIElement.PreviewTouchUpEvent, typeof(TouchEventHandler), TouchEventArgs.InvokeHandler);
             RegisterRoutedEvent(UIElement.TouchUpEvent, typeof(TouchEventHandler), TouchEventArgs.InvokeHandler);
+            RegisterRoutedEvent(UIElement.TappedEvent, typeof(TappedEventHandler), TappedEventArgs.InvokeHandler);
+            RegisterRoutedEvent(UIElement.DoubleTappedEvent, typeof(DoubleTappedEventHandler), DoubleTappedEventArgs.InvokeHandler);
+            RegisterRoutedEvent(UIElement.HoldingEvent, typeof(HoldingEventHandler), HoldingEventArgs.InvokeHandler);
+            RegisterRoutedEvent(UIElement.RightTappedEvent, typeof(RightTappedEventHandler), RightTappedEventArgs.InvokeHandler);
             RegisterRoutedEvent(UIElement.ManipulationStartingEvent, typeof(ManipulationStartingEventHandler), ManipulationStartingEventArgs.InvokeHandler);
             RegisterRoutedEvent(UIElement.ManipulationStartedEvent, typeof(ManipulationStartedEventHandler), ManipulationStartedEventArgs.InvokeHandler);
             RegisterRoutedEvent(UIElement.ManipulationDeltaEvent, typeof(ManipulationDeltaEventHandler), ManipulationDeltaEventArgs.InvokeHandler);

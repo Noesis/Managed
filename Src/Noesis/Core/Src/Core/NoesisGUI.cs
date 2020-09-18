@@ -44,13 +44,21 @@ namespace Noesis
             Noesis_DisableInspector();
         }
 
-
         /// <summary>
         /// Returns whether the remote Inspector is currently connected.
         /// </summary>
         public static bool IsInspectorConnected
         {
             get { return Noesis_IsInspectorConnected(); }
+        }
+
+        /// <summary>
+        /// Keeps alive the Inspector connection. Only needed if Inspector is connected before any
+        /// view is created. Views call this function internally when updated
+        /// </summary>
+        public static void UpdateInspector()
+        {
+            Noesis_UpdateInspector();
         }
 
         private static bool _initialized = false;
@@ -462,6 +470,9 @@ namespace Noesis
         [DllImport(Library.Name)]
         [return: MarshalAs(UnmanagedType.U1)]
         static extern bool Noesis_IsInspectorConnected();
+
+        [DllImport(Library.Name)]
+        static extern void Noesis_UpdateInspector();
 
         [DllImport(Library.Name)]
         static extern void Noesis_Init([MarshalAs(UnmanagedType.LPStr)] string licenseName,

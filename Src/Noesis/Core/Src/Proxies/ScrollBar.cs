@@ -67,9 +67,6 @@ public class ScrollBar : RangeBase {
   }
 
   public static RoutedEvent ScrollEvent {
-    set {
-      NoesisGUI_PINVOKE.ScrollBar_ScrollEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ScrollBar_ScrollEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -77,9 +74,6 @@ public class ScrollBar : RangeBase {
   }
 
   public static RoutedCommand DeferScrollToHorizontalOffsetCommand {
-    set {
-      NoesisGUI_PINVOKE.ScrollBar_DeferScrollToHorizontalOffsetCommand_set(RoutedCommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ScrollBar_DeferScrollToHorizontalOffsetCommand_get();
       return (RoutedCommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -87,9 +81,6 @@ public class ScrollBar : RangeBase {
   }
 
   public static RoutedCommand DeferScrollToVerticalOffsetCommand {
-    set {
-      NoesisGUI_PINVOKE.ScrollBar_DeferScrollToVerticalOffsetCommand_set(RoutedCommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ScrollBar_DeferScrollToVerticalOffsetCommand_get();
       return (RoutedCommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -97,9 +88,6 @@ public class ScrollBar : RangeBase {
   }
 
   public static RoutedCommand LineDownCommand {
-    set {
-      NoesisGUI_PINVOKE.ScrollBar_LineDownCommand_set(RoutedCommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ScrollBar_LineDownCommand_get();
       return (RoutedCommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -107,9 +95,6 @@ public class ScrollBar : RangeBase {
   }
 
   public static RoutedCommand LineLeftCommand {
-    set {
-      NoesisGUI_PINVOKE.ScrollBar_LineLeftCommand_set(RoutedCommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ScrollBar_LineLeftCommand_get();
       return (RoutedCommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -117,9 +102,6 @@ public class ScrollBar : RangeBase {
   }
 
   public static RoutedCommand LineRightCommand {
-    set {
-      NoesisGUI_PINVOKE.ScrollBar_LineRightCommand_set(RoutedCommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ScrollBar_LineRightCommand_get();
       return (RoutedCommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -127,9 +109,6 @@ public class ScrollBar : RangeBase {
   }
 
   public static RoutedCommand LineUpCommand {
-    set {
-      NoesisGUI_PINVOKE.ScrollBar_LineUpCommand_set(RoutedCommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ScrollBar_LineUpCommand_get();
       return (RoutedCommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -137,9 +116,6 @@ public class ScrollBar : RangeBase {
   }
 
   public static RoutedCommand PageDownCommand {
-    set {
-      NoesisGUI_PINVOKE.ScrollBar_PageDownCommand_set(RoutedCommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ScrollBar_PageDownCommand_get();
       return (RoutedCommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -147,9 +123,6 @@ public class ScrollBar : RangeBase {
   }
 
   public static RoutedCommand PageLeftCommand {
-    set {
-      NoesisGUI_PINVOKE.ScrollBar_PageLeftCommand_set(RoutedCommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ScrollBar_PageLeftCommand_get();
       return (RoutedCommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -157,9 +130,6 @@ public class ScrollBar : RangeBase {
   }
 
   public static RoutedCommand PageRightCommand {
-    set {
-      NoesisGUI_PINVOKE.ScrollBar_PageRightCommand_set(RoutedCommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ScrollBar_PageRightCommand_get();
       return (RoutedCommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -167,9 +137,6 @@ public class ScrollBar : RangeBase {
   }
 
   public static RoutedCommand PageUpCommand {
-    set {
-      NoesisGUI_PINVOKE.ScrollBar_PageUpCommand_set(RoutedCommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ScrollBar_PageUpCommand_get();
       return (RoutedCommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -177,9 +144,6 @@ public class ScrollBar : RangeBase {
   }
 
   public static RoutedCommand ScrollHereCommand {
-    set {
-      NoesisGUI_PINVOKE.ScrollBar_ScrollHereCommand_set(RoutedCommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ScrollBar_ScrollHereCommand_get();
       return (RoutedCommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -187,9 +151,6 @@ public class ScrollBar : RangeBase {
   }
 
   public static RoutedCommand ScrollToBottomCommand {
-    set {
-      NoesisGUI_PINVOKE.ScrollBar_ScrollToBottomCommand_set(RoutedCommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ScrollBar_ScrollToBottomCommand_get();
       return (RoutedCommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -197,9 +158,6 @@ public class ScrollBar : RangeBase {
   }
 
   public static RoutedCommand ScrollToEndCommand {
-    set {
-      NoesisGUI_PINVOKE.ScrollBar_ScrollToEndCommand_set(RoutedCommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ScrollBar_ScrollToEndCommand_get();
       return (RoutedCommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -207,9 +165,6 @@ public class ScrollBar : RangeBase {
   }
 
   public static RoutedCommand ScrollToHomeCommand {
-    set {
-      NoesisGUI_PINVOKE.ScrollBar_ScrollToHomeCommand_set(RoutedCommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ScrollBar_ScrollToHomeCommand_get();
       return (RoutedCommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -217,9 +172,6 @@ public class ScrollBar : RangeBase {
   }
 
   public static RoutedCommand ScrollToHorizontalOffsetCommand {
-    set {
-      NoesisGUI_PINVOKE.ScrollBar_ScrollToHorizontalOffsetCommand_set(RoutedCommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ScrollBar_ScrollToHorizontalOffsetCommand_get();
       return (RoutedCommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -227,9 +179,6 @@ public class ScrollBar : RangeBase {
   }
 
   public static RoutedCommand ScrollToLeftEndCommand {
-    set {
-      NoesisGUI_PINVOKE.ScrollBar_ScrollToLeftEndCommand_set(RoutedCommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ScrollBar_ScrollToLeftEndCommand_get();
       return (RoutedCommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -237,9 +186,6 @@ public class ScrollBar : RangeBase {
   }
 
   public static RoutedCommand ScrollToRightEndCommand {
-    set {
-      NoesisGUI_PINVOKE.ScrollBar_ScrollToRightEndCommand_set(RoutedCommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ScrollBar_ScrollToRightEndCommand_get();
       return (RoutedCommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -247,9 +193,6 @@ public class ScrollBar : RangeBase {
   }
 
   public static RoutedCommand ScrollToTopCommand {
-    set {
-      NoesisGUI_PINVOKE.ScrollBar_ScrollToTopCommand_set(RoutedCommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ScrollBar_ScrollToTopCommand_get();
       return (RoutedCommand)Noesis.Extend.GetProxy(cPtr, false);
@@ -257,9 +200,6 @@ public class ScrollBar : RangeBase {
   }
 
   public static RoutedCommand ScrollToVerticalOffsetCommand {
-    set {
-      NoesisGUI_PINVOKE.ScrollBar_ScrollToVerticalOffsetCommand_set(RoutedCommand.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ScrollBar_ScrollToVerticalOffsetCommand_get();
       return (RoutedCommand)Noesis.Extend.GetProxy(cPtr, false);

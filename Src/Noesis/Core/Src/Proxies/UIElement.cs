@@ -423,6 +423,42 @@ public class UIElement : Visual {
     }
   }
 
+  public event TappedEventHandler Tapped {
+    add {
+      AddHandler(TappedEvent, value);
+    }
+    remove {
+      RemoveHandler(TappedEvent, value);
+    }
+  }
+
+  public event DoubleTappedEventHandler DoubleTapped {
+    add {
+      AddHandler(DoubleTappedEvent, value);
+    }
+    remove {
+      RemoveHandler(DoubleTappedEvent, value);
+    }
+  }
+
+  public event HoldingEventHandler Holding {
+    add {
+      AddHandler(HoldingEvent, value);
+    }
+    remove {
+      RemoveHandler(HoldingEvent, value);
+    }
+  }
+
+  public event RightTappedEventHandler RightTapped {
+    add {
+      AddHandler(RightTappedEvent, value);
+    }
+    remove {
+      RemoveHandler(RightTappedEvent, value);
+    }
+  }
+
   public event ManipulationStartingEventHandler ManipulationStarting {
     add {
       AddHandler(ManipulationStartingEvent, value);
@@ -894,6 +930,34 @@ public class UIElement : Visual {
     }
   }
 
+  public static DependencyProperty IsTapEnabledProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_IsTapEnabledProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static DependencyProperty IsDoubleTapEnabledProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_IsDoubleTapEnabledProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static DependencyProperty IsHoldingEnabledProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_IsHoldingEnabledProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static DependencyProperty IsRightTapEnabledProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_IsRightTapEnabledProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
   public static DependencyProperty IsVisibleProperty {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_IsVisibleProperty_get();
@@ -944,9 +1008,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent GotFocusEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_GotFocusEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_GotFocusEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -954,9 +1015,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent GotKeyboardFocusEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_GotKeyboardFocusEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_GotKeyboardFocusEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -964,9 +1022,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent GotMouseCaptureEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_GotMouseCaptureEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_GotMouseCaptureEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -974,9 +1029,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent KeyDownEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_KeyDownEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_KeyDownEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -984,9 +1036,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent KeyUpEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_KeyUpEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_KeyUpEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -994,9 +1043,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent LostFocusEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_LostFocusEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_LostFocusEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1004,9 +1050,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent LostKeyboardFocusEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_LostKeyboardFocusEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_LostKeyboardFocusEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1014,9 +1057,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent LostMouseCaptureEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_LostMouseCaptureEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_LostMouseCaptureEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1024,9 +1064,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent MouseDownEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_MouseDownEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_MouseDownEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1034,9 +1071,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent MouseEnterEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_MouseEnterEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_MouseEnterEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1044,9 +1078,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent MouseLeaveEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_MouseLeaveEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_MouseLeaveEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1054,9 +1085,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent MouseLeftButtonDownEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_MouseLeftButtonDownEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_MouseLeftButtonDownEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1064,9 +1092,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent MouseLeftButtonUpEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_MouseLeftButtonUpEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_MouseLeftButtonUpEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1074,9 +1099,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent MouseMoveEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_MouseMoveEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_MouseMoveEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1084,9 +1106,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent MouseRightButtonDownEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_MouseRightButtonDownEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_MouseRightButtonDownEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1094,9 +1113,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent MouseRightButtonUpEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_MouseRightButtonUpEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_MouseRightButtonUpEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1104,9 +1120,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent MouseUpEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_MouseUpEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_MouseUpEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1114,9 +1127,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent MouseWheelEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_MouseWheelEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_MouseWheelEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1124,9 +1134,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent TouchDownEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_TouchDownEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_TouchDownEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1134,9 +1141,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent TouchMoveEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_TouchMoveEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_TouchMoveEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1144,9 +1148,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent TouchUpEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_TouchUpEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_TouchUpEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1154,9 +1155,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent TouchEnterEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_TouchEnterEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_TouchEnterEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1164,9 +1162,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent TouchLeaveEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_TouchLeaveEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_TouchLeaveEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1174,9 +1169,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent GotTouchCaptureEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_GotTouchCaptureEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_GotTouchCaptureEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1184,9 +1176,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent LostTouchCaptureEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_LostTouchCaptureEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_LostTouchCaptureEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1194,9 +1183,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent PreviewTouchDownEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_PreviewTouchDownEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_PreviewTouchDownEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1204,9 +1190,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent PreviewTouchMoveEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_PreviewTouchMoveEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_PreviewTouchMoveEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1214,9 +1197,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent PreviewTouchUpEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_PreviewTouchUpEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_PreviewTouchUpEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1224,9 +1204,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent ManipulationStartingEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_ManipulationStartingEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_ManipulationStartingEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1234,9 +1211,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent ManipulationStartedEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_ManipulationStartedEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_ManipulationStartedEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1244,9 +1218,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent ManipulationDeltaEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_ManipulationDeltaEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_ManipulationDeltaEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1254,9 +1225,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent ManipulationInertiaStartingEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_ManipulationInertiaStartingEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_ManipulationInertiaStartingEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1264,19 +1232,41 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent ManipulationCompletedEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_ManipulationCompletedEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_ManipulationCompletedEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
     }
   }
 
+  public static RoutedEvent TappedEvent {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_TappedEvent_get();
+      return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static RoutedEvent DoubleTappedEvent {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_DoubleTappedEvent_get();
+      return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static RoutedEvent HoldingEvent {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_HoldingEvent_get();
+      return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static RoutedEvent RightTappedEvent {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_RightTappedEvent_get();
+      return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
   public static RoutedEvent PreviewGotKeyboardFocusEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_PreviewGotKeyboardFocusEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_PreviewGotKeyboardFocusEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1284,9 +1274,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent PreviewKeyDownEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_PreviewKeyDownEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_PreviewKeyDownEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1294,9 +1281,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent PreviewKeyUpEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_PreviewKeyUpEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_PreviewKeyUpEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1304,9 +1288,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent PreviewLostKeyboardFocusEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_PreviewLostKeyboardFocusEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_PreviewLostKeyboardFocusEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1314,9 +1295,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent PreviewMouseDownEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_PreviewMouseDownEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_PreviewMouseDownEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1324,9 +1302,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent PreviewMouseLeftButtonDownEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_PreviewMouseLeftButtonDownEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_PreviewMouseLeftButtonDownEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1334,9 +1309,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent PreviewMouseLeftButtonUpEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_PreviewMouseLeftButtonUpEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_PreviewMouseLeftButtonUpEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1344,9 +1316,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent PreviewMouseMoveEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_PreviewMouseMoveEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_PreviewMouseMoveEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1354,9 +1323,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent PreviewMouseRightButtonDownEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_PreviewMouseRightButtonDownEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_PreviewMouseRightButtonDownEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1364,9 +1330,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent PreviewMouseRightButtonUpEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_PreviewMouseRightButtonUpEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_PreviewMouseRightButtonUpEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1374,9 +1337,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent PreviewMouseUpEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_PreviewMouseUpEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_PreviewMouseUpEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1384,9 +1344,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent PreviewMouseWheelEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_PreviewMouseWheelEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_PreviewMouseWheelEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1394,9 +1351,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent PreviewTextInputEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_PreviewTextInputEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_PreviewTextInputEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1404,9 +1358,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent QueryCursorEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_QueryCursorEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_QueryCursorEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1414,9 +1365,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent TextInputEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_TextInputEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_TextInputEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1424,9 +1372,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent PreviewQueryContinueDragEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_PreviewQueryContinueDragEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_PreviewQueryContinueDragEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1434,9 +1379,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent QueryContinueDragEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_QueryContinueDragEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_QueryContinueDragEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1444,9 +1386,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent PreviewGiveFeedbackEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_PreviewGiveFeedbackEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_PreviewGiveFeedbackEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1454,9 +1393,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent GiveFeedbackEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_GiveFeedbackEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_GiveFeedbackEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1464,9 +1400,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent PreviewDragEnterEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_PreviewDragEnterEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_PreviewDragEnterEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1474,9 +1407,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent DragEnterEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_DragEnterEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_DragEnterEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1484,9 +1414,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent PreviewDragOverEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_PreviewDragOverEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_PreviewDragOverEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1494,9 +1421,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent DragOverEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_DragOverEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_DragOverEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1504,9 +1428,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent PreviewDragLeaveEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_PreviewDragLeaveEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_PreviewDragLeaveEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1514,9 +1435,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent DragLeaveEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_DragLeaveEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_DragLeaveEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1524,9 +1442,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent PreviewDropEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_PreviewDropEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_PreviewDropEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1534,9 +1449,6 @@ public class UIElement : Visual {
   }
 
   public static RoutedEvent DropEvent {
-    set {
-      NoesisGUI_PINVOKE.UIElement_DropEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_DropEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -1669,6 +1581,46 @@ public class UIElement : Visual {
     } 
     get {
       bool ret = NoesisGUI_PINVOKE.UIElement_IsManipulationEnabled_get(swigCPtr);
+      return ret;
+    } 
+  }
+
+  public bool IsTapEnabled {
+    set {
+      NoesisGUI_PINVOKE.UIElement_IsTapEnabled_set(swigCPtr, value);
+    } 
+    get {
+      bool ret = NoesisGUI_PINVOKE.UIElement_IsTapEnabled_get(swigCPtr);
+      return ret;
+    } 
+  }
+
+  public bool IsDoubleTapEnabled {
+    set {
+      NoesisGUI_PINVOKE.UIElement_IsDoubleTapEnabled_set(swigCPtr, value);
+    } 
+    get {
+      bool ret = NoesisGUI_PINVOKE.UIElement_IsDoubleTapEnabled_get(swigCPtr);
+      return ret;
+    } 
+  }
+
+  public bool IsHoldingEnabled {
+    set {
+      NoesisGUI_PINVOKE.UIElement_IsHoldingEnabled_set(swigCPtr, value);
+    } 
+    get {
+      bool ret = NoesisGUI_PINVOKE.UIElement_IsHoldingEnabled_get(swigCPtr);
+      return ret;
+    } 
+  }
+
+  public bool IsRightTapEnabled {
+    set {
+      NoesisGUI_PINVOKE.UIElement_IsRightTapEnabled_set(swigCPtr, value);
+    } 
+    get {
+      bool ret = NoesisGUI_PINVOKE.UIElement_IsRightTapEnabled_get(swigCPtr);
       return ret;
     } 
   }

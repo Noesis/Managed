@@ -96,9 +96,6 @@ public class PasswordBox : Control {
   }
 
   public static RoutedEvent PasswordChangedEvent {
-    set {
-      NoesisGUI_PINVOKE.PasswordBox_PasswordChangedEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.PasswordBox_PasswordChangedEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);

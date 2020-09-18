@@ -66,11 +66,37 @@ namespace Noesis
         }
 
         /// <summary>
+        /// Gets current tessellation curve tolerance
+        /// </summary>
+        public TessellationMaxPixelError GetTessellationMaxPixelError()
+        {
+            return Noesis_View_GetTessellationMaxPixelError(CPtr);
+        }
+
+        /// <summary>
         /// Enables render flags. No flags are active by default
         /// </summary>
         public void SetFlags(RenderFlags flags)
         {
             Noesis_View_SetFlags(CPtr, (int)flags);
+        }
+
+        /// <summary>
+        /// Enables render flags. No flags are active by default
+        /// </summary>
+        public RenderFlags GetFlags()
+        {
+            return (RenderFlags)Noesis_View_GetFlags(CPtr);
+        }
+
+        /// <summary>
+        /// Sets the projection matrix that transforms the coordinates of each primitive to a
+        /// non-normalized homogeneous space where (0, 0) is at the lower-left corner and
+        /// (width, height) is at the upper-right corner after projection
+        /// </summary>
+        public void SetProjectionMatrix(Matrix4 projection)
+        {
+            Noesis_View_SetProjectionMatrix(CPtr, ref projection);
         }
         #endregion
 
@@ -485,7 +511,16 @@ namespace Noesis
         static extern void Noesis_View_SetTessellationMaxPixelError(HandleRef view, float maxError);
 
         [DllImport(Library.Name)]
+        static extern float Noesis_View_GetTessellationMaxPixelError(HandleRef view);
+
+        [DllImport(Library.Name)]
         static extern void Noesis_View_SetFlags(HandleRef view, int flags);
+
+        [DllImport(Library.Name)]
+        static extern int Noesis_View_GetFlags(HandleRef view);
+
+        [DllImport(Library.Name)]
+        static extern int Noesis_View_SetProjectionMatrix(HandleRef view, ref Matrix4 projection);
 
         [DllImport(Library.Name)]
         static extern void Noesis_View_Activate(HandleRef view);

@@ -163,9 +163,6 @@ public class TextBoxBase : Control {
   }
 
   public static RoutedEvent SelectionChangedEvent {
-    set {
-      NoesisGUI_PINVOKE.TextBoxBase_SelectionChangedEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.TextBoxBase_SelectionChangedEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -173,9 +170,6 @@ public class TextBoxBase : Control {
   }
 
   public static RoutedEvent TextChangedEvent {
-    set {
-      NoesisGUI_PINVOKE.TextBoxBase_TextChangedEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.TextBoxBase_TextChangedEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);

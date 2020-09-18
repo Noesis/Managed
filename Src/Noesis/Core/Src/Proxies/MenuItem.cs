@@ -97,15 +97,6 @@ public class MenuItem : HeaderedItemsControl {
     }
   }
 
-  public UIElement GetCommandTarget() {
-    IntPtr cPtr = NoesisGUI_PINVOKE.MenuItem_GetCommandTarget(swigCPtr);
-    return (UIElement)Noesis.Extend.GetProxy(cPtr, false);
-  }
-
-  public void SetCommandTarget(UIElement target) {
-    NoesisGUI_PINVOKE.MenuItem_SetCommandTarget(swigCPtr, UIElement.getCPtr(target));
-  }
-
   public static DependencyProperty CommandParameterProperty {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.MenuItem_CommandParameterProperty_get();
@@ -198,9 +189,6 @@ public class MenuItem : HeaderedItemsControl {
   }
 
   public static RoutedEvent CheckedEvent {
-    set {
-      NoesisGUI_PINVOKE.MenuItem_CheckedEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.MenuItem_CheckedEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -208,9 +196,6 @@ public class MenuItem : HeaderedItemsControl {
   }
 
   public static RoutedEvent ClickEvent {
-    set {
-      NoesisGUI_PINVOKE.MenuItem_ClickEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.MenuItem_ClickEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -218,9 +203,6 @@ public class MenuItem : HeaderedItemsControl {
   }
 
   public static RoutedEvent SubmenuClosedEvent {
-    set {
-      NoesisGUI_PINVOKE.MenuItem_SubmenuClosedEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.MenuItem_SubmenuClosedEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -228,9 +210,6 @@ public class MenuItem : HeaderedItemsControl {
   }
 
   public static RoutedEvent SubmenuOpenedEvent {
-    set {
-      NoesisGUI_PINVOKE.MenuItem_SubmenuOpenedEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.MenuItem_SubmenuOpenedEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -238,9 +217,6 @@ public class MenuItem : HeaderedItemsControl {
   }
 
   public static RoutedEvent UncheckedEvent {
-    set {
-      NoesisGUI_PINVOKE.MenuItem_UncheckedEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.MenuItem_UncheckedEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -254,6 +230,16 @@ public class MenuItem : HeaderedItemsControl {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.MenuItem_CommandParameter_get(swigCPtr);
       return Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public UIElement CommandTarget {
+    set {
+      NoesisGUI_PINVOKE.MenuItem_CommandTarget_set(swigCPtr, UIElement.getCPtr(value));
+    } 
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.MenuItem_CommandTarget_get(swigCPtr);
+      return (UIElement)Noesis.Extend.GetProxy(cPtr, false);
     }
   }
 

@@ -345,9 +345,6 @@ public class ScrollViewer : ContentControl {
   }
 
   public static RoutedEvent ScrollChangedEvent {
-    set {
-      NoesisGUI_PINVOKE.ScrollViewer_ScrollChangedEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ScrollViewer_ScrollChangedEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);

@@ -36,9 +36,6 @@ public class ColumnDefinition : DefinitionBase {
   }
 
   public new static DependencyProperty WidthProperty {
-    set {
-      NoesisGUI_PINVOKE.ColumnDefinition_WidthProperty_set(DependencyProperty.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ColumnDefinition_WidthProperty_get();
       return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
@@ -46,9 +43,6 @@ public class ColumnDefinition : DefinitionBase {
   }
 
   public new static DependencyProperty MinWidthProperty {
-    set {
-      NoesisGUI_PINVOKE.ColumnDefinition_MinWidthProperty_set(DependencyProperty.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ColumnDefinition_MinWidthProperty_get();
       return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
@@ -56,9 +50,6 @@ public class ColumnDefinition : DefinitionBase {
   }
 
   public new static DependencyProperty MaxWidthProperty {
-    set {
-      NoesisGUI_PINVOKE.ColumnDefinition_MaxWidthProperty_set(DependencyProperty.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ColumnDefinition_MaxWidthProperty_get();
       return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);

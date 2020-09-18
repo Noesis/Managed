@@ -82,9 +82,6 @@ public class Thumb : Control {
   }
 
   public static RoutedEvent DragCompletedEvent {
-    set {
-      NoesisGUI_PINVOKE.Thumb_DragCompletedEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Thumb_DragCompletedEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -92,9 +89,6 @@ public class Thumb : Control {
   }
 
   public static RoutedEvent DragDeltaEvent {
-    set {
-      NoesisGUI_PINVOKE.Thumb_DragDeltaEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Thumb_DragDeltaEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -102,9 +96,6 @@ public class Thumb : Control {
   }
 
   public static RoutedEvent DragStartedEvent {
-    set {
-      NoesisGUI_PINVOKE.Thumb_DragStartedEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Thumb_DragStartedEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);

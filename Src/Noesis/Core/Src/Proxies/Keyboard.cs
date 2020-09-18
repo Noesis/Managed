@@ -56,9 +56,6 @@ public class Keyboard : BaseComponent {
   }
 
   public static RoutedEvent GotKeyboardFocusEvent {
-    set {
-      NoesisGUI_PINVOKE.Keyboard_GotKeyboardFocusEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Keyboard_GotKeyboardFocusEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -66,9 +63,6 @@ public class Keyboard : BaseComponent {
   }
 
   public static RoutedEvent KeyDownEvent {
-    set {
-      NoesisGUI_PINVOKE.Keyboard_KeyDownEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Keyboard_KeyDownEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -76,9 +70,6 @@ public class Keyboard : BaseComponent {
   }
 
   public static RoutedEvent KeyUpEvent {
-    set {
-      NoesisGUI_PINVOKE.Keyboard_KeyUpEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Keyboard_KeyUpEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -86,9 +77,6 @@ public class Keyboard : BaseComponent {
   }
 
   public static RoutedEvent LostKeyboardFocusEvent {
-    set {
-      NoesisGUI_PINVOKE.Keyboard_LostKeyboardFocusEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Keyboard_LostKeyboardFocusEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -96,9 +84,6 @@ public class Keyboard : BaseComponent {
   }
 
   public static RoutedEvent PreviewGotKeyboardFocusEvent {
-    set {
-      NoesisGUI_PINVOKE.Keyboard_PreviewGotKeyboardFocusEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Keyboard_PreviewGotKeyboardFocusEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -106,9 +91,6 @@ public class Keyboard : BaseComponent {
   }
 
   public static RoutedEvent PreviewKeyDownEvent {
-    set {
-      NoesisGUI_PINVOKE.Keyboard_PreviewKeyDownEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Keyboard_PreviewKeyDownEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -116,9 +98,6 @@ public class Keyboard : BaseComponent {
   }
 
   public static RoutedEvent PreviewKeyUpEvent {
-    set {
-      NoesisGUI_PINVOKE.Keyboard_PreviewKeyUpEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Keyboard_PreviewKeyUpEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -126,9 +105,6 @@ public class Keyboard : BaseComponent {
   }
 
   public static RoutedEvent PreviewLostKeyboardFocusEvent {
-    set {
-      NoesisGUI_PINVOKE.Keyboard_PreviewLostKeyboardFocusEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Keyboard_PreviewLostKeyboardFocusEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);

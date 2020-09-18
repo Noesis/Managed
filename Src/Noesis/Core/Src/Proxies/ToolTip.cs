@@ -123,9 +123,6 @@ public class ToolTip : ContentControl {
   }
 
   public static RoutedEvent ClosedEvent {
-    set {
-      NoesisGUI_PINVOKE.ToolTip_ClosedEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ToolTip_ClosedEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -133,9 +130,6 @@ public class ToolTip : ContentControl {
   }
 
   public static RoutedEvent OpenedEvent {
-    set {
-      NoesisGUI_PINVOKE.ToolTip_OpenedEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ToolTip_OpenedEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);

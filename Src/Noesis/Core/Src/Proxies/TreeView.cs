@@ -60,9 +60,6 @@ public class TreeView : ItemsControl {
   }
 
   public static RoutedEvent SelectedItemChangedEvent {
-    set {
-      NoesisGUI_PINVOKE.TreeView_SelectedItemChangedEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.TreeView_SelectedItemChangedEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);

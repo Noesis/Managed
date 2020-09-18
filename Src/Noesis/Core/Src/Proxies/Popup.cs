@@ -308,6 +308,16 @@ public class Popup : FrameworkElement {
 
   }
 
+  public UIElement PlacementTarget {
+    set {
+      NoesisGUI_PINVOKE.Popup_PlacementTarget_set(swigCPtr, UIElement.getCPtr(value));
+    } 
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Popup_PlacementTarget_get(swigCPtr);
+      return (UIElement)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
   public PopupAnimation PopupAnimation {
     set {
       NoesisGUI_PINVOKE.Popup_PopupAnimation_set(swigCPtr, (int)value);

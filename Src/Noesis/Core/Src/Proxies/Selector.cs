@@ -115,9 +115,6 @@ public class Selector : ItemsControl {
   }
 
   public static RoutedEvent SelectedEvent {
-    set {
-      NoesisGUI_PINVOKE.Selector_SelectedEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Selector_SelectedEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -125,9 +122,6 @@ public class Selector : ItemsControl {
   }
 
   public static RoutedEvent SelectionChangedEvent {
-    set {
-      NoesisGUI_PINVOKE.Selector_SelectionChangedEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Selector_SelectionChangedEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
@@ -135,9 +129,6 @@ public class Selector : ItemsControl {
   }
 
   public static RoutedEvent UnselectedEvent {
-    set {
-      NoesisGUI_PINVOKE.Selector_UnselectedEvent_set(RoutedEvent.getCPtr(value));
-    } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Selector_UnselectedEvent_get();
       return (RoutedEvent)Noesis.Extend.GetProxy(cPtr, false);
