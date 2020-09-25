@@ -998,6 +998,18 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr Box_InputScope(int jarg1);
 
   [DllImport(Library.Name)]
+  public static extern int Unbox_Key(IntPtr jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Box_Key(int jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern int Unbox_ModifierKeys(IntPtr jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Box_ModifierKeys(int jarg1);
+
+  [DllImport(Library.Name)]
   public static extern int Unbox_KeyboardNavigationMode(IntPtr jarg1);
 
   [DllImport(Library.Name)]
@@ -3327,10 +3339,10 @@ internal class NoesisGUI_PINVOKE {
   public static extern void delete_MouseWheelEventArgs(HandleRef jarg1);
 
   [DllImport(Library.Name)]
-  public static extern IntPtr new_TouchEventArgs(HandleRef jarg1, HandleRef jarg2, ref Point jarg3, ulong jarg4);
+  public static extern IntPtr TouchEventArgs_GetTouchPoint(HandleRef jarg1, HandleRef jarg2);
 
   [DllImport(Library.Name)]
-  public static extern IntPtr TouchEventArgs_GetTouchPoint(HandleRef jarg1, HandleRef jarg2);
+  public static extern IntPtr new_TouchEventArgs(HandleRef jarg1, HandleRef jarg2, ref Point jarg3, ulong jarg4);
 
   [DllImport(Library.Name)]
   public static extern ulong TouchEventArgs_GetTouchDeviceId(HandleRef jarg1);

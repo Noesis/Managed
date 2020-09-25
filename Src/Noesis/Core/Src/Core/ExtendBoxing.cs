@@ -55,6 +55,7 @@ namespace Noesis
             boxFunctions[typeof(Noesis.CharacterCasing)] = (val) => NoesisGUI_.Box_CharacterCasing((Noesis.CharacterCasing)val);
             boxFunctions[typeof(Noesis.ClickMode)] = (val) => NoesisGUI_.Box_ClickMode((Noesis.ClickMode)val);
             boxFunctions[typeof(Noesis.ColorInterpolationMode)] = (val) => NoesisGUI_.Box_ColorInterpolationMode((Noesis.ColorInterpolationMode)val);
+            boxFunctions[typeof(Noesis.Cursor)] = (val) => NoesisGUI_.Box_Cursor((Noesis.Cursor)val);
             boxFunctions[typeof(Noesis.Dock)] = (val) => NoesisGUI_.Box_Dock((Noesis.Dock)val);
             boxFunctions[typeof(Noesis.ExpandDirection)] = (val) => NoesisGUI_.Box_ExpandDirection((Noesis.ExpandDirection)val);
             boxFunctions[typeof(Noesis.FillRule)] = (val) => NoesisGUI_.Box_FillRule((Noesis.FillRule)val);
@@ -65,6 +66,8 @@ namespace Noesis
             boxFunctions[typeof(Noesis.GeometryCombineMode)] = (val) => NoesisGUI_.Box_GeometryCombineMode((Noesis.GeometryCombineMode)val);
             boxFunctions[typeof(Noesis.GradientSpreadMethod)] = (val) => NoesisGUI_.Box_GradientSpreadMethod((Noesis.GradientSpreadMethod)val);
             boxFunctions[typeof(Noesis.HorizontalAlignment)] = (val) => NoesisGUI_.Box_HorizontalAlignment((Noesis.HorizontalAlignment)val);
+            boxFunctions[typeof(Noesis.Key)] = (val) => NoesisGUI_.Box_Key((Noesis.Key)val);
+            boxFunctions[typeof(Noesis.ModifierKeys)] = (val) => NoesisGUI_.Box_ModifierKeys((Noesis.ModifierKeys)val);
             boxFunctions[typeof(Noesis.KeyboardNavigationMode)] = (val) => NoesisGUI_.Box_KeyboardNavigationMode((Noesis.KeyboardNavigationMode)val);
             boxFunctions[typeof(Noesis.LineStackingStrategy)] = (val) => NoesisGUI_.Box_LineStackingStrategy((Noesis.LineStackingStrategy)val);
             boxFunctions[typeof(Noesis.ListSortDirection)] = (val) => NoesisGUI_.Box_ListSortDirection((Noesis.ListSortDirection)val);
@@ -77,10 +80,11 @@ namespace Noesis
             boxFunctions[typeof(Noesis.PopupAnimation)] = (val) => NoesisGUI_.Box_PopupAnimation((Noesis.PopupAnimation)val);
             boxFunctions[typeof(Noesis.RelativeSourceMode)] = (val) => NoesisGUI_.Box_RelativeSourceMode((Noesis.RelativeSourceMode)val);
             boxFunctions[typeof(Noesis.SelectionMode)] = (val) => NoesisGUI_.Box_SelectionMode((Noesis.SelectionMode)val);
-            boxFunctions[typeof(Noesis.CornerRadius)] = (val) => NoesisGUI_.Box_CornerRadius((Noesis.CornerRadius)val);
+            boxFunctions[typeof(Noesis.ScrollBarVisibility)] = (val) => NoesisGUI_.Box_ScrollBarVisibility((Noesis.ScrollBarVisibility)val);
             boxFunctions[typeof(Noesis.Stretch)] = (val) => NoesisGUI_.Box_Stretch((Noesis.Stretch)val);
             boxFunctions[typeof(Noesis.StretchDirection)] = (val) => NoesisGUI_.Box_StretchDirection((Noesis.StretchDirection)val);
             boxFunctions[typeof(Noesis.TextAlignment)] = (val) => NoesisGUI_.Box_TextAlignment((Noesis.TextAlignment)val);
+            boxFunctions[typeof(Noesis.TextDecorations)] = (val) => NoesisGUI_.Box_TextDecorations((Noesis.TextDecorations)val);
             boxFunctions[typeof(Noesis.TextTrimming)] = (val) => NoesisGUI_.Box_TextTrimming((Noesis.TextTrimming)val);
             boxFunctions[typeof(Noesis.TextWrapping)] = (val) => NoesisGUI_.Box_TextWrapping((Noesis.TextWrapping)val);
             boxFunctions[typeof(Noesis.TickBarPlacement)] = (val) => NoesisGUI_.Box_TickBarPlacement((Noesis.TickBarPlacement)val);

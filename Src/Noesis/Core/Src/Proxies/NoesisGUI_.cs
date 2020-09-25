@@ -755,6 +755,26 @@ public class NoesisGUI_ {
     return ret;
   }
 
+  public static Key Unbox_Key(IntPtr val) {
+    Key ret = (Key)NoesisGUI_PINVOKE.Unbox_Key(val);
+    return ret;
+  }
+
+  public static IntPtr Box_Key(Key val) {
+    IntPtr ret = NoesisGUI_PINVOKE.Box_Key((int)val);
+    return ret;
+  }
+
+  public static ModifierKeys Unbox_ModifierKeys(IntPtr val) {
+    ModifierKeys ret = (ModifierKeys)NoesisGUI_PINVOKE.Unbox_ModifierKeys(val);
+    return ret;
+  }
+
+  public static IntPtr Box_ModifierKeys(ModifierKeys val) {
+    IntPtr ret = NoesisGUI_PINVOKE.Box_ModifierKeys((int)val);
+    return ret;
+  }
+
   public static KeyboardNavigationMode Unbox_KeyboardNavigationMode(IntPtr val) {
     KeyboardNavigationMode ret = (KeyboardNavigationMode)NoesisGUI_PINVOKE.Unbox_KeyboardNavigationMode(val);
     return ret;
