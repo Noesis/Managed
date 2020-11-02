@@ -70,17 +70,17 @@ public class ManipulationDeltaEventArgs : InputEventArgs {
 
   }
 
-  public ManipulationDelta CumulativeManipulation {
+  public ManipulationDelta DeltaManipulation {
     get {
-      IntPtr cPtr = NoesisGUI_PINVOKE.ManipulationDeltaEventArgs_CumulativeManipulation_get(swigCPtr);
+      IntPtr cPtr = NoesisGUI_PINVOKE.ManipulationDeltaEventArgs_DeltaManipulation_get(swigCPtr);
       ManipulationDelta ret = (cPtr == IntPtr.Zero) ? null : new ManipulationDelta(cPtr, false);
       return ret;
     } 
   }
 
-  public ManipulationDelta DeltaManipulation {
+  public ManipulationDelta CumulativeManipulation {
     get {
-      IntPtr cPtr = NoesisGUI_PINVOKE.ManipulationDeltaEventArgs_DeltaManipulation_get(swigCPtr);
+      IntPtr cPtr = NoesisGUI_PINVOKE.ManipulationDeltaEventArgs_CumulativeManipulation_get(swigCPtr);
       ManipulationDelta ret = (cPtr == IntPtr.Zero) ? null : new ManipulationDelta(cPtr, false);
       return ret;
     } 

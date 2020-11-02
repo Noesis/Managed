@@ -3392,28 +3392,16 @@ internal class NoesisGUI_PINVOKE {
   public static extern void delete_ManipulationStartedEventArgs(HandleRef jarg1);
 
   [DllImport(Library.Name)]
-  public static extern void ManipulationDelta_Expansion_set(HandleRef jarg1, ref Point jarg2);
-
-  [DllImport(Library.Name)]
-  public static extern IntPtr ManipulationDelta_Expansion_get(HandleRef jarg1);
-
-  [DllImport(Library.Name)]
-  public static extern void ManipulationDelta_Rotation_set(HandleRef jarg1, float jarg2);
-
-  [DllImport(Library.Name)]
   public static extern float ManipulationDelta_Rotation_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
-  public static extern void ManipulationDelta_Scale_set(HandleRef jarg1, float jarg2);
+  public static extern float ManipulationDelta_GetScaleHelper(HandleRef jarg1);
 
   [DllImport(Library.Name)]
-  public static extern float ManipulationDelta_Scale_get(HandleRef jarg1);
+  public static extern IntPtr ManipulationDelta_GetTranslationHelper(HandleRef jarg1);
 
   [DllImport(Library.Name)]
-  public static extern void ManipulationDelta_Translation_set(HandleRef jarg1, ref Point jarg2);
-
-  [DllImport(Library.Name)]
-  public static extern IntPtr ManipulationDelta_Translation_get(HandleRef jarg1);
+  public static extern IntPtr ManipulationDelta_GetExpansionHelper(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern IntPtr new_ManipulationDelta();
@@ -3449,10 +3437,10 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr ManipulationDeltaEventArgs_ManipulationOrigin_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ManipulationDeltaEventArgs_CumulativeManipulation_get(HandleRef jarg1);
+  public static extern IntPtr ManipulationDeltaEventArgs_DeltaManipulation_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ManipulationDeltaEventArgs_DeltaManipulation_get(HandleRef jarg1);
+  public static extern IntPtr ManipulationDeltaEventArgs_CumulativeManipulation_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern IntPtr ManipulationDeltaEventArgs_Velocities_get(HandleRef jarg1);

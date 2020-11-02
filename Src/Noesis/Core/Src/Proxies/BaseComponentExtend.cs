@@ -82,7 +82,7 @@ namespace Noesis
         protected IntPtr CreateExtendCPtr(Type type, out bool registerExtend)
         {
             registerExtend = true;
-            return Noesis.Extend.NewCPtr(type, this);
+            return Noesis.Extend.NewCPtr(type);
         }
 
         public static IntPtr GetPtr(object instance)

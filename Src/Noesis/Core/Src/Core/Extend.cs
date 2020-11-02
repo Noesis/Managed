@@ -1289,6 +1289,13 @@ namespace Noesis
                 PropertyInfo indexerInfo = null;
                 IndexerAccessor indexer = null;
 
+                #if UNITY_5_3_OR_NEWER
+                if (typeof(UnityEngine.Texture).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
+                {
+                    nativeType = Noesis.TextureSource.Extend(TypeFullName(type));
+                }
+                else
+                #endif
                 if (typeof(Noesis.IScrollInfo).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()) &&
                     typeof(Noesis.VirtualizingPanel).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
                 {
@@ -1470,7 +1477,12 @@ namespace Noesis
         {
             ExtendTypeData typeData = new ExtendTypeData();
             typeData.type = nativeType.ToInt64();
-            typeData.baseType = EnsureNativeType(type.GetTypeInfo().BaseType).ToInt64();
+            typeData.baseType =
+            #if UNITY_5_3_OR_NEWER
+                typeof(UnityEngine.Texture).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()) ?
+                    TryGetNativeType(typeof(Noesis.TextureSource)).ToInt64() :
+            #endif
+                    EnsureNativeType(type.GetTypeInfo().BaseType).ToInt64();
 
             var typeConverter = type.GetTypeInfo().GetCustomAttribute<System.ComponentModel.TypeConverterAttribute>();
             if (typeConverter != null)
@@ -4612,7 +4624,7 @@ namespace Noesis
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-        public static IntPtr NewCPtr(System.Type type, object instance)
+        public static IntPtr NewCPtr(System.Type type)
         {
             // Ensure native type is registered
             IntPtr nativeType = EnsureNativeType(type);
@@ -4687,10 +4699,7 @@ namespace Noesis
         {
             try
             {
-                if (Initialized)
-                {
-                    RemoveExtendInfo(cPtr);
-                }
+                RemoveExtendInfo(cPtr);
             }
             catch (Exception e)
             {
@@ -5015,9 +5024,17 @@ namespace Noesis
                     cPtr = FindInstancePtr(instance);
                     if (cPtr == IntPtr.Zero && Initialized)
                     {
-                        cPtr = NewCPtr(instance.GetType(), instance);
+                        cPtr = NewCPtr(instance.GetType());
                         AddExtendInfo(cPtr, instance);
                         RegisterInterfaces(instance);
+
+                        #if UNITY_5_3_OR_NEWER
+                        // Automatic conversion from Unity's Texture to a TextureSource proxy
+                        if (instance is UnityEngine.Texture)
+                        {
+                            Noesis.TextureSource.SetTexture(cPtr, (UnityEngine.Texture)instance);
+                        }
+                        #endif
                     }
                 }
 
@@ -5068,7 +5085,15 @@ namespace Noesis
                         WeakInfo info = extends[i];
                         if (info.weak.Target == instance)
                         {
-                            cPtr = new IntPtr(info.ptr);
+                            if (!Initialized && !_extends.ContainsKey(info.ptr))
+                            {
+                                // Extend already destroyed
+                                cPtr = IntPtr.Zero;
+                            }
+                            else
+                            {
+                                cPtr = new IntPtr(info.ptr);
+                            }
                             break;
                         }
                     }

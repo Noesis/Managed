@@ -45,58 +45,57 @@ public class ManipulationDelta : IDisposable {
     }
   }
 
-  public Point Expansion {
-    set {
-      NoesisGUI_PINVOKE.ManipulationDelta_Expansion_set(swigCPtr, ref value);
-    }
-
+  public Vector Scale {
     get {
-      IntPtr ret = NoesisGUI_PINVOKE.ManipulationDelta_Expansion_get(swigCPtr);
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<Point>(ret);
-      }
-      else {
-        return new Point();
-      }
+      float scale = GetScaleHelper();
+      return new Vector(scale, scale);
     }
+  }
 
+  public Vector Translation {
+    get {
+      Point trans = GetTranslationHelper();
+      return new Vector(trans.X, trans.Y);
+    }
+  }
+
+  public Vector Expansion {
+    get {
+      Point exp = GetExpansionHelper();
+      return new Vector(exp.X, exp.Y);
+    }
   }
 
   public float Rotation {
-    set {
-      NoesisGUI_PINVOKE.ManipulationDelta_Rotation_set(swigCPtr, value);
-    } 
     get {
       float ret = NoesisGUI_PINVOKE.ManipulationDelta_Rotation_get(swigCPtr);
       return ret;
     } 
   }
 
-  public float Scale {
-    set {
-      NoesisGUI_PINVOKE.ManipulationDelta_Scale_set(swigCPtr, value);
-    } 
-    get {
-      float ret = NoesisGUI_PINVOKE.ManipulationDelta_Scale_get(swigCPtr);
-      return ret;
-    } 
+  private float GetScaleHelper() {
+    float ret = NoesisGUI_PINVOKE.ManipulationDelta_GetScaleHelper(swigCPtr);
+    return ret;
   }
 
-  public Point Translation {
-    set {
-      NoesisGUI_PINVOKE.ManipulationDelta_Translation_set(swigCPtr, ref value);
+  private Point GetTranslationHelper() {
+    IntPtr ret = NoesisGUI_PINVOKE.ManipulationDelta_GetTranslationHelper(swigCPtr);
+    if (ret != IntPtr.Zero) {
+      return Marshal.PtrToStructure<Point>(ret);
     }
-
-    get {
-      IntPtr ret = NoesisGUI_PINVOKE.ManipulationDelta_Translation_get(swigCPtr);
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<Point>(ret);
-      }
-      else {
-        return new Point();
-      }
+    else {
+      return new Point();
     }
+  }
 
+  private Point GetExpansionHelper() {
+    IntPtr ret = NoesisGUI_PINVOKE.ManipulationDelta_GetExpansionHelper(swigCPtr);
+    if (ret != IntPtr.Zero) {
+      return Marshal.PtrToStructure<Point>(ret);
+    }
+    else {
+      return new Point();
+    }
   }
 
   public ManipulationDelta() : this(NoesisGUI_PINVOKE.new_ManipulationDelta(), true) {

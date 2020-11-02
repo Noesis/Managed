@@ -331,6 +331,11 @@ public struct Matrix4 {
       d30, d31, d32, d33);
   }
 
+  public Rect TransformBounds(Rect bounds) {
+    bounds.Transform(this);
+    return bounds;
+  }
+
 }
 
 }

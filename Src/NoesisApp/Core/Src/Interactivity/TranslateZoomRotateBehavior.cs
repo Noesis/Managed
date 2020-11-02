@@ -172,10 +172,10 @@ namespace NoesisApp
             ManipulationDelta delta = e.DeltaManipulation;
 
             // Update Scale transform
-            float scale = delta.Scale * _scale.ScaleX;
-            scale = Math.Max(Math.Max(0.00001f, MinimumScale), Math.Min(scale, MaximumScale));
-            _scale.ScaleX = scale;
-            _scale.ScaleY = scale;
+            float scaleX = delta.Scale.X * _scale.ScaleX;
+            _scale.ScaleX = Math.Max(Math.Max(0.00001f, MinimumScale), Math.Min(scaleX, MaximumScale));
+            float scaleY = delta.Scale.Y * _scale.ScaleY;
+            _scale.ScaleY = Math.Max(Math.Max(0.00001f, MinimumScale), Math.Min(scaleY, MaximumScale));
 
             // Update Rotate transform
             _rotate.Angle += delta.Rotation;
