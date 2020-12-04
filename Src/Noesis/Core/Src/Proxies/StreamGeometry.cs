@@ -15,6 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
+[System.ComponentModel.TypeConverter(typeof(GeometryConverter))]
 public class StreamGeometry : Geometry {
   internal new static StreamGeometry CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
     return new StreamGeometry(cPtr, cMemoryOwn);

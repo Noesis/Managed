@@ -27,12 +27,83 @@ public class FormattedText : BaseComponent {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
+  public Rect Bounds {
+    get {
+      Rect bounds = new Rect();
+      GetBoundsHelper(ref bounds);
+      return bounds;
+    }
+  }
+
+  public struct LineInfo {
+    public uint NumGlyphs { get; internal set; }
+    public float Height { get; internal set; }
+    public float Baseline { get; internal set; }
+  }
+
+  public LineInfo GetLineInfo(uint line) {
+    uint numGlyphs = 0;
+    float height = 0.0f;
+    float baseline = 0.0f;
+    GetLineInfoHelper(line, ref numGlyphs, ref height, ref baseline);
+    return new LineInfo { NumGlyphs = numGlyphs, Height = height, Baseline = baseline };
+  }
+
   public FormattedText() {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
     registerExtend = false;
     return NoesisGUI_PINVOKE.new_FormattedText();
+  }
+
+  public void BuildTextRuns(string text, InlineCollection inlines, FontFamily fontFamily, FontWeight fontWeight, FontStretch fontStretch, FontStyle fontStyle, float fontSize, float strokeThickness, Brush background, Brush foreground, Brush stroke, TextDecorations textDecorations, int charSpacing) {
+    NoesisGUI_PINVOKE.FormattedText_BuildTextRuns(swigCPtr, text != null ? text : string.Empty, InlineCollection.getCPtr(inlines), FontFamily.getCPtr(fontFamily), (int)fontWeight, (int)fontStretch, (int)fontStyle, fontSize, strokeThickness, Brush.getCPtr(background), Brush.getCPtr(foreground), Brush.getCPtr(stroke), (int)textDecorations, charSpacing);
+  }
+
+  public Size Measure(TextAlignment alignment, TextWrapping wrapping, TextTrimming trimming, float maxWidth, float maxHeight, float lineHeight, LineStackingStrategy lineStacking) {
+    IntPtr ret = NoesisGUI_PINVOKE.FormattedText_Measure(swigCPtr, (int)alignment, (int)wrapping, (int)trimming, maxWidth, maxHeight, lineHeight, (int)lineStacking);
+    if (ret != IntPtr.Zero) {
+      return Marshal.PtrToStructure<Size>(ret);
+    }
+    else {
+      return new Size();
+    }
+  }
+
+  public void Layout(TextAlignment alignment, TextWrapping wrapping, TextTrimming trimming, float maxWidth, float maxHeight, float lineHeight, LineStackingStrategy lineStacking) {
+    NoesisGUI_PINVOKE.FormattedText_Layout(swigCPtr, (int)alignment, (int)wrapping, (int)trimming, maxWidth, maxHeight, lineHeight, (int)lineStacking);
+  }
+
+  public void GetGlyphPosition(uint chIndex, bool afterChar, ref float x, ref float y) {
+    NoesisGUI_PINVOKE.FormattedText_GetGlyphPosition(swigCPtr, chIndex, afterChar, ref x, ref y);
+  }
+
+  public uint HitTest(float x, float y, ref bool isInside, ref bool isTrailing) {
+    uint ret = NoesisGUI_PINVOKE.FormattedText_HitTest(swigCPtr, x, y, ref isInside, ref isTrailing);
+    return ret;
+  }
+
+  public bool IsEmpty {
+    get {
+      bool ret = NoesisGUI_PINVOKE.FormattedText_IsEmpty_get(swigCPtr);
+      return ret;
+    } 
+  }
+
+  public uint NumLines {
+    get {
+      uint ret = NoesisGUI_PINVOKE.FormattedText_NumLines_get(swigCPtr);
+      return ret;
+    } 
+  }
+
+  private void GetBoundsHelper(ref Rect bounds) {
+    NoesisGUI_PINVOKE.FormattedText_GetBoundsHelper(swigCPtr, ref bounds);
+  }
+
+  private void GetLineInfoHelper(uint line, ref uint numGlyphs, ref float height, ref float baseline) {
+    NoesisGUI_PINVOKE.FormattedText_GetLineInfoHelper(swigCPtr, line, ref numGlyphs, ref height, ref baseline);
   }
 
 }

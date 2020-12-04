@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 
 namespace Noesis
 {
@@ -21,6 +22,7 @@ public enum MouseButtonState
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+[TypeConverter(typeof(KeyConverter))]
 public enum Key
 {
     None,
@@ -269,7 +271,7 @@ public enum Key
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-[FlagsAttribute]
+[Flags]
 public enum KeyStates
 {
     /// The key is not pressed (same as up).
@@ -283,7 +285,8 @@ public enum KeyStates
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-[FlagsAttribute]
+[Flags]
+[TypeConverter(typeof(ModifierKeysConverter))]
 public enum ModifierKeys
 {
     None = 0,
@@ -294,7 +297,7 @@ public enum ModifierKeys
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-[FlagsAttribute]
+[Flags]
 public enum ManipulationModes
 {
     /// Manipulation events do not occur

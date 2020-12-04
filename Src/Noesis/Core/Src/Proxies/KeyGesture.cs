@@ -15,6 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
+[System.ComponentModel.TypeConverter(typeof(KeyGestureConverter))]
 public class KeyGesture : InputGesture {
   internal new static KeyGesture CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
     return new KeyGesture(cPtr, cMemoryOwn);

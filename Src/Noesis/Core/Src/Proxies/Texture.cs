@@ -31,6 +31,34 @@ public partial class Texture : BaseComponent {
     NoesisGUI_PINVOKE.Texture_SetPrivateData(swigCPtr, Noesis.Extend.GetInstanceHandle(context));
   }
 
+  public uint Width {
+    get {
+      uint ret = NoesisGUI_PINVOKE.Texture_Width_get(swigCPtr);
+      return ret;
+    } 
+  }
+
+  public uint Height {
+    get {
+      uint ret = NoesisGUI_PINVOKE.Texture_Height_get(swigCPtr);
+      return ret;
+    } 
+  }
+
+  public bool HasMipMaps {
+    get {
+      bool ret = NoesisGUI_PINVOKE.Texture_HasMipMaps_get(swigCPtr);
+      return ret;
+    } 
+  }
+
+  public bool IsInverted {
+    get {
+      bool ret = NoesisGUI_PINVOKE.Texture_IsInverted_get(swigCPtr);
+      return ret;
+    } 
+  }
+
 }
 
 }

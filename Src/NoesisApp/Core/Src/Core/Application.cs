@@ -191,8 +191,11 @@ namespace NoesisApp
             });
 
             // Set resource providers
+            Type appType = typeof(Application);
+            EmbeddedXamlProvider xamlProvider = new EmbeddedXamlProvider(appType.Assembly, appType.Namespace, CreateXamlProvider());
+
             Type type = this.GetType();
-            GUI.SetXamlProvider(new EmbeddedXamlProvider(type.Assembly, type.Namespace, CreateXamlProvider()));
+            GUI.SetXamlProvider(new EmbeddedXamlProvider(type.Assembly, type.Namespace, xamlProvider));
             GUI.SetTextureProvider(new EmbeddedTextureProvider(type.Assembly, type.Namespace, CreateTextureProvider()));
             GUI.SetFontProvider(new EmbeddedFontProvider(type.Assembly, type.Namespace, CreateFontProvider()));
 

@@ -38,14 +38,6 @@ public class AdornerDecorator : Decorator {
     return NoesisGUI_PINVOKE.new_AdornerDecorator__SWIG_1();
   }
 
-  public void AddLayer(Visual layerRoot) {
-    NoesisGUI_PINVOKE.AdornerDecorator_AddLayer(swigCPtr, Visual.getCPtr(layerRoot));
-  }
-
-  public void RemoveLayer(Visual layerRoot) {
-    NoesisGUI_PINVOKE.AdornerDecorator_RemoveLayer(swigCPtr, Visual.getCPtr(layerRoot));
-  }
-
 }
 
 }

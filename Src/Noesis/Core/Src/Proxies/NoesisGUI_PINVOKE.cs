@@ -1181,6 +1181,20 @@ internal class NoesisGUI_PINVOKE {
   public static extern void Texture_SetPrivateData(HandleRef jarg1, HandleRef jarg2);
 
   [DllImport(Library.Name)]
+  public static extern uint Texture_Width_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern uint Texture_Height_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  [return: MarshalAs(UnmanagedType.U1)]
+  public static extern bool Texture_HasMipMaps_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  [return: MarshalAs(UnmanagedType.U1)]
+  public static extern bool Texture_IsInverted_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
   public static extern void FontProvider_RegisterFontHelper(HandleRef jarg1, [MarshalAs(UnmanagedType.LPWStr)]string jarg2, [MarshalAs(UnmanagedType.LPWStr)]string jarg3);
 
   [DllImport(Library.Name)]
@@ -1315,6 +1329,9 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern void Transform_GetTransformHelper(HandleRef jarg1, out Matrix jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Transform_ParseHelper([MarshalAs(UnmanagedType.LPWStr)]string jarg1);
 
   [DllImport(Library.Name)]
   public static extern IntPtr new_TransformCollection();
@@ -1597,6 +1614,9 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr Brush_Transform_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Brush_ParseHelper([MarshalAs(UnmanagedType.LPWStr)]string jarg1);
 
   [DllImport(Library.Name)]
   public static extern IntPtr Brushes_AliceBlue_get();
@@ -3136,6 +3156,12 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr Visual_GetViewHelper(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void Visual_AddLayer(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern void Visual_RemoveLayer(HandleRef jarg1, HandleRef jarg2);
 
   [DllImport(Library.Name)]
   public static extern IntPtr VisualTreeHelper_GetContentBounds(HandleRef jarg1);
@@ -6007,12 +6033,6 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr new_AdornerDecorator__SWIG_1();
 
   [DllImport(Library.Name)]
-  public static extern void AdornerDecorator_AddLayer(HandleRef jarg1, HandleRef jarg2);
-
-  [DllImport(Library.Name)]
-  public static extern void AdornerDecorator_RemoveLayer(HandleRef jarg1, HandleRef jarg2);
-
-  [DllImport(Library.Name)]
   public static extern IntPtr ApplicationCommands_CancelPrintCommand_get();
 
   [DllImport(Library.Name)]
@@ -7586,6 +7606,34 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr new_FormattedText();
 
   [DllImport(Library.Name)]
+  public static extern void FormattedText_BuildTextRuns(HandleRef jarg1, [MarshalAs(UnmanagedType.LPWStr)]string jarg2, HandleRef jarg3, HandleRef jarg4, int jarg5, int jarg6, int jarg7, float jarg8, float jarg9, HandleRef jarg10, HandleRef jarg11, HandleRef jarg12, int jarg13, int jarg14);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr FormattedText_Measure(HandleRef jarg1, int jarg2, int jarg3, int jarg4, float jarg5, float jarg6, float jarg7, int jarg8);
+
+  [DllImport(Library.Name)]
+  public static extern void FormattedText_Layout(HandleRef jarg1, int jarg2, int jarg3, int jarg4, float jarg5, float jarg6, float jarg7, int jarg8);
+
+  [DllImport(Library.Name)]
+  public static extern void FormattedText_GetGlyphPosition(HandleRef jarg1, uint jarg2, bool jarg3, ref float jarg4, ref float jarg5);
+
+  [DllImport(Library.Name)]
+  public static extern uint FormattedText_HitTest(HandleRef jarg1, float jarg2, float jarg3, ref bool jarg4, ref bool jarg5);
+
+  [DllImport(Library.Name)]
+  [return: MarshalAs(UnmanagedType.U1)]
+  public static extern bool FormattedText_IsEmpty_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern uint FormattedText_NumLines_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void FormattedText_GetBoundsHelper(HandleRef jarg1, ref Rect jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern void FormattedText_GetLineInfoHelper(HandleRef jarg1, uint jarg2, ref uint jarg3, ref float jarg4, ref float jarg5);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr GridLength_GetStaticType();
 
   [DllImport(Library.Name)]
@@ -7936,6 +7984,15 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr KeyBinding_CreateKeyBinding(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern uint KeyBinding_ParseKeyHelper([MarshalAs(UnmanagedType.LPWStr)]string jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern uint KeyBinding_ParseModifierKeysHelper([MarshalAs(UnmanagedType.LPWStr)]string jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr KeyBinding_ParseKeyGestureHelper([MarshalAs(UnmanagedType.LPWStr)]string jarg1);
 
   [DllImport(Library.Name)]
   public static extern IntPtr new_KeyboardNavigation__SWIG_0();

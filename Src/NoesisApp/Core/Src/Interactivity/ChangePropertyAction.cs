@@ -147,7 +147,10 @@ namespace NoesisApp
 
             if (oldType != newType)
             {
-                _converter = TypeDescriptor.GetConverter(newType);
+                if (newType != typeof(object))
+                {
+                    _converter = TypeDescriptor.GetConverter(newType);
+                }
                 return true;
             }
 
@@ -162,7 +165,10 @@ namespace NoesisApp
             {
                 try
                 {
-                    _convertedValue = _converter.ConvertFrom(Value);
+                    if (Value != null)
+                    {
+                        _convertedValue = _converter.ConvertFrom(Value);
+                    }
                 }
                 catch (Exception) { }
             }

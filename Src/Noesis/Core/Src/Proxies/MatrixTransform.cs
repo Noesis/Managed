@@ -15,6 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
+[System.ComponentModel.TypeConverter(typeof(TransformConverter))]
 public class MatrixTransform : Transform {
   internal new static MatrixTransform CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
     return new MatrixTransform(cPtr, cMemoryOwn);

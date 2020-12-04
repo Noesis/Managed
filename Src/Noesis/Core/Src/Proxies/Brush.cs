@@ -15,6 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
+[System.ComponentModel.TypeConverter(typeof(BrushConverter))]
 public class Brush : Animatable {
   internal new static Brush CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
     return new Brush(cPtr, cMemoryOwn);
@@ -28,6 +29,11 @@ public class Brush : Animatable {
   }
 
   protected Brush() {
+  }
+
+  public static Brush Parse(string source) {
+    IntPtr cPtr = Brush.ParseHelper(source);
+    return (Brush)Noesis.Extend.GetProxy(cPtr, true);
   }
 
   public static DependencyProperty OpacityProperty {
@@ -79,6 +85,11 @@ public class Brush : Animatable {
       IntPtr cPtr = NoesisGUI_PINVOKE.Brush_Transform_get(swigCPtr);
       return (Transform)Noesis.Extend.GetProxy(cPtr, false);
     }
+  }
+
+  private static IntPtr ParseHelper(string str) {
+    IntPtr ret = NoesisGUI_PINVOKE.Brush_ParseHelper(str != null ? str : string.Empty);
+    return ret;
   }
 
 }

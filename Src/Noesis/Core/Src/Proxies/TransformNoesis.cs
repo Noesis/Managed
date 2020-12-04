@@ -15,6 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
+[System.ComponentModel.TypeConverter(typeof(TransformConverter))]
 public class Transform : Animatable {
   internal new static Transform CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
     return new Transform(cPtr, cMemoryOwn);
@@ -38,6 +39,11 @@ public class Transform : Animatable {
     }
   }
 
+  public static Transform Parse(string source) {
+    IntPtr cPtr = Transform.ParseHelper(source);
+    return (Transform)Noesis.Extend.GetProxy(cPtr, true);
+  }
+
   public static Transform Identity {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Transform_Identity_get();
@@ -47,6 +53,11 @@ public class Transform : Animatable {
 
   private void GetTransformHelper(out Matrix transform) {
     NoesisGUI_PINVOKE.Transform_GetTransformHelper(swigCPtr, out transform);
+  }
+
+  private static IntPtr ParseHelper(string str) {
+    IntPtr ret = NoesisGUI_PINVOKE.Transform_ParseHelper(str != null ? str : string.Empty);
+    return ret;
   }
 
 }

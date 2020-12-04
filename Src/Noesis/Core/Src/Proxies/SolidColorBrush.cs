@@ -15,6 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
+[System.ComponentModel.TypeConverter(typeof(BrushConverter))]
 public class SolidColorBrush : Brush {
   internal new static SolidColorBrush CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
     return new SolidColorBrush(cPtr, cMemoryOwn);

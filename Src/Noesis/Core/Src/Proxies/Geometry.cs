@@ -15,6 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
+[System.ComponentModel.TypeConverter(typeof(GeometryConverter))]
 public class Geometry : Animatable {
   internal new static Geometry CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
     return new Geometry(cPtr, cMemoryOwn);

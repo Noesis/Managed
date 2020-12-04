@@ -1,0 +1,297 @@
+<UserControl
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+  xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
+  xmlns:noesis="clr-namespace:NoesisGUIExtensions"
+  x:Name="TheMessageBox">
+
+  <UserControl.Resources>
+    <Storyboard x:Key="Anim.Show">
+      <DoubleAnimationUsingKeyFrames Storyboard.TargetName="LayoutRoot" Storyboard.TargetProperty="Background.Opacity">
+        <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+        <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="0.5">
+          <EasingDoubleKeyFrame.EasingFunction>
+            <SineEase EasingMode="EaseInOut"/>
+          </EasingDoubleKeyFrame.EasingFunction>
+        </EasingDoubleKeyFrame>
+      </DoubleAnimationUsingKeyFrames>
+      <DoubleAnimationUsingKeyFrames Storyboard.TargetName="Dialog" Storyboard.TargetProperty="Opacity">
+        <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+        <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="1">
+          <EasingDoubleKeyFrame.EasingFunction>
+            <SineEase EasingMode="EaseOut"/>
+          </EasingDoubleKeyFrame.EasingFunction>
+        </EasingDoubleKeyFrame>
+      </DoubleAnimationUsingKeyFrames>
+      <DoubleAnimationUsingKeyFrames Storyboard.TargetName="Dialog" Storyboard.TargetProperty="RenderTransform.ScaleX">
+        <EasingDoubleKeyFrame KeyTime="0" Value="0.5"/>
+        <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="1">
+          <EasingDoubleKeyFrame.EasingFunction>
+            <CubicEase EasingMode="EaseOut"/>
+          </EasingDoubleKeyFrame.EasingFunction>
+        </EasingDoubleKeyFrame>
+      </DoubleAnimationUsingKeyFrames>
+      <DoubleAnimationUsingKeyFrames Storyboard.TargetName="Dialog" Storyboard.TargetProperty="RenderTransform.ScaleY">
+        <EasingDoubleKeyFrame KeyTime="0" Value="0.5"/>
+        <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="1">
+          <EasingDoubleKeyFrame.EasingFunction>
+            <CubicEase EasingMode="EaseOut"/>
+          </EasingDoubleKeyFrame.EasingFunction>
+        </EasingDoubleKeyFrame>
+      </DoubleAnimationUsingKeyFrames>
+    </Storyboard>
+    <Storyboard x:Key="Anim.Hide">
+      <BooleanAnimationUsingKeyFrames Storyboard.TargetName="TheMessageBox" Storyboard.TargetProperty="IsEnabled">
+        <DiscreteBooleanKeyFrame KeyTime="0" Value="False"/>
+      </BooleanAnimationUsingKeyFrames>
+      <DoubleAnimationUsingKeyFrames Storyboard.TargetName="LayoutRoot" Storyboard.TargetProperty="Background.Opacity">
+        <EasingDoubleKeyFrame KeyTime="0" Value="0.5"/>
+        <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0">
+          <EasingDoubleKeyFrame.EasingFunction>
+            <SineEase EasingMode="EaseInOut"/>
+          </EasingDoubleKeyFrame.EasingFunction>
+        </EasingDoubleKeyFrame>
+      </DoubleAnimationUsingKeyFrames>
+      <DoubleAnimationUsingKeyFrames Storyboard.TargetName="Dialog" Storyboard.TargetProperty="Opacity">
+        <EasingDoubleKeyFrame KeyTime="0" Value="1"/>
+        <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="0">
+          <EasingDoubleKeyFrame.EasingFunction>
+            <SineEase EasingMode="EaseOut"/>
+          </EasingDoubleKeyFrame.EasingFunction>
+        </EasingDoubleKeyFrame>
+      </DoubleAnimationUsingKeyFrames>
+      <DoubleAnimationUsingKeyFrames Storyboard.TargetName="Dialog" Storyboard.TargetProperty="RenderTransform.ScaleX">
+        <EasingDoubleKeyFrame KeyTime="0" Value="1"/>
+        <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="0.5">
+          <EasingDoubleKeyFrame.EasingFunction>
+            <CubicEase EasingMode="EaseOut"/>
+          </EasingDoubleKeyFrame.EasingFunction>
+        </EasingDoubleKeyFrame>
+      </DoubleAnimationUsingKeyFrames>
+      <DoubleAnimationUsingKeyFrames Storyboard.TargetName="Dialog" Storyboard.TargetProperty="RenderTransform.ScaleY">
+        <EasingDoubleKeyFrame KeyTime="0" Value="1"/>
+        <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="0.5">
+          <EasingDoubleKeyFrame.EasingFunction>
+            <CubicEase EasingMode="EaseOut"/>
+          </EasingDoubleKeyFrame.EasingFunction>
+        </EasingDoubleKeyFrame>
+      </DoubleAnimationUsingKeyFrames>
+    </Storyboard>
+    <Style x:Key="Style.Button.Close" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+      <Setter Property="Focusable" Value="False"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Button">
+            <Border x:Name="Border" Background="#00E81123">
+              <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup x:Name="CommonStates">
+                  <VisualStateGroup.Transitions>
+                    <VisualTransition GeneratedDuration="0:0:0.2" To="Normal"/>
+                    <VisualTransition GeneratedDuration="0:0:0.1" To="MouseOver"/>
+                    <VisualTransition GeneratedDuration="0:0:0.05" To="Pressed"/>
+                  </VisualStateGroup.Transitions>
+                  <VisualState x:Name="Normal"/>
+                  <VisualState x:Name="MouseOver">
+                    <Storyboard>
+                      <ColorAnimationUsingKeyFrames Storyboard.TargetName="Border" Storyboard.TargetProperty="Background.Color">
+                        <EasingColorKeyFrame KeyTime="0" Value="#FFE81123"/>
+                      </ColorAnimationUsingKeyFrames>
+                      <ColorAnimationUsingKeyFrames Storyboard.TargetName="Cross" Storyboard.TargetProperty="Stroke.Color">
+                        <EasingColorKeyFrame KeyTime="0" Value="White"/>
+                      </ColorAnimationUsingKeyFrames>
+                    </Storyboard>
+                  </VisualState>
+                  <VisualState x:Name="Pressed">
+                    <Storyboard>
+                      <ColorAnimationUsingKeyFrames Storyboard.TargetName="Border" Storyboard.TargetProperty="Background.Color">
+                        <EasingColorKeyFrame KeyTime="0" Value="#FFE93B4A"/>
+                      </ColorAnimationUsingKeyFrames>
+                      <ColorAnimationUsingKeyFrames Storyboard.TargetName="Cross" Storyboard.TargetProperty="Stroke.Color">
+                        <EasingColorKeyFrame KeyTime="0" Value="White"/>
+                      </ColorAnimationUsingKeyFrames>
+                    </Storyboard>
+                  </VisualState>
+                  <VisualState x:Name="Disabled"/>
+                </VisualStateGroup>
+              </VisualStateManager.VisualStateGroups>
+              <Path x:Name="Cross" Data="M0,0L3,3M3,0L0,3" Stroke="{TemplateBinding Foreground}" StrokeThickness="1" Stretch="Uniform" Margin="11"/>
+            </Border>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+    <Style x:Key="Style.Button.Option" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+      <Style.Triggers>
+        <Trigger Property="IsFocused" Value="True">
+          <Setter Property="Effect">
+            <Setter.Value>
+              <DropShadowEffect ShadowDepth="0" BlurRadius="4" Opacity="0.75"/>
+            </Setter.Value>
+          </Setter>
+        </Trigger>
+      </Style.Triggers>
+    </Style>
+  </UserControl.Resources>
+
+  <Grid x:Name="LayoutRoot" Background="Black">
+
+    <Grid x:Name="Dialog" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="120" MaxWidth="500" Margin="50,100" RenderTransformOrigin="0.5,0.5">
+      <Grid.RenderTransform>
+        <ScaleTransform/>
+      </Grid.RenderTransform>
+      <Border Background="{Binding Background, ElementName=OkBtn}">
+        <Border.Effect>
+          <DropShadowEffect BlurRadius="25" Opacity="0.5"/>
+        </Border.Effect>
+      </Border>
+      <StackPanel KeyboardNavigation.TabNavigation="Cycle" KeyboardNavigation.ControlTabNavigation="Cycle" KeyboardNavigation.DirectionalNavigation="Cycle">
+        <Grid Background="#30000000">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+          </Grid.ColumnDefinitions>
+          <TextBlock Text="{Binding Caption, ElementName=TheMessageBox, FallbackValue=Caption}" FontWeight="Bold" FontSize="17" Foreground="{Binding Foreground, ElementName=OkBtn}" Margin="8,6"/>
+          <Button x:Name="CloseBtn" Grid.Column="1" Background="Red" Width="{Binding ActualHeight, ElementName=CloseBtn}" Padding="0,0,0,4" Style="{StaticResource Style.Button.Close}"/>
+        </Grid>
+        <Grid Background="#20FFFFFF">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+          </Grid.ColumnDefinitions>
+          <Grid x:Name="Icon" Width="32" Height="32" Margin="20,24,-8,20" VerticalAlignment="Top" Visibility="Collapsed">
+            <Grid x:Name="Error" Visibility="Collapsed">
+              <Ellipse Fill="Red" Margin="3"/>
+              <Ellipse Stroke="DarkRed" Margin="2"/>
+              <Ellipse Stroke="White" StrokeThickness="1" Margin="1"/>
+              <Ellipse Stroke="DimGray" StrokeThickness="1"/>
+              <Path Data="M0,0L10,10M10,0L0,10" Stroke="White" StrokeThickness="4" Stretch="Uniform" Margin="8"/>
+            </Grid>
+            <Grid x:Name="Question" Visibility="Collapsed">
+              <Ellipse Fill="#FF0055FF" Margin="3"/>
+              <Ellipse Stroke="#FF00338B" Margin="2"/>
+              <Ellipse Stroke="White" StrokeThickness="1" Margin="1"/>
+              <Ellipse Stroke="DimGray" StrokeThickness="1"/>
+              <Path Data="M64.000931,213.74922 L106.66793,213.74922 L106.66793,256.41622 L64.000931,256.41622 z M168.32093,65.482222 C157.34693,19.649222 111.29593,-8.6087782 65.462931,2.3652218 26.929931,11.591222 -0.18306918,46.127222 0.00093082082,85.749222 L42.667931,85.749222 C44.670931,62.185222 65.396931,44.706222 88.960931,46.709222 112.52493,48.712222 130.00393,69.438222 128.00093,93.002222 123.64293,114.20622 104.62093,129.17122 82.987931,128.41522 72.501931,128.41522 64.000931,136.91622 64.000931,147.40222 L64.000931,147.40222 64.000931,192.41522 106.66793,192.41522 106.66793,168.09522 C151.78793,156.46022 179.23293,110.78322 168.32093,65.482222 z" Fill="White" Stretch="Uniform" Margin="8"/>
+            </Grid>
+            <Grid x:Name="Warning" Visibility="Collapsed">
+              <Viewbox>
+                <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-2,-5,0,0">
+                  <Path Fill="DarkGray" Data="M 56.99 59 H 7.01 C 3.1796885 58.994182 0.77467829 54.864199 2.66 51.53 l 24.99 -44 c 2.199762 -3.367262 6.925298 -3.0117677 8.7 0 l 24.99 44 c 1.743663 3.562438 -0.895259 7.421161 -4.35 7.47 z"/>
+                  <Path Fill="White" Data="M 28.13537 10.289894 5.9603556 49.333552 c -3.7335975 5.301435 -2.2226878 8.247194 3.8600846 7.848257 H 54.170469 c 6.748155 0.240539 6.868427 -3.644676 3.860087 -7.848257 L 35.85554 10.289894 c -2.411478 -4.306542 -5.297707 -4.2595918 -7.72017 0 z"/>
+                  <Path Fill="#FFCCA900" Data="M 28.603557 12.990003 9.1678443 47.210559 c -5.0350948 7.832984 -4.7955747 8.410612 3.3832437 8.128753 h 38.871427 c 8.355227 0.278623 7.511488 -1.054613 3.383247 -8.128753 L 35.370048 12.990003 c -2.45257 -5.1304834 -4.033109 -5.2249262 -6.766491 0 z"/>
+                  <Path Fill="#FFFFDC00" Data="M 29.090814 15.900883 12.592586 44.949394 c -5.9012165 9.83556 -6.5114564 8.571648 2.871905 8.400186 h 32.996456 c 9.261923 0.168715 8.342316 1.333593 2.871909 -8.400186 L 34.834628 15.900883 c -3.098842 -5.778798 -2.474399 -5.9267634 -5.743814 0 z"/>
+                  <Path Fill="Black" Data="M3.573,23.479C2.465,23.478,1.540,22.634,1.44,21.53L0.015,3.894C-0.076,2.894 0.258,1.903 0.935,1.162 1.612,0.421 2.57,-0.001 3.574,0 4.577,0 5.534,0.422 6.21,1.163 6.887,1.904 7.22,2.895 7.13,3.894L5.705,21.53C5.604,22.633,4.681,23.477,3.574,23.479z M6.274,27.951C6.274,29.443 5.065,30.651 3.574,30.651 2.082,30.651 0.874,29.443 0.874,27.951 0.874,26.46 2.082,25.251 3.574,25.251 5.065,25.251 6.274,26.46 6.274,27.951z" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2,14,0,0" Stretch="Uniform" Height="28"/>
+                </Grid>
+              </Viewbox>
+            </Grid>
+            <Grid x:Name="Info" Visibility="Collapsed">
+              <Ellipse Fill="#FF0055FF" Margin="3"/>
+              <Ellipse Stroke="#FF00338B" Margin="2"/>
+              <Ellipse Stroke="White" StrokeThickness="1" Margin="1"/>
+              <Ellipse Stroke="DimGray" StrokeThickness="1"/>
+              <Path Data="M243.762,103.634C264.178,103.634 280.739,120.189 280.739,140.611 280.739,161.036 264.178,177.589 243.762,177.589 223.338,177.589 206.776,161.036 206.776,140.611 206.775,120.189 223.338,103.634 243.762,103.634z M307.281,381.228C307.281,384.923,304.286,387.919,300.597,387.919L279.088,387.919 208.425,387.919 186.933,387.919C183.244,387.919,180.25,384.923,180.25,381.228L180.25,367.509C180.25,363.815,183.243,360.82,186.933,360.82L208.425,360.82 208.425,230.706 186.272,230.706C182.583,230.706,179.587,227.71,179.587,224.014L179.587,210.28C179.587,206.585,182.583,203.59,186.272,203.59L208.425,203.59 272.406,203.59 272.622,203.59C276.308,203.59,279.305,206.585,279.305,210.28L279.305,360.819 300.598,360.819C304.286,360.819,307.282,363.814,307.282,367.508L307.282,381.228z M307.281,381.228z" Fill="White" Stretch="Uniform" Margin="8"/>
+            </Grid>
+          </Grid>
+          <TextBlock Grid.Column="1" Text="{Binding Text, ElementName=TheMessageBox, FallbackValue=This is the message.}" FontSize="15" Foreground="{Binding Foreground, ElementName=OkBtn}" TextWrapping="Wrap" Margin="20,24" VerticalAlignment="Center"/>
+        </Grid>
+        <Grid Background="#20000000">
+          <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Margin="12,8,8,8">
+            <Button x:Name="OkBtn" Content="OK" Width="100" Margin="8,0,0,0" Visibility="Collapsed" Style="{StaticResource Style.Button.Option}"/>
+            <Button x:Name="YesBtn" Content="Yes" Width="100" Margin="8,0,0,0" Visibility="Collapsed" Style="{StaticResource Style.Button.Option}"/>
+            <Button x:Name="NoBtn" Content="No" Width="100" Margin="8,0,0,0" Visibility="Collapsed" Style="{StaticResource Style.Button.Option}"/>
+            <Button x:Name="CancelBtn" Content="Cancel" Width="100" Margin="8,0,0,0" Visibility="Collapsed" Style="{StaticResource Style.Button.Option}"/>
+          </StackPanel>
+        </Grid>
+      </StackPanel>
+    </Grid>
+
+    <Grid x:Name="Interaction">
+      <i:Interaction.Triggers>
+        <ei:DataTrigger Binding="{Binding DefaultButton, ElementName=TheMessageBox}" Value="OK">
+          <ei:ChangePropertyAction PropertyName="Tag" Value="{Binding ElementName=OkBtn}"/>
+        </ei:DataTrigger>
+        <ei:DataTrigger Binding="{Binding DefaultButton, ElementName=TheMessageBox}" Value="Yes">
+          <ei:ChangePropertyAction PropertyName="Tag" Value="{Binding ElementName=YesBtn}"/>
+        </ei:DataTrigger>
+        <ei:DataTrigger Binding="{Binding DefaultButton, ElementName=TheMessageBox}" Value="No">
+          <ei:ChangePropertyAction PropertyName="Tag" Value="{Binding ElementName=NoBtn}"/>
+        </ei:DataTrigger>
+        <ei:DataTrigger Binding="{Binding DefaultButton, ElementName=TheMessageBox}" Value="Cancel">
+          <ei:ChangePropertyAction PropertyName="Tag" Value="{Binding ElementName=CancelBtn}"/>
+        </ei:DataTrigger>
+
+        <ei:DataTrigger Binding="{Binding Button, ElementName=TheMessageBox}" Value="OK">
+          <ei:ChangePropertyAction TargetName="OkBtn" PropertyName="Visibility" Value="Visible"/>
+          <ei:ChangePropertyAction TargetName="CloseBtn" PropertyName="Tag" Value="{x:Static MessageBoxResult.OK}"/>
+        </ei:DataTrigger>
+        <ei:DataTrigger Binding="{Binding Button, ElementName=TheMessageBox}" Value="OKCancel">
+          <ei:ChangePropertyAction TargetName="OkBtn" PropertyName="Visibility" Value="Visible"/>
+          <ei:ChangePropertyAction TargetName="CancelBtn" PropertyName="Visibility" Value="Visible"/>
+          <ei:ChangePropertyAction TargetName="CloseBtn" PropertyName="Tag" Value="{x:Static MessageBoxResult.Cancel}"/>
+        </ei:DataTrigger>
+        <ei:DataTrigger Binding="{Binding Button, ElementName=TheMessageBox}" Value="YesNoCancel">
+          <ei:ChangePropertyAction TargetName="YesBtn" PropertyName="Visibility" Value="Visible"/>
+          <ei:ChangePropertyAction TargetName="NoBtn" PropertyName="Visibility" Value="Visible"/>
+          <ei:ChangePropertyAction TargetName="CancelBtn" PropertyName="Visibility" Value="Visible"/>
+          <ei:ChangePropertyAction TargetName="CloseBtn" PropertyName="Tag" Value="{x:Static MessageBoxResult.Cancel}"/>
+        </ei:DataTrigger>
+        <ei:DataTrigger Binding="{Binding Button, ElementName=TheMessageBox}" Value="YesNo">
+          <ei:ChangePropertyAction TargetName="CloseBtn" PropertyName="Visibility" Value="Collapsed"/>
+          <ei:ChangePropertyAction TargetName="YesBtn" PropertyName="Visibility" Value="Visible"/>
+          <ei:ChangePropertyAction TargetName="NoBtn" PropertyName="Visibility" Value="Visible"/>
+          <ei:ChangePropertyAction TargetName="CloseBtn" PropertyName="Tag" Value="{x:Static MessageBoxResult.None}"/>
+        </ei:DataTrigger>
+
+        <ei:DataTrigger Binding="{Binding Icon, ElementName=TheMessageBox}" Value="Error">
+          <ei:ChangePropertyAction TargetName="Icon" PropertyName="Visibility" Value="Visible"/>
+          <ei:ChangePropertyAction TargetName="Error" PropertyName="Visibility" Value="Visible"/>
+        </ei:DataTrigger>
+        <ei:DataTrigger Binding="{Binding Icon, ElementName=TheMessageBox}" Value="Question">
+          <ei:ChangePropertyAction TargetName="Icon" PropertyName="Visibility" Value="Visible"/>
+          <ei:ChangePropertyAction TargetName="Question" PropertyName="Visibility" Value="Visible"/>
+        </ei:DataTrigger>
+        <ei:DataTrigger Binding="{Binding Icon, ElementName=TheMessageBox}" Value="Warning">
+          <ei:ChangePropertyAction TargetName="Icon" PropertyName="Visibility" Value="Visible"/>
+          <ei:ChangePropertyAction TargetName="Warning" PropertyName="Visibility" Value="Visible"/>
+        </ei:DataTrigger>
+        <ei:DataTrigger Binding="{Binding Icon, ElementName=TheMessageBox}" Value="Information">
+          <ei:ChangePropertyAction TargetName="Icon" PropertyName="Visibility" Value="Visible"/>
+          <ei:ChangePropertyAction TargetName="Info" PropertyName="Visibility" Value="Visible"/>
+        </ei:DataTrigger>
+
+        <i:EventTrigger EventName="Loaded">
+          <ei:ControlStoryboardAction Storyboard="{StaticResource Anim.Show}"/>
+          <noesis:SetFocusAction TargetObject="{Binding Tag, ElementName=Interaction}"/>
+        </i:EventTrigger>
+
+        <i:EventTrigger EventName="Click" SourceName="CloseBtn">
+          <ei:ChangePropertyAction TargetName="Dialog" PropertyName="Tag" Value="{Binding Tag, ElementName=CloseBtn}"/>
+          <ei:ControlStoryboardAction Storyboard="{StaticResource Anim.Hide}"/>
+        </i:EventTrigger>
+        <i:EventTrigger EventName="Click" SourceName="OkBtn">
+          <ei:ChangePropertyAction TargetName="Dialog" PropertyName="Tag" Value="{x:Static MessageBoxResult.OK}"/>
+          <ei:ControlStoryboardAction Storyboard="{StaticResource Anim.Hide}"/>
+        </i:EventTrigger>
+        <i:EventTrigger EventName="Click" SourceName="YesBtn">
+          <ei:ChangePropertyAction TargetName="Dialog" PropertyName="Tag" Value="{x:Static MessageBoxResult.Yes}"/>
+          <ei:ControlStoryboardAction Storyboard="{StaticResource Anim.Hide}"/>
+        </i:EventTrigger>
+        <i:EventTrigger EventName="Click" SourceName="NoBtn">
+          <ei:ChangePropertyAction TargetName="Dialog" PropertyName="Tag" Value="{x:Static MessageBoxResult.No}"/>
+          <ei:ControlStoryboardAction Storyboard="{StaticResource Anim.Hide}"/>
+        </i:EventTrigger>
+        <i:EventTrigger EventName="Click" SourceName="CancelBtn">
+          <ei:ChangePropertyAction TargetName="Dialog" PropertyName="Tag" Value="{x:Static MessageBoxResult.Cancel}"/>
+          <ei:ControlStoryboardAction Storyboard="{StaticResource Anim.Hide}"/>
+        </i:EventTrigger>
+
+        <ei:StoryboardCompletedTrigger Storyboard="{StaticResource Anim.Hide}">
+          <i:InvokeCommandAction Command="{Binding Close, ElementName=TheMessageBox}" CommandParameter="{Binding Tag, ElementName=Dialog}"/>
+        </ei:StoryboardCompletedTrigger>
+      </i:Interaction.Triggers>
+    </Grid>
+
+  </Grid>
+
+</UserControl>

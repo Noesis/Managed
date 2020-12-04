@@ -36,6 +36,19 @@ public class KeyBinding : InputBinding {
     : this(CreateKeyBinding(command, new KeyGesture(key, modifiers)), true) {
   }
 
+  internal static Key ParseKey(string source) {
+    return (Key)KeyBinding.ParseKeyHelper(source);
+  }
+
+  internal static ModifierKeys ParseModifierKeys(string source) {
+    return (ModifierKeys)KeyBinding.ParseModifierKeysHelper(source);
+  }
+
+  internal static KeyGesture ParseKeyGesture(string source) {
+    IntPtr cPtr = KeyBinding.ParseKeyGestureHelper(source);
+    return (KeyGesture)Noesis.Extend.GetProxy(cPtr, true);
+  }
+
   public KeyBinding() {
   }
 
@@ -80,6 +93,21 @@ public class KeyBinding : InputBinding {
 
   private static IntPtr CreateKeyBinding(object command, KeyGesture gesture) {
     IntPtr ret = NoesisGUI_PINVOKE.KeyBinding_CreateKeyBinding(Noesis.Extend.GetInstanceHandle(command), KeyGesture.getCPtr(gesture));
+    return ret;
+  }
+
+  private static uint ParseKeyHelper(string str) {
+    uint ret = NoesisGUI_PINVOKE.KeyBinding_ParseKeyHelper(str != null ? str : string.Empty);
+    return ret;
+  }
+
+  private static uint ParseModifierKeysHelper(string str) {
+    uint ret = NoesisGUI_PINVOKE.KeyBinding_ParseModifierKeysHelper(str != null ? str : string.Empty);
+    return ret;
+  }
+
+  private static IntPtr ParseKeyGestureHelper(string str) {
+    IntPtr ret = NoesisGUI_PINVOKE.KeyBinding_ParseKeyGestureHelper(str != null ? str : string.Empty);
     return ret;
   }
 

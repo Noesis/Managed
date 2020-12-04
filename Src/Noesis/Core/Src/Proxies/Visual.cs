@@ -125,6 +125,20 @@ public class Visual : DependencyObject {
     return ret;
   }
 
+  public void AddLayer(Visual layer) {
+    if (layer == null) throw new ArgumentNullException("layer");
+    {
+      NoesisGUI_PINVOKE.Visual_AddLayer(swigCPtr, Visual.getCPtr(layer));
+    }
+  }
+
+  public void RemoveLayer(Visual layer) {
+    if (layer == null) throw new ArgumentNullException("layer");
+    {
+      NoesisGUI_PINVOKE.Visual_RemoveLayer(swigCPtr, Visual.getCPtr(layer));
+    }
+  }
+
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_Visual(Marshal.StringToHGlobalAnsi(typeName));
   }
