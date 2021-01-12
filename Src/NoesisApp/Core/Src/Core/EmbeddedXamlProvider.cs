@@ -16,6 +16,14 @@ namespace NoesisApp
             _assembly = assembly;
             _namespace = ns;
             _provider = provider;
+
+            if (_provider != null)
+            {
+                _provider.XamlChanged += (uri) =>
+                {
+                    RaiseXamlChanged(uri);
+                };
+            }
         }
 
         public override Stream LoadXaml(string filename)

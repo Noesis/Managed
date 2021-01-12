@@ -18,14 +18,17 @@ namespace Noesis
 
 public static class LogicalTreeHelper {
   public static DependencyObject GetParent(DependencyObject current) {
+    if (current == null) throw new ArgumentNullException("current");
     return GetParentHelper(current);
   }
 
   public static IEnumerable GetChildren(DependencyObject current) {
+    if (current == null) throw new ArgumentNullException("current");
     return new ChildrenEnumerable(current);
   }
 
   public static DependencyObject FindLogicalNode(DependencyObject current, string name) {
+    if (current == null) throw new ArgumentNullException("current");
     IntPtr cPtr = FindLogicalNodeHelper(current, name);
     return (DependencyObject)Noesis.Extend.GetProxy(cPtr, true);
   }

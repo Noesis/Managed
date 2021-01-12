@@ -117,6 +117,7 @@ namespace Noesis
             Callback_ScrollInfoSetHorizontalOffset callback_ScrollInfoSetHorizontalOffset,
             Callback_ScrollInfoSetVerticalOffset callback_ScrollInfoSetVerticalOffset,
             Callback_ScrollInfoMakeVisible callback_ScrollInfoMakeVisible,
+            Callback_MarkupExtensionProvideValue callback_MarkupExtensionProvideValue,
             Callback_GetPropertyValue_Bool callback_GetPropertyValue_Bool,
             Callback_GetPropertyValue_Float callback_GetPropertyValue_Float,
             Callback_GetPropertyValue_Double callback_GetPropertyValue_Double,

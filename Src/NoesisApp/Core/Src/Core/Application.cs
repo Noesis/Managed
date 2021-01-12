@@ -38,6 +38,10 @@ namespace NoesisApp
 
         public Window MainWindow { get; set; }
 
+        public XamlProvider XamlProvider { get; private set; }
+        public FontProvider FontProvider { get; private set; }
+        public TextureProvider TextureProvider { get; private set; }
+
         private ResourceDictionary _resources = null;
         public ResourceDictionary Resources
         {
@@ -195,9 +199,13 @@ namespace NoesisApp
             EmbeddedXamlProvider xamlProvider = new EmbeddedXamlProvider(appType.Assembly, appType.Namespace, CreateXamlProvider());
 
             Type type = this.GetType();
-            GUI.SetXamlProvider(new EmbeddedXamlProvider(type.Assembly, type.Namespace, xamlProvider));
-            GUI.SetTextureProvider(new EmbeddedTextureProvider(type.Assembly, type.Namespace, CreateTextureProvider()));
-            GUI.SetFontProvider(new EmbeddedFontProvider(type.Assembly, type.Namespace, CreateFontProvider()));
+            XamlProvider = new EmbeddedXamlProvider(type.Assembly, type.Namespace, xamlProvider);
+            FontProvider = new EmbeddedFontProvider(type.Assembly, type.Namespace, CreateFontProvider());
+            TextureProvider = new EmbeddedTextureProvider(type.Assembly, type.Namespace, CreateTextureProvider());
+
+            GUI.SetXamlProvider(XamlProvider);
+            GUI.SetFontProvider(FontProvider);
+            GUI.SetTextureProvider(TextureProvider);
 
             // Load App.xaml
             if (string.IsNullOrEmpty(Uri))
@@ -233,6 +241,7 @@ namespace NoesisApp
             bool sRGB = StandardRGB;
             bool ppaa = PPAA;
             bool lcd = LCD;
+            bool emulateTouch = EmulateTouch;
 
             RenderContext renderContext = CreateRenderContext();
             renderContext.Init(Display.NativeHandle, Display.NativeWindow, samples, vsync, sRGB);
@@ -243,7 +252,7 @@ namespace NoesisApp
                 renderContext.SetWindow(window);
             };
 
-            MainWindow.Init(Display, renderContext, samples, ppaa, lcd);
+            MainWindow.Init(Display, renderContext, samples, ppaa, lcd, emulateTouch);
 
             StartupEventArgs e = new StartupEventArgs();
             OnStartup(e);
@@ -265,6 +274,10 @@ namespace NoesisApp
 
                 MainWindow.Shutdown();
                 MainWindow = null;
+
+                XamlProvider = null;
+                FontProvider = null;
+                TextureProvider = null;
 
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
@@ -430,6 +443,11 @@ namespace NoesisApp
         }
 
         protected virtual bool RunInBackground
+        {
+            get { return false; }
+        }
+
+        protected virtual bool EmulateTouch
         {
             get { return false; }
         }

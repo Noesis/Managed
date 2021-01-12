@@ -48,9 +48,16 @@ public class TextureProvider : BaseComponent {
   }
 
   /// <summary>
+  /// Notifies of changes to the specified texture file
+  /// </summary>
+  public delegate void TextureChangedHandler(string uri);
+  public event TextureChangedHandler TextureChanged;
+
+  /// <summary>
   /// Raises TextureChanged event notifying Noesis that it should reload the specified texture
   /// </summary>
-  protected void RaiseTextureChanged(string uri) {
+  public void RaiseTextureChanged(string uri) {
+    TextureChanged?.Invoke(uri);
     Noesis_RaiseTextureChanged(swigCPtr, uri);
   }
 

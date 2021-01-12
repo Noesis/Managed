@@ -27,9 +27,15 @@ public class Binding : BindingBase {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
-  public object ProvideValue(object targetObject, DependencyProperty targetProperty) {
-    IntPtr cPtr = ProvideValueHelper(targetObject, targetProperty);
-    return Noesis.Extend.GetProxy(cPtr, true);
+  public override object ProvideValue(IServiceProvider serviceProvider) {
+    IProvideValueTarget valueTarget = serviceProvider as IProvideValueTarget;
+    if (valueTarget != null) {
+      object target = valueTarget.TargetObject;
+      object prop = valueTarget.TargetProperty;
+      IntPtr cPtr = ProvideValueHelper(target, prop as DependencyProperty);
+      return Noesis.Extend.GetProxy(cPtr, true);
+    }
+    return null;
   }
 
   public static object DoNothing {
@@ -51,8 +57,13 @@ public class Binding : BindingBase {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    registerExtend = false;
-    return NoesisGUI_PINVOKE.new_Binding__SWIG_0();
+    if (type == typeof(Binding)) {
+      registerExtend = false;
+      return NoesisGUI_PINVOKE.new_Binding__SWIG_0();
+    }
+    else {
+      return base.CreateExtendCPtr(type, out registerExtend);
+    }
   }
 
   public Binding(string path) : this(NoesisGUI_PINVOKE.new_Binding__SWIG_1(path != null ? path : string.Empty), true) {
@@ -169,6 +180,9 @@ public class Binding : BindingBase {
     NoesisGUI_PINVOKE.Binding_SetConverterHelper(swigCPtr, Noesis.Extend.GetInstanceHandle(converter));
   }
 
+  internal new static IntPtr Extend(string typeName) {
+    return NoesisGUI_PINVOKE.Extend_Binding(Marshal.StringToHGlobalAnsi(typeName));
+  }
 }
 
 }

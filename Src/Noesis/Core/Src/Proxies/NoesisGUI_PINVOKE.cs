@@ -100,6 +100,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr Extend_BaseUICollection(IntPtr typeName);
 
   [DllImport(Library.Name)]
+  public static extern IntPtr Extend_Binding(IntPtr typeName);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr Extend_Border(IntPtr typeName);
 
   [DllImport(Library.Name)]
@@ -172,10 +175,16 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr Extend_ListBoxItem(IntPtr typeName);
 
   [DllImport(Library.Name)]
+  public static extern IntPtr Extend_MarkupExtension(IntPtr typeName);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr Extend_Menu(IntPtr typeName);
 
   [DllImport(Library.Name)]
   public static extern IntPtr Extend_MenuItem(IntPtr typeName);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Extend_MultiBinding(IntPtr typeName);
 
   [DllImport(Library.Name)]
   public static extern IntPtr Extend_Page(IntPtr typeName);
@@ -4522,6 +4531,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern int RelativeSource_AncestorLevel_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
+  public static extern IntPtr RelativeSource_ProvideValueHelper(HandleRef jarg1, HandleRef jarg2, HandleRef jarg3);
+
+  [DllImport(Library.Name)]
   public static extern void BindingBase_Delay_set(HandleRef jarg1, int jarg2);
 
   [DllImport(Library.Name)]
@@ -5798,6 +5810,12 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr ItemContainerGenerator_ItemFromContainer(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern void ItemContainerGenerator_StartBatch(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void ItemContainerGenerator_StopBatch(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern int ItemContainerGenerator_Status_get(HandleRef jarg1);

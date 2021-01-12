@@ -70,6 +70,7 @@ namespace NoesisApp
 
         public override void BeginRender()
         {
+            _context.MakeCurrentContext();
         }
 
         public override void EndRender()

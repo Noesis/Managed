@@ -197,6 +197,8 @@ namespace Noesis
                 _scrollInfoSetVerticalOffset,
                 _scrollInfoMakeVisible,
 
+                _markupExtensionProvideValue,
+
                 _getPropertyValue_Bool,
                 _getPropertyValue_Float,
                 _getPropertyValue_Double,
@@ -263,6 +265,7 @@ namespace Noesis
                 null, null, null, null, null,
                 null, null, null, null, null, null,
                 null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                null,
                 null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
                 null, null, null);
@@ -1744,7 +1747,7 @@ namespace Noesis
         {
             if (nativeUtf8 == IntPtr.Zero)
             {
-                return null;
+                return string.Empty;
             }
 
 #if __MonoCS__
@@ -3524,6 +3527,29 @@ namespace Noesis
             catch (Exception e)
             {
                 Error.UnhandledException(e);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate IntPtr Callback_MarkupExtensionProvideValue(IntPtr cPtr, IntPtr provider);
+        private static Callback_MarkupExtensionProvideValue _markupExtensionProvideValue = MarkupExtensionProvideValue;
+
+        [MonoPInvokeCallback(typeof(Callback_MarkupExtensionProvideValue))]
+        private static IntPtr MarkupExtensionProvideValue(IntPtr cPtr, IntPtr provider)
+        {
+            try
+            {
+                var extension = (MarkupExtension)GetExtendInstance(cPtr);
+                MarkupExtensionProvider provider_ = new MarkupExtensionProvider(provider);
+                object value = extension != null ? extension.ProvideValue(provider_) : null;
+                HandleRef itemPtr = GetInstanceHandle(value);
+                BaseComponent.AddReference(itemPtr.Handle); // released by native bindings
+                return itemPtr.Handle;
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+                return IntPtr.Zero;
             }
         }
 

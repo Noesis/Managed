@@ -123,6 +123,13 @@ namespace NoesisApp
                 else if (!string.IsNullOrEmpty(SourceName))
                 {
                     newSource = SourceNameResolver;
+
+                    if (newSource != null)
+                    {
+                        // Remove binding once we have found the SourceName object because keeping it
+                        // stored in this property could create circular references and memory leaks
+                        BindingOperations.ClearBinding(this, SourceNameResolverProperty);
+                    }
                 }
             }
 
@@ -233,7 +240,10 @@ namespace NoesisApp
         static void OnSourceNameResolverChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             EventTriggerBase trigger = (EventTriggerBase)d;
-            trigger.UpdateSource(trigger.AssociatedObject);
+            if (BindingOperations.GetBinding(trigger, SourceNameResolverProperty) != null)
+            {
+                trigger.UpdateSource(trigger.AssociatedObject);
+            }
         }
 
         Type _sourceType;

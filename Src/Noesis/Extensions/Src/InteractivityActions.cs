@@ -55,4 +55,42 @@ namespace NoesisGUIExtensions
             }
         }
     }
+
+    public class LoadContentAction : TargetedTriggerAction<ContentControl>
+    {
+        public Uri Source
+        {
+            get { return (Uri)GetValue(SourceProperty); }
+            set { SetValue(SourceProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Source.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty SourceProperty = DependencyProperty.Register(
+            "Source", typeof(Uri), typeof(LoadContentAction),
+            new PropertyMetadata(null));
+
+        public new SetFocusAction Clone()
+        {
+            return (SetFocusAction)base.Clone();
+        }
+
+        public new SetFocusAction CloneCurrentValue()
+        {
+            return (SetFocusAction)base.CloneCurrentValue();
+        }
+
+        protected override void Invoke(object parameter)
+        {
+            ContentControl control = Target;
+            if (control != null)
+            {
+                Uri source = Source;
+                if (source != null && !string.IsNullOrEmpty(source.OriginalString))
+                {
+                    object content = Application.LoadComponent(source);
+                    control.Content = content;
+                }
+            }
+        }
+    }
 }

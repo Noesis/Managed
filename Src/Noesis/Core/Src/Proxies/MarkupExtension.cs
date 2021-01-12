@@ -15,11 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-public class MarkupExtension : BaseComponent {
-  internal new static MarkupExtension CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
-    return new MarkupExtension(cPtr, cMemoryOwn);
-  }
-
+public abstract class MarkupExtension : BaseComponent {
   internal MarkupExtension(IntPtr cPtr, bool cMemoryOwn) : base(cPtr, cMemoryOwn) {
   }
 
@@ -30,6 +26,17 @@ public class MarkupExtension : BaseComponent {
   protected MarkupExtension() {
   }
 
+  /// <summary>
+  /// When implemented in a derived class, returns an object that is provided as the value of the
+  /// target property for this markup extension. The method receives a service provider helper that
+  /// can provide services (IProvideValueTarget, IUriContext, IXamlTypeResolver,
+  /// IXamlNamespaceResolver, IXamlNameResolver) for the markup extension.
+  /// </summary>
+  public abstract object ProvideValue(IServiceProvider serviceProvider);
+
+  internal new static IntPtr Extend(string typeName) {
+    return NoesisGUI_PINVOKE.Extend_MarkupExtension(Marshal.StringToHGlobalAnsi(typeName));
+  }
 }
 
 }

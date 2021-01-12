@@ -27,9 +27,15 @@ public class MultiBinding : BindingBase {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
-  public object ProvideValue(object targetObject, DependencyProperty targetProperty) {
-    IntPtr cPtr = ProvideValueHelper(targetObject, targetProperty);
-    return Noesis.Extend.GetProxy(cPtr, true);
+  public override object ProvideValue(IServiceProvider serviceProvider) {
+    IProvideValueTarget valueTarget = serviceProvider as IProvideValueTarget;
+    if (valueTarget != null) {
+      object target = valueTarget.TargetObject;
+      object prop = valueTarget.TargetProperty;
+      IntPtr cPtr = ProvideValueHelper(target, prop as DependencyProperty);
+      return Noesis.Extend.GetProxy(cPtr, true);
+    }
+    return null;
   }
 
   public Noesis.IMultiValueConverter Converter {
@@ -45,8 +51,13 @@ public class MultiBinding : BindingBase {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    registerExtend = false;
-    return NoesisGUI_PINVOKE.new_MultiBinding();
+    if (type == typeof(MultiBinding)) {
+      registerExtend = false;
+      return NoesisGUI_PINVOKE.new_MultiBinding();
+    }
+    else {
+      return base.CreateExtendCPtr(type, out registerExtend);
+    }
   }
 
   public BindingCollection Bindings {
@@ -100,6 +111,9 @@ public class MultiBinding : BindingBase {
     NoesisGUI_PINVOKE.MultiBinding_SetConverterHelper(swigCPtr, Noesis.Extend.GetInstanceHandle(converter));
   }
 
+  internal new static IntPtr Extend(string typeName) {
+    return NoesisGUI_PINVOKE.Extend_MultiBinding(Marshal.StringToHGlobalAnsi(typeName));
+  }
 }
 
 }

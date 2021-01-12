@@ -18,26 +18,34 @@ namespace Noesis
 
 public static class VisualTreeHelper {
   public static DependencyObject GetRoot(DependencyObject reference) {
+    if (reference == null) throw new ArgumentNullException("reference");
     return GetRootHelper(reference);
   }
 
   public static DependencyObject GetParent(DependencyObject reference) {
+    if (reference == null) throw new ArgumentNullException("reference");
     return GetParentHelper(reference);
   }
 
   public static int GetChildrenCount(DependencyObject reference) {
+    if (reference == null) throw new ArgumentNullException("reference");
     return GetChildrenCountHelper(reference);
   }
 
   public static DependencyObject GetChild(DependencyObject reference, int childIndex) {
+    if (reference == null) throw new ArgumentNullException("reference");
+    if (childIndex < 0) throw new ArgumentOutOfRangeException("childIndex");
+    if (childIndex >= GetChildrenCount(reference)) throw new ArgumentOutOfRangeException("childIndex");
     return GetChildHelper(reference, childIndex);
   }
 
   public static HitTestResult HitTest(Visual reference, Point point) {
+    if (reference == null) throw new ArgumentNullException("reference");
     return HitTestHelper(reference, point);
   }
 
   public static void HitTest(Visual reference, HitTestFilterCallback filterCallback, HitTestResultCallback resultCallback, HitTestParameters hitTestParameters) {
+    if (reference == null) throw new ArgumentNullException("reference");
     PointHitTestParameters pointParams = (PointHitTestParameters)hitTestParameters;
     HitTestCallbackInfo info = new HitTestCallbackInfo { Filter = filterCallback, Result = resultCallback };
     int callbacksId = info.GetHashCode();
@@ -95,58 +103,79 @@ public static class VisualTreeHelper {
   #endregion
 
   public static Rect GetContentBounds(Visual visual) {
-    IntPtr ret = NoesisGUI_PINVOKE.VisualTreeHelper_GetContentBounds(Visual.getCPtr(visual));
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Rect>(ret);
-    }
-    else {
-      return new Rect();
+    if (visual == null) throw new ArgumentNullException("visual");
+    {
+      IntPtr ret = NoesisGUI_PINVOKE.VisualTreeHelper_GetContentBounds(Visual.getCPtr(visual));
+      if (ret != IntPtr.Zero) {
+        return Marshal.PtrToStructure<Rect>(ret);
+      }
+      else {
+        return new Rect();
+      }
     }
   }
 
   public static Rect GetDescendantBounds(Visual visual) {
-    IntPtr ret = NoesisGUI_PINVOKE.VisualTreeHelper_GetDescendantBounds(Visual.getCPtr(visual));
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Rect>(ret);
-    }
-    else {
-      return new Rect();
+    if (visual == null) throw new ArgumentNullException("visual");
+    {
+      IntPtr ret = NoesisGUI_PINVOKE.VisualTreeHelper_GetDescendantBounds(Visual.getCPtr(visual));
+      if (ret != IntPtr.Zero) {
+        return Marshal.PtrToStructure<Rect>(ret);
+      }
+      else {
+        return new Rect();
+      }
     }
   }
 
   public static float GetDescendantBoundsMinZ(Visual visual) {
-    float ret = NoesisGUI_PINVOKE.VisualTreeHelper_GetDescendantBoundsMinZ(Visual.getCPtr(visual));
-    return ret;
+    if (visual == null) throw new ArgumentNullException("visual");
+    {
+      float ret = NoesisGUI_PINVOKE.VisualTreeHelper_GetDescendantBoundsMinZ(Visual.getCPtr(visual));
+      return ret;
+    }
   }
 
   public static float GetDescendantBoundsMaxZ(Visual visual) {
-    float ret = NoesisGUI_PINVOKE.VisualTreeHelper_GetDescendantBoundsMaxZ(Visual.getCPtr(visual));
-    return ret;
+    if (visual == null) throw new ArgumentNullException("visual");
+    {
+      float ret = NoesisGUI_PINVOKE.VisualTreeHelper_GetDescendantBoundsMaxZ(Visual.getCPtr(visual));
+      return ret;
+    }
   }
 
   public static Point GetOffset(Visual visual) {
-    IntPtr ret = NoesisGUI_PINVOKE.VisualTreeHelper_GetOffset(Visual.getCPtr(visual));
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Point>(ret);
-    }
-    else {
-      return new Point();
+    if (visual == null) throw new ArgumentNullException("visual");
+    {
+      IntPtr ret = NoesisGUI_PINVOKE.VisualTreeHelper_GetOffset(Visual.getCPtr(visual));
+      if (ret != IntPtr.Zero) {
+        return Marshal.PtrToStructure<Point>(ret);
+      }
+      else {
+        return new Point();
+      }
     }
   }
 
   public static Size GetSize(Visual visual) {
-    IntPtr ret = NoesisGUI_PINVOKE.VisualTreeHelper_GetSize(Visual.getCPtr(visual));
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Size>(ret);
-    }
-    else {
-      return new Size();
+    if (visual == null) throw new ArgumentNullException("visual");
+    {
+      IntPtr ret = NoesisGUI_PINVOKE.VisualTreeHelper_GetSize(Visual.getCPtr(visual));
+      if (ret != IntPtr.Zero) {
+        return Marshal.PtrToStructure<Size>(ret);
+      }
+      else {
+        return new Size();
+      }
     }
   }
 
   public static Geometry GetClip(Visual visual) {
-    IntPtr cPtr = NoesisGUI_PINVOKE.VisualTreeHelper_GetClip(Visual.getCPtr(visual));
-    return (Geometry)Noesis.Extend.GetProxy(cPtr, false);
+    if (visual == null) throw new ArgumentNullException("visual");
+    {
+      IntPtr cPtr = NoesisGUI_PINVOKE.VisualTreeHelper_GetClip(Visual.getCPtr(visual));
+      return (Geometry)Noesis.Extend.GetProxy(cPtr, false);
+    }
   }
 
   private static DependencyObject GetRootHelper(DependencyObject reference) {
@@ -170,8 +199,11 @@ public static class VisualTreeHelper {
   }
 
   private static HitTestResult HitTestHelper(Visual reference, Point point) {
-    HitTestResult ret = new HitTestResult(NoesisGUI_PINVOKE.VisualTreeHelper_HitTestHelper(Visual.getCPtr(reference), ref point), true);
-    return ret;
+    if (reference == null) throw new ArgumentNullException("reference");
+    {
+      HitTestResult ret = new HitTestResult(NoesisGUI_PINVOKE.VisualTreeHelper_HitTestHelper(Visual.getCPtr(reference), ref point), true);
+      return ret;
+    }
   }
 
 }

@@ -150,7 +150,10 @@ namespace NoesisApp
 
         public override void SetWindow(IntPtr window) { }
 
-        public override void BeginRender() { }
+        public override void BeginRender()
+        {
+            wglMakeCurrent(_display, _context);
+        }
 
         public override void EndRender() { }
 

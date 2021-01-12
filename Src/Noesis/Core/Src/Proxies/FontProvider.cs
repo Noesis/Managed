@@ -56,10 +56,18 @@ public class FontProvider : BaseComponent {
   }
 
   /// <summary>
+  /// Notifies of changes to the specified texture file
+  /// </summary>
+  public delegate void FontChangedHandler(string baseUri, string familyName, FontWeight weight,
+    FontStretch stretch, FontStyle style);
+  public event FontChangedHandler FontChanged;
+
+  /// <summary>
   /// Raises XamlChanged event notifying Noesis that it should reload the specified xaml
   /// </summary>
-  protected void RaiseFontChanged(string baseUri, string familyName, FontWeight weight,
+  public void RaiseFontChanged(string baseUri, string familyName, FontWeight weight,
     FontStretch stretch, FontStyle style) {
+    FontChanged?.Invoke(baseUri, familyName, weight, stretch, style);
     Noesis_RaiseFontChanged(swigCPtr, baseUri, familyName, (int)weight, (int)stretch, (int)style);
   }
 

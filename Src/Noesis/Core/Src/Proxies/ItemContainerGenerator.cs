@@ -271,6 +271,14 @@ public class ItemContainerGenerator : BaseComponent, Noesis.IRecyclingItemContai
     return Noesis.Extend.GetProxy(cPtr, false);
   }
 
+  public void StartBatch() {
+    NoesisGUI_PINVOKE.ItemContainerGenerator_StartBatch(swigCPtr);
+  }
+
+  public void StopBatch() {
+    NoesisGUI_PINVOKE.ItemContainerGenerator_StopBatch(swigCPtr);
+  }
+
   public GeneratorStatus Status {
     get {
       GeneratorStatus ret = (GeneratorStatus)NoesisGUI_PINVOKE.ItemContainerGenerator_Status_get(swigCPtr);

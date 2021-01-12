@@ -237,7 +237,7 @@ namespace NoesisApp
             _renderingArgs = new WindowRenderingEventArgs();
         }
 
-        public void Init(Display display, RenderContext renderContext, uint samples, bool ppaa, bool lcd)
+        public void Init(Display display, RenderContext renderContext, uint samples, bool ppaa, bool lcd, bool emulateTouch)
         {
             Display = display;
             RenderContext = renderContext;
@@ -284,6 +284,7 @@ namespace NoesisApp
             _view = GUI.CreateView(this);
             _view.SetFlags(flags);
             _view.SetTessellationMaxPixelError(TessellationMaxPixelError.HighQuality);
+            _view.SetEmulateTouch(emulateTouch);
             _view.Renderer.Init(renderContext.Device);
 
             // Hook to display events

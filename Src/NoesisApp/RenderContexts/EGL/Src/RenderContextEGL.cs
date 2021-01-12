@@ -101,7 +101,10 @@ namespace NoesisApp
             }
         }
 
-        public override void BeginRender() { }
+        public override void BeginRender()
+        {
+            eglMakeCurrent(_display, _surface, _surface, _context);
+        }
 
         public override void EndRender() { }
 

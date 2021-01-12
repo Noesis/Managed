@@ -108,6 +108,8 @@ namespace NoesisApp
 
                 if (_property != null)
                 {
+                    DataBindingHelper.EnsureBindingValue(this, ValueProperty);
+
                     SetPropertyValue();
                 }
             }

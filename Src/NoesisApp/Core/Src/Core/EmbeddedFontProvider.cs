@@ -22,6 +22,15 @@ namespace NoesisApp
 
             // Register Theme font resources
             RegisterFontResources(Theme.Assembly, Theme.Namespace);
+
+            if (_provider != null)
+            {
+                _provider.FontChanged += (string baseUri, string familyName, FontWeight weight,
+                    FontStretch stretch, FontStyle style) =>
+                {
+                    _provider.RaiseFontChanged(baseUri, familyName, weight, stretch, style);
+                };
+            }
         }
 
         private void RegisterFontResources(Assembly assembly, string ns)

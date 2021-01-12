@@ -40,9 +40,16 @@ public class XamlProvider : BaseComponent {
   }
 
   /// <summary>
+  /// Notifies of changes to the specified xaml file
+  /// </summary>
+  public delegate void XamlChangedHandler(string uri);
+  public event XamlChangedHandler XamlChanged;
+
+  /// <summary>
   /// Raises XamlChanged event notifying Noesis that it should reload the specified xaml
   /// </summary>
-  protected void RaiseXamlChanged(string uri) {
+  public void RaiseXamlChanged(string uri) {
+    XamlChanged?.Invoke(uri);
     Noesis_RaiseXamlChanged(swigCPtr, uri);
   }
 

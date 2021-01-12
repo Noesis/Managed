@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-public class RelativeSource : MarkupExtension {
+public sealed class RelativeSource : MarkupExtension {
   internal new static RelativeSource CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
     return new RelativeSource(cPtr, cMemoryOwn);
   }
@@ -25,6 +25,17 @@ public class RelativeSource : MarkupExtension {
 
   internal static HandleRef getCPtr(RelativeSource obj) {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
+  }
+
+  public override object ProvideValue(IServiceProvider serviceProvider) {
+    IProvideValueTarget valueTarget = serviceProvider as IProvideValueTarget;
+    if (valueTarget != null) {
+      object target = valueTarget.TargetObject;
+      object prop = valueTarget.TargetProperty;
+      IntPtr cPtr = ProvideValueHelper(target, prop as DependencyProperty);
+      return Noesis.Extend.GetProxy(cPtr, true);
+    }
+    return null;
   }
 
   public RelativeSource() {
@@ -90,6 +101,11 @@ public class RelativeSource : MarkupExtension {
       int ret = NoesisGUI_PINVOKE.RelativeSource_AncestorLevel_get(swigCPtr);
       return ret;
     } 
+  }
+
+  private IntPtr ProvideValueHelper(object targetObject, DependencyProperty targetProperty) {
+    IntPtr ret = NoesisGUI_PINVOKE.RelativeSource_ProvideValueHelper(swigCPtr, Noesis.Extend.GetInstanceHandle(targetObject), DependencyProperty.getCPtr(targetProperty));
+    return ret;
   }
 
 }

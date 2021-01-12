@@ -15,11 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-public class BindingBase : MarkupExtension {
-  internal new static BindingBase CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
-    return new BindingBase(cPtr, cMemoryOwn);
-  }
-
+public abstract class BindingBase : MarkupExtension {
   internal BindingBase(IntPtr cPtr, bool cMemoryOwn) : base(cPtr, cMemoryOwn) {
   }
 

@@ -108,6 +108,13 @@ namespace NoesisApp
                 else if (!string.IsNullOrEmpty(TargetName))
                 {
                     newTarget = TargetNameResolver;
+
+                    if (newTarget != null)
+                    {
+                        // Remove binding once we have found the TargetName object because keeping it
+                        // stored in this property could create circular references and memory leaks
+                        BindingOperations.ClearBinding(this, TargetNameResolverProperty);
+                    }
                 }
             }
 
@@ -141,7 +148,10 @@ namespace NoesisApp
         static void OnTargetNameResolverChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             TargetedTriggerAction action = (TargetedTriggerAction)d;
-            action.UpdateTarget(action.AssociatedObject);
+            if (BindingOperations.GetBinding(action, TargetNameResolverProperty) != null)
+            {
+                action.UpdateTarget(action.AssociatedObject);
+            }
         }
 
         Type _targetType;

@@ -16,6 +16,14 @@ namespace NoesisApp
             _assembly = assembly;
             _namespace = ns;
             _provider = provider;
+
+            if (_provider != null)
+            {
+                _provider.TextureChanged += (uri) =>
+                {
+                    RaiseTextureChanged(uri);
+                };
+            }
         }
 
         public override Stream OpenStream(string filename)

@@ -98,6 +98,14 @@ namespace Noesis
         {
             Noesis_View_SetProjectionMatrix(CPtr, ref projection);
         }
+
+        /// <summary>
+        /// Indicates if touch input events are emulated by the mouse
+        /// </summary>
+        public void SetEmulateTouch(bool emulate)
+        {
+            Noesis_View_SetEmulateTouch(CPtr, emulate);
+        }
         #endregion
 
         #region Input management
@@ -521,6 +529,9 @@ namespace Noesis
 
         [DllImport(Library.Name)]
         static extern int Noesis_View_SetProjectionMatrix(HandleRef view, ref Matrix4 projection);
+
+        [DllImport(Library.Name)]
+        static extern int Noesis_View_SetEmulateTouch(HandleRef view, bool emulate);
 
         [DllImport(Library.Name)]
         static extern void Noesis_View_Activate(HandleRef view);

@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-public class TemplateBindingExtension : MarkupExtension {
+public sealed class TemplateBindingExtension : MarkupExtension {
   internal new static TemplateBindingExtension CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
     return new TemplateBindingExtension(cPtr, cMemoryOwn);
   }
@@ -27,9 +27,15 @@ public class TemplateBindingExtension : MarkupExtension {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
-  public object ProvideValue(object targetObject, DependencyProperty targetProperty) {
-    IntPtr cPtr = ProvideValueHelper(targetObject, targetProperty);
-    return Noesis.Extend.GetProxy(cPtr, true);
+  public override object ProvideValue(IServiceProvider serviceProvider) {
+    IProvideValueTarget valueTarget = serviceProvider as IProvideValueTarget;
+    if (valueTarget != null) {
+      object target = valueTarget.TargetObject;
+      object prop = valueTarget.TargetProperty;
+      IntPtr cPtr = ProvideValueHelper(target, prop as DependencyProperty);
+      return Noesis.Extend.GetProxy(cPtr, true);
+    }
+    return null;
   }
 
   public TemplateBindingExtension() {

@@ -35,6 +35,7 @@ namespace NoesisApp
             WinApi.WindowClassEx windowClass;
             if (!WinApi.GetClassInfoEx(hInstance, ClassName, out windowClass))
             {
+                IntPtr ClassNameHandle = System.Runtime.InteropServices.Marshal.StringToHGlobalUni(ClassName);
                 windowClass = new WinApi.WindowClassEx
                 {
                     Size = (uint)Noesis.Marshal.SizeOf<WinApi.WindowClassEx>(),
@@ -47,11 +48,13 @@ namespace NoesisApp
                     SmallIconHandle = WinApi.LoadIcon(hInstance, new IntPtr(101)),
                     CursorHandle = IntPtr.Zero,
                     BackgroundBrushHandle = IntPtr.Zero,
-                    MenuName = null,
-                    ClassName = ClassName
+                    MenuName = IntPtr.Zero,
+                    ClassName = ClassNameHandle
                 };
 
                 WinApi.RegisterClassEx(ref windowClass);
+
+                System.Runtime.InteropServices.Marshal.FreeHGlobal(ClassNameHandle);
             }
 
             WinApi.WindowStyles flags;
@@ -1935,8 +1938,8 @@ namespace NoesisApp
                 public IntPtr IconHandle;
                 public IntPtr CursorHandle;
                 public IntPtr BackgroundBrushHandle;
-                public string MenuName;
-                public string ClassName;
+                public IntPtr MenuName;
+                public IntPtr ClassName;
                 public IntPtr SmallIconHandle;
             }
 
