@@ -27,6 +27,11 @@ namespace Noesis
             }
         }
 
+        protected internal void ReplacePointer(IntPtr cPtr)
+        {
+            Init(cPtr, false, false);
+        }
+        
         private void Init(IntPtr cPtr, bool cMemoryOwn, bool registerExtend)
         {
             swigCPtr = new HandleRef(this, cPtr);
