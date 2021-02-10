@@ -11,6 +11,7 @@ namespace NoesisApp
     {
         public FbdevDisplay()
         {
+            _close = false;
             _display = IntPtr.Zero;
 
             _width = (int)Fbdev.GetWidth();
@@ -42,6 +43,11 @@ namespace NoesisApp
         public override int ClientWidth { get { return _width; } }
         public override int ClientHeight { get { return _height; } }
 
+        public override void Close()
+        {
+            _close = true;
+        }
+
         public override void EnterMessageLoop(bool runInBackground)
         {
             bool running = true;
@@ -51,15 +57,19 @@ namespace NoesisApp
             {
                 LibEvdev.HandleEvents();
                 Render?.Invoke(this);
+
+                if (_close)
+                {
+                    bool cancel = false;
+                    Closing?.Invoke(this, ref cancel);
+                    if (!cancel)
+                    {
+                        Closed?.Invoke(this);
+                        running = false;
+                    }
+                    _close = false;
+                }
             }
-        }
-
-        public override void SetSize(int width, int height)
-        {
-        }
-
-        public override void Show()
-        {
         }
         #endregion
 
@@ -105,6 +115,7 @@ namespace NoesisApp
 
         private int _width;
         private int _height;
+        private bool _close;
         #endregion
     }
 }

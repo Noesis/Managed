@@ -34,6 +34,8 @@ namespace NoesisApp
 
         public string StartupUri { get; set; }
 
+        public DateTime StartTime { get; private set; }
+
         public Display Display { get; set; }
 
         public Window MainWindow { get; set; }
@@ -148,10 +150,10 @@ namespace NoesisApp
 
             Display.Show();
 
-            DateTime startTime = DateTime.Now;
+            StartTime = DateTime.Now;
             Display.Render += (d) =>
             {
-                MainWindow.Render((DateTime.Now - startTime).TotalSeconds);
+                MainWindow.Render((DateTime.Now - StartTime).TotalSeconds);
             };
 
             Display.EnterMessageLoop(RunInBackground);

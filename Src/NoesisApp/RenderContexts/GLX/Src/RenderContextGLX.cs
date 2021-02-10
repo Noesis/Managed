@@ -26,6 +26,7 @@ namespace NoesisApp
         private IntPtr _window = IntPtr.Zero;
         private IntPtr _context = IntPtr.Zero;
         private RenderDeviceGL _device;
+        private ImageCapture _imageCapture;
 
         public override void Init(IntPtr display, IntPtr window, uint samples, bool vsync, bool sRGB)
         {
@@ -203,13 +204,16 @@ namespace NoesisApp
             glPixelStorei(GL_PACK_ALIGNMENT, 1);
             glReadPixels(x, y, width, height, GL_RGBA, GL_UNSIGNED_BYTE, src);
 
-            ImageCapture img = new ImageCapture((uint)width, (uint)height);
+            if (_imageCapture == null || _imageCapture.Width != width || _imageCapture.Height != height)
+            {
+                _imageCapture = new ImageCapture((uint)width, (uint)height);
+            }
 
-            byte[] dst = img.Pixels;
+            byte[] dst = _imageCapture.Pixels;
 
             for (int i = 0; i < height; ++i)
             {
-                int dstRow = i * (int)img.Stride;
+                int dstRow = i * (int)_imageCapture.Stride;
                 int srcRow = i * srcStride;
 
                 for (int j = 0; j < width; ++j)
@@ -222,7 +226,7 @@ namespace NoesisApp
                 }
             }
 
-            return img;
+            return _imageCapture;
         }
 
         public override void Swap()

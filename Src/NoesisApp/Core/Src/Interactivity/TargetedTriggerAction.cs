@@ -103,6 +103,12 @@ namespace NoesisApp
                 object targetObject = TargetObject;
                 if (targetObject != null)
                 {
+                    if (targetObject.GetType().IsValueType)
+                    {
+                        throw new InvalidOperationException(string.Format(
+                            "Value type not supported for {0}.TargetObject (value was '{1}')",
+                            GetType(), targetObject.ToString()));
+                    }
                     newTarget = targetObject;
                 }
                 else if (!string.IsNullOrEmpty(TargetName))

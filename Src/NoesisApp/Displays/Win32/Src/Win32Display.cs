@@ -190,16 +190,10 @@ namespace NoesisApp
 
         public override void SetWindowState(WindowState windowState)
         {
-            WinApi.WindowStyles flags = (WinApi.WindowStyles)WinApi.GetWindowLong(NativeWindow,
-                (int)WinApi.WindowLongFlags.GWL_STYLE);
-            WinApi.WindowExStyles flagsEx = (WinApi.WindowExStyles)WinApi.GetWindowLong(NativeWindow,
-                (int)WinApi.WindowLongFlags.GWL_EXSTYLE);
-
-            BuildStyleFlags(GetStyle(flags, flagsEx), windowState, GetResizeMode(flags),
-                GetShowInTaskbar(flagsEx), GetTopmost(flagsEx), GetAllowFileDrop(flagsEx),
-                out flags, out flagsEx);
-
-            SetStyleFlags(flags, flagsEx);
+            if (_visible)
+            {
+                Show(windowState);
+            }
         }
 
         public override void SetResizeMode(ResizeMode resizeMode)
@@ -282,7 +276,14 @@ namespace NoesisApp
             WinApi.WindowStyles flags = (WinApi.WindowStyles)WinApi.GetWindowLong(NativeWindow,
                 (int)WinApi.WindowLongFlags.GWL_STYLE);
 
-            switch (GetState(flags))
+            Show(GetState(flags));
+
+            _visible = true;
+        }
+
+        private void Show(WindowState state)
+        {
+            switch (state)
             {
                 case WindowState.Maximized:
                 {
@@ -1196,6 +1197,7 @@ namespace NoesisApp
         private Noesis.Cursor _cursor = Noesis.Cursor.Arrow;
         private WinApi.GetDpiForMonitor _getDpiForMonitor = null;
         private IntPtr _shcore = IntPtr.Zero;
+        private bool _visible = false;
         #endregion
 
         private static class WinApi

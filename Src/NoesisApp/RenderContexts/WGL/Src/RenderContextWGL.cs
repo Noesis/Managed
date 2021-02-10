@@ -26,6 +26,7 @@ namespace NoesisApp
         private IntPtr _window = IntPtr.Zero;
         private IntPtr _context = IntPtr.Zero;
         private RenderDeviceGL _device;
+        private ImageCapture _imageCapture;
 
         public override void Init(IntPtr display, IntPtr window, uint samples, bool vsync, bool sRGB)
         {
@@ -192,26 +193,22 @@ namespace NoesisApp
             glPixelStorei(GL_PACK_ALIGNMENT, 1);
             glReadPixels(x, y, width, height, GL_RGBA, GL_UNSIGNED_BYTE, src);
 
-            ImageCapture img = new ImageCapture((uint)width, (uint)height);
+            if (_imageCapture == null || _imageCapture.Width != width || _imageCapture.Height != height)
+            {
+                _imageCapture = new ImageCapture((uint)width, (uint)height);
+            }
 
-            byte[] dst = img.Pixels;
+            byte[] dst = _imageCapture.Pixels;
 
             for (int i = 0; i < height; ++i)
             {
-                int dstRow = i * (int)img.Stride;
-                int srcRow = i * srcStride;
+                int dstRow = i * (int)_imageCapture.Stride;
+                int srcRow = (height - i - 1) * srcStride;
 
-                for (int j = 0; j < width; ++j)
-                {
-                    // RGBA -> BGRA
-                    dst[dstRow + 4 * j + 2] = src[srcRow + 4 * j + 0];
-                    dst[dstRow + 4 * j + 1] = src[srcRow + 4 * j + 1];
-                    dst[dstRow + 4 * j + 0] = src[srcRow + 4 * j + 2];
-                    dst[dstRow + 4 * j + 3] = src[srcRow + 4 * j + 3];
-                }
+                Array.Copy(src, srcRow, dst, dstRow, width * 4);
             }
 
-            return img;
+            return _imageCapture;
         }
 
         public override void Resize() { }

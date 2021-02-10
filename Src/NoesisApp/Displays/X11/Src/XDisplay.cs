@@ -30,8 +30,8 @@ namespace NoesisApp
 
             if (fullScreen)
             {
-                uint[] data = { XInternAtom(_display, "_NET_WM_STATE_FULLSCREEN", true) };
-                uint property = XInternAtom(_display, "_NET_WM_STATE", false);
+                IntPtr[] data = { XInternAtom(_display, "_NET_WM_STATE_FULLSCREEN", true) };
+                IntPtr property = XInternAtom(_display, "_NET_WM_STATE", false);
 
                 XChangeProperty(_display, (IntPtr)_window, property, 4 /*XA_ATOM*/, 32, 0 /*PropModeReplace*/, data, 1);
             }
@@ -89,8 +89,37 @@ namespace NoesisApp
             }
         }
 
+        public override void SetSize(int width, int height)
+        {
+            XWindowAttributes attr = new XWindowAttributes();
+            XGetWindowAttributes(_display, _window, out attr);
+            XResizeWindow(_display, _window, (uint)(width + attr.border_width), (uint)(height + attr.border_width));
+        }
+
+        public override void Show()
+        {
+            XMapWindow(_display, _window);
+            XRaiseWindow(_display, _window);
+        }
+
+        public override void Close()
+        {
+            XClientMessageEvent ev = new XClientMessageEvent();
+            ev.type = (int)Event.ClientMessage;
+            ev.window = _window;
+            ev.message_type = XInternAtom(_display, "WM_PROTOCOLS", true);
+            ev.format = 32;
+            ev.l0 = XInternAtom(_display, "WM_DELETE_WINDOW", false);
+            ev.l1 = IntPtr.Zero; // CurrentTime
+
+            XSendEvent(_display, _window, false, EventMask.NoEventMask, ref ev);
+        }
+
         public override void EnterMessageLoop(bool runInBackground)
         {
+            IntPtr wmDeleteWindow = XInternAtom(_display, "WM_DELETE_WINDOW", false);
+            XSetWMProtocols(_display, _window, new IntPtr[] { wmDeleteWindow }, 1);
+
             IntPtr e = System.Runtime.InteropServices.Marshal.AllocHGlobal(24 * sizeof(long));
             bool running = true;
             while (running)
@@ -110,7 +139,17 @@ namespace NoesisApp
                     {
                         case Event.ClientMessage:
                         {
-                            running = false;
+                            XClientMessageEvent clientEvent = (XClientMessageEvent)System.Runtime.InteropServices.Marshal.PtrToStructure(e, typeof(XClientMessageEvent));
+                            if (clientEvent.l0 == wmDeleteWindow)
+                            {
+                                bool cancel = false;
+                                Closing?.Invoke(this, ref cancel);
+                                if (!cancel)
+                                {
+                                    Closed?.Invoke(this);
+                                    running = false;
+                                }
+                            }
                             break;
                         }
                         case Event.ConfigureNotify:
@@ -259,19 +298,8 @@ namespace NoesisApp
                 Render?.Invoke(this);
             }
             System.Runtime.InteropServices.Marshal.FreeHGlobal(e);
-        }
 
-        public override void SetSize(int width, int height)
-        {
-            XWindowAttributes attr = new XWindowAttributes();
-            XGetWindowAttributes(_display, _window, out attr);
-            XResizeWindow(_display, _window, (uint)(width + attr.border_width), (uint)(height + attr.border_width));
-        }
-
-        public override void Show()
-        {
-            XMapWindow(_display, _window);
-            XRaiseWindow(_display, _window);
+            XCloseDisplay(_display);
         }
         #endregion
 
@@ -602,6 +630,23 @@ namespace NoesisApp
             public bool same_screen;
         }
 
+        [StructLayout(LayoutKind.Sequential, Size = (24 * sizeof(long)))]
+        public struct XClientMessageEvent
+        {
+            public int type;            /* ClientMessage */
+            public IntPtr serial;       /* # of last request processed by server */
+            public bool send_event;     /* true if this came from a SendEvent request */
+            public IntPtr display;      /* Display the event was read from */
+            public IntPtr window;
+            public IntPtr message_type;
+            public int format;
+            public IntPtr l0;             /* data.l[0] */
+            public IntPtr l1;             /* data.l[1] */
+            public IntPtr l2;             /* data.l[2] */
+            public IntPtr l3;             /* data.l[3] */
+            public IntPtr l4;             /* data.l[4] */
+        }
+
         [StructLayout(LayoutKind.Sequential)]
         public struct XSetWindowAttributes
         {
@@ -779,6 +824,9 @@ namespace NoesisApp
         public static extern IntPtr XOpenDisplay(string display);
 
         [DllImport("libX11.so.6")]
+        public static extern int XCloseDisplay(IntPtr display);
+
+        [DllImport("libX11.so.6")]
         public static extern int XDefaultScreen(IntPtr display);
 
         [DllImport("libX11.so.6")]
@@ -803,7 +851,13 @@ namespace NoesisApp
         public static extern Status XRaiseWindow(IntPtr display, IntPtr window);
 
         [DllImport("libX11.so.6")]
+        public static extern Status XSetWMProtocols(IntPtr display, IntPtr window, IntPtr[] protocols, int count);
+
+        [DllImport("libX11.so.6")]
         public static extern int XPending(IntPtr display);
+
+        [DllImport("libX11.so.6")]
+        public static extern Status XSendEvent(IntPtr display, IntPtr windoe, bool propagate, EventMask event_mask, ref XClientMessageEvent event_send);
 
         [DllImport("libX11.so.6")]
         public static extern Status XNextEvent(IntPtr display, IntPtr event_return);
@@ -821,10 +875,10 @@ namespace NoesisApp
         public static extern KeySym XLookupKeysym(ref XKeyEvent key_event, int index);
 
         [DllImport("libX11.so.6")]
-        public static extern uint XInternAtom(IntPtr display, string atom_name, bool only_if_exists);
+        public static extern IntPtr XInternAtom(IntPtr display, string atom_name, bool only_if_exists);
 
         [DllImport("libX11.so.6")]
-        public static extern int XChangeProperty(IntPtr display, IntPtr window, uint property, uint type, int format, int mode, uint[] data, int nelements);
+        public static extern int XChangeProperty(IntPtr display, IntPtr window, IntPtr property, uint type, int format, int mode, IntPtr[] data, int nelements);
 
         [DllImport("libX11.so.6")]
         public static extern IntPtr XOpenIM(IntPtr display, IntPtr db, string res_name, string res_class);

@@ -8,6 +8,7 @@ namespace NoesisApp
     {
         public GbmDisplay(string drmDevice)
         {
+            _close = false;
             _drmFd = LibC.Open(drmDevice, LibC.O_RDWR);
 
             IntPtr resourcesPtr = Drm.ModeGetResources(_drmFd);
@@ -62,13 +63,6 @@ namespace NoesisApp
             _gbmSurface = Gbm.SurfaceCreate(_gbmDevice, (uint)_width, (uint)_height, Drm.FORMAT_ARGB8888, Gbm.BO_USE_SCANOUT | Gbm.BO_USE_RENDERING);
 
             _gbmBoToDrmFb = new Dictionary<IntPtr, uint>();
-
-            LibEvdev.KeyDown += OnKeyDown;
-            LibEvdev.KeyUp += OnKeyUp;
-
-            LibEvdev.TouchDown += OnTouchDown;
-            LibEvdev.TouchUp += OnTouchUp;
-            LibEvdev.TouchMove += OnTouchMove;
         }
 
         #region Display overrides
@@ -77,6 +71,16 @@ namespace NoesisApp
 
         public override int ClientWidth { get { return _width; } }
         public override int ClientHeight { get { return _height; } }
+
+        public override void Show()
+        {
+            SetCrtc();
+        }
+
+        public override void Close()
+        {
+            _close = true;
+        }
 
         private uint GetFbForBo(IntPtr bo)
         {
@@ -107,12 +111,43 @@ namespace NoesisApp
 
         public override void EnterMessageLoop(bool runInBackground)
         {
+            LibEvdev.KeyDown += OnKeyDown;
+            LibEvdev.KeyUp += OnKeyUp;
+
+            LibEvdev.TouchDown += OnTouchDown;
+            LibEvdev.TouchUp += OnTouchUp;
+            LibEvdev.TouchMove += OnTouchMove;
+
             bool running = true;
+            while (running)
+            {
+                LibEvdev.HandleEvents();
+                Render?.Invoke(this);
+
+                PageFlip();
+
+                if (_close)
+                {
+                    bool cancel = false;
+                    Closing?.Invoke(this, ref cancel);
+                    if (!cancel)
+                    {
+                        Closed?.Invoke(this);
+                        running = false;
+                    }
+                    _close = false;
+                }
+            }
+        }
+        #endregion
+
+        public void SetCrtc()
+        {
             SizeChanged?.Invoke(this, _width, _height);
             Activated?.Invoke(this);
 
-            IntPtr bo = Gbm.SurfaceLockFrontBuffer(_gbmSurface);
-            uint fb = GetFbForBo(bo);
+            _bo = Gbm.SurfaceLockFrontBuffer(_gbmSurface);
+            uint fb = GetFbForBo(_bo);
             IntPtr connectors = System.Runtime.InteropServices.Marshal.AllocHGlobal(sizeof(uint));
             System.Runtime.InteropServices.Marshal.WriteInt32(connectors, (int)_drmConnectorId);
             int rc = Drm.ModeSetCrtc(_drmFd, _drmEncoderCrtcId, fb, 0, 0, connectors, 1, ref _drmMode);
@@ -121,42 +156,30 @@ namespace NoesisApp
             {
                 throw new Exception("Failed to create DRM Mode");
             }
+        }
 
-            while (running)
+        public void PageFlip()
+        {
+            IntPtr bo = Gbm.SurfaceLockFrontBuffer(_gbmSurface);
+            uint fb = GetFbForBo(bo);
+
+            Drm.ModePageFlip(_drmFd, _drmEncoderCrtcId, fb, Drm.MODE_PAGE_FLIP_EVENT, IntPtr.Zero);
+
+            LibC.PollFd fd = new LibC.PollFd();
+            fd.fd = _drmFd;
+            fd.events = LibC.POLLIN | LibC.POLLPRI;
+            LibC.PollFd[] fds = new LibC.PollFd[] { fd };
+            LibC.Poll(fds, -1);
+            Drm.EventContext evctx = new Drm.EventContext();
+            evctx.version = 2;
+            Drm.HandleEvent(_drmFd, ref evctx);
+
+            if (_bo != IntPtr.Zero)
             {
-                LibEvdev.HandleEvents();
-                Render?.Invoke(this);
-
-                IntPtr prevBo = bo;
-                bo = Gbm.SurfaceLockFrontBuffer(_gbmSurface);
-                fb = GetFbForBo(bo);
-
-                Drm.ModePageFlip(_drmFd, _drmEncoderCrtcId, fb, Drm.MODE_PAGE_FLIP_EVENT, IntPtr.Zero);
-
-                LibC.PollFd fd = new LibC.PollFd();
-                fd.fd = _drmFd;
-                fd.events = LibC.POLLIN | LibC.POLLPRI;
-                LibC.PollFd[] fds = new LibC.PollFd[] { fd };
-                LibC.Poll(fds, -1);
-                Drm.EventContext evctx = new Drm.EventContext();
-                evctx.version = 2;
-                Drm.HandleEvent(_drmFd, ref evctx);
-
-                if (prevBo != IntPtr.Zero)
-                {
-                    Gbm.SurfaceReleaseBuffer(_gbmSurface, prevBo);
-                }
+                Gbm.SurfaceReleaseBuffer(_gbmSurface, _bo);
             }
+            _bo = bo;
         }
-
-        public override void SetSize(int width, int height)
-        {
-        }
-
-        public override void Show()
-        {
-        }
-        #endregion
 
         #region Input events
         private void OnKeyDown(Key key)
@@ -188,6 +211,7 @@ namespace NoesisApp
         #region Private members
         private int _width;
         private int _height;
+        private bool _close;
 
         private int _drmFd;
         private uint _drmConnectorId;
@@ -196,6 +220,7 @@ namespace NoesisApp
 
         private IntPtr _gbmDevice;
         private IntPtr _gbmSurface;
+        private IntPtr _bo;
 
         private Dictionary<IntPtr, uint> _gbmBoToDrmFb;
         #endregion
