@@ -51,6 +51,11 @@ public class ManipulationDeltaEventArgs : InputEventArgs {
     }
   }
 
+  public ManipulationDeltaEventArgs(object source, RoutedEvent ev, Visual container, Point origin,
+    ManipulationDelta delta, ManipulationDelta cumulative, ManipulationVelocities velocities, bool isInertial)
+    : this(CreateHelper(source, ev, container, origin, delta, cumulative, velocities, isInertial), true) {
+  }
+
   public UIElement ManipulationContainer {
     get {
       return GetManipulationContainerHelper();
@@ -101,7 +106,9 @@ public class ManipulationDeltaEventArgs : InputEventArgs {
     } 
   }
 
-  public ManipulationDeltaEventArgs(object source, RoutedEvent arg1, Visual container, Point origin, ManipulationDelta delta, ManipulationDelta cumulative, ManipulationVelocities velocities, bool isInertial) : this(NoesisGUI_PINVOKE.new_ManipulationDeltaEventArgs(Noesis.Extend.GetInstanceHandle(source), RoutedEvent.getCPtr(arg1), Visual.getCPtr(container), ref origin, ManipulationDelta.getCPtr(delta), ManipulationDelta.getCPtr(cumulative), ManipulationVelocities.getCPtr(velocities), isInertial), true) {
+  private static IntPtr CreateHelper(object source, RoutedEvent ev, Visual container, Point origin, ManipulationDelta delta, ManipulationDelta cumulative, ManipulationVelocities velocities, bool isInertial) {
+    IntPtr ret = NoesisGUI_PINVOKE.ManipulationDeltaEventArgs_CreateHelper(Noesis.Extend.GetInstanceHandle(source), RoutedEvent.getCPtr(ev), Visual.getCPtr(container), ref origin, ManipulationDelta.getCPtr(delta), ManipulationDelta.getCPtr(cumulative), ManipulationVelocities.getCPtr(velocities), isInertial);
+    return ret;
   }
 
   public bool Cancel() {

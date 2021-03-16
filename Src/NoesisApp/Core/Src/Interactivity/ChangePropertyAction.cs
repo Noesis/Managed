@@ -1,6 +1,7 @@
 ﻿using Noesis;
 using System;
 using System.ComponentModel;
+using System.Globalization;
 using System.Reflection;
 
 namespace NoesisApp
@@ -169,7 +170,7 @@ namespace NoesisApp
                 {
                     if (Value != null)
                     {
-                        _convertedValue = _converter.ConvertFrom(Value);
+                        _convertedValue = _converter.ConvertFrom(null, CultureInfo.InvariantCulture, Value);
                     }
                 }
                 catch (Exception) { }

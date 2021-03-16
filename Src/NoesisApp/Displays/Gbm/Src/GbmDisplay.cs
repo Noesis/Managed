@@ -72,11 +72,6 @@ namespace NoesisApp
         public override int ClientWidth { get { return _width; } }
         public override int ClientHeight { get { return _height; } }
 
-        public override void Show()
-        {
-            SetCrtc();
-        }
-
         public override void Close()
         {
             _close = true;
@@ -107,6 +102,16 @@ namespace NoesisApp
             }
 
             return fb;
+        }
+
+        private bool PollReadable(int timeoutMs)
+        {
+            LibC.PollFd fd = new LibC.PollFd();
+            fd.fd = _drmFd;
+            fd.events = LibC.POLLIN | LibC.POLLPRI;
+            LibC.PollFd[] fds = new LibC.PollFd[] { fd };
+            int rc = LibC.Poll(fds, timeoutMs);
+            return rc > 0;
         }
 
         public override void EnterMessageLoop(bool runInBackground)
@@ -160,24 +165,27 @@ namespace NoesisApp
 
         public void PageFlip()
         {
+            if (PollReadable(1000))
+            {
+                Drm.EventContext evctx = new Drm.EventContext();
+                evctx.version = 2;
+                Drm.HandleEvent(_drmFd, ref evctx);
+                Gbm.SurfaceReleaseBuffer(_gbmSurface, _bo);
+            }
+            else
+            {
+                if (_bo != IntPtr.Zero)
+                {
+                    Gbm.SurfaceReleaseBuffer(_gbmSurface, _bo);
+                }
+                SetCrtc();
+            }
+            
             IntPtr bo = Gbm.SurfaceLockFrontBuffer(_gbmSurface);
             uint fb = GetFbForBo(bo);
 
             Drm.ModePageFlip(_drmFd, _drmEncoderCrtcId, fb, Drm.MODE_PAGE_FLIP_EVENT, IntPtr.Zero);
 
-            LibC.PollFd fd = new LibC.PollFd();
-            fd.fd = _drmFd;
-            fd.events = LibC.POLLIN | LibC.POLLPRI;
-            LibC.PollFd[] fds = new LibC.PollFd[] { fd };
-            LibC.Poll(fds, -1);
-            Drm.EventContext evctx = new Drm.EventContext();
-            evctx.version = 2;
-            Drm.HandleEvent(_drmFd, ref evctx);
-
-            if (_bo != IntPtr.Zero)
-            {
-                Gbm.SurfaceReleaseBuffer(_gbmSurface, _bo);
-            }
             _bo = bo;
         }
 

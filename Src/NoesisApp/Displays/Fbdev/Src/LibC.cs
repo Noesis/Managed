@@ -34,7 +34,7 @@ namespace NoesisApp
             {
                 Marshal.StructureToPtr(fds[i], IntPtr.Add(fds_, i * SizeOfPollFd), false);
             }
-            int ret = poll(fds_, (ulong)nfds, -1);
+            int ret = poll(fds_, (ulong)nfds, timeout);
             for (int i = 0; i < nfds; ++i)
             {
                 fds[i] = Marshal.PtrToStructure<PollFd>(IntPtr.Add(fds_, i * SizeOfPollFd));

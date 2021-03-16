@@ -36,6 +36,7 @@ namespace NoesisApp
         private IntPtr _surface = IntPtr.Zero;
         private RenderDeviceGL _device;
         private ImageCapture _imageCapture;
+        private byte[] _imageCapturePixels;
 
         public override void Init(IntPtr display, IntPtr window, uint samples, bool vsync, bool sRGB)
         {
@@ -137,32 +138,31 @@ namespace NoesisApp
             int y = viewport[1];
             int width = viewport[2];
             int height = viewport[3];
-
-            byte[] src = new byte[width * height * 4];
             int srcStride = width * 4;
-
-            glPixelStorei(GL_PACK_ALIGNMENT, 1);
-            glReadPixels(x, y, width, height, GL_RGBA, GL_UNSIGNED_BYTE, src);
 
             if (_imageCapture == null || _imageCapture.Width != width || _imageCapture.Height != height)
             {
                 _imageCapture = new ImageCapture((uint)width, (uint)height);
+                _imageCapturePixels = new byte[width * height * 4];
             }
+
+            glPixelStorei(GL_PACK_ALIGNMENT, 1);
+            glReadPixels(x, y, width, height, GL_RGBA, GL_UNSIGNED_BYTE, _imageCapturePixels);
 
             byte[] dst = _imageCapture.Pixels;
 
             for (int i = 0; i < height; ++i)
             {
                 int dstRow = i * (int)_imageCapture.Stride;
-                int srcRow = i * srcStride;
+                int srcRow = (height - i - 1) * srcStride;
 
-                for (int j = 0; j < width; ++j)
+                for (int j = 0; j < width; j++)
                 {
                     // RGBA -> BGRA
-                    dst[dstRow + 4 * j + 2] = src[srcRow + 4 * j + 0];
-                    dst[dstRow + 4 * j + 1] = src[srcRow + 4 * j + 1];
-                    dst[dstRow + 4 * j + 0] = src[srcRow + 4 * j + 2];
-                    dst[dstRow + 4 * j + 3] = src[srcRow + 4 * j + 3];
+                    dst[dstRow + 4 * j + 2] = _imageCapturePixels[srcRow + 4 * j + 0];
+                    dst[dstRow + 4 * j + 1] = _imageCapturePixels[srcRow + 4 * j + 1];
+                    dst[dstRow + 4 * j + 0] = _imageCapturePixels[srcRow + 4 * j + 2];
+                    dst[dstRow + 4 * j + 3] = _imageCapturePixels[srcRow + 4 * j + 3];
                 }
             }
 

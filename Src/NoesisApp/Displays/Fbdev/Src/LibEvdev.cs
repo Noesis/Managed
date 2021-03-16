@@ -37,6 +37,9 @@ namespace NoesisApp
             }
             _mtSlotXs = new float[MaxSlots];
             _mtSlotYs = new float[MaxSlots];
+            _touchDown = new bool[MaxSlots];
+            _touchUp = new bool[MaxSlots];
+            _touchMove = new bool[MaxSlots];
         }
 
         public static void HandleEvents()
@@ -761,7 +764,7 @@ namespace NoesisApp
                 {
                     KeyUp?.Invoke(key);
                 }
-                else if (ev.value == 1)
+                else if (ev.value == 1 || ev.value == 2)
                 {
                     KeyDown?.Invoke(key);
                 }
@@ -781,28 +784,50 @@ namespace NoesisApp
                 switch (ev.code)
                 {
                     case ABS_MT_TRACKING_ID:
-                    {
-                        if (_mtSlotIds[_currentMtSlot] != ev.value)
+                        if (ev.value != -1)
                         {
-                            TouchUp?.Invoke(_mtSlotXs[_currentMtSlot], _mtSlotYs[_currentMtSlot], (ulong)_mtSlotIds[_currentMtSlot]);
                             _mtSlotIds[_currentMtSlot] = ev.value;
+                            _touchDown[_currentMtSlot] = true;
                         }
-                        if (_mtSlotIds[_currentMtSlot] != -1)
+                        else
                         {
-                            TouchDown?.Invoke(_mtSlotXs[_currentMtSlot], _mtSlotYs[_currentMtSlot], (ulong)_mtSlotIds[_currentMtSlot]);
+                            _touchUp[_currentMtSlot] = true;
                         }
                         break;
-                    }
                     case ABS_MT_POSITION_X:
                         _mtSlotXs[_currentMtSlot] = (float)ev.value / 4096.0f;
-                        TouchMove?.Invoke(_mtSlotXs[_currentMtSlot], _mtSlotYs[_currentMtSlot], (ulong)_mtSlotIds[_currentMtSlot]);
+                        _touchMove[_currentMtSlot] = true;
                         break;
                     case ABS_MT_POSITION_Y:
                         _mtSlotYs[_currentMtSlot] = (float)ev.value / 4096.0f;
-                        TouchMove?.Invoke(_mtSlotXs[_currentMtSlot], _mtSlotYs[_currentMtSlot], (ulong)_mtSlotIds[_currentMtSlot]);
+                        _touchMove[_currentMtSlot] = true;
                         break;
                     default:
                         break;
+                }
+            }
+        }
+
+        private static void EmitEvents()
+        {
+            for (int i = 0; i < MaxSlots; ++i)
+            {
+                if (_touchDown[i])
+                {
+                    TouchDown?.Invoke(_mtSlotXs[i], _mtSlotYs[i], (ulong)_mtSlotIds[i]);
+                    _touchDown[i] = false;
+                    _touchMove[i] = false;
+                }
+                if (_touchUp[i])
+                {
+                    TouchUp?.Invoke(_mtSlotXs[i], _mtSlotYs[i], (ulong)_mtSlotIds[i]);
+                    _touchUp[i] = false;
+                    _touchMove[i] = false;
+                }
+                if (_touchMove[i])
+                {
+                    TouchMove?.Invoke(_mtSlotXs[i], _mtSlotYs[i], (ulong)_mtSlotIds[i]);
+                    _touchMove[i] = false;
                 }
             }
         }
@@ -816,6 +841,9 @@ namespace NoesisApp
                     break;
                 case EV_ABS:
                     HandleTouchEvent(ev);
+                    break;
+                case EV_SYN:
+                    EmitEvents();
                     break;
             }
         }
@@ -958,6 +986,9 @@ namespace NoesisApp
         private static int[] _mtSlotIds;
         private static float[] _mtSlotXs;
         private static float[] _mtSlotYs;
+        private static bool[] _touchMove;
+        private static bool[] _touchDown;
+        private static bool[] _touchUp;
         #endregion
     }
 }

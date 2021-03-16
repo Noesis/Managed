@@ -2,7 +2,7 @@
 
 namespace Noesis
 {
-    internal static class UriHelper
+    public static class UriHelper
     {
         private const string UriSchemePack = "pack";
 

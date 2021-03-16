@@ -135,7 +135,14 @@ namespace NoesisApp
                         int dstRow = i * (int)_imageCapture.Stride;
                         int srcRow = i * data.RowPitch;
 
-                        Noesis.Marshal.Copy(src + srcRow, dst, dstRow, desc.Width * 4);
+                        for (int j = 0; j < desc.Width; j++)
+                        {
+                            // RGBA -> BGRA
+                            dst[dstRow + 4 * j + 2] = Noesis.Marshal.ReadByte(src, srcRow + 4 * j + 0);
+                            dst[dstRow + 4 * j + 1] = Noesis.Marshal.ReadByte(src, srcRow + 4 * j + 1);
+                            dst[dstRow + 4 * j + 0] = Noesis.Marshal.ReadByte(src, srcRow + 4 * j + 2);
+                            dst[dstRow + 4 * j + 3] = Noesis.Marshal.ReadByte(src, srcRow + 4 * j + 3);
+                        }
                     }
 
                     _dev.ImmediateContext.UnmapSubresource(dest, 0);

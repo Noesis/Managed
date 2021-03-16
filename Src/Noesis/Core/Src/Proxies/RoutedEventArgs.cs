@@ -18,7 +18,7 @@ namespace Noesis
 public class RoutedEventArgs : EventArgs {
   private HandleRef swigCPtr;
 
-  internal RoutedEventArgs(IntPtr cPtr, bool cMemoryOwn) : base(cPtr, cMemoryOwn) {
+  internal protected RoutedEventArgs(IntPtr cPtr, bool cMemoryOwn) : base(cPtr, cMemoryOwn) {
     swigCPtr = new HandleRef(this, cPtr);
   }
 

@@ -93,4 +93,48 @@ namespace NoesisGUIExtensions
             }
         }
     }
+
+    public class PlayMediaAction : TargetedTriggerAction<MediaElement>
+    {
+        protected override void Invoke(object o)
+        {
+            if (this.Target != null)
+            {
+                this.Target.Play();
+            }
+        }
+    }
+
+    public class PauseMediaAction : TargetedTriggerAction<MediaElement>
+    {
+        protected override void Invoke(object o)
+        {
+            if (this.Target != null)
+            {
+                this.Target.Pause();
+            }
+        }
+    }
+
+    public class RewindMediaAction : TargetedTriggerAction<MediaElement>
+    {
+        protected override void Invoke(object o)
+        {
+            if (this.Target != null)
+            {
+                this.Target.Position = TimeSpan.Zero;
+            }
+        }
+    }
+
+    public class StopMediaAction : TargetedTriggerAction<MediaElement>
+    {
+        protected override void Invoke(object o)
+        {
+            if (this.Target != null)
+            {
+                this.Target.Stop();
+            }
+        }
+    }
 }

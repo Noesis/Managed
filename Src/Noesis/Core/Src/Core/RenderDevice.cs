@@ -322,10 +322,10 @@ namespace Noesis
         static extern IntPtr Noesis_RenderDevice_CreateMTL(IntPtr device, bool sRGB);
 
         [DllImport(Library.Name)]
-        static extern IntPtr Noesis_RenderDeviceMTL_SetOffScreenCommandBuffer(HandleRef renderDevice, IntPtr commandBuffer);
+        static extern void Noesis_RenderDeviceMTL_SetOffScreenCommandBuffer(HandleRef renderDevice, IntPtr commandBuffer);
 
         [DllImport(Library.Name)]
-        static extern IntPtr Noesis_RenderDeviceMTL_SetOnScreenEncoder(HandleRef renderDevice, IntPtr encoder, uint colorFormat, uint stencilFormat, uint sampleCount);
+        static extern void Noesis_RenderDeviceMTL_SetOnScreenEncoder(HandleRef renderDevice, IntPtr encoder, uint colorFormat, uint stencilFormat, uint sampleCount);
         #endregion
     }
 }

@@ -90,6 +90,42 @@ namespace Noesis
         }
 
         /// <summary>
+        /// As Tapped and Holding events are mutually exclusive, this threshold indicates when an
+        /// interaction should start a Holding event. By default it is 500 milliseconds
+        /// </summary>
+        public void SetHoldingTimeThreshold(uint milliseconds)
+        {
+            Noesis_View_SetHoldingTimeThreshold(CPtr, milliseconds);
+        }
+
+        /// <summary>
+        /// Minimum distance, in pixels, between first interaction and last interaction to consider
+        /// valid Tapped or Holding events. By default it is 10 pixels
+        /// </summary>
+        public void SetHoldingDistanceThreshold(uint pixels)
+        {
+            Noesis_View_SetHoldingDistanceThreshold(CPtr, pixels);
+        }
+
+        /// <summary>
+        /// The maximum delay required for two consecutives Tapped events to be interpreted as
+        /// a DoubleTapped event. By default it is 500 milliseconds
+        /// </summary>
+        public void SetDoubleTapTimeThreshold(uint milliseconds)
+        {
+            Noesis_View_SetDoubleTapTimeThreshold(CPtr, milliseconds);
+        }
+
+        /// <summary>
+        /// Minimum distance, in pixels, between first interaction and last interaction to consider
+        /// a DoubleTapped event. By default it is 10 pixels
+        /// </summary>
+        public void SetDoubleTapDistanceThreshold(uint pixels)
+        {
+            Noesis_View_SetDoubleTapDistanceThreshold(CPtr, pixels);
+        }
+
+        /// <summary>
         /// Sets the projection matrix that transforms the coordinates of each primitive to a
         /// non-normalized homogeneous space where (0, 0) is at the lower-left corner and
         /// (width, height) is at the upper-right corner after projection
@@ -528,10 +564,22 @@ namespace Noesis
         static extern int Noesis_View_GetFlags(HandleRef view);
 
         [DllImport(Library.Name)]
-        static extern int Noesis_View_SetProjectionMatrix(HandleRef view, ref Matrix4 projection);
+        static extern void Noesis_View_SetHoldingTimeThreshold(HandleRef view, uint milliseconds);
 
         [DllImport(Library.Name)]
-        static extern int Noesis_View_SetEmulateTouch(HandleRef view, bool emulate);
+        static extern void Noesis_View_SetHoldingDistanceThreshold(HandleRef view, uint pixels);
+
+        [DllImport(Library.Name)]
+        static extern void Noesis_View_SetDoubleTapTimeThreshold(HandleRef view, uint milliseconds);
+
+        [DllImport(Library.Name)]
+        static extern void Noesis_View_SetDoubleTapDistanceThreshold(HandleRef view, uint pixels);
+
+        [DllImport(Library.Name)]
+        static extern void Noesis_View_SetProjectionMatrix(HandleRef view, ref Matrix4 projection);
+
+        [DllImport(Library.Name)]
+        static extern void Noesis_View_SetEmulateTouch(HandleRef view, bool emulate);
 
         [DllImport(Library.Name)]
         static extern void Noesis_View_Activate(HandleRef view);

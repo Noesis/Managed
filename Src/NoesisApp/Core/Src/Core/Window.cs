@@ -175,6 +175,23 @@ namespace NoesisApp
             set { SetValue(TopmostProperty, value); }
         }
         #endregion
+
+        #region Input events flags
+        /// <summary>
+        /// If disabled, display keyboard events are ignored and not injected into the View
+        /// </summary>
+        public bool EnableKeyboard { get; set; }
+
+        /// <summary>
+        /// If disabled, display mouse events are ignored and not injected into the View
+        /// </summary>
+        public bool EnableMouse { get; set; }
+
+        /// <summary>
+        /// If disabled, display touch events are ignored and not injected into the View
+        /// </summary>
+        public bool EnableTouch { get; set; }
+        #endregion
         #endregion
 
         #region Window events
@@ -233,11 +250,17 @@ namespace NoesisApp
 
         public Window()
         {
+            EnableKeyboard = true;
+            EnableMouse = true;
+            EnableTouch = true;
+
             IgnoreLayout(true);
             _renderingArgs = new WindowRenderingEventArgs();
         }
 
-        public void Init(Display display, RenderContext renderContext, uint samples, bool ppaa, bool lcd, bool emulateTouch)
+        public void Init(Display display, RenderContext renderContext, uint samples, bool ppaa, bool lcd, bool emulateTouch,
+            uint holdingTimeThreshold, uint holdingDistanceThreshold,
+            uint doubleTapTimeThreshold, uint doubleTapDistanceThreshold)
         {
             Display = display;
             RenderContext = renderContext;
@@ -285,6 +308,10 @@ namespace NoesisApp
             _view.SetFlags(flags);
             _view.SetTessellationMaxPixelError(TessellationMaxPixelError.HighQuality);
             _view.SetEmulateTouch(emulateTouch);
+            _view.SetHoldingTimeThreshold(holdingTimeThreshold);
+            _view.SetHoldingDistanceThreshold(holdingDistanceThreshold);
+            _view.SetDoubleTapTimeThreshold(doubleTapTimeThreshold);
+            _view.SetDoubleTapDistanceThreshold(doubleTapDistanceThreshold);
             _view.Renderer.Init(renderContext.Device);
 
             // Hook to display events
@@ -654,57 +681,90 @@ namespace NoesisApp
 
         void OnDisplayMouseMove(Display display, int x, int y)
         {
-            _view?.MouseMove(x, y);
+            if (EnableMouse)
+            {
+                _view?.MouseMove(x, y);
+            }
         }
 
         void OnDisplayMouseButtonDown(Display display, int x, int y, MouseButton button)
         {
-            _view?.MouseButtonDown(x, y, button);
+            if (EnableMouse)
+            {
+                _view?.MouseButtonDown(x, y, button);
+            }
         }
 
         void OnDisplayMouseButtonUp(Display display, int x, int y, MouseButton button)
         {
-            _view?.MouseButtonUp(x, y, button);
+            if (EnableMouse)
+            {
+                _view?.MouseButtonUp(x, y, button);
+            }
         }
 
         void OnDisplayMouseDoubleClick(Display display, int x, int y, MouseButton button)
         {
-            _view?.MouseDoubleClick(x, y, button);
+            if (EnableMouse)
+            {
+                _view?.MouseDoubleClick(x, y, button);
+            }
         }
 
         void OnDisplayMouseWheel(Display display, int x, int y, int delta)
         {
-            _view?.MouseWheel(x, y, delta);
+            if (EnableMouse)
+            {
+                _view?.MouseWheel(x, y, delta);
+            }
         }
 
         void OnDisplayKeyDown(Display display, Key key)
         {
-            _view?.KeyDown(key);
+            if (EnableKeyboard)
+            {
+                _view?.KeyDown(key);
+            }
         }
 
         void OnDisplayKeyUp(Display display, Key key)
         {
-            _view?.KeyUp(key);
+            if (EnableKeyboard)
+            {
+                _view?.KeyUp(key);
+            }
         }
 
         void OnDisplayChar(Display display, uint ch)
         {
-            _view?.Char(ch);
+            if (EnableKeyboard)
+            {
+                _view?.Char(ch);
+            }
         }
 
         void OnDisplayTouchMove(Display display, int x, int y, ulong id)
         {
-            _view?.TouchMove(x, y, id);
+            if (EnableTouch)
+            {
+                _view?.TouchMove(x, y, id);
+            }
         }
 
         void OnDisplayTouchDown(Display display, int x, int y, ulong id)
         {
-            _view?.TouchDown(x, y, id);
+            if (EnableTouch)
+            {
+                _view?.TouchDown(x, y, id);
+            }
         }
 
         void OnDisplayTouchUp(Display display, int x, int y, ulong id)
         {
-            _view?.TouchUp(x, y, id);
+            if (EnableTouch)
+            {
+                _view?.TouchUp(x, y, id);
+            }
         }
 
         #endregion

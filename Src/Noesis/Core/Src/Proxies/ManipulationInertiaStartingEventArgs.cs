@@ -51,6 +51,10 @@ public class ManipulationInertiaStartingEventArgs : InputEventArgs {
     }
   }
 
+  public ManipulationInertiaStartingEventArgs(object source, RoutedEvent ev, Visual container, Point origin, ManipulationVelocities velocities)
+    : this(CreateHelper(source, ev, container, origin, velocities), true) {
+  }
+
   public UIElement ManipulationContainer {
     get {
       return GetManipulationContainerHelper();
@@ -115,7 +119,9 @@ public class ManipulationInertiaStartingEventArgs : InputEventArgs {
     } 
   }
 
-  public ManipulationInertiaStartingEventArgs(object source, RoutedEvent arg1, Visual container, Point origin, ManipulationVelocities velocities) : this(NoesisGUI_PINVOKE.new_ManipulationInertiaStartingEventArgs(Noesis.Extend.GetInstanceHandle(source), RoutedEvent.getCPtr(arg1), Visual.getCPtr(container), ref origin, ManipulationVelocities.getCPtr(velocities)), true) {
+  private static IntPtr CreateHelper(object source, RoutedEvent ev, Visual container, Point origin, ManipulationVelocities velocities) {
+    IntPtr ret = NoesisGUI_PINVOKE.ManipulationInertiaStartingEventArgs_CreateHelper(Noesis.Extend.GetInstanceHandle(source), RoutedEvent.getCPtr(ev), Visual.getCPtr(container), ref origin, ManipulationVelocities.getCPtr(velocities));
+    return ret;
   }
 
   public bool Cancel() {

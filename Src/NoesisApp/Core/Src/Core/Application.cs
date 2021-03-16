@@ -244,6 +244,10 @@ namespace NoesisApp
             bool ppaa = PPAA;
             bool lcd = LCD;
             bool emulateTouch = EmulateTouch;
+            uint holdingTimeThreshold = HoldingTimeThreshold;
+            uint holdingDistanceThreshold = HoldingDistanceThreshold;
+            uint doubleTapTimeThreshold = DoubleTapTimeThreshold;
+            uint doubleTapDistanceThreshold = DoubleTapDistanceThreshold;
 
             RenderContext renderContext = CreateRenderContext();
             renderContext.Init(Display.NativeHandle, Display.NativeWindow, samples, vsync, sRGB);
@@ -254,7 +258,9 @@ namespace NoesisApp
                 renderContext.SetWindow(window);
             };
 
-            MainWindow.Init(Display, renderContext, samples, ppaa, lcd, emulateTouch);
+            MainWindow.Init(Display, renderContext, samples, ppaa, lcd, emulateTouch,
+                holdingTimeThreshold, holdingDistanceThreshold,
+                doubleTapTimeThreshold, doubleTapDistanceThreshold);
 
             StartupEventArgs e = new StartupEventArgs();
             OnStartup(e);
@@ -452,6 +458,26 @@ namespace NoesisApp
         protected virtual bool EmulateTouch
         {
             get { return false; }
+        }
+
+        protected virtual uint HoldingTimeThreshold
+        {
+            get { return 500; }
+        }
+
+        protected virtual uint HoldingDistanceThreshold
+        {
+            get { return 10; }
+        }
+
+        protected virtual uint DoubleTapTimeThreshold
+        {
+            get { return 500; }
+        }
+
+        protected virtual uint DoubleTapDistanceThreshold
+        {
+            get { return 10; }
         }
 
         protected virtual void OnStartup(StartupEventArgs e)

@@ -1334,6 +1334,12 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr TextureSource_Texture_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
+  public static extern int DynamicTextureSource_PixelWidth_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern int DynamicTextureSource_PixelHeight_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr Transform_Identity_get();
 
   [DllImport(Library.Name)]
@@ -3386,13 +3392,31 @@ internal class NoesisGUI_PINVOKE {
   public static extern void delete_TouchEventArgs(HandleRef jarg1);
 
   [DllImport(Library.Name)]
+  public static extern void Manipulator_touchDevice_set(HandleRef jarg1, ulong jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern ulong Manipulator_touchDevice_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void Manipulator_position_set(HandleRef jarg1, ref Point jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Manipulator_position_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr new_Manipulator();
+
+  [DllImport(Library.Name)]
+  public static extern void delete_Manipulator(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
   public static extern void ManipulationStartingEventArgs_Mode_set(HandleRef jarg1, int jarg2);
 
   [DllImport(Library.Name)]
   public static extern int ManipulationStartingEventArgs_Mode_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
-  public static extern IntPtr new_ManipulationStartingEventArgs(HandleRef jarg1, HandleRef jarg2, HandleRef jarg3);
+  public static extern IntPtr ManipulationStartingEventArgs_CreateHelper(HandleRef jarg1, HandleRef jarg2, HandleRef jarg3);
 
   [DllImport(Library.Name)]
   [return: MarshalAs(UnmanagedType.U1)]
@@ -3411,7 +3435,7 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr ManipulationStartedEventArgs_ManipulationOrigin_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
-  public static extern IntPtr new_ManipulationStartedEventArgs(HandleRef jarg1, HandleRef jarg2, HandleRef jarg3, ref Point jarg4);
+  public static extern IntPtr ManipulationStartedEventArgs_CreateHelper(HandleRef jarg1, HandleRef jarg2, HandleRef jarg3, ref Point jarg4);
 
   [DllImport(Library.Name)]
   [return: MarshalAs(UnmanagedType.U1)]
@@ -3485,7 +3509,7 @@ internal class NoesisGUI_PINVOKE {
   public static extern bool ManipulationDeltaEventArgs_IsInertial_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
-  public static extern IntPtr new_ManipulationDeltaEventArgs(HandleRef jarg1, HandleRef jarg2, HandleRef jarg3, ref Point jarg4, HandleRef jarg5, HandleRef jarg6, HandleRef jarg7, bool jarg8);
+  public static extern IntPtr ManipulationDeltaEventArgs_CreateHelper(HandleRef jarg1, HandleRef jarg2, HandleRef jarg3, ref Point jarg4, HandleRef jarg5, HandleRef jarg6, HandleRef jarg7, bool jarg8);
 
   [DllImport(Library.Name)]
   [return: MarshalAs(UnmanagedType.U1)]
@@ -3564,7 +3588,7 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr ManipulationInertiaStartingEventArgs_TranslationBehavior_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
-  public static extern IntPtr new_ManipulationInertiaStartingEventArgs(HandleRef jarg1, HandleRef jarg2, HandleRef jarg3, ref Point jarg4, HandleRef jarg5);
+  public static extern IntPtr ManipulationInertiaStartingEventArgs_CreateHelper(HandleRef jarg1, HandleRef jarg2, HandleRef jarg3, ref Point jarg4, HandleRef jarg5);
 
   [DllImport(Library.Name)]
   [return: MarshalAs(UnmanagedType.U1)]
@@ -3590,7 +3614,7 @@ internal class NoesisGUI_PINVOKE {
   public static extern bool ManipulationCompletedEventArgs_IsInertial_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
-  public static extern IntPtr new_ManipulationCompletedEventArgs(HandleRef jarg1, HandleRef jarg2, HandleRef jarg3, ref Point jarg4, HandleRef jarg5, HandleRef jarg6, bool jarg7);
+  public static extern IntPtr ManipulationCompletedEventArgs_CreateHelper(HandleRef jarg1, HandleRef jarg2, HandleRef jarg3, ref Point jarg4, HandleRef jarg5, HandleRef jarg6, bool jarg7);
 
   [DllImport(Library.Name)]
   [return: MarshalAs(UnmanagedType.U1)]
