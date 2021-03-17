@@ -50,6 +50,8 @@ namespace Noesis
                 ValidateDefaultValue(Name, PropertyType, OwnerType, typeMetadata.DefaultValue);
             }
 
+            DependencyPropertyMetadataOverrideResurrectionManager.Register(this, forType, typeMetadata);
+
             IntPtr forTypePtr = Noesis.Extend.EnsureNativeType(forType, false);
 
             Noesis_OverrideMetadata(forTypePtr, swigCPtr.Handle,
@@ -64,7 +66,7 @@ namespace Noesis
             Type ownerType, PropertyMetadata propertyMetadata)
         {
             ValidateParams(name, propertyType, ownerType);
-
+            
             // Force native type registration, but skip DP registration because we are inside
             // static constructor and DP are already being registered
             IntPtr ownerTypePtr = Noesis.Extend.EnsureNativeType(ownerType, false);
@@ -79,8 +81,16 @@ namespace Noesis
             IntPtr dependencyPtr = Noesis_RegisterDependencyProperty(ownerTypePtr,
                 name, nativeType, PropertyMetadata.getCPtr(propertyMetadata).Handle);
 
+            if (DependencyPropertyResurrectionManager.TryResurrect(dependencyPtr, name, ownerType, 
+                                                         out var existingDependencyProperty))
+            {
+                return existingDependencyProperty;
+            }
+
             DependencyProperty dependencyProperty = new DependencyProperty(dependencyPtr, false);
             dependencyProperty.OriginalPropertyType = originalPropertyType;
+            
+            DependencyPropertyResurrectionManager.Register(dependencyProperty, name, propertyType, ownerType, propertyMetadata);
 
             RegisterCalled = true;
             return dependencyProperty;
