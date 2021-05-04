@@ -169,6 +169,15 @@ namespace Noesis
         }
 
         /// <summary>
+        /// Gets the application resource dictionary.
+        /// </summary>
+        public static ResourceDictionary GetApplicationResources()
+        {
+            IntPtr cPtr = Noesis_GetApplicationResources();
+            return (ResourceDictionary)Noesis.Extend.GetProxy(cPtr, false);
+        }
+
+        /// <summary>
         /// Sets a callback that is called when a text control gets focus.
         /// </summary>
         public static void SetSoftwareKeyboardCallback(SoftwareKeyboardCallback callback)
@@ -499,6 +508,9 @@ namespace Noesis
 
         [DllImport(Library.Name)]
         static extern void Noesis_SetApplicationResources(HandleRef resources);
+
+        [DllImport(Library.Name)]
+        static extern IntPtr Noesis_GetApplicationResources();
 
         [DllImport(Library.Name)]
         static extern void Noesis_SetSoftwareKeyboardCallback(

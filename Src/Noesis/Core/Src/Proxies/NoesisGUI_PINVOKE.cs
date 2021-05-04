@@ -3874,6 +3874,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr Keyboard_Focus(HandleRef jarg1, HandleRef jarg2);
 
   [DllImport(Library.Name)]
+  public static extern void Keyboard_ClearFocus(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr Keyboard_GotKeyboardFocusEvent_get();
 
   [DllImport(Library.Name)]
@@ -3945,7 +3948,11 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   [return: MarshalAs(UnmanagedType.U1)]
-  public static extern bool UIElement_Focus(HandleRef jarg1);
+  public static extern bool UIElement_Focus__SWIG_0(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  [return: MarshalAs(UnmanagedType.U1)]
+  public static extern bool UIElement_Focus__SWIG_1(HandleRef jarg1, bool jarg2);
 
   [DllImport(Library.Name)]
   public static extern void UIElement_InvalidateMeasure(HandleRef jarg1);

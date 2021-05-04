@@ -524,7 +524,7 @@ namespace NoesisApp
                 }
             }
 
-            if (_state != stateRequested || stateRequested == MediaState.Stop)
+            if (_state != stateRequested || stateRequested == MediaState.Stop || sourceChanged)
             {
                 bool opened = false;
                 if (stateRequested != MediaState.Close && stateRequested != MediaState.Manual)
@@ -533,6 +533,7 @@ namespace NoesisApp
                     string sourcePath = Noesis.UriHelper.GetPath(source);
                     if ((_state == MediaState.Close || sourceChanged) && sourcePath.Length > 0)
                     {
+                        DestroyMediaPlayer();
                         CreateMediaPlayer(sourcePath);
                         opened = true;
                     }

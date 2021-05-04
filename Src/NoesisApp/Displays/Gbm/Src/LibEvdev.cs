@@ -7,28 +7,54 @@ namespace NoesisApp
 {
     internal class LibEvdev
     {
+        static private IntPtr _udev;
+        static private IntPtr _udevMonitor;
+        static private int _udevMonitorFd;
+
         static LibEvdev()
         {
             InitKeyMap();
 
+            _inputDeviceNames = new List<string>();
             _inputDescriptors = new List<int>();
             _inputDevices = new List<IntPtr>();
-            for (int index = 0; ; index++)
+
+            _udev = LibUdev.New();
+
+            IntPtr enumerate = LibUdev.EnumerateNew(_udev);
+
+            LibUdev.EnumerateAddMatchSubsystem(enumerate, "input");
+            LibUdev.EnumerateScanDevices(enumerate);
+
+            IntPtr listEntry = LibUdev.EnumerateGetListEntry(enumerate);
+
+            while (listEntry != IntPtr.Zero)
             {
-                int fd = LibC.Open(String.Format("/dev/input/event{0}", index), LibC.O_RDONLY | LibC.O_NONBLOCK);
-                if (fd < 0)
-                    break;
+                IntPtr path = LibUdev.ListEntryGetName(listEntry);
 
-                LibC.SetFdFlags(fd, LibC.O_NONBLOCK);
+                IntPtr device = LibUdev.DeviceNewFromSyspath(_udev, path);
 
-                IntPtr dev = IntPtr.Zero;
-                int rc = NewFromFd(fd, ref dev);
-                if (rc == 0)
+                IntPtr deviceName = LibUdev.DeviceGetDevnode(device);
+                if (deviceName != IntPtr.Zero)
                 {
-                    _inputDescriptors.Add(fd);
-                    _inputDevices.Add(dev);
+                    string devName = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(deviceName);
+
+                    AddDevice(devName);
                 }
+
+                LibUdev.DeviceUnref(device);
+
+                listEntry = LibUdev.ListEntryGetNext(listEntry);
             }
+
+            LibUdev.EnumerateUnref(enumerate);
+
+            _udevMonitor = LibUdev.MonitorNewFromNetlink(_udev, "udev");
+            
+            LibUdev.MonitorFilterAddMatchSubsystemDevtype(_udevMonitor, "input", null);
+            LibUdev.MonitorEnableReceiving(_udevMonitor);
+
+            _udevMonitorFd = LibUdev.MonitorGetFd(_udevMonitor);
 
             _mtSlotIds = new int[MaxSlots];
             for (int i = 0; i < MaxSlots; ++i)
@@ -42,39 +68,129 @@ namespace NoesisApp
             _touchMove = new bool[MaxSlots];
         }
 
+        private static void AddDevice(string devName)
+        {
+            int fd = LibC.Open(devName, LibC.O_RDONLY | LibC.O_NONBLOCK);
+            if (fd < 0)
+                return;
+
+            LibC.SetFdFlags(fd, LibC.O_NONBLOCK);
+
+            IntPtr dev = IntPtr.Zero;
+            int rc = NewFromFd(fd, ref dev);
+            if (rc == 0)
+            {
+                _inputDeviceNames.Add(devName);
+                _inputDescriptors.Add(fd);
+                _inputDevices.Add(dev);
+            }
+        }
+
+        private static void RemoveDevice(string devName)
+        {
+            int index = _inputDeviceNames.IndexOf(devName);
+            if (index != -1)
+            {
+                _inputDeviceNames.RemoveAt(index);
+                _inputDescriptors.RemoveAt(index);
+                _inputDevices.RemoveAt(index);
+            }
+        }
+
+        private static void HandleDevices()
+        {
+            while (true)
+            {
+                IntPtr device = LibUdev.MonitorReceiveDevice(_udevMonitor);
+
+                if (device == IntPtr.Zero)
+                {
+                    break;
+                }
+
+                IntPtr deviceAction = LibUdev.DeviceGetAction(device);
+                IntPtr deviceName = LibUdev.DeviceGetDevnode(device);
+
+                string devAction = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(deviceAction);
+                string devName = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(deviceName);
+
+                if (devAction == "remove")
+                {
+                    RemoveDevice(devName);
+                }
+                else if (devAction == "add")
+                {
+                    AddDevice(devName);
+                }
+
+                LibUdev.DeviceUnref(device);
+            }
+        }
+
         public static void HandleEvents()
         {
-            InputEvent ev = new InputEvent();
-            foreach (IntPtr dev in _inputDevices)
+            List<IntPtr> inputDevices = new List<IntPtr>(_inputDevices);
+            LibC.PollFd[] fds = new LibC.PollFd[inputDevices.Count + 1];
+            LibC.PollFd fd = new LibC.PollFd();
+            fd.fd = _udevMonitorFd;
+            fd.events = LibC.POLLIN | LibC.POLLPRI;
+            fds[0] = fd;
+            for (int i = 0; i < inputDevices.Count; ++i)
             {
-                int rc = 0;
-                do
-                {
-                    rc = NextEvent(dev, READ_FLAG_NORMAL, ref ev);
-                    if (rc < 0)
-                    {
-                        if (rc == -LibC.EAGAIN)
-                        {
-                            // No more events
-                            break;
-                        }
-                        throw new Exception("Error reading input events");
-                    }
-                    else if (rc == READ_STATUS_SUCCESS)
-                    {
-                        HandleEvent(ev);
-                    }
-                    else // READ_STATUS_SYNC
-                    {
-                        rc = NextEvent(dev, READ_FLAG_SYNC, ref ev);
-                        while (rc == READ_STATUS_SYNC)
-                        {
-                            HandleEvent(ev);
-                            rc = NextEvent(dev, READ_FLAG_SYNC, ref ev);
-                        }
-                    }
-                } while (rc == READ_STATUS_SUCCESS);
+                fd = new LibC.PollFd();
+                fd.fd = _inputDescriptors[i];
+                fd.events = LibC.POLLIN | LibC.POLLPRI;
+                fds[i + 1] = fd;
             }
+            int rc = LibC.Poll(fds, 0);
+            if (rc > 0)
+            {
+                if (fds[0].revents != 0)
+                {
+                    HandleDevices();
+                }
+                else
+                {
+                    InputEvent ev = new InputEvent();
+                    for (int i = 0; i < inputDevices.Count; ++i)
+                    {
+                        if (fds[i + 1].revents != 0)
+                        {
+                            IntPtr dev = inputDevices[i];
+                            rc = 0;
+                            do
+                            {
+                                rc = NextEvent(dev, READ_FLAG_NORMAL, ref ev);
+                                if (rc < 0)
+                                {
+                                    if (rc == -LibC.EAGAIN)
+                                    {
+                                        // No more events
+                                        break;
+                                    }
+                                    System.Console.WriteLine("Error reading input events {0}", rc);
+                                    //throw new Exception("Error reading input events");
+                                }
+                                else if (rc == READ_STATUS_SUCCESS)
+                                {
+                                    HandleEvent(ev);
+                                }
+                                else // READ_STATUS_SYNC
+                                {
+                                    rc = NextEvent(dev, READ_FLAG_SYNC, ref ev);
+                                    while (rc == READ_STATUS_SYNC)
+                                    {
+                                        HandleEvent(ev);
+                                        rc = NextEvent(dev, READ_FLAG_SYNC, ref ev);
+                                    }
+                                }
+                            } while (rc == READ_STATUS_SUCCESS);
+                        }
+                    }
+                }
+            }
+
+            EmitTouchMoveEvents();
         }
 
         public delegate void KeyDownEventHandler(Key key);
@@ -824,6 +940,13 @@ namespace NoesisApp
                     _touchUp[i] = false;
                     _touchMove[i] = false;
                 }
+            }
+        }
+
+        private static void EmitTouchMoveEvents()
+        {
+            for (int i = 0; i < MaxSlots; ++i)
+            {
                 if (_touchMove[i])
                 {
                     TouchMove?.Invoke(_mtSlotXs[i], _mtSlotYs[i], (ulong)_mtSlotIds[i]);
@@ -973,11 +1096,18 @@ namespace NoesisApp
 
         [DllImport("libevdev.so.2", EntryPoint = "libevdev_next_event")]
         private static extern int NextEvent(IntPtr dev, uint flags, ref InputEvent ev);
+        
+        [DllImport("libevdev.so.2", EntryPoint = "libevdev_event_type_get_name")]
+        private static extern IntPtr EventTypeGetName(ushort type);
+
+        [DllImport("libevdev.so.2", EntryPoint = "libevdev_event_code_get_name")]
+        private static extern IntPtr EventCodeGetName(ushort type, ushort code);
         #endregion
 
         #region Private members
         private static Key[] _keyMap;
 
+        private static List<string> _inputDeviceNames;
         private static List<int> _inputDescriptors;
         private static List<IntPtr> _inputDevices;
 

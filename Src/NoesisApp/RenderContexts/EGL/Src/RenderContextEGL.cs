@@ -41,9 +41,21 @@ namespace NoesisApp
         public override void Init(IntPtr display, IntPtr window, uint samples, bool vsync, bool sRGB)
         {
             _display = eglGetDisplay(display);
+            if (_display == IntPtr.Zero)
+            {
+                int errorCode = eglGetError();
+                string error = GetErrorString(errorCode);
+                throw new Exception($"eglGetDisplay failed with {error}");
+            }
 
             int ma = 0, mi = 0;
-            eglInitialize(_display, ref ma, ref mi);
+            uint initialized = eglInitialize(_display, ref ma, ref mi);
+            if (initialized == EGL_FALSE)
+            {
+                int errorCode = eglGetError();
+                string error = GetErrorString(errorCode);
+                throw new Exception($"eglInitialize failed with {error}");
+            }
 
             do
             {
@@ -78,6 +90,12 @@ namespace NoesisApp
             };
 
             _context = eglCreateContext(_display, _config, EGL_NO_CONTEXT, attribs);
+            if (_context == IntPtr.Zero)
+            {
+                int errorCode = eglGetError();
+                string error = GetErrorString(errorCode);
+                throw new Exception($"eglCreateContext failed with {error}");
+            }
 
             SetWindow(window);
 
@@ -98,6 +116,12 @@ namespace NoesisApp
 
                 _window = window;
                 _surface = eglCreateWindowSurface(_display, _config, window, null);
+                if (_surface == IntPtr.Zero)
+                {
+                    int errorCode = eglGetError();
+                    string error = GetErrorString(errorCode);
+                    throw new Exception($"eglCreateWindowSurface failed with {error}");
+                }
                 eglSurfaceAttrib(_display, _surface, EGL_SWAP_BEHAVIOR, EGL_BUFFER_DESTROYED);
                 eglMakeCurrent(_display, _surface, _surface, _context);
             }
@@ -176,6 +200,45 @@ namespace NoesisApp
 
         public override void Resize() { }
 
+        private string GetErrorString(int errorCode)
+        {
+            switch (errorCode)
+            {
+                case EGL_SUCCESS:
+                    return "EGL_SUCCESS";
+                case EGL_NOT_INITIALIZED:
+                    return "EGL_NOT_INITIALIZED";
+                case EGL_BAD_ACCESS:
+                    return "EGL_BAD_ACCESS";
+                case EGL_BAD_ALLOC:
+                    return "EGL_BAD_ALLOC";
+                case EGL_BAD_ATTRIBUTE:
+                    return "EGL_BAD_ATTRIBUTE";
+                case EGL_BAD_CONFIG:
+                    return "EGL_BAD_CONFIG";
+                case EGL_BAD_CONTEXT:
+                    return "EGL_BAD_CONTEXT";
+                case EGL_BAD_CURRENT_SURFACE:
+                    return "EGL_BAD_CURRENT_SURFACE";
+                case EGL_BAD_DISPLAY:
+                    return "EGL_BAD_DISPLAY";
+                case EGL_BAD_MATCH:
+                    return "EGL_BAD_MATCH";
+                case EGL_BAD_NATIVE_PIXMAP:
+                    return "EGL_BAD_NATIVE_PIXMAP";
+                case EGL_BAD_NATIVE_WINDOW:
+                    return "EGL_BAD_NATIVE_WINDOW";
+                case EGL_BAD_PARAMETER:
+                    return "EGL_BAD_PARAMETER";
+                case EGL_BAD_SURFACE:
+                    return "EGL_BAD_SURFACE";
+                case EGL_CONTEXT_LOST:
+                    return "EGL_CONTEXT_LOST";
+                default:
+                    return "Unknown";
+            }
+        }
+
         private IntPtr EGL_DEFAULT_DISPLAY = IntPtr.Zero;
 
         private IntPtr EGL_NO_CONTEXT = IntPtr.Zero;
@@ -198,6 +261,8 @@ namespace NoesisApp
 
         private const int EGL_SAMPLES = 0x3031;
 
+        private const int EGL_NATIVE_VISUAL_ID = 0x302E;
+
         private const int EGL_NONE = 0x3038;
 
         private const int EGL_CONTEXT_CLIENT_VERSION = 0x3098;
@@ -206,41 +271,80 @@ namespace NoesisApp
 
         private const int EGL_BUFFER_DESTROYED = 0x3095;
 
+        private const uint EGL_FALSE = 0;
+
+        private const uint EGL_TRUE = 1;
+
+        private const int EGL_SUCCESS = 0x3000;
+
+        private const int EGL_NOT_INITIALIZED = 0x3001;
+
+        private const int EGL_BAD_ACCESS = 0x3002;
+
+        private const int EGL_BAD_ALLOC = 0x3003;
+
+        private const int EGL_BAD_ATTRIBUTE = 0x3004;
+
+        private const int EGL_BAD_CONFIG = 0x3005;
+
+        private const int EGL_BAD_CONTEXT = 0x3006;
+
+        private const int EGL_BAD_CURRENT_SURFACE = 0x3007;
+
+        private const int EGL_BAD_DISPLAY = 0x3008;
+
+        private const int EGL_BAD_MATCH = 0x3009;
+
+        private const int EGL_BAD_NATIVE_PIXMAP = 0x300A;
+
+        private const int EGL_BAD_NATIVE_WINDOW = 0x300B;
+
+        private const int EGL_BAD_PARAMETER = 0x300C;
+
+        private const int EGL_BAD_SURFACE = 0x300D;
+
+        private const int EGL_CONTEXT_LOST = 0x300E;
+
+        private const uint EGL_PLATFORM_GBM_KHR = 0x31D7;
+
         [DllImport("EGL")]
         static extern IntPtr eglGetDisplay(IntPtr display_id);
 
         [DllImport("EGL")]
-        static extern bool eglInitialize(IntPtr dpy, ref int major, ref int minor);
+        static extern uint eglInitialize(IntPtr dpy, ref int major, ref int minor);
 
         [DllImport("EGL")]
-        static extern bool eglChooseConfig(IntPtr dpy, int[] attrib_list, IntPtr[] configs, int config_size, ref int num_config);
+        static extern uint eglChooseConfig(IntPtr dpy, int[] attrib_list, IntPtr[] configs, int config_size, ref int num_config);
 
         [DllImport("EGL")]
         static extern IntPtr eglCreateContext(IntPtr dpy, IntPtr config, IntPtr share_context, int[] attrib_list);
 
         [DllImport("EGL")]
-        static extern bool eglDestroySurface(IntPtr dpy, IntPtr surface);
+        static extern uint eglDestroySurface(IntPtr dpy, IntPtr surface);
 
         [DllImport("EGL")]
         static extern IntPtr eglCreateWindowSurface(IntPtr dpy, IntPtr config, IntPtr win, int[] attrib_list);
 
         [DllImport("EGL")]
-        static extern bool eglSurfaceAttrib(IntPtr dpy, IntPtr surface, int attribute, int value);
+        static extern uint eglSurfaceAttrib(IntPtr dpy, IntPtr surface, int attribute, int value);
 
         [DllImport("EGL")]
-        static extern bool eglMakeCurrent(IntPtr dpy, IntPtr draw, IntPtr read, IntPtr ctx);
+        static extern uint eglMakeCurrent(IntPtr dpy, IntPtr draw, IntPtr read, IntPtr ctx);
 
         [DllImport("EGL")]
-        static extern bool eglSwapInterval(IntPtr dpy, int interval);
+        static extern uint eglSwapInterval(IntPtr dpy, int interval);
 
         [DllImport("EGL")]
-        static extern bool eglSwapBuffers(IntPtr dpy, IntPtr surface);
+        static extern uint eglSwapBuffers(IntPtr dpy, IntPtr surface);
 
         [DllImport("EGL")]
-        static extern bool eglDestroyContext(IntPtr dpy, IntPtr ctx);
+        static extern uint eglDestroyContext(IntPtr dpy, IntPtr ctx);
 
         [DllImport("EGL")]
-        static extern bool eglTerminate(IntPtr dpy);
+        static extern uint eglTerminate(IntPtr dpy);
+
+        [DllImport("EGL")]
+        public static extern int eglGetError();
 
         private const uint GL_FRAMEBUFFER = 0x8D40;
         private const uint GL_STENCIL_BUFFER_BIT = 0x00000400;

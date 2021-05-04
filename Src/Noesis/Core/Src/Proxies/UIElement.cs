@@ -773,7 +773,12 @@ public class UIElement : Visual {
   }
 
   public bool Focus() {
-    bool ret = NoesisGUI_PINVOKE.UIElement_Focus(swigCPtr);
+    bool ret = NoesisGUI_PINVOKE.UIElement_Focus__SWIG_0(swigCPtr);
+    return ret;
+  }
+
+  public bool Focus(bool engage) {
+    bool ret = NoesisGUI_PINVOKE.UIElement_Focus__SWIG_1(swigCPtr, engage);
     return ret;
   }
 

@@ -13,6 +13,15 @@ namespace NoesisGUIExtensions
 {
     public class SetFocusAction : TargetedTriggerAction<UIElement>
     {
+        public bool Engage
+        {
+            get { return (bool)GetValue(EngageProperty); }
+            set { SetValue(EngageProperty, value); }
+        }
+
+        public static readonly DependencyProperty EngageProperty = DependencyProperty.Register(
+            "Engage", typeof(bool), typeof(SetFocusAction), new PropertyMetadata(true));
+
         protected override void Invoke(object parameter)
         {
             UIElement element = Target;

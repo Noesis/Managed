@@ -7,6 +7,20 @@ namespace NoesisGUIExtensions
     /// </summary>
     public class SetFocusAction : NoesisApp.TargetedTriggerAction<Noesis.UIElement>
     {
+        /// <summary>
+        /// Indicates if control should be engaged or not when getting the focus.
+        /// Default value is true.
+        /// </summary>
+        public bool Engage
+        {
+            get { return (bool)GetValue(EngageProperty); }
+            set { SetValue(EngageProperty, value); }
+        }
+
+        public static readonly Noesis.DependencyProperty EngageProperty = Noesis.DependencyProperty.Register(
+            "Engage", typeof(bool), typeof(SetFocusAction),
+            new Noesis.PropertyMetadata(true));
+
         public new SetFocusAction Clone()
         {
             return (SetFocusAction)base.Clone();
@@ -22,7 +36,7 @@ namespace NoesisGUIExtensions
             Noesis.UIElement element = Target;
             if (element != null)
             {
-                element.Focus();
+                element.Focus(Engage);
             }
         }
     }

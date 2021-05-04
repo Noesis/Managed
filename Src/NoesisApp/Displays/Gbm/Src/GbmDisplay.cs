@@ -9,7 +9,87 @@ namespace NoesisApp
         public GbmDisplay(string drmDevice)
         {
             _close = false;
-            _drmFd = LibC.Open(drmDevice, LibC.O_RDWR);
+
+            IntPtr udev = LibUdev.New();
+
+            IntPtr enumerate = LibUdev.EnumerateNew(udev);
+
+            LibUdev.EnumerateAddMatchSubsystem(enumerate, "drm");
+            LibUdev.EnumerateScanDevices(enumerate);
+
+            IntPtr listEntry = LibUdev.EnumerateGetListEntry(enumerate);
+
+            while (_drmFd == -1 && listEntry != IntPtr.Zero)
+            {
+                IntPtr path = LibUdev.ListEntryGetName(listEntry);
+
+                IntPtr device = LibUdev.DeviceNewFromSyspath(udev, path);
+
+                IntPtr deviceName = LibUdev.DeviceGetDevnode(device);
+                if (deviceName != IntPtr.Zero)
+                {
+                    string devName = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(deviceName);
+
+                    if (devName == drmDevice)
+                    {
+                        _drmFd = LibC.Open(drmDevice, LibC.O_RDWR);
+                    }
+                }
+
+                LibUdev.DeviceUnref(device);
+
+                listEntry = LibUdev.ListEntryGetNext(listEntry);
+            }
+
+            LibUdev.EnumerateUnref(enumerate);
+
+            if (_drmFd == -1)
+            {
+                IntPtr udevMonitor = LibUdev.MonitorNewFromNetlink(udev, "udev");
+            
+                LibUdev.MonitorFilterAddMatchSubsystemDevtype(udevMonitor, "drm", null);
+                LibUdev.MonitorEnableReceiving(udevMonitor);
+
+                int udevMonitorFd = LibUdev.MonitorGetFd(udevMonitor);
+
+                LibC.PollFd fd = new LibC.PollFd();
+                fd.fd = udevMonitorFd;
+                fd.events = LibC.POLLIN | LibC.POLLPRI;
+                LibC.PollFd[] fds = { fd };
+                while (_drmFd == -1)
+                {
+                    int rc = LibC.Poll(fds, -1);
+                    if (rc > 0)
+                    {
+                        IntPtr device = LibUdev.MonitorReceiveDevice(udevMonitor);
+
+                        if (device == IntPtr.Zero)
+                        {
+                            break;
+                        }
+
+                        IntPtr deviceAction = LibUdev.DeviceGetAction(device);
+                        IntPtr deviceName = LibUdev.DeviceGetDevnode(device);
+
+                        string devAction = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(deviceAction);
+                        string devName = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(deviceName);
+
+                        if (devAction == "add")
+                        {
+                            if (devName == drmDevice)
+                            {
+                                _drmFd = LibC.Open(drmDevice, LibC.O_RDWR);
+                            }
+                        }
+
+                        LibUdev.DeviceUnref(device);
+                    }
+                }
+
+                LibUdev.MonitorUnref(udevMonitor);
+            }
+
+            LibUdev.Unref(udev);
 
             IntPtr resourcesPtr = Drm.ModeGetResources(_drmFd);
             Drm.ModeRes resources = System.Runtime.InteropServices.Marshal.PtrToStructure<Drm.ModeRes>(resourcesPtr);
@@ -71,6 +151,14 @@ namespace NoesisApp
 
         public override int ClientWidth { get { return _width; } }
         public override int ClientHeight { get { return _height; } }
+
+        public override void Show()
+        {
+            SizeChanged?.Invoke(this, _width, _height);
+            Activated?.Invoke(this);
+
+            SetCrtc();
+        }
 
         public override void Close()
         {
@@ -148,9 +236,6 @@ namespace NoesisApp
 
         public void SetCrtc()
         {
-            SizeChanged?.Invoke(this, _width, _height);
-            Activated?.Invoke(this);
-
             _bo = Gbm.SurfaceLockFrontBuffer(_gbmSurface);
             uint fb = GetFbForBo(_bo);
             IntPtr connectors = System.Runtime.InteropServices.Marshal.AllocHGlobal(sizeof(uint));
@@ -165,28 +250,11 @@ namespace NoesisApp
 
         public void PageFlip()
         {
-            if (PollReadable(1000))
+            if (_bo != IntPtr.Zero)
             {
-                Drm.EventContext evctx = new Drm.EventContext();
-                evctx.version = 2;
-                Drm.HandleEvent(_drmFd, ref evctx);
                 Gbm.SurfaceReleaseBuffer(_gbmSurface, _bo);
             }
-            else
-            {
-                if (_bo != IntPtr.Zero)
-                {
-                    Gbm.SurfaceReleaseBuffer(_gbmSurface, _bo);
-                }
-                SetCrtc();
-            }
-            
-            IntPtr bo = Gbm.SurfaceLockFrontBuffer(_gbmSurface);
-            uint fb = GetFbForBo(bo);
-
-            Drm.ModePageFlip(_drmFd, _drmEncoderCrtcId, fb, Drm.MODE_PAGE_FLIP_EVENT, IntPtr.Zero);
-
-            _bo = bo;
+            SetCrtc();
         }
 
         #region Input events
@@ -221,7 +289,7 @@ namespace NoesisApp
         private int _height;
         private bool _close;
 
-        private int _drmFd;
+        private int _drmFd = -1;
         private uint _drmConnectorId;
         private Drm.ModeModeInfo _drmMode;
         private uint _drmEncoderCrtcId;

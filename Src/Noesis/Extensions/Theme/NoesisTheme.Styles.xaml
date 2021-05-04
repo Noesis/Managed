@@ -35,26 +35,6 @@
   <CornerRadius x:Key="Corner.Focus">0</CornerRadius>
   <CornerRadius x:Key="Corner.Popup">3</CornerRadius>
 
-  <!-- Popup Animations -->
-  <Storyboard x:Key="Anim.Popup.Fade" Storyboard.TargetProperty="Opacity">
-    <DoubleAnimationUsingKeyFrames>
-      <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-      <EasingDoubleKeyFrame KeyTime="0:0:0.150" Value="1"/>
-    </DoubleAnimationUsingKeyFrames>
-  </Storyboard>
-  <Storyboard x:Key="Anim.Popup.Slide" Storyboard.TargetProperty="Opacity">
-    <DoubleAnimationUsingKeyFrames>
-      <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-      <EasingDoubleKeyFrame KeyTime="0:0:0.150" Value="1"/>
-    </DoubleAnimationUsingKeyFrames>
-  </Storyboard>
-  <Storyboard x:Key="Anim.Popup.Scroll" Storyboard.TargetProperty="Opacity">
-    <DoubleAnimationUsingKeyFrames>
-      <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-      <EasingDoubleKeyFrame KeyTime="0:0:0.150" Value="1"/>
-    </DoubleAnimationUsingKeyFrames>
-  </Storyboard>
-
   <!-- Focus Styles -->
   <Style x:Key="Style.Focus.Outer.Uniform" TargetType="Control">
     <Setter Property="Template">
@@ -121,7 +101,6 @@
     <Setter Property="BorderThickness" Value="1"/>
     <Setter Property="Padding" Value="8,6"/>
     <Setter Property="Placement" Value="Mouse"/>
-    <Setter Property="VerticalOffset" Value="21"/> <!-- Cursor Height -->
     <Setter Property="VerticalContentAlignment" Value="Center"/>
     <Setter Property="Template" Value="{StaticResource Template.ToolTip}"/>
   </Style>
