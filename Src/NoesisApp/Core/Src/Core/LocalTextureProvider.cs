@@ -16,9 +16,9 @@ namespace NoesisApp
             _basePath = basePath;
         }
 
-        public override Stream OpenStream(string filename)
+        public override Stream OpenStream(Uri uri)
         {
-            string path = System.IO.Path.Combine(_basePath, filename);
+            string path = System.IO.Path.Combine(_basePath, uri.GetPath());
             return new FileStream(path, FileMode.Open);
         }
 

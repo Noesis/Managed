@@ -57,7 +57,7 @@ public class DynamicTextureSource : ImageSource {
     try {
       if (Noesis.Extend.Initialized) {
         CallbackInfo info = _callbacks[callbackId];
-        RenderDevice device = new RenderDevice(devicePtr, false);
+        RenderDevice device = (RenderDevice)Noesis.Extend.GetProxy(devicePtr, false);
         object user = Noesis.Extend.GetProxy(userPtr, false);
         Texture texture = info.Callback(device, user);
         return Noesis.Extend.GetInstanceHandle(texture).Handle;

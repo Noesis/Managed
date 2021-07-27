@@ -6,12 +6,12 @@
 using System;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Interactivity;
 using System.Windows.Media;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Microsoft.Xaml.Behaviors;
 
 namespace NoesisGUIExtensions
 {

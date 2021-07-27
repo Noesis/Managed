@@ -15,7 +15,21 @@ namespace Noesis
             }
         }
 
-        public static string GetPath(Uri uri)
+        public static string GetAssembly(this Uri uri)
+        {
+            bool isRootPath;
+            Uri absUri = GetAbsoluteUri(uri, out isRootPath);
+
+            string[] segments = absUri.Segments;
+            if (segments.Length > 1 && segments[1].Contains(";component"))
+            {
+                return segments[1].Substring(0, segments[1].Length - 11);
+            }
+
+            return "";
+        }
+
+        public static string GetPath(this Uri uri)
         {
             bool isRootPath;
             Uri absUri = GetAbsoluteUri(uri, out isRootPath);
@@ -25,29 +39,30 @@ namespace Noesis
             {
                 path += "//" + absUri.Host + "/";
             }
-            if (absUri.Segments.Length > 1 && !absUri.Segments[1].Contains(";component"))
+            string[] segments = absUri.Segments;
+            if (segments.Length > 1 && !segments[1].Contains(";component"))
             {
                 path += isRootPath ? "/" : "";
-                path += absUri.Segments[1];
+                path += segments[1];
             }
-            for (int i = 2; i < absUri.Segments.Length; ++i)
+            for (int i = 2; i < segments.Length; ++i)
             {
-                path += absUri.Segments[i];
+                path += segments[i];
             }
+            path += absUri.Fragment;
 
             return Uri.UnescapeDataString(path);
         }
 
         private static Uri GetAbsoluteUri(Uri uri, out bool isRootPath)
         {
-            Uri uri_ = new Uri(uri.OriginalString, UriKind.RelativeOrAbsolute);
-
-            if (uri_.IsAbsoluteUri)
+            if (uri.IsAbsoluteUri)
             {
                 isRootPath = false;
-                return uri_;
+                return uri;
             }
 
+            Uri uri_ = new Uri(uri.OriginalString, UriKind.RelativeOrAbsolute);
             isRootPath = uri.OriginalString.StartsWith("\\") || uri.OriginalString.StartsWith("/");
 
             return new Uri(new Uri("file://"), uri);

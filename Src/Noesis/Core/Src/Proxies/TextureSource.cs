@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-public partial class TextureSource : ImageSource {
+public partial class TextureSource : BitmapSource {
   internal new static TextureSource CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
     return new TextureSource(cPtr, cMemoryOwn);
   }
@@ -31,25 +31,16 @@ public partial class TextureSource : ImageSource {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    registerExtend = false;
-    return NoesisGUI_PINVOKE.new_TextureSource__SWIG_0();
+    if (type == typeof(TextureSource)) {
+      registerExtend = false;
+      return NoesisGUI_PINVOKE.new_TextureSource__SWIG_0();
+    }
+    else {
+      return base.CreateExtendCPtr(type, out registerExtend);
+    }
   }
 
   public TextureSource(Texture texture) : this(NoesisGUI_PINVOKE.new_TextureSource__SWIG_1(Texture.getCPtr(texture)), true) {
-  }
-
-  public int PixelWidth {
-    get {
-      int ret = NoesisGUI_PINVOKE.TextureSource_PixelWidth_get(swigCPtr);
-      return ret;
-    } 
-  }
-
-  public int PixelHeight {
-    get {
-      int ret = NoesisGUI_PINVOKE.TextureSource_PixelHeight_get(swigCPtr);
-      return ret;
-    } 
   }
 
   public Texture Texture {
@@ -58,11 +49,13 @@ public partial class TextureSource : ImageSource {
     } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.TextureSource_Texture_get(swigCPtr);
-      Texture ret = (cPtr == IntPtr.Zero) ? null : new Texture(cPtr, false);
-      return ret;
-    } 
+      return (Texture)Noesis.Extend.GetProxy(cPtr, false);
+    }
   }
 
+  internal new static IntPtr Extend(string typeName) {
+    return NoesisGUI_PINVOKE.Extend_TextureSource(Marshal.StringToHGlobalAnsi(typeName));
+  }
 }
 
 }

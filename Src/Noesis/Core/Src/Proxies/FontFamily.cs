@@ -38,7 +38,7 @@ public class FontFamily : BaseComponent {
   public FontFamily(string source) : this(NoesisGUI_PINVOKE.new_FontFamily__SWIG_1(source != null ? source : string.Empty), true) {
   }
 
-  public FontFamily(string baseUri, string source) : this(NoesisGUI_PINVOKE.new_FontFamily__SWIG_2(baseUri != null ? baseUri : string.Empty, source != null ? source : string.Empty), true) {
+  public FontFamily(Uri baseUri, string source) : this(NoesisGUI_PINVOKE.new_FontFamily__SWIG_2(baseUri != null ? baseUri.OriginalString : string.Empty, source != null ? source : string.Empty), true) {
   }
 
   public uint GetNumFonts() {
@@ -46,10 +46,10 @@ public class FontFamily : BaseComponent {
     return ret;
   }
 
-  public string GetFontPath(uint index) {
-    IntPtr strPtr = NoesisGUI_PINVOKE.FontFamily_GetFontPath(swigCPtr, index);
-    string str = Noesis.Extend.StringFromNativeUtf8(strPtr);
-    return str;
+  public Uri GetFontPath(uint index) {
+    IntPtr uriPtr = NoesisGUI_PINVOKE.FontFamily_GetFontPath(swigCPtr, index);
+    string uri = Noesis.Extend.StringFromNativeUtf8(uriPtr);
+    return new Uri(uri, UriKind.RelativeOrAbsolute);
   }
 
   public string GetFontName(uint index) {
@@ -58,11 +58,11 @@ public class FontFamily : BaseComponent {
     return str;
   }
 
-  public string BaseUri {
+  public Uri BaseUri {
     get {
-      IntPtr strPtr = NoesisGUI_PINVOKE.FontFamily_BaseUri_get(swigCPtr);
-      string str = Noesis.Extend.StringFromNativeUtf8(strPtr);
-      return str;
+      IntPtr uriPtr = NoesisGUI_PINVOKE.FontFamily_BaseUri_get(swigCPtr);
+      string uri = Noesis.Extend.StringFromNativeUtf8(uriPtr);
+      return new Uri(uri, UriKind.RelativeOrAbsolute);
     }
   }
 

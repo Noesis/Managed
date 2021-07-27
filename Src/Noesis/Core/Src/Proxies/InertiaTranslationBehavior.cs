@@ -55,6 +55,16 @@ public class InertiaTranslationBehavior : IDisposable {
     } 
   }
 
+  public float DesiredDisplacement {
+    set {
+      NoesisGUI_PINVOKE.InertiaTranslationBehavior_DesiredDisplacement_set(swigCPtr, value);
+    } 
+    get {
+      float ret = NoesisGUI_PINVOKE.InertiaTranslationBehavior_DesiredDisplacement_get(swigCPtr);
+      return ret;
+    } 
+  }
+
   public InertiaTranslationBehavior() : this(NoesisGUI_PINVOKE.new_InertiaTranslationBehavior(), true) {
   }
 

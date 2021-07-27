@@ -30,19 +30,19 @@ public class Expander : HeaderedContentControl {
   #region Events
   public event RoutedEventHandler Collapsed {
     add {
-      AddHandler(CollapsedEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.Expander_CollapsedEvent_get(), value);
     }
     remove {
-      RemoveHandler(CollapsedEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.Expander_CollapsedEvent_get(), value);
     }
   }
 
   public event RoutedEventHandler Expanded {
     add {
-      AddHandler(ExpandedEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.Expander_ExpandedEvent_get(), value);
     }
     remove {
-      RemoveHandler(ExpandedEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.Expander_ExpandedEvent_get(), value);
     }
   }
 

@@ -15,10 +15,10 @@ namespace Noesis
     public delegate void OpenUrlCallback(string url);
 
     /// <summary> Called when an element wants to play a sound </summary>
-    public delegate void PlayAudioCallback(string filename, float volume);
+    public delegate void PlayAudioCallback(Uri uri, float volume);
 
     /// <summary> Called for every xaml dependency found </summary>
-    public delegate void XamlDependencyCallback(string uri, XamlDependencyType type);
+    public delegate void XamlDependencyCallback(Uri uri, XamlDependencyType type);
 
     /// <summary> Called for every font face found in the ttf </summary>
     public delegate void FontFaceInfoCallback(int index, string familyName, FontWeight weight,
@@ -61,12 +61,20 @@ namespace Noesis
             Noesis_UpdateInspector();
         }
 
+        /// <summary>
+        /// Sets the active license.
+        /// </summary>
+        public static void SetLicense(string name, string key)
+        {
+            Noesis_SetLicense(name, key);
+        }
+
         private static bool _initialized = false;
 
         /// <summary>
         /// Initializes NoesisGUI. Use Name and Key provided when you purchased your NoesisGUI license.
         /// </summary>
-        public static void Init(string licenseName = "", string licenseKey = "")
+        public static void Init()
         {
             if (!_initialized)
             {
@@ -75,7 +83,7 @@ namespace Noesis
                 UriHelper.RegisterPack();
                 Extend.RegisterCallbacks();
 
-                Noesis_Init(licenseName, licenseKey);
+                Noesis_Init();
 
                 Extend.Init();
             }
@@ -227,11 +235,11 @@ namespace Noesis
         /// <summary>
         /// Plays the specified sound with the provided callback.
         /// </summary>
-        public static void PlayAudio(string filename, float volume)
+        public static void PlayAudio(Uri uri, float volume)
         {
             if (_playAudioCallback != null)
             {
-                _playAudioCallback(filename, volume);
+                _playAudioCallback(uri, volume);
             }
         }
 
@@ -239,17 +247,30 @@ namespace Noesis
         /// Finds dependencies to other XAMLS and resources (fonts, textures, sounds...).
         /// </summary>
         /// <param name="xaml">Stream with xaml content.</param>
-        /// <param name="folder">Root directory used for relative dependencies.</param>
+        /// <param name="baseUri">Xaml file path used as base uri for dependencies.</param>
         /// <param name="callback">Called for each dependency found.</param>
-        public static void GetXamlDependencies(Stream xaml, string folder,
+        public static void GetXamlDependencies(Stream xaml, string baseUri,
             XamlDependencyCallback callback)
         {
             Deps deps = new Deps { Callback = callback };
             int callbackId = deps.GetHashCode();
             _depsCallbacks[callbackId] = deps;
-            Noesis_GetXamlDependencies(Extend.GetInstanceHandle(xaml), folder, callbackId, _xamlDep);
+            Noesis_GetXamlDependencies(Extend.GetInstanceHandle(xaml), baseUri, callbackId, _xamlDep);
             _depsCallbacks.Remove(callbackId);
         }
+
+        /// <summary>
+        /// Loads a XAML resource from a Stream.
+        /// </summary>
+        /// <param name="stream">Stream with xaml contents.</param>
+        /// <param name="filename">Path to the resource.</param>
+        /// <returns>Root of the loaded XAML.</returns>
+        public static object LoadXaml(Stream stream, string filename)
+        {
+            IntPtr root = Noesis_LoadStreamXaml(Extend.GetInstanceHandle(stream), filename ?? string.Empty);
+            return Extend.GetProxy(root, true);
+        }
+
 
         /// <summary>
         /// Loads a XAML resource.
@@ -258,7 +279,7 @@ namespace Noesis
         /// <returns>Root of the loaded XAML.</returns>
         public static object LoadXaml(string filename)
         {
-            IntPtr root = Noesis_LoadXaml(filename);
+            IntPtr root = Noesis_LoadXaml(filename ?? string.Empty);
             return Extend.GetProxy(root, true);
         }
 
@@ -276,7 +297,7 @@ namespace Noesis
         /// </summary>
         public static Stream LoadXamlResource(string filename)
         {
-            IntPtr stream = Noesis_LoadXamlResource(filename);
+            IntPtr stream = Noesis_LoadXamlResource(filename ?? string.Empty);
             return (Stream)Extend.GetProxy(stream, true);
         }
 
@@ -298,7 +319,7 @@ namespace Noesis
         /// </summary>
         public static void LoadComponent(object component, string filename)
         {
-            Noesis_LoadComponent(Extend.GetInstanceHandle(component), filename);
+            Noesis_LoadComponent(Extend.GetInstanceHandle(component), filename ?? string.Empty);
         }
 
         /// <summary>
@@ -400,7 +421,8 @@ namespace Noesis
             {
                 if (_initialized)
                 {
-                    _playAudioCallback(Extend.StringFromNativeUtf8(sound), volume);
+                    string uriStr = Extend.StringFromNativeUtf8(sound);
+                    _playAudioCallback(new Uri(uriStr, UriKind.RelativeOrAbsolute), volume);
                 }
             }
             catch (Exception e)
@@ -426,7 +448,8 @@ namespace Noesis
                 if (_initialized)
                 {
                     Deps deps = _depsCallbacks[callbackId];
-                    deps.Callback(Extend.StringFromNativeUtf8(uri), (XamlDependencyType)type);
+                    string uriStr = Extend.StringFromNativeUtf8(uri);
+                    deps.Callback(new Uri(uriStr, UriKind.RelativeOrAbsolute), (XamlDependencyType)type);
                 }
             }
             catch (Exception e)
@@ -484,8 +507,11 @@ namespace Noesis
         static extern void Noesis_UpdateInspector();
 
         [DllImport(Library.Name)]
-        static extern void Noesis_Init([MarshalAs(UnmanagedType.LPStr)] string licenseName,
-            [MarshalAs(UnmanagedType.LPStr)] string licenseKey);
+        static extern void Noesis_SetLicense([MarshalAs(UnmanagedType.LPStr)] string Name,
+            [MarshalAs(UnmanagedType.LPStr)] string key);
+
+        [DllImport(Library.Name)]
+        static extern void Noesis_Init();
 
         [DllImport(Library.Name)]
         static extern void Noesis_Shutdown();
@@ -527,8 +553,12 @@ namespace Noesis
 
         [DllImport(Library.Name)]
         static extern void Noesis_GetXamlDependencies(HandleRef stream,
-            [MarshalAs(UnmanagedType.LPStr)] string folder, int callbackId,
+            [MarshalAs(UnmanagedType.LPStr)] string baseUri, int callbackId,
             NoesisXamlDependencyCallback callback);
+
+        [DllImport(Library.Name)]
+        static extern IntPtr Noesis_LoadStreamXaml(HandleRef stream,
+            [MarshalAs(UnmanagedType.LPStr)] string filename);
 
         [DllImport(Library.Name)]
         static extern IntPtr Noesis_LoadXaml([MarshalAs(UnmanagedType.LPStr)] string filename);

@@ -40,6 +40,26 @@ public class Viewbox : FrameworkElement {
     }
   }
 
+  public static Point GetStretchScale(Size elementSize, Size availableSize, Stretch stretch, StretchDirection stretchDirection) {
+    IntPtr ret = NoesisGUI_PINVOKE.Viewbox_GetStretchScale__SWIG_0(ref elementSize, ref availableSize, (int)stretch, (int)stretchDirection);
+    if (ret != IntPtr.Zero) {
+      return Marshal.PtrToStructure<Point>(ret);
+    }
+    else {
+      return new Point();
+    }
+  }
+
+  public static Point GetStretchScale(Size elementSize, Size availableSize, Stretch stretch) {
+    IntPtr ret = NoesisGUI_PINVOKE.Viewbox_GetStretchScale__SWIG_1(ref elementSize, ref availableSize, (int)stretch);
+    if (ret != IntPtr.Zero) {
+      return Marshal.PtrToStructure<Point>(ret);
+    }
+    else {
+      return new Point();
+    }
+  }
+
   public static DependencyProperty StretchDirectionProperty {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Viewbox_StretchDirectionProperty_get();

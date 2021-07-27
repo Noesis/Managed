@@ -34,10 +34,10 @@ public class ButtonBase : ContentControl {
   #region Routed Events
   public event RoutedEventHandler Click {
     add {
-      AddHandler(ClickEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.ButtonBase_ClickEvent_get(), value);
     }
     remove {
-      RemoveHandler(ClickEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.ButtonBase_ClickEvent_get(), value);
     }
   }
   #endregion

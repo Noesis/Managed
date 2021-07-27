@@ -30,82 +30,82 @@ public partial class FrameworkElement : UIElement {
   #region Events
   public event ContextMenuEventHandler ContextMenuClosing {
     add {
-      AddHandler(ContextMenuClosingEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.FrameworkElement_ContextMenuClosingEvent_get(), value);
     }
     remove {
-      RemoveHandler(ContextMenuClosingEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.FrameworkElement_ContextMenuClosingEvent_get(), value);
     }
   }
 
   public event ContextMenuEventHandler ContextMenuOpening {
     add {
-      AddHandler(ContextMenuOpeningEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.FrameworkElement_ContextMenuOpeningEvent_get(), value);
     }
     remove {
-      RemoveHandler(ContextMenuOpeningEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.FrameworkElement_ContextMenuOpeningEvent_get(), value);
     }
   }
 
   public event RoutedEventHandler Loaded {
     add {
-      AddHandler(LoadedEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.FrameworkElement_LoadedEvent_get(), value);
     }
     remove {
-      RemoveHandler(LoadedEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.FrameworkElement_LoadedEvent_get(), value);
     }
   }
 
   public event RoutedEventHandler Reloaded {
     add {
-      AddHandler(ReloadedEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.FrameworkElement_ReloadedEvent_get(), value);
     }
     remove {
-      RemoveHandler(ReloadedEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.FrameworkElement_ReloadedEvent_get(), value);
     }
   }
 
   public event RequestBringIntoViewEventHandler RequestBringIntoView {
     add {
-      AddHandler(RequestBringIntoViewEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.FrameworkElement_RequestBringIntoViewEvent_get(), value);
     }
     remove {
-      RemoveHandler(RequestBringIntoViewEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.FrameworkElement_RequestBringIntoViewEvent_get(), value);
     }
   }
 
   public event SizeChangedEventHandler SizeChanged {
     add {
-      AddHandler(SizeChangedEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.FrameworkElement_SizeChangedEvent_get(), value);
     }
     remove {
-      RemoveHandler(SizeChangedEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.FrameworkElement_SizeChangedEvent_get(), value);
     }
   }
 
   public event ToolTipEventHandler ToolTipClosing {
     add {
-      AddHandler(ToolTipClosingEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.FrameworkElement_ToolTipClosingEvent_get(), value);
     }
     remove {
-      RemoveHandler(ToolTipClosingEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.FrameworkElement_ToolTipClosingEvent_get(), value);
     }
   }
 
   public event ToolTipEventHandler ToolTipOpening {
     add {
-      AddHandler(ToolTipOpeningEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.FrameworkElement_ToolTipOpeningEvent_get(), value);
     }
     remove {
-      RemoveHandler(ToolTipOpeningEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.FrameworkElement_ToolTipOpeningEvent_get(), value);
     }
   }
 
   public event RoutedEventHandler Unloaded {
     add {
-      AddHandler(UnloadedEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.FrameworkElement_UnloadedEvent_get(), value);
     }
     remove {
-      RemoveHandler(UnloadedEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.FrameworkElement_UnloadedEvent_get(), value);
     }
   }
 
@@ -213,6 +213,13 @@ public partial class FrameworkElement : UIElement {
   public static DependencyProperty ActualWidthProperty {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.FrameworkElement_ActualWidthProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static DependencyProperty BlendingModeProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.FrameworkElement_BlendingModeProperty_get();
       return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
     }
   }
@@ -472,6 +479,16 @@ public partial class FrameworkElement : UIElement {
   public float ActualWidth {
     get {
       float ret = NoesisGUI_PINVOKE.FrameworkElement_ActualWidth_get(swigCPtr);
+      return ret;
+    } 
+  }
+
+  public BlendingMode BlendingMode {
+    set {
+      NoesisGUI_PINVOKE.FrameworkElement_BlendingMode_set(swigCPtr, (int)value);
+    } 
+    get {
+      BlendingMode ret = (BlendingMode)NoesisGUI_PINVOKE.FrameworkElement_BlendingMode_get(swigCPtr);
       return ret;
     } 
   }

@@ -30,28 +30,28 @@ public class ToggleButton : ButtonBase {
   #region Events
   public event RoutedEventHandler Checked {
     add {
-      AddHandler(CheckedEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.ToggleButton_CheckedEvent_get(), value);
     }
     remove {
-      RemoveHandler(CheckedEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.ToggleButton_CheckedEvent_get(), value);
     }
   }
 
   public event RoutedEventHandler Indeterminate {
     add {
-      AddHandler(IndeterminateEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.ToggleButton_IndeterminateEvent_get(), value);
     }
     remove {
-      RemoveHandler(IndeterminateEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.ToggleButton_IndeterminateEvent_get(), value);
     }
   }
 
   public event RoutedEventHandler Unchecked {
     add {
-      AddHandler(UncheckedEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.ToggleButton_UncheckedEvent_get(), value);
     }
     remove {
-      RemoveHandler(UncheckedEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.ToggleButton_UncheckedEvent_get(), value);
     }
   }
 

@@ -33,10 +33,10 @@ public class Selector : ItemsControl {
   #region Events
   public event SelectionChangedEventHandler SelectionChanged {
     add {
-      AddHandler(SelectionChangedEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.Selector_SelectionChangedEvent_get(), value);
     }
     remove {
-      RemoveHandler(SelectionChangedEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.Selector_SelectionChangedEvent_get(), value);
     }
   }
 

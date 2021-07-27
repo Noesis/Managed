@@ -65,9 +65,7 @@ IV. CERTAIN LICENSEE OBLIGATIONS
 
 3. Marking. Licensee shall ensure that NoesisGUI logo shall appear in the initial credit section of any Licensed Product in accordance with the brand Guidelines.
 
-4. Export Controls.  The Software, including any downloading or use of, may be subject to export controls imposed by U.S. export control laws, including the U.S. Export Administration Act and its associated regulations, and may be subject to export or import regulations in other countries. Licensee agrees to comply strictly with all such regulations and acknowledges that Licensee has the responsibility to obtain licenses to export, re-export, or import the Software.
-
-5. Infringement.  Licensee agrees to promptly notify NOESIS if it becomes aware of any third party that infringes NOESIS intellectual property rights, including misappropriation of the Software or violations of the End User license agreement (an "Infringement"). NOESIS, at its discretion, shall have the right, but not the obligation, to enforce intellectual property rights against any Infringement. NOESIS shall solely control any such enforcement action. 
+4. Infringement.  Licensee agrees to promptly notify NOESIS if it becomes aware of any third party that infringes NOESIS intellectual property rights, including misappropriation of the Software or violations of the End User license agreement (an "Infringement"). NOESIS, at its discretion, shall have the right, but not the obligation, to enforce intellectual property rights against any Infringement. NOESIS shall solely control any such enforcement action. 
 
 V. TERMINATION
 --------------

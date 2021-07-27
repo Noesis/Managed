@@ -2,7 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>net45</TargetFramework>
-    <Version>3.0.0</Version>
+    <UseWPF>true</UseWPF>
+    <Version>3.0.8</Version>
+    <AssemblyVersion>3.0.8.10607</AssemblyVersion>
+    <FileVersion>3.0.8.10607</FileVersion>
     <Authors>Noesis Technologies</Authors>
     <Description>Extends Blend with new attached properties and types that expose features included in NoesisGUI.</Description>
     <Copyright>Copyright (c) 2013 Noesis Technologies S.L.</Copyright>
@@ -22,6 +25,7 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
   </PropertyGroup>
+
   <ItemGroup Condition="Exists('$(SolutionDir)LICENSE.txt')">
     <Content Include="$(SolutionDir)LICENSE.txt" PackagePath="" Pack="true" />
   </ItemGroup>
@@ -39,14 +43,9 @@
   <ItemGroup>
     <Resource Include="Theme\Fonts\*.otf" />
   </ItemGroup>
+
   <ItemGroup>
-    <PackageReference Include="Expression.Blend.Sdk.WPF" Version="1.0.1" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="WindowsBase" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
   </ItemGroup>
 
 </Project>

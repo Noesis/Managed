@@ -12,12 +12,12 @@ namespace NoesisGUIExtensions
     /// <summary>
     /// Collection of Behaviors that will be added to the Interaction.Behaviors attached property
     /// </summary>
-    public class StyleBehaviorCollection : List<System.Windows.Interactivity.Behavior> { }
+    public class StyleBehaviorCollection : List<Microsoft.Xaml.Behaviors.Behavior> { }
 
     /// <summary>
     /// Collection of Triggers that will be added to the Interaction.Triggers attached property
     /// </summary>
-    public class StyleTriggerCollection : List<System.Windows.Interactivity.TriggerBase> { }
+    public class StyleTriggerCollection : List<Microsoft.Xaml.Behaviors.TriggerBase> { }
 
     /// <summary>
     /// Provides two attached properties that will allow to specify behaviors and triggers within a Style
@@ -46,12 +46,12 @@ namespace NoesisGUIExtensions
             StyleBehaviorCollection styleBehaviors = e.NewValue as StyleBehaviorCollection;
             if (styleBehaviors != null)
             {
-                System.Windows.Interactivity.BehaviorCollection behaviors =
-                    System.Windows.Interactivity.Interaction.GetBehaviors(d);
+                Microsoft.Xaml.Behaviors.BehaviorCollection behaviors =
+                    Microsoft.Xaml.Behaviors.Interaction.GetBehaviors(d);
 
-                foreach (System.Windows.Interactivity.Behavior behavior in styleBehaviors)
+                foreach (Microsoft.Xaml.Behaviors.Behavior behavior in styleBehaviors)
                 {
-                    behaviors.Add((System.Windows.Interactivity.Behavior)behavior.Clone());
+                    behaviors.Add((Microsoft.Xaml.Behaviors.Behavior)behavior.Clone());
                 }
             }
         }
@@ -79,17 +79,17 @@ namespace NoesisGUIExtensions
             StyleTriggerCollection styleTriggers = e.NewValue as StyleTriggerCollection;
             if (styleTriggers != null)
             {
-                System.Windows.Interactivity.TriggerCollection triggers =
-                    System.Windows.Interactivity.Interaction.GetTriggers(d);
+                Microsoft.Xaml.Behaviors.TriggerCollection triggers =
+                    Microsoft.Xaml.Behaviors.Interaction.GetTriggers(d);
 
-                foreach (System.Windows.Interactivity.TriggerBase trigger in styleTriggers)
+                foreach (Microsoft.Xaml.Behaviors.TriggerBase trigger in styleTriggers)
                 {
-                    System.Windows.Interactivity.TriggerBase triggerClone =
-                        (System.Windows.Interactivity.TriggerBase)trigger.Clone();
+                    Microsoft.Xaml.Behaviors.TriggerBase triggerClone =
+                        (Microsoft.Xaml.Behaviors.TriggerBase)trigger.Clone();
 
-                    foreach (System.Windows.Interactivity.TriggerAction action in trigger.Actions)
+                    foreach (Microsoft.Xaml.Behaviors.TriggerAction action in trigger.Actions)
                     {
-                        triggerClone.Actions.Add((System.Windows.Interactivity.TriggerAction)action.Clone());
+                        triggerClone.Actions.Add((Microsoft.Xaml.Behaviors.TriggerAction)action.Clone());
                     }
 
                     triggers.Add(triggerClone);

@@ -32,25 +32,24 @@ public class XamlProvider : BaseComponent {
   }
 
   /// <summary>
-  /// Opens xaml file for reading returning a stream.
+  /// Loads XAML from the specified URI. Returns null when xaml is not found.
   /// </summary>
-  /// <param name="filename">Path to the xaml file being opened.</param>
-  public virtual Stream LoadXaml(string filename) {
+  public virtual Stream LoadXaml(Uri uri) {
     return null;
   }
 
   /// <summary>
-  /// Notifies of changes to the specified xaml file
+  /// Notifies of changes to the specified xaml file.
   /// </summary>
-  public delegate void XamlChangedHandler(string uri);
+  public delegate void XamlChangedHandler(Uri uri);
   public event XamlChangedHandler XamlChanged;
 
   /// <summary>
-  /// Raises XamlChanged event notifying Noesis that it should reload the specified xaml
+  /// Raises XamlChanged event notifying Noesis that it should reload the specified xaml.
   /// </summary>
-  public void RaiseXamlChanged(string uri) {
+  public void RaiseXamlChanged(Uri uri) {
     XamlChanged?.Invoke(uri);
-    Noesis_RaiseXamlChanged(swigCPtr, uri);
+    Noesis_RaiseXamlChanged(swigCPtr, uri.OriginalString);
   }
 
   [DllImport(Library.Name)]

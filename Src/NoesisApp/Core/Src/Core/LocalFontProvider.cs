@@ -16,15 +16,15 @@ namespace NoesisApp
             _basePath = basePath;
         }
 
-        public override Stream OpenFont(string folder, string id)
+        public override Stream OpenFont(Uri folder, string id)
         {
-            string path = System.IO.Path.Combine(_basePath, folder, id);
+            string path = System.IO.Path.Combine(_basePath, folder.GetPath(), id);
             return new FileStream(path, FileMode.Open);
         }
 
-        public override void ScanFolder(string folder)
+        public override void ScanFolder(Uri folder)
         {
-            string path = System.IO.Path.Combine(_basePath, folder);
+            string path = System.IO.Path.Combine(_basePath, folder.GetPath());
             string[] files = Directory.GetFiles(path);
             foreach (string file in files)
             {

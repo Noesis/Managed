@@ -55,6 +55,16 @@ public class InertiaExpansionBehavior : IDisposable {
     } 
   }
 
+  public float DesiredExpansion {
+    set {
+      NoesisGUI_PINVOKE.InertiaExpansionBehavior_DesiredExpansion_set(swigCPtr, value);
+    } 
+    get {
+      float ret = NoesisGUI_PINVOKE.InertiaExpansionBehavior_DesiredExpansion_get(swigCPtr);
+      return ret;
+    } 
+  }
+
   public InertiaExpansionBehavior() : this(NoesisGUI_PINVOKE.new_InertiaExpansionBehavior(), true) {
   }
 

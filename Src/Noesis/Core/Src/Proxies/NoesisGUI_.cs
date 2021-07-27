@@ -320,6 +320,31 @@ public class NoesisGUI_ {
     return ret;
   }
 
+  public static IntPtr Int32Rect_GetStaticType() {
+    IntPtr ret = NoesisGUI_PINVOKE.Int32Rect_GetStaticType();
+    return ret;
+  }
+
+  public static IntPtr Boxed_Int32Rect_GetStaticType() {
+    IntPtr ret = NoesisGUI_PINVOKE.Boxed_Int32Rect_GetStaticType();
+    return ret;
+  }
+
+  public static Int32Rect Unbox_Int32Rect(IntPtr val) {
+    IntPtr ret = NoesisGUI_PINVOKE.Unbox_Int32Rect(val);
+    if (ret != IntPtr.Zero) {
+      return Marshal.PtrToStructure<Int32Rect>(ret);
+    }
+    else {
+      return new Int32Rect();
+    }
+  }
+
+  public static IntPtr Box_Int32Rect(Int32Rect val) {
+    IntPtr ret = NoesisGUI_PINVOKE.Box_Int32Rect(ref val);
+    return ret;
+  }
+
   public static IntPtr Thickness_GetStaticType() {
     IntPtr ret = NoesisGUI_PINVOKE.Thickness_GetStaticType();
     return ret;
@@ -1068,11 +1093,11 @@ public class NoesisGUI_ {
   public static Uri Unbox_Uri(IntPtr val) {
     IntPtr uriPtr = NoesisGUI_PINVOKE.Unbox_Uri(val);
     string uri = Noesis.Extend.StringFromNativeUtf8(uriPtr);
-    return new Uri(uri, UriKind.Relative);
+    return new Uri(uri, UriKind.RelativeOrAbsolute);
   }
 
   public static IntPtr Box_Uri(Uri val) {
-    IntPtr ret = NoesisGUI_PINVOKE.Box_Uri(val != null ? UriHelper.GetPath(val) : string.Empty);
+    IntPtr ret = NoesisGUI_PINVOKE.Box_Uri(val != null ? val.OriginalString : string.Empty);
     return ret;
   }
 

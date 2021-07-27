@@ -30,19 +30,19 @@ public class Control : FrameworkElement {
   #region Events
   public event MouseButtonEventHandler MouseDoubleClick {
     add {
-      AddHandler(MouseDoubleClickEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.Control_MouseDoubleClickEvent_get(), value);
     }
     remove {
-      RemoveHandler(MouseDoubleClickEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.Control_MouseDoubleClickEvent_get(), value);
     }
   }
 
   public event MouseButtonEventHandler PreviewMouseDoubleClick {
     add {
-      AddHandler(PreviewMouseDoubleClickEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.Control_PreviewMouseDoubleClickEvent_get(), value);
     }
     remove {
-      RemoveHandler(PreviewMouseDoubleClickEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.Control_PreviewMouseDoubleClickEvent_get(), value);
     }
   }
 

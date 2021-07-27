@@ -30,6 +30,9 @@ public partial class DependencyProperty : BaseComponent {
   protected DependencyProperty() {
   }
 
+  internal static IntPtr UnsetValuePtr = NoesisGUI_PINVOKE.DependencyProperty_GetUnsetValue();
+  public static object UnsetValue = new NamedObject("DependencyProperty.UnsetValue", UnsetValuePtr);
+
   public Type OwnerType {
     get {
       return Noesis.Extend.GetNativeTypeInfo(GetOwnerTypeHelper()).Type;
@@ -64,11 +67,9 @@ public partial class DependencyProperty : BaseComponent {
     return GetMetadataHelper(Noesis.Extend.GetNativeType(forType));
   }
 
-  public static object UnsetValue {
-    get {
-      IntPtr cPtr = NoesisGUI_PINVOKE.DependencyProperty_UnsetValue_get();
-      return Noesis.Extend.GetProxy(cPtr, false);
-    }
+  private static object GetUnsetValue() {
+    IntPtr cPtr = NoesisGUI_PINVOKE.DependencyProperty_GetUnsetValue();
+    return Noesis.Extend.GetProxy(cPtr, false);
   }
 
   public string Name {

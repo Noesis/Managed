@@ -160,7 +160,7 @@ namespace NoesisApp
 
             private void Invoke(object sender, Noesis.EventArgs e)
             {
-                ((EventTriggerBase)weak.Target).OnEventImpl(sender, e);
+                ((EventTriggerBase)weak.Target)?.OnEventImpl(sender, e);
             }
         }
 

@@ -30,10 +30,10 @@ public class ScrollBar : RangeBase {
   #region Events
   public event ScrollEventHandler Scroll {
     add {
-      AddHandler(ScrollEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.ScrollBar_ScrollEvent_get(), value);
     }
     remove {
-      RemoveHandler(ScrollEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.ScrollBar_ScrollEvent_get(), value);
     }
   }
 

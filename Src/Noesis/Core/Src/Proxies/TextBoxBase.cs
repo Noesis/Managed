@@ -33,19 +33,19 @@ public class TextBoxBase : Control {
   #region Events
   public event RoutedEventHandler SelectionChanged {
     add {
-      AddHandler(SelectionChangedEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.TextBoxBase_SelectionChangedEvent_get(), value);
     }
     remove {
-      RemoveHandler(SelectionChangedEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.TextBoxBase_SelectionChangedEvent_get(), value);
     }
   }
 
   public event RoutedEventHandler TextChanged {
     add {
-      AddHandler(TextChangedEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.TextBoxBase_TextChangedEvent_get(), value);
     }
     remove {
-      RemoveHandler(TextChangedEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.TextBoxBase_TextChangedEvent_get(), value);
     }
   }
 
@@ -141,6 +141,13 @@ public class TextBoxBase : Control {
     }
   }
 
+  public static DependencyProperty PanningModeProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.TextBoxBase_PanningModeProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
   public static DependencyProperty SelectionBrushProperty {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.TextBoxBase_SelectionBrushProperty_get();
@@ -229,6 +236,16 @@ public class TextBoxBase : Control {
   public bool IsSelectionActive {
     get {
       bool ret = NoesisGUI_PINVOKE.TextBoxBase_IsSelectionActive_get(swigCPtr);
+      return ret;
+    } 
+  }
+
+  public PanningMode PanningMode {
+    set {
+      NoesisGUI_PINVOKE.TextBoxBase_PanningMode_set(swigCPtr, (int)value);
+    } 
+    get {
+      PanningMode ret = (PanningMode)NoesisGUI_PINVOKE.TextBoxBase_PanningMode_get(swigCPtr);
       return ret;
     } 
   }

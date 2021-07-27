@@ -30,19 +30,19 @@ public class ListBoxItem : ContentControl {
   #region Events
   public event RoutedEventHandler Selected {
     add {
-      AddHandler(SelectedEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.ListBoxItem_SelectedEvent_get(), value);
     }
     remove {
-      RemoveHandler(SelectedEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.ListBoxItem_SelectedEvent_get(), value);
     }
   }
 
   public event RoutedEventHandler Unselected {
     add {
-      AddHandler(UnselectedEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.ListBoxItem_UnselectedEvent_get(), value);
     }
     remove {
-      RemoveHandler(UnselectedEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.ListBoxItem_UnselectedEvent_get(), value);
     }
   }
 

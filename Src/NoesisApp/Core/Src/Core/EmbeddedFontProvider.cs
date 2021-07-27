@@ -22,10 +22,11 @@ namespace NoesisApp
 
             // Register Theme font resources
             RegisterFontResources(Theme.Assembly, Theme.Namespace);
+            RegisterFontResources(Theme.Assembly, Theme.Namespace, "Noesis.GUI.Extensions");
 
             if (_provider != null)
             {
-                _provider.FontChanged += (string baseUri, string familyName, FontWeight weight,
+                _provider.FontChanged += (Uri baseUri, string familyName, FontWeight weight,
                     FontStretch stretch, FontStyle style) =>
                 {
                     _provider.RaiseFontChanged(baseUri, familyName, weight, stretch, style);
@@ -33,7 +34,7 @@ namespace NoesisApp
             }
         }
 
-        private void RegisterFontResources(Assembly assembly, string ns)
+        private void RegisterFontResources(Assembly assembly, string ns, string component = "")
         {
             if (assembly == null) return;
 
@@ -56,38 +57,47 @@ namespace NoesisApp
                     path += tokens[tokens.Length - 1];
 
                     string folder = System.IO.Path.GetDirectoryName(path);
-                    string id = System.IO.Path.GetFileName(path);
-                    RegisterFont(folder.Replace('\\', '/'), id);
+                    folder = folder.Replace('\\', '/');
+                    if (component.Length > 0)
+                    {
+                        folder = $"/{component};component/{folder}";
+                    }
+                    string filename = System.IO.Path.GetFileName(path);
+                    RegisterFont(new Uri(folder, UriKind.RelativeOrAbsolute), filename);
                 }
             }
         }
 
-        public override void ScanFolder(string folder)
+        public override void ScanFolder(Uri folder)
         {
         }
 
-        public override Stream OpenFont(string folder, string id)
+        public override Stream OpenFont(Uri folder, string filename)
         {
             Stream stream = null;
 
             // First try with user provider
             if (_provider != null)
             {
-                stream = _provider.OpenFont(folder, id);
+                stream = _provider.OpenFont(folder, filename);
             }
 
             // Next try with application assembly resources
             if (stream == null)
             {
-                string filename = folder + (folder.Length > 0 ? "/" : "") + id;
-                stream = Application.GetAssemblyResource(_assembly, _namespace, filename);
+                string path = folder.GetPath();
+                if (path.Length > 0) path += "/";
+                path += filename;
+                stream = Application.GetAssemblyResource(_assembly, _namespace, path);
             }
 
             // Last try with Theme assembly resources
             if (stream == null)
             {
-                string filename = folder + (folder.Length > 0 ? "/" : "") + id;
-                stream = Application.GetAssemblyResource(Theme.Assembly, "NoesisApp", filename);
+                string path = folder.GetPath();
+                if (path.Length > 0) path += "/";
+                path += filename;
+                stream = Application.GetAssemblyResource(Theme.Assembly, "NoesisApp", path);
             }
 
             return stream;

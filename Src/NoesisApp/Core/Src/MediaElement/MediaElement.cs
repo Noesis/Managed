@@ -60,7 +60,7 @@ namespace NoesisApp
     /// <summary>
     /// Creation function for MediaPlayer implementation
     /// </summary>
-    public delegate MediaPlayer CreateMediaPlayerCallback(MediaElement owner, string uri, object user);
+    public delegate MediaPlayer CreateMediaPlayerCallback(MediaElement owner, Uri uri, object user);
 
     /// <summary>
     /// Represents a control that contains audio and/or video.
@@ -449,7 +449,7 @@ namespace NoesisApp
         #endregion
 
         #region MediaFailed
-        public event Noesis.RoutedEventHandler MediaFailed
+        public event ExceptionRoutedEventHandler MediaFailed
         {
             add { AddHandler(MediaFailedEvent, value); }
             remove { RemoveHandler(MediaFailedEvent, value); }
@@ -530,11 +530,10 @@ namespace NoesisApp
                 if (stateRequested != MediaState.Close && stateRequested != MediaState.Manual)
                 {
                     Uri source = Source;
-                    string sourcePath = Noesis.UriHelper.GetPath(source);
-                    if ((_state == MediaState.Close || sourceChanged) && sourcePath.Length > 0)
+                    if ((_state == MediaState.Close || sourceChanged) && source.OriginalString.Length > 0)
                     {
                         DestroyMediaPlayer();
-                        CreateMediaPlayer(sourcePath);
+                        CreateMediaPlayer(source);
                         opened = true;
                     }
                 }
@@ -584,7 +583,7 @@ namespace NoesisApp
             }
         }
 
-        private void CreateMediaPlayer(string source)
+        private void CreateMediaPlayer(Uri source)
         {
             if (_createMediaPlayerCallback != null)
             {

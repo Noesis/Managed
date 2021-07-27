@@ -44,10 +44,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-      <Version>6.2.8</Version>
+      <Version>6.2.12</Version>
     </PackageReference>
     <PackageReference Include="NuGet.CommandLine">
-      <Version>4.9.4</Version>
+      <Version>5.9.1</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -66,6 +66,7 @@
     <None Include="Noesis.App.Displays.WinRT.nuspec" />
     <None Include="$(SolutionDir)LICENSE.txt" />
     <None Include="$(SolutionDir)THIRD_PARTY.txt" />
+    <None Include="$(SolutionDir)Icon-256.png" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
@@ -75,15 +76,15 @@
     <AssemblyVersion>3.0.0.0</AssemblyVersion>
     <PackageOutputPath>$(SolutionDir)NuGet\</PackageOutputPath>
     <PackageVersion>3.0.0</PackageVersion>
-    <NuGetTool>$(NuGetPackageRoot)nuget.commandline\4.9.3\tools\NuGet.exe</NuGetTool>
+    <NuGetTool>$(NuGetPackageRoot)nuget.commandline\5.9.1\tools\NuGet.exe</NuGetTool>
     <PostBuildEvent>$(NuGetTool) pack $(ProjectDir)$(ProjectFileName) -OutputDirectory $(PackageOutputPath) -Version $(PackageVersion) -Prop Configuration=$(Configuration) -MSBuildVersion 15.9</PostBuildEvent>
   </PropertyGroup>
   <!-- Custom RegEx task for replacing AssemblyInfo version before building. -->
   <UsingTask TaskName="RegexUpdateFile" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
     <ParameterGroup>
-        <Files ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
-        <Regex ParameterType="System.String" Required="true" />
-        <ReplacementText ParameterType="System.String" Required="true" />
+      <Files ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+      <Regex ParameterType="System.String" Required="true" />
+      <ReplacementText ParameterType="System.String" Required="true" />
     </ParameterGroup>
     <Task>
         <Reference Include="System.Core" />
@@ -118,30 +119,26 @@
   <Target Name="BeforeBuild">
     <!-- Find AssemblyInfo.cs in the "Compile" Items. Remove it from "Compile" Items because we will use a modified version instead. -->
     <ItemGroup>
-        <OriginalAssemblyInfo Include="@(Compile)" Condition="%(Filename) == 'AssemblyInfo' And %(Extension) == '.cs'" />
-        <Compile Remove="**/AssemblyInfo.cs" />
+      <OriginalAssemblyInfo Include="@(Compile)" Condition="%(Filename) == 'AssemblyInfo' And %(Extension) == '.cs'" />
+      <Compile Remove="**/AssemblyInfo.cs" />
     </ItemGroup>
     <!-- Copy the original AssemblyInfo.cs to obj\ folder, i.e. $(IntermediateOutputPath). The copied filepath is saved into @(ModifiedAssemblyInfo) Item. -->
-    <Copy SourceFiles="@(OriginalAssemblyInfo)"
-          DestinationFiles="@(OriginalAssemblyInfo->'$(IntermediateOutputPath)%(Identity)')">
-        <Output TaskParameter="DestinationFiles" ItemName="ModifiedAssemblyInfo"/>
+    <Copy SourceFiles="@(OriginalAssemblyInfo)" DestinationFiles="@(OriginalAssemblyInfo->'$(IntermediateOutputPath)%(Identity)')">
+      <Output TaskParameter="DestinationFiles" ItemName="ModifiedAssemblyInfo" />
     </Copy>
     <!-- Update the version in AssemblyVersion, AssemblyFileVersion and AssemblyInformationalVersion attributes using regular expression. -->
     <RegexUpdateFile Files="@(ModifiedAssemblyInfo)"
                 Regex="AssemblyVersion\(&quot;(\d+)\.(\d+)(\.(\d+)\.(\d+)|\.*)&quot;\)"
-                ReplacementText="AssemblyVersion(&quot;$(AssemblyVersion)&quot;)"
-                />
+                ReplacementText="AssemblyVersion(&quot;$(AssemblyVersion)&quot;)" />
     <RegexUpdateFile Files="@(ModifiedAssemblyInfo)"
                 Regex="AssemblyFileVersion\(&quot;(\d+)\.(\d+)(\.(\d+)\.(\d+)|\.*)&quot;\)"
-                ReplacementText="AssemblyFileVersion(&quot;$(AssemblyVersion)&quot;)"
-                />
+                ReplacementText="AssemblyFileVersion(&quot;$(AssemblyVersion)&quot;)" />
     <RegexUpdateFile Files="@(ModifiedAssemblyInfo)"
                 Regex="AssemblyInformationalVersion\(&quot;(\d+)\.(\d+)(\.(\d+)|\.*)&quot;\)"
-                ReplacementText="AssemblyInformationalVersion(&quot;$(PackageVersion)&quot;)"
-                />
+                ReplacementText="AssemblyInformationalVersion(&quot;$(PackageVersion)&quot;)" />
     <!-- Include the modified AssemblyInfo.cs file in "Compile" items (instead of the original). -->
     <ItemGroup>
-        <Compile Include="@(ModifiedAssemblyInfo)" />
+      <Compile Include="@(ModifiedAssemblyInfo)" />
     </ItemGroup>
   </Target>
 </Project>

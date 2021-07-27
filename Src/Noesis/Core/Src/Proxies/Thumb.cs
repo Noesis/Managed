@@ -30,28 +30,28 @@ public class Thumb : Control {
   #region Events
   public event DragCompletedEventHandler DragCompleted {
     add {
-      AddHandler(DragCompletedEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.Thumb_DragCompletedEvent_get(), value);
     }
     remove {
-      RemoveHandler(DragCompletedEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.Thumb_DragCompletedEvent_get(), value);
     }
   }
 
   public event DragDeltaEventHandler DragDelta {
     add {
-      AddHandler(DragDeltaEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.Thumb_DragDeltaEvent_get(), value);
     }
     remove {
-      RemoveHandler(DragDeltaEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.Thumb_DragDeltaEvent_get(), value);
     }
   }
 
   public event DragStartedEventHandler DragStarted {
     add {
-      AddHandler(DragStartedEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.Thumb_DragStartedEvent_get(), value);
     }
     remove {
-      RemoveHandler(DragStartedEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.Thumb_DragStartedEvent_get(), value);
     }
   }
 

@@ -212,7 +212,7 @@ namespace NoesisApp
         private const int READ_FLAG_BLOCKING = 8;
 
         private const int READ_STATUS_SUCCESS = 0;
-        private const int READ_STATUS_SYNC = 0;
+        private const int READ_STATUS_SYNC = 1;
 
         #region Event codes
         private const ushort EV_SYN = 0x00;

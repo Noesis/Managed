@@ -16,6 +16,14 @@ namespace NoesisGUIExtensions
         Disabled
     }
 
+    public enum BlendingMode
+    {
+        Normal,
+        Multiply,
+        Screen,
+        Additive
+    }
+
     /// <summary>
     /// Extends UI elements with properties not supported by WPF but included in Noesis
     /// </summary>
@@ -165,6 +173,23 @@ namespace NoesisGUIExtensions
             return (double)element.GetValue(PPAAOutProperty);
         }
 
+        #endregion
+
+        /// <summary>
+        /// Gets or sets a value indicating how the element's contents are mixed with the background.
+        /// </summary>
+        #region BlendingMode
+        public static readonly DependencyProperty BlendingModeProperty = DependencyProperty.RegisterAttached(
+            "BlendingMode", typeof(BlendingMode), typeof(Element), new PropertyMetadata(BlendingMode.Normal));
+
+        public static BlendingMode GetBlendingMode(DependencyObject obj)
+        {
+            return (BlendingMode)obj.GetValue(BlendingModeProperty);
+        }
+        public static void SetBlendingMode(DependencyObject obj, BlendingMode value)
+        {
+            obj.SetValue(BlendingModeProperty, value);
+        }
         #endregion
 
         /// <summary>

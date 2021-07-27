@@ -55,6 +55,16 @@ public class InertiaRotationBehavior : IDisposable {
     } 
   }
 
+  public float DesiredRotation {
+    set {
+      NoesisGUI_PINVOKE.InertiaRotationBehavior_DesiredRotation_set(swigCPtr, value);
+    } 
+    get {
+      float ret = NoesisGUI_PINVOKE.InertiaRotationBehavior_DesiredRotation_get(swigCPtr);
+      return ret;
+    } 
+  }
+
   public InertiaRotationBehavior() : this(NoesisGUI_PINVOKE.new_InertiaRotationBehavior(), true) {
   }
 

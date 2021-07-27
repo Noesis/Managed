@@ -18,7 +18,8 @@ namespace Noesis
 public enum XamlDependencyType {
   Filename,
   Font,
-  UserControl
+  UserControl,
+  Root
 }
 
 }

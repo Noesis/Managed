@@ -119,8 +119,7 @@ namespace Noesis
             {
                 IntPtr uriPtr = MarkupExtensionProvider_BaseUri(_provider);
                 string uri = Extend.StringFromNativeUtf8(uriPtr);
-                NoesisGUI_PINVOKE.FreeString(uriPtr);
-                return new Uri(uri, UriKind.Relative);
+                return new Uri(uri, UriKind.RelativeOrAbsolute);
             }
         }
 

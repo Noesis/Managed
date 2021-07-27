@@ -44,52 +44,68 @@ namespace NoesisApp
         protected override void Invoke(object parameter)
         {
             Storyboard storyboard = Storyboard;
-            if (AssociatedObject != null && storyboard != null)
+            DependencyObject associatedObject = AssociatedObject;
+            if (associatedObject != null && storyboard != null)
             {
-                switch (ControlStoryboardOption)
+                // First try with the scope where Storyboard was defined as target
+                FrameworkElement target = FrameworkElement.FindTreeElement(storyboard);
+                if (target == null || target.View == null)
                 {
-                    case ControlStoryboardOption.Play:
+                    // In case Storyboard was defined in Application resources or the Resources of a
+                    // template element, we next try with the scope of the associated object as target
+                    target = FrameworkElement.FindTreeElement(associatedObject);
+                }
+
+                // Execute the Storyboard action if we have a valid target connected to the UI tree
+                if (target != null && target.View != null)
+                {
+                    switch (ControlStoryboardOption)
                     {
-                        storyboard.Begin();
-                        break;
-                    }
-                    case ControlStoryboardOption.Stop:
-                    {
-                        storyboard.Stop();
-                        break;
-                    }
-                    case ControlStoryboardOption.TogglePlayPause:
-                    {
-                        if (storyboard.IsPlaying())
+                        case ControlStoryboardOption.Play:
                         {
-                            if (storyboard.IsPaused())
+                            FrameworkElement ns = FrameworkElement.FindTreeElement(associatedObject);
+                            storyboard.Begin(target, ns, true);
+                            break;
+                        }
+                        case ControlStoryboardOption.Stop:
+                        {
+                            storyboard.Stop(target);
+                            break;
+                        }
+                        case ControlStoryboardOption.TogglePlayPause:
+                        {
+                            if (storyboard.IsPlaying(target))
                             {
-                                storyboard.Resume();
+                                if (storyboard.IsPaused(target))
+                                {
+                                    storyboard.Resume(target);
+                                }
+                                else
+                                {
+                                    storyboard.Pause(target);
+                                }
                             }
                             else
                             {
-                                storyboard.Pause();
+                                FrameworkElement ns = FrameworkElement.FindTreeElement(associatedObject);
+                                storyboard.Begin(target, ns, true);
                             }
+                            break;
                         }
-                        else
+                        case ControlStoryboardOption.Pause:
                         {
-                            storyboard.Begin();
+                            storyboard.Pause(target);
+                            break;
                         }
-                        break;
-                    }
-                    case ControlStoryboardOption.Pause:
-                    {
-                        storyboard.Pause();
-                        break;
-                    }
-                    case ControlStoryboardOption.Resume:
-                    {
-                        storyboard.Resume();
-                        break;
-                    }
-                    case ControlStoryboardOption.SkipToFill:
-                    {
-                        throw new NotImplementedException("Storyboard.SkipToFill");
+                        case ControlStoryboardOption.Resume:
+                        {
+                            storyboard.Resume(target);
+                            break;
+                        }
+                        case ControlStoryboardOption.SkipToFill:
+                        {
+                            throw new NotImplementedException("Storyboard.SkipToFill");
+                        }
                     }
                 }
             }

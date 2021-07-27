@@ -312,12 +312,12 @@ public class ResourceDictionary : BaseDictionary, IDictionary {
 
   public Uri Source {
     set {
-      NoesisGUI_PINVOKE.ResourceDictionary_Source_set(swigCPtr, value != null ? UriHelper.GetPath(value) : string.Empty);
+      NoesisGUI_PINVOKE.ResourceDictionary_Source_set(swigCPtr, value != null ? value.OriginalString : string.Empty);
     }
     get {
       IntPtr uriPtr = NoesisGUI_PINVOKE.ResourceDictionary_Source_get(swigCPtr);
       string uri = Noesis.Extend.StringFromNativeUtf8(uriPtr);
-      return new Uri(uri, UriKind.Relative);
+      return new Uri(uri, UriKind.RelativeOrAbsolute);
     }
   }
 

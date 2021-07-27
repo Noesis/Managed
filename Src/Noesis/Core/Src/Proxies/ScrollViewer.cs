@@ -30,10 +30,10 @@ public class ScrollViewer : ContentControl {
   #region Events
   public event ScrollChangedEventHandler ScrollChanged {
     add {
-      AddHandler(ScrollChangedEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.ScrollViewer_ScrollChangedEvent_get(), value);
     }
     remove {
-      RemoveHandler(ScrollChangedEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.ScrollViewer_ScrollChangedEvent_get(), value);
     }
   }
 

@@ -30,19 +30,19 @@ public class ContextMenu : MenuBase {
   #region Events
   public event RoutedEventHandler Closed {
     add {
-      AddHandler(ClosedEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.ContextMenu_ClosedEvent_get(), value);
     }
     remove {
-      RemoveHandler(ClosedEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.ContextMenu_ClosedEvent_get(), value);
     }
   }
 
   public event RoutedEventHandler Opened {
     add {
-      AddHandler(OpenedEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.ContextMenu_OpenedEvent_get(), value);
     }
     remove {
-      RemoveHandler(OpenedEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.ContextMenu_OpenedEvent_get(), value);
     }
   }
 

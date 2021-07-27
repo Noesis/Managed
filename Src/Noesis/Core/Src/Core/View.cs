@@ -48,6 +48,14 @@ namespace Noesis
 
         #region Configuration
         /// <summary>
+        /// Sets DPI scale value. Default is 1.0 which corresponds to 96 pixels per inch.
+        /// </summary>
+        public void SetScale(float scale)
+        {
+            Noesis_View_SetScale(CPtr, scale);
+        }
+
+        /// <summary>
         /// Sets the size of the surface where UI elements will layout and render.
         /// </summary>
         /// <param name="width">Surface width in pixels.</param>
@@ -547,6 +555,9 @@ namespace Noesis
 
         [DllImport(Library.Name)]
         static extern IntPtr Noesis_View_GetContent(HandleRef view);
+
+        [DllImport(Library.Name)]
+        static extern void Noesis_View_SetScale(HandleRef view, float scale);
 
         [DllImport(Library.Name)]
         static extern void Noesis_View_SetSize(HandleRef view, int width, int height);

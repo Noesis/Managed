@@ -27,6 +27,7 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
   </PropertyGroup>
+
   <ItemGroup Condition="Exists('$(SolutionDir)LICENSE.txt')">
     <Content Include="$(SolutionDir)LICENSE.txt" PackagePath="" Pack="true" />
   </ItemGroup>

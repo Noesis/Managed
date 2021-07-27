@@ -30,37 +30,37 @@ public class TreeViewItem : HeaderedItemsControl {
   #region Events
   public event RoutedEventHandler Collapsed {
     add {
-      AddHandler(CollapsedEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.TreeViewItem_CollapsedEvent_get(), value);
     }
     remove {
-      RemoveHandler(CollapsedEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.TreeViewItem_CollapsedEvent_get(), value);
     }
   }
 
   public event RoutedEventHandler Expanded {
     add {
-      AddHandler(ExpandedEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.TreeViewItem_ExpandedEvent_get(), value);
     }
     remove {
-      RemoveHandler(ExpandedEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.TreeViewItem_ExpandedEvent_get(), value);
     }
   }
 
   public event RoutedEventHandler Selected {
     add {
-      AddHandler(SelectedEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.TreeViewItem_SelectedEvent_get(), value);
     }
     remove {
-      RemoveHandler(SelectedEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.TreeViewItem_SelectedEvent_get(), value);
     }
   }
 
   public event RoutedEventHandler Unselected {
     add {
-      AddHandler(UnselectedEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.TreeViewItem_UnselectedEvent_get(), value);
     }
     remove {
-      RemoveHandler(UnselectedEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.TreeViewItem_UnselectedEvent_get(), value);
     }
   }
 

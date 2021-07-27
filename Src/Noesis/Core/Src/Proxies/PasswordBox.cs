@@ -30,10 +30,10 @@ public class PasswordBox : Control {
   #region Events
   public event RoutedEventHandler PasswordChanged {
     add {
-      AddHandler(PasswordChangedEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.PasswordBox_PasswordChangedEvent_get(), value);
     }
     remove {
-      RemoveHandler(PasswordChangedEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.PasswordBox_PasswordChangedEvent_get(), value);
     }
   }
 

@@ -106,6 +106,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr Extend_Border(IntPtr typeName);
 
   [DllImport(Library.Name)]
+  public static extern IntPtr Extend_BrushShader(IntPtr typeName);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr Extend_BulletDecorator(IntPtr typeName);
 
   [DllImport(Library.Name)]
@@ -131,6 +134,9 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr Extend_Control(IntPtr typeName);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Extend_CroppedBitmap(IntPtr typeName);
 
   [DllImport(Library.Name)]
   public static extern IntPtr Extend_DataTemplateSelector(IntPtr typeName);
@@ -226,6 +232,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr Extend_Separator(IntPtr typeName);
 
   [DllImport(Library.Name)]
+  public static extern IntPtr Extend_ShaderEffect(IntPtr typeName);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr Extend_Shape(IntPtr typeName);
 
   [DllImport(Library.Name)]
@@ -254,6 +263,9 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr Extend_TextBox(IntPtr typeName);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Extend_TextureSource(IntPtr typeName);
 
   [DllImport(Library.Name)]
   public static extern IntPtr Extend_Thumb(IntPtr typeName);
@@ -554,6 +566,22 @@ internal class NoesisGUI_PINVOKE {
   public static extern bool Rect_TryParse([MarshalAs(UnmanagedType.LPWStr)]string jarg1, out Rect jarg2);
 
   [DllImport(Library.Name)]
+  public static extern IntPtr Int32Rect_GetStaticType();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Boxed_Int32Rect_GetStaticType();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Unbox_Int32Rect(IntPtr jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Box_Int32Rect(ref Int32Rect jarg1);
+
+  [DllImport(Library.Name)]
+  [return: MarshalAs(UnmanagedType.U1)]
+  public static extern bool Int32Rect_TryParse([MarshalAs(UnmanagedType.LPWStr)]string jarg1, out Int32Rect jarg2);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr Thickness_GetStaticType();
 
   [DllImport(Library.Name)]
@@ -676,7 +704,7 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr NullableKeyTime_GetStaticType();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr DependencyProperty_UnsetValue_get();
+  public static extern IntPtr DependencyProperty_GetUnsetValue();
 
   [DllImport(Library.Name)]
   public static extern IntPtr DependencyProperty_Name_get(HandleRef jarg1);
@@ -1187,23 +1215,6 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr Unbox_CustomEnum(IntPtr jarg1, ref int jarg2);
 
   [DllImport(Library.Name)]
-  public static extern void Texture_SetPrivateData(HandleRef jarg1, HandleRef jarg2);
-
-  [DllImport(Library.Name)]
-  public static extern uint Texture_Width_get(HandleRef jarg1);
-
-  [DllImport(Library.Name)]
-  public static extern uint Texture_Height_get(HandleRef jarg1);
-
-  [DllImport(Library.Name)]
-  [return: MarshalAs(UnmanagedType.U1)]
-  public static extern bool Texture_HasMipMaps_get(HandleRef jarg1);
-
-  [DllImport(Library.Name)]
-  [return: MarshalAs(UnmanagedType.U1)]
-  public static extern bool Texture_IsInverted_get(HandleRef jarg1);
-
-  [DllImport(Library.Name)]
   public static extern void FontProvider_RegisterFontHelper(HandleRef jarg1, [MarshalAs(UnmanagedType.LPWStr)]string jarg2, [MarshalAs(UnmanagedType.LPWStr)]string jarg3);
 
   [DllImport(Library.Name)]
@@ -1316,16 +1327,34 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr BitmapImage_UriSource_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
+  public static extern IntPtr new_CroppedBitmap__SWIG_0();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr new_CroppedBitmap__SWIG_1(HandleRef jarg1, ref Int32Rect jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr CroppedBitmap_SourceProperty_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr CroppedBitmap_SourceRectProperty_get();
+
+  [DllImport(Library.Name)]
+  public static extern void CroppedBitmap_Source_set(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr CroppedBitmap_Source_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void CroppedBitmap_SourceRect_set(HandleRef jarg1, ref Int32Rect jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr CroppedBitmap_SourceRect_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr new_TextureSource__SWIG_0();
 
   [DllImport(Library.Name)]
   public static extern IntPtr new_TextureSource__SWIG_1(HandleRef jarg1);
-
-  [DllImport(Library.Name)]
-  public static extern int TextureSource_PixelWidth_get(HandleRef jarg1);
-
-  [DllImport(Library.Name)]
-  public static extern int TextureSource_PixelHeight_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern void TextureSource_Texture_set(HandleRef jarg1, HandleRef jarg2);
@@ -2279,10 +2308,28 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr ImageBrush_ImageSourceProperty_get();
 
   [DllImport(Library.Name)]
+  public static extern IntPtr ImageBrush_ShaderProperty_get();
+
+  [DllImport(Library.Name)]
   public static extern void ImageBrush_ImageSource_set(HandleRef jarg1, HandleRef jarg2);
 
   [DllImport(Library.Name)]
   public static extern IntPtr ImageBrush_ImageSource_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void ImageBrush_Shader_set(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr ImageBrush_Shader_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void BrushShader_SetPixelShader(HandleRef jarg1, IntPtr jarg2, int jarg3);
+
+  [DllImport(Library.Name)]
+  public static extern void BrushShader_SetConstantBuffer(HandleRef jarg1, IntPtr jarg2, uint jarg3);
+
+  [DllImport(Library.Name)]
+  public static extern void BrushShader_InvalidateConstantBuffer(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern IntPtr new_Pen();
@@ -2583,6 +2630,18 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern float DropShadowEffect_ShadowDepth_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void ShaderEffect_SetPadding(HandleRef jarg1, float jarg2, float jarg3, float jarg4, float jarg5);
+
+  [DllImport(Library.Name)]
+  public static extern void ShaderEffect_SetPixelShader(HandleRef jarg1, IntPtr jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern void ShaderEffect_SetConstantBuffer(HandleRef jarg1, IntPtr jarg2, uint jarg3);
+
+  [DllImport(Library.Name)]
+  public static extern void ShaderEffect_InvalidateConstantBuffer(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   [return: MarshalAs(UnmanagedType.U1)]
@@ -3111,6 +3170,39 @@ internal class NoesisGUI_PINVOKE {
   public static extern int GeometryGroup_FillRule_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
+  public static extern IntPtr new_DrawingContext();
+
+  [DllImport(Library.Name)]
+  public static extern void DrawingContext_DrawLine(HandleRef jarg1, HandleRef jarg2, ref Point jarg3, ref Point jarg4);
+
+  [DllImport(Library.Name)]
+  public static extern void DrawingContext_DrawRectangle(HandleRef jarg1, HandleRef jarg2, HandleRef jarg3, ref Rect jarg4);
+
+  [DllImport(Library.Name)]
+  public static extern void DrawingContext_DrawRoundedRectangle(HandleRef jarg1, HandleRef jarg2, HandleRef jarg3, ref Rect jarg4, float jarg5, float jarg6);
+
+  [DllImport(Library.Name)]
+  public static extern void DrawingContext_DrawEllipse(HandleRef jarg1, HandleRef jarg2, HandleRef jarg3, ref Point jarg4, float jarg5, float jarg6);
+
+  [DllImport(Library.Name)]
+  public static extern void DrawingContext_DrawGeometry(HandleRef jarg1, HandleRef jarg2, HandleRef jarg3, HandleRef jarg4);
+
+  [DllImport(Library.Name)]
+  public static extern void DrawingContext_DrawImage(HandleRef jarg1, HandleRef jarg2, ref Rect jarg3);
+
+  [DllImport(Library.Name)]
+  public static extern void DrawingContext_DrawText(HandleRef jarg1, HandleRef jarg2, ref Rect jarg3);
+
+  [DllImport(Library.Name)]
+  public static extern void DrawingContext_Pop(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void DrawingContext_PushClip(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern void DrawingContext_PushTransform(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr new_FontFamily__SWIG_0();
 
   [DllImport(Library.Name)]
@@ -3374,7 +3466,13 @@ internal class NoesisGUI_PINVOKE {
   public static extern int MouseWheelEventArgs_Delta_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
-  public static extern IntPtr new_MouseWheelEventArgs(HandleRef jarg1, HandleRef jarg2, int jarg3);
+  public static extern int MouseWheelEventArgs_Orientation_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr new_MouseWheelEventArgs__SWIG_0(HandleRef jarg1, HandleRef jarg2, int jarg3, int jarg4);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr new_MouseWheelEventArgs__SWIG_1(HandleRef jarg1, HandleRef jarg2, int jarg3);
 
   [DllImport(Library.Name)]
   public static extern void delete_MouseWheelEventArgs(HandleRef jarg1);
@@ -3531,6 +3629,12 @@ internal class NoesisGUI_PINVOKE {
   public static extern float InertiaExpansionBehavior_DesiredDeceleration_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
+  public static extern void InertiaExpansionBehavior_DesiredExpansion_set(HandleRef jarg1, float jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern float InertiaExpansionBehavior_DesiredExpansion_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr new_InertiaExpansionBehavior();
 
   [DllImport(Library.Name)]
@@ -3543,6 +3647,12 @@ internal class NoesisGUI_PINVOKE {
   public static extern float InertiaRotationBehavior_DesiredDeceleration_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
+  public static extern void InertiaRotationBehavior_DesiredRotation_set(HandleRef jarg1, float jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern float InertiaRotationBehavior_DesiredRotation_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr new_InertiaRotationBehavior();
 
   [DllImport(Library.Name)]
@@ -3553,6 +3663,12 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern float InertiaTranslationBehavior_DesiredDeceleration_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void InertiaTranslationBehavior_DesiredDisplacement_set(HandleRef jarg1, float jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern float InertiaTranslationBehavior_DesiredDisplacement_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern IntPtr new_InertiaTranslationBehavior();
@@ -4758,6 +4874,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr FrameworkElement_ActualWidthProperty_get();
 
   [DllImport(Library.Name)]
+  public static extern IntPtr FrameworkElement_BlendingModeProperty_get();
+
+  [DllImport(Library.Name)]
   public static extern IntPtr FrameworkElement_ContextMenuProperty_get();
 
   [DllImport(Library.Name)]
@@ -4867,6 +4986,12 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern float FrameworkElement_ActualWidth_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void FrameworkElement_BlendingMode_set(HandleRef jarg1, int jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern int FrameworkElement_BlendingMode_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern void FrameworkElement_ContextMenu_set(HandleRef jarg1, HandleRef jarg2);
@@ -6360,6 +6485,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr TextBoxBase_IsSelectionActiveProperty_get();
 
   [DllImport(Library.Name)]
+  public static extern IntPtr TextBoxBase_PanningModeProperty_get();
+
+  [DllImport(Library.Name)]
   public static extern IntPtr TextBoxBase_SelectionBrushProperty_get();
 
   [DllImport(Library.Name)]
@@ -6410,6 +6538,12 @@ internal class NoesisGUI_PINVOKE {
   [DllImport(Library.Name)]
   [return: MarshalAs(UnmanagedType.U1)]
   public static extern bool TextBoxBase_IsSelectionActive_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void TextBoxBase_PanningMode_set(HandleRef jarg1, int jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern int TextBoxBase_PanningMode_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern void TextBoxBase_SelectionBrush_set(HandleRef jarg1, HandleRef jarg2);
@@ -10646,6 +10780,12 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr new_Viewbox();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Viewbox_GetStretchScale__SWIG_0(ref Size jarg1, ref Size jarg2, int jarg3, int jarg4);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Viewbox_GetStretchScale__SWIG_1(ref Size jarg1, ref Size jarg2, int jarg3);
 
   [DllImport(Library.Name)]
   public static extern IntPtr Viewbox_StretchDirectionProperty_get();

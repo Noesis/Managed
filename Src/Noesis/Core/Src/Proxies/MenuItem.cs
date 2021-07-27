@@ -31,46 +31,46 @@ public class MenuItem : HeaderedItemsControl {
   #region Routed Events
   public event RoutedEventHandler Click {
     add {
-      AddHandler(ClickEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.MenuItem_ClickEvent_get(), value);
     }
     remove {
-      RemoveHandler(ClickEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.MenuItem_ClickEvent_get(), value);
     }
   }
 
   public event RoutedEventHandler Checked {
     add {
-      AddHandler(CheckedEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.MenuItem_CheckedEvent_get(), value);
     }
     remove {
-      RemoveHandler(CheckedEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.MenuItem_CheckedEvent_get(), value);
     }
   }
 
   public event RoutedEventHandler Unchecked {
     add {
-      AddHandler(UncheckedEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.MenuItem_UncheckedEvent_get(), value);
     }
     remove {
-      RemoveHandler(UncheckedEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.MenuItem_UncheckedEvent_get(), value);
     }
   }
 
   public event RoutedEventHandler SubmenuClosed {
     add {
-      AddHandler(SubmenuClosedEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.MenuItem_SubmenuClosedEvent_get(), value);
     }
     remove {
-      RemoveHandler(SubmenuClosedEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.MenuItem_SubmenuClosedEvent_get(), value);
     }
   }
 
   public event RoutedEventHandler SubmenuOpened {
     add {
-      AddHandler(SubmenuOpenedEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.MenuItem_SubmenuOpenedEvent_get(), value);
     }
     remove {
-      RemoveHandler(SubmenuOpenedEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.MenuItem_SubmenuOpenedEvent_get(), value);
     }
   }
   #endregion

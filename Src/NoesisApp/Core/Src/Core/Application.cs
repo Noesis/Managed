@@ -92,7 +92,8 @@ namespace NoesisApp
             Error.SetUnhandledCallback(UnhandledCallback);
 
             LicenseInfo license = GetLicenseInfo();
-            GUI.Init(license.Name, license.Key);
+            GUI.SetLicense(license.Name, license.Key);
+            GUI.Init();
         }
 
         private struct LicenseInfo
@@ -191,9 +192,9 @@ namespace NoesisApp
                 Display.OpenUrl(url);
             });
 
-            GUI.SetPlayAudioCallback((string filename, float volume) =>
+            GUI.SetPlayAudioCallback((Uri uri, float volume) =>
             {
-                Display.PlayAudio(filename, volume);
+                Display.PlayAudio(uri, volume);
             });
 
             // Set resource providers
@@ -238,7 +239,6 @@ namespace NoesisApp
                 MainWindow.Title = Title;
             }
 
-            uint samples = Samples;
             bool vsync = VSync;
             bool sRGB = StandardRGB;
             bool ppaa = PPAA;
@@ -248,10 +248,17 @@ namespace NoesisApp
             uint holdingDistanceThreshold = HoldingDistanceThreshold;
             uint doubleTapTimeThreshold = DoubleTapTimeThreshold;
             uint doubleTapDistanceThreshold = DoubleTapDistanceThreshold;
+            uint samples = Samples;
 
             RenderContext renderContext = CreateRenderContext();
             renderContext.Init(Display.NativeHandle, Display.NativeWindow, samples, vsync, sRGB);
             renderContext.Device.OffscreenSampleCount = samples;
+            renderContext.Device.OffscreenWidth = OffscreenWidth;
+            renderContext.Device.OffscreenHeight = OffscreenHeight;
+            renderContext.Device.OffscreenDefaultNumSurfaces = OffscreenDefaultNumSurfaces;
+            renderContext.Device.OffscreenMaxNumSurfaces = OffscreenMaxNumSurfaces;
+            renderContext.Device.GlyphCacheWidth = GlyphCacheWidth;
+            renderContext.Device.GlyphCacheHeight = GlyphCacheHeight;
 
             Display.NativeHandleChanged += (Display display, IntPtr window) =>
             {
@@ -425,9 +432,9 @@ namespace NoesisApp
             get { return ""; }
         }
 
-        protected virtual uint Samples
+        protected virtual bool RunInBackground
         {
-            get { return 1; }
+            get { return false; }
         }
 
         protected virtual bool VSync
@@ -450,11 +457,7 @@ namespace NoesisApp
             get { return false; }
         }
 
-        protected virtual bool RunInBackground
-        {
-            get { return false; }
-        }
-
+        #region Touch configuration
         protected virtual bool EmulateTouch
         {
             get { return false; }
@@ -479,6 +482,44 @@ namespace NoesisApp
         {
             get { return 10; }
         }
+        #endregion
+
+        #region RenderDevice configuration
+        protected virtual uint Samples
+        {
+            get { return 1; }
+        }
+
+        protected virtual uint OffscreenWidth
+        {
+            get { return 0; }
+        }
+
+        protected virtual uint OffscreenHeight
+        {
+            get { return 0; }
+        }
+
+        protected virtual uint OffscreenDefaultNumSurfaces
+        {
+            get { return 0; }
+        }
+
+        protected virtual uint OffscreenMaxNumSurfaces
+        {
+            get { return 0; }
+        }
+
+        protected virtual uint GlyphCacheWidth
+        {
+            get { return 1024; }
+        }
+
+        protected virtual uint GlyphCacheHeight
+        {
+            get { return 1024; }
+        }
+        #endregion
 
         protected virtual void OnStartup(StartupEventArgs e)
         {

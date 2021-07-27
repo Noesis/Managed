@@ -7,7 +7,7 @@ using System;
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.Windows;
-using System.Windows.Interactivity;
+using Microsoft.Xaml.Behaviors;
 
 namespace NoesisGUIExtensions
 {

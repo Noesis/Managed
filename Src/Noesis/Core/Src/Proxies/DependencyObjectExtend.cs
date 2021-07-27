@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 namespace Noesis
 {
+    public delegate void EnumDependencyPropertiesDelegate(DependencyProperty dp, object value);
 
     public partial class DependencyObject
     {
@@ -163,7 +164,7 @@ namespace Noesis
                 CheckProperty(cPtr, dp, "get");
                 IntPtr ptr = Noesis_DependencyGet_Uri(cPtr, dp);
                 string uri = Noesis.Extend.StringFromNativeUtf8(ptr);
-                return new Uri(uri, UriKind.Relative);
+                return new Uri(uri, UriKind.RelativeOrAbsolute);
             };
             getFunctions[typeof(Noesis.Color)] = (cPtr, dp) =>
             {
@@ -824,10 +825,6 @@ namespace Noesis
             return setFunctions;
         }
 
-        #endregion
-
-        #region Imports
-
         private static void CheckProperty(IntPtr dependencyObject, IntPtr dependencyProperty, string msg)
         {
             if (dependencyObject == IntPtr.Zero)
@@ -840,6 +837,47 @@ namespace Noesis
                 throw new Exception("Can't " + msg + " value, DependencyProperty is null");
             }
         }
+
+        #endregion
+
+        #region Enum properties
+        public void EnumProperties(EnumDependencyPropertiesDelegate callback)
+        {
+            EnumPropsInfo info = new EnumPropsInfo { Callback = callback };
+            int id = info.GetHashCode();
+            _enumPropsInfo[id] = info;
+            Noesis_Dependency_EnumProps(swigCPtr.Handle, id, _enumProps);
+            _enumPropsInfo.Remove(id);
+        }
+
+        private delegate void NoesisEnumPropertiesCallback(int id, IntPtr dpPtr, IntPtr valPtr);
+        private static NoesisEnumPropertiesCallback _enumProps = OnEnumProperties;
+        [MonoPInvokeCallback(typeof(NoesisEnumPropertiesCallback))]
+        private static void OnEnumProperties(int id, IntPtr dpPtr, IntPtr valPtr)
+        {
+            try
+            {
+                EnumPropsInfo info = _enumPropsInfo[id];
+                DependencyProperty dp = (DependencyProperty)Noesis.Extend.GetProxy(dpPtr, false);
+                object val = Noesis.Extend.GetProxy(valPtr, true);
+                info.Callback(dp, val);
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        private struct EnumPropsInfo
+        {
+            public EnumDependencyPropertiesDelegate Callback;
+        }
+
+        private static Dictionary<int, EnumPropsInfo> _enumPropsInfo = new Dictionary<int, EnumPropsInfo>();
+
+        #endregion
+
+        #region Imports
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
         [DllImport(Library.Name)]
@@ -999,6 +1037,11 @@ namespace Noesis
         [DllImport(Library.Name)]
         private static extern void Noesis_DependencySet_BaseComponent(IntPtr dependencyObject, IntPtr dependencyProperty,
             IntPtr val);
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        [DllImport(Library.Name)]
+        private static extern void Noesis_Dependency_EnumProps(IntPtr dependencyObject, int id,
+            NoesisEnumPropertiesCallback callback);
 
         #endregion
     }

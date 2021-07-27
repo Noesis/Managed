@@ -346,7 +346,7 @@ namespace NoesisApp
             }
         }
 
-        public override void PlayAudio(string filename, float volume)
+        public override void PlayAudio(Uri uri, float volume)
         {
         }
 

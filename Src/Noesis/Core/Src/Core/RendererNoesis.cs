@@ -16,7 +16,7 @@ namespace Noesis
                 throw new ArgumentNullException("device");
             }
 
-            Noesis_Renderer_Init(CPtr, device.CPtr);
+            Noesis_Renderer_Init(CPtr, BaseComponent.getCPtr(device));
         }
 
         /// <summary>

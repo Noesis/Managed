@@ -31,19 +31,19 @@ public class Hyperlink : Span {
   #region Events
   public event RoutedEventHandler Click {
     add {
-      AddHandler(ClickEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.Hyperlink_ClickEvent_get(), value);
     }
     remove {
-      RemoveHandler(ClickEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.Hyperlink_ClickEvent_get(), value);
     }
   }
 
   public event RequestNavigateEventHandler RequestNavigate {
     add {
-      AddHandler(RequestNavigateEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.Hyperlink_RequestNavigateEvent_get(), value);
     }
     remove {
-      RemoveHandler(RequestNavigateEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.Hyperlink_RequestNavigateEvent_get(), value);
     }
   }
   #endregion

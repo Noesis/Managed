@@ -56,21 +56,22 @@ namespace Noesis
             get
             {
                 PropertyChangedCallback changed = null;
-                _PropertyChangedCallback.TryGetValue(swigCPtr.Handle, out changed);
+                _PropertyChangedCallback.TryGetValue(swigCPtr.Handle.ToInt64(), out changed);
                 return changed;
             }
             set
             {
-                if (_PropertyChangedCallback.ContainsKey(swigCPtr.Handle))
+                long ptr = swigCPtr.Handle.ToInt64();
+                if (_PropertyChangedCallback.ContainsKey(ptr))
                 {
-                    _PropertyChangedCallback.Remove(swigCPtr.Handle);
+                    _PropertyChangedCallback.Remove(ptr);
                     Noesis_PropertyMetadata_UnbindPropertyChangedCallback(swigCPtr, _changed);
                 }
 
                 if (value != null)
                 {
                     Noesis_PropertyMetadata_BindPropertyChangedCallback(swigCPtr, _changed);
-                    _PropertyChangedCallback.Add(swigCPtr.Handle, value);
+                    _PropertyChangedCallback.Add(ptr, value);
                 }
             }
         }
@@ -84,21 +85,22 @@ namespace Noesis
             get
             {
                 CoerceValueCallback coerce = null;
-                _CoerceValueCallback.TryGetValue(swigCPtr.Handle, out coerce);
+                _CoerceValueCallback.TryGetValue(swigCPtr.Handle.ToInt64(), out coerce);
                 return coerce;
             }
             set
             {
-                if (_CoerceValueCallback.ContainsKey(swigCPtr.Handle))
+                long ptr = swigCPtr.Handle.ToInt64();
+                if (_CoerceValueCallback.ContainsKey(ptr))
                 {
-                    _CoerceValueCallback.Remove(swigCPtr.Handle);
+                    _CoerceValueCallback.Remove(ptr);
                     Noesis_PropertyMetadata_UnbindCoerceValueCallback(swigCPtr, _coerce);
                 }
 
                 if (value != null)
                 {
                     Noesis_PropertyMetadata_BindCoerceValueCallback(swigCPtr, _coerce);
-                    _CoerceValueCallback.Add(swigCPtr.Handle, value);
+                    _CoerceValueCallback.Add(ptr, value);
                 }
             }
         }
@@ -112,22 +114,23 @@ namespace Noesis
         {
             try
             {
-                if (!_PropertyChangedCallback.ContainsKey(cPtr))
+                PropertyChangedCallback callback;
+                long ptr = cPtr.ToInt64();
+                if (!_PropertyChangedCallback.TryGetValue(ptr, out callback))
                 {
                     throw new Exception("PropertyChangedCallback not found");
                 }
                 if (d == IntPtr.Zero && e == IntPtr.Zero)
                 {
-                    _PropertyChangedCallback.Remove(cPtr);
+                    _PropertyChangedCallback.Remove(ptr);
                     return;
                 }
-                if (Noesis.Extend.Initialized)
+                if (Noesis.Extend.Initialized && callback != null)
                 {
-                    PropertyChangedCallback callback = _PropertyChangedCallback[cPtr];
-                    if (callback != null)
+                    DependencyObject sender = (DependencyObject)Noesis.Extend.GetProxy(d, false);
+                    if (sender != null)
                     {
-                        callback((DependencyObject)Noesis.Extend.GetProxy(d, false),
-                            new DependencyPropertyChangedEventArgs(e, false));
+                        callback(sender, new DependencyPropertyChangedEventArgs(e, false));
                     }
                 }
             }
@@ -137,8 +140,8 @@ namespace Noesis
             }
         }
 
-        static protected Dictionary<IntPtr, PropertyChangedCallback> _PropertyChangedCallback =
-            new Dictionary<IntPtr, PropertyChangedCallback>();
+        static protected Dictionary<long, PropertyChangedCallback> _PropertyChangedCallback =
+            new Dictionary<long, PropertyChangedCallback>();
 
         #endregion
 
@@ -151,23 +154,23 @@ namespace Noesis
         {
             try
             {
-                if (!_CoerceValueCallback.ContainsKey(cPtr))
+                CoerceValueCallback callback;
+                long ptr = cPtr.ToInt64();
+                if (!_CoerceValueCallback.TryGetValue(ptr, out callback))
                 {
                     throw new Exception("CoerceValueCallback not found");
                 }
                 if (d == IntPtr.Zero && baseValue == IntPtr.Zero)
                 {
-                    _CoerceValueCallback.Remove(cPtr);
+                    _CoerceValueCallback.Remove(ptr);
                     return IntPtr.Zero;
                 }
-                if (Noesis.Extend.Initialized)
+                if (Noesis.Extend.Initialized && callback != null)
                 {
-                    CoerceValueCallback callback = _CoerceValueCallback[cPtr];
-                    if (callback != null)
+                    DependencyObject sender = (DependencyObject)Noesis.Extend.GetProxy(d, false);
+                    if (sender != null)
                     {
-                        object coercedValue = callback(
-                            (DependencyObject)Noesis.Extend.GetProxy(d, false),
-                            Noesis.Extend.GetProxy(baseValue, false));
+                        object coercedValue = callback(sender, Noesis.Extend.GetProxy(baseValue, false));
 
                         HandleRef handle = Noesis.Extend.GetInstanceHandle(coercedValue);
                         BaseComponent.AddReference(handle.Handle); // released by native bindings
@@ -185,8 +188,8 @@ namespace Noesis
             return baseValue;
         }
 
-        static protected Dictionary<IntPtr, CoerceValueCallback> _CoerceValueCallback =
-            new Dictionary<IntPtr, CoerceValueCallback>();
+        static protected Dictionary<long, CoerceValueCallback> _CoerceValueCallback =
+            new Dictionary<long, CoerceValueCallback>();
 
         #endregion
 

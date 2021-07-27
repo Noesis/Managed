@@ -29,586 +29,596 @@ public class UIElement : Visual {
 
   #region Routed Events
   public void AddHandler(RoutedEvent routedEvent, Delegate handler) {
-    EventHandlerStore.AddHandler(this, routedEvent, handler);
+    IntPtr routedEventPtr = BaseComponent.getCPtr(routedEvent).Handle;
+    EventHandlerStore.AddHandler(this, routedEventPtr, handler);
+  }
+
+  protected void AddHandler(IntPtr routedEventPtr, Delegate handler) {
+    EventHandlerStore.AddHandler(this, routedEventPtr, handler);
   }
 
   public void RemoveHandler(RoutedEvent routedEvent, Delegate handler) {
-    EventHandlerStore.RemoveHandler(this, routedEvent, handler);
+    IntPtr routedEventPtr = BaseComponent.getCPtr(routedEvent).Handle;
+    EventHandlerStore.RemoveHandler(this, routedEventPtr, handler);
+  }
+
+  protected void RemoveHandler(IntPtr routedEventPtr, Delegate handler) {
+    EventHandlerStore.RemoveHandler(this, routedEventPtr, handler);
   }
 
   public event RoutedEventHandler GotFocus {
     add {
-      AddHandler(GotFocusEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_GotFocusEvent_get(), value);
     }
     remove {
-      RemoveHandler(GotFocusEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_GotFocusEvent_get(), value);
     }
   }
 
   public event RoutedEventHandler LostFocus {
     add {
-      AddHandler(LostFocusEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_LostFocusEvent_get(), value);
     }
     remove {
-      RemoveHandler(LostFocusEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_LostFocusEvent_get(), value);
     }
   }
 
   public event MouseEventHandler GotMouseCapture {
     add {
-      AddHandler(GotMouseCaptureEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_GotMouseCaptureEvent_get(), value);
     }
     remove {
-      RemoveHandler(GotMouseCaptureEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_GotMouseCaptureEvent_get(), value);
     }
   }
 
   public event MouseEventHandler LostMouseCapture {
     add {
-      AddHandler(LostMouseCaptureEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_LostMouseCaptureEvent_get(), value);
     }
     remove {
-      RemoveHandler(LostMouseCaptureEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_LostMouseCaptureEvent_get(), value);
     }
   }
 
   public event MouseEventHandler MouseEnter {
     add {
-      AddHandler(MouseEnterEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_MouseEnterEvent_get(), value);
     }
     remove {
-      RemoveHandler(MouseEnterEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_MouseEnterEvent_get(), value);
     }
   }
 
   public event MouseEventHandler MouseLeave {
     add {
-      AddHandler(MouseLeaveEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_MouseLeaveEvent_get(), value);
     }
     remove {
-      RemoveHandler(MouseLeaveEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_MouseLeaveEvent_get(), value);
     }
   }
 
   public event MouseEventHandler PreviewMouseMove {
     add {
-      AddHandler(PreviewMouseMoveEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_PreviewMouseMoveEvent_get(), value);
     }
     remove {
-      RemoveHandler(PreviewMouseMoveEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_PreviewMouseMoveEvent_get(), value);
     }
   }
 
   public event MouseEventHandler MouseMove {
     add {
-      AddHandler(MouseMoveEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_MouseMoveEvent_get(), value);
     }
     remove {
-      RemoveHandler(MouseMoveEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_MouseMoveEvent_get(), value);
     }
   }
 
   public event MouseButtonEventHandler PreviewMouseDown {
     add {
-      AddHandler(PreviewMouseDownEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_PreviewMouseDownEvent_get(), value);
     }
     remove {
-      RemoveHandler(PreviewMouseDownEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_PreviewMouseDownEvent_get(), value);
     }
   }
 
   public event MouseButtonEventHandler MouseDown {
     add {
-      AddHandler(MouseDownEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_MouseDownEvent_get(), value);
     }
     remove {
-      RemoveHandler(MouseDownEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_MouseDownEvent_get(), value);
     }
   }
 
   public event MouseButtonEventHandler PreviewMouseUp {
     add {
-      AddHandler(PreviewMouseUpEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_PreviewMouseUpEvent_get(), value);
     }
     remove {
-      RemoveHandler(PreviewMouseUpEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_PreviewMouseUpEvent_get(), value);
     }
   }
 
   public event MouseButtonEventHandler MouseUp {
     add {
-      AddHandler(MouseUpEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_MouseUpEvent_get(), value);
     }
     remove {
-      RemoveHandler(MouseUpEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_MouseUpEvent_get(), value);
     }
   }
 
   public event MouseButtonEventHandler PreviewMouseLeftButtonDown {
     add {
-      AddHandler(PreviewMouseLeftButtonDownEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_PreviewMouseLeftButtonDownEvent_get(), value);
     }
     remove {
-      RemoveHandler(PreviewMouseLeftButtonDownEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_PreviewMouseLeftButtonDownEvent_get(), value);
     }
   }
 
   public event MouseButtonEventHandler MouseLeftButtonDown {
     add {
-      AddHandler(MouseLeftButtonDownEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_MouseLeftButtonDownEvent_get(), value);
     }
     remove {
-      RemoveHandler(MouseLeftButtonDownEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_MouseLeftButtonDownEvent_get(), value);
     }
   }
 
   public event MouseButtonEventHandler PreviewMouseLeftButtonUp {
     add {
-      AddHandler(PreviewMouseLeftButtonUpEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_PreviewMouseLeftButtonUpEvent_get(), value);
     }
     remove {
-      RemoveHandler(PreviewMouseLeftButtonUpEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_PreviewMouseLeftButtonUpEvent_get(), value);
     }
   }
 
   public event MouseButtonEventHandler MouseLeftButtonUp {
     add {
-      AddHandler(MouseLeftButtonUpEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_MouseLeftButtonUpEvent_get(), value);
     }
     remove {
-      RemoveHandler(MouseLeftButtonUpEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_MouseLeftButtonUpEvent_get(), value);
     }
   }
 
   public event MouseButtonEventHandler PreviewMouseRightButtonDown {
     add {
-      AddHandler(PreviewMouseRightButtonDownEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_PreviewMouseRightButtonDownEvent_get(), value);
     }
     remove {
-      RemoveHandler(PreviewMouseRightButtonDownEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_PreviewMouseRightButtonDownEvent_get(), value);
     }
   }
 
   public event MouseButtonEventHandler MouseRightButtonDown {
     add {
-      AddHandler(MouseRightButtonDownEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_MouseRightButtonDownEvent_get(), value);
     }
     remove {
-      RemoveHandler(MouseRightButtonDownEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_MouseRightButtonDownEvent_get(), value);
     }
   }
 
   public event MouseButtonEventHandler PreviewMouseRightButtonUp {
     add {
-      AddHandler(PreviewMouseRightButtonUpEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_PreviewMouseRightButtonUpEvent_get(), value);
     }
     remove {
-      RemoveHandler(PreviewMouseRightButtonUpEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_PreviewMouseRightButtonUpEvent_get(), value);
     }
   }
 
   public event MouseButtonEventHandler MouseRightButtonUp {
     add {
-      AddHandler(MouseRightButtonUpEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_MouseRightButtonUpEvent_get(), value);
     }
     remove {
-      RemoveHandler(MouseRightButtonUpEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_MouseRightButtonUpEvent_get(), value);
     }
   }
 
   public event MouseWheelEventHandler PreviewMouseWheel {
     add {
-      AddHandler(PreviewMouseWheelEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_PreviewMouseWheelEvent_get(), value);
     }
     remove {
-      RemoveHandler(PreviewMouseWheelEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_PreviewMouseWheelEvent_get(), value);
     }
   }
 
   public event MouseWheelEventHandler MouseWheel {
     add {
-      AddHandler(MouseWheelEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_MouseWheelEvent_get(), value);
     }
     remove {
-      RemoveHandler(MouseWheelEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_MouseWheelEvent_get(), value);
     }
   }
 
   public event QueryCursorEventHandler QueryCursor {
     add {
-      AddHandler(QueryCursorEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_QueryCursorEvent_get(), value);
     }
     remove {
-      RemoveHandler(QueryCursorEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_QueryCursorEvent_get(), value);
     }
   }
 
   public event KeyboardFocusChangedEventHandler PreviewGotKeyboardFocus {
     add {
-      AddHandler(PreviewGotKeyboardFocusEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_PreviewGotKeyboardFocusEvent_get(), value);
     }
     remove {
-      RemoveHandler(PreviewGotKeyboardFocusEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_PreviewGotKeyboardFocusEvent_get(), value);
     }
   }
 
   public event KeyboardFocusChangedEventHandler GotKeyboardFocus {
     add {
-      AddHandler(GotKeyboardFocusEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_GotKeyboardFocusEvent_get(), value);
     }
     remove {
-      RemoveHandler(GotKeyboardFocusEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_GotKeyboardFocusEvent_get(), value);
     }
   }
 
   public event KeyboardFocusChangedEventHandler PreviewLostKeyboardFocus {
     add {
-      AddHandler(PreviewLostKeyboardFocusEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_PreviewLostKeyboardFocusEvent_get(), value);
     }
     remove {
-      RemoveHandler(PreviewLostKeyboardFocusEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_PreviewLostKeyboardFocusEvent_get(), value);
     }
   }
 
   public event KeyboardFocusChangedEventHandler LostKeyboardFocus {
     add {
-      AddHandler(LostKeyboardFocusEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_LostKeyboardFocusEvent_get(), value);
     }
     remove {
-      RemoveHandler(LostKeyboardFocusEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_LostKeyboardFocusEvent_get(), value);
     }
   }
 
   public event KeyEventHandler PreviewKeyDown {
     add {
-      AddHandler(PreviewKeyDownEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_PreviewKeyDownEvent_get(), value);
     }
     remove {
-      RemoveHandler(PreviewKeyDownEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_PreviewKeyDownEvent_get(), value);
     }
   }
 
   public event KeyEventHandler KeyDown {
     add {
-      AddHandler(KeyDownEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_KeyDownEvent_get(), value);
     }
     remove {
-      RemoveHandler(KeyDownEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_KeyDownEvent_get(), value);
     }
   }
 
   public event KeyEventHandler PreviewKeyUp {
     add {
-      AddHandler(PreviewKeyUpEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_PreviewKeyUpEvent_get(), value);
     }
     remove {
-      RemoveHandler(PreviewKeyUpEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_PreviewKeyUpEvent_get(), value);
     }
   }
 
   public event KeyEventHandler KeyUp {
     add {
-      AddHandler(KeyUpEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_KeyUpEvent_get(), value);
     }
     remove {
-      RemoveHandler(KeyUpEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_KeyUpEvent_get(), value);
     }
   }
 
   public event TextCompositionEventHandler PreviewTextInput {
     add {
-      AddHandler(PreviewTextInputEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_PreviewTextInputEvent_get(), value);
     }
     remove {
-      RemoveHandler(PreviewTextInputEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_PreviewTextInputEvent_get(), value);
     }
   }
 
   public event TextCompositionEventHandler TextInput {
     add {
-      AddHandler(TextInputEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_TextInputEvent_get(), value);
     }
     remove {
-      RemoveHandler(TextInputEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_TextInputEvent_get(), value);
     }
   }
 
   public event TouchEventHandler GotTouchCapture {
     add {
-      AddHandler(GotTouchCaptureEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_GotTouchCaptureEvent_get(), value);
     }
     remove {
-      RemoveHandler(GotTouchCaptureEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_GotTouchCaptureEvent_get(), value);
     }
   }
 
   public event TouchEventHandler LostTouchCapture {
     add {
-      AddHandler(LostTouchCaptureEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_LostTouchCaptureEvent_get(), value);
     }
     remove {
-      RemoveHandler(LostTouchCaptureEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_LostTouchCaptureEvent_get(), value);
     }
   }
 
   public event TouchEventHandler PreviewTouchMove {
     add {
-      AddHandler(PreviewTouchMoveEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_PreviewTouchMoveEvent_get(), value);
     }
     remove {
-      RemoveHandler(PreviewTouchMoveEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_PreviewTouchMoveEvent_get(), value);
     }
   }
 
   public event TouchEventHandler TouchMove {
     add {
-      AddHandler(TouchMoveEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_TouchMoveEvent_get(), value);
     }
     remove {
-      RemoveHandler(TouchMoveEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_TouchMoveEvent_get(), value);
     }
   }
 
   public event TouchEventHandler TouchEnter {
     add {
-      AddHandler(TouchEnterEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_TouchEnterEvent_get(), value);
     }
     remove {
-      RemoveHandler(TouchEnterEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_TouchEnterEvent_get(), value);
     }
   }
 
   public event TouchEventHandler TouchLeave {
     add {
-      AddHandler(TouchLeaveEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_TouchLeaveEvent_get(), value);
     }
     remove {
-      RemoveHandler(TouchLeaveEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_TouchLeaveEvent_get(), value);
     }
   }
 
   public event TouchEventHandler PreviewTouchDown {
     add {
-      AddHandler(PreviewTouchDownEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_PreviewTouchDownEvent_get(), value);
     }
     remove {
-      RemoveHandler(PreviewTouchDownEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_PreviewTouchDownEvent_get(), value);
     }
   }
 
   public event TouchEventHandler TouchDown {
     add {
-      AddHandler(TouchDownEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_TouchDownEvent_get(), value);
     }
     remove {
-      RemoveHandler(TouchDownEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_TouchDownEvent_get(), value);
     }
   }
 
   public event TouchEventHandler PreviewTouchUp {
     add {
-      AddHandler(PreviewTouchUpEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_PreviewTouchUpEvent_get(), value);
     }
     remove {
-      RemoveHandler(PreviewTouchUpEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_PreviewTouchUpEvent_get(), value);
     }
   }
 
   public event TouchEventHandler TouchUp {
     add {
-      AddHandler(TouchUpEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_TouchUpEvent_get(), value);
     }
     remove {
-      RemoveHandler(TouchUpEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_TouchUpEvent_get(), value);
     }
   }
 
   public event TappedEventHandler Tapped {
     add {
-      AddHandler(TappedEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_TappedEvent_get(), value);
     }
     remove {
-      RemoveHandler(TappedEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_TappedEvent_get(), value);
     }
   }
 
   public event DoubleTappedEventHandler DoubleTapped {
     add {
-      AddHandler(DoubleTappedEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_DoubleTappedEvent_get(), value);
     }
     remove {
-      RemoveHandler(DoubleTappedEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_DoubleTappedEvent_get(), value);
     }
   }
 
   public event HoldingEventHandler Holding {
     add {
-      AddHandler(HoldingEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_HoldingEvent_get(), value);
     }
     remove {
-      RemoveHandler(HoldingEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_HoldingEvent_get(), value);
     }
   }
 
   public event RightTappedEventHandler RightTapped {
     add {
-      AddHandler(RightTappedEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_RightTappedEvent_get(), value);
     }
     remove {
-      RemoveHandler(RightTappedEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_RightTappedEvent_get(), value);
     }
   }
 
   public event ManipulationStartingEventHandler ManipulationStarting {
     add {
-      AddHandler(ManipulationStartingEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_ManipulationStartingEvent_get(), value);
     }
     remove {
-      RemoveHandler(ManipulationStartingEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_ManipulationStartingEvent_get(), value);
     }
   }
 
   public event ManipulationStartedEventHandler ManipulationStarted {
     add {
-      AddHandler(ManipulationStartedEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_ManipulationStartedEvent_get(), value);
     }
     remove {
-      RemoveHandler(ManipulationStartedEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_ManipulationStartedEvent_get(), value);
     }
   }
 
   public event ManipulationDeltaEventHandler ManipulationDelta {
     add {
-      AddHandler(ManipulationDeltaEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_ManipulationDeltaEvent_get(), value);
     }
     remove {
-      RemoveHandler(ManipulationDeltaEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_ManipulationDeltaEvent_get(), value);
     }
   }
 
   public event ManipulationInertiaStartingEventHandler ManipulationInertiaStarting {
     add {
-      AddHandler(ManipulationInertiaStartingEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_ManipulationInertiaStartingEvent_get(), value);
     }
     remove {
-      RemoveHandler(ManipulationInertiaStartingEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_ManipulationInertiaStartingEvent_get(), value);
     }
   }
 
   public event ManipulationCompletedEventHandler ManipulationCompleted {
     add {
-      AddHandler(ManipulationCompletedEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_ManipulationCompletedEvent_get(), value);
     }
     remove {
-      RemoveHandler(ManipulationCompletedEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_ManipulationCompletedEvent_get(), value);
     }
   }
 
   public event QueryContinueDragEventHandler PreviewQueryContinueDrag {
     add {
-      AddHandler(PreviewQueryContinueDragEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_PreviewQueryContinueDragEvent_get(), value);
     }
     remove {
-      RemoveHandler(PreviewQueryContinueDragEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_PreviewQueryContinueDragEvent_get(), value);
     }
   }
 
   public event QueryContinueDragEventHandler QueryContinueDrag {
     add {
-      AddHandler(QueryContinueDragEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_QueryContinueDragEvent_get(), value);
     }
     remove {
-      RemoveHandler(QueryContinueDragEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_QueryContinueDragEvent_get(), value);
     }
   }
 
   public event GiveFeedbackEventHandler PreviewGiveFeedback {
     add {
-      AddHandler(PreviewGiveFeedbackEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_PreviewGiveFeedbackEvent_get(), value);
     }
     remove {
-      RemoveHandler(PreviewGiveFeedbackEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_PreviewGiveFeedbackEvent_get(), value);
     }
   }
 
   public event GiveFeedbackEventHandler GiveFeedback {
     add {
-      AddHandler(GiveFeedbackEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_GiveFeedbackEvent_get(), value);
     }
     remove {
-      RemoveHandler(GiveFeedbackEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_GiveFeedbackEvent_get(), value);
     }
   }
 
   public event DragEventHandler PreviewDragOver {
     add {
-      AddHandler(PreviewDragOverEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_PreviewDragOverEvent_get(), value);
     }
     remove {
-      RemoveHandler(PreviewDragOverEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_PreviewDragOverEvent_get(), value);
     }
   }
 
   public event DragEventHandler DragOver {
     add {
-      AddHandler(DragOverEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_DragOverEvent_get(), value);
     }
     remove {
-      RemoveHandler(DragOverEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_DragOverEvent_get(), value);
     }
   }
 
   public event DragEventHandler PreviewDragEnter {
     add {
-      AddHandler(PreviewDragEnterEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_PreviewDragEnterEvent_get(), value);
     }
     remove {
-      RemoveHandler(PreviewDragEnterEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_PreviewDragEnterEvent_get(), value);
     }
   }
 
   public event DragEventHandler DragEnter {
     add {
-      AddHandler(DragEnterEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_DragEnterEvent_get(), value);
     }
     remove {
-      RemoveHandler(DragEnterEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_DragEnterEvent_get(), value);
     }
   }
 
   public event DragEventHandler PreviewDragLeave {
     add {
-      AddHandler(PreviewDragLeaveEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_PreviewDragLeaveEvent_get(), value);
     }
     remove {
-      RemoveHandler(PreviewDragLeaveEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_PreviewDragLeaveEvent_get(), value);
     }
   }
 
   public event DragEventHandler DragLeave {
     add {
-      AddHandler(DragLeaveEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_DragLeaveEvent_get(), value);
     }
     remove {
-      RemoveHandler(DragLeaveEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_DragLeaveEvent_get(), value);
     }
   }
 
   public event DragEventHandler PreviewDrop {
     add {
-      AddHandler(PreviewDropEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_PreviewDropEvent_get(), value);
     }
     remove {
-      RemoveHandler(PreviewDropEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_PreviewDropEvent_get(), value);
     }
   }
 
   public event DragEventHandler Drop {
     add {
-      AddHandler(DropEvent, value);
+      AddHandler(NoesisGUI_PINVOKE.UIElement_DropEvent_get(), value);
     }
     remove {
-      RemoveHandler(DropEvent, value);
+      RemoveHandler(NoesisGUI_PINVOKE.UIElement_DropEvent_get(), value);
     }
   }
   #endregion
@@ -729,6 +739,16 @@ public class UIElement : Visual {
       storyboard.Begin(FrameworkElement.FindTreeElement(this), handoffBehavior);
     }
   }
+  #endregion
+
+  #region OnRender
+  internal protected virtual void OnRender(DrawingContext context) {
+    OnRenderBase?.Invoke(swigCPtr, BaseComponent.getCPtr(context));
+  }
+
+  [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+  internal delegate void RenderBaseCallback(HandleRef cPtr, HandleRef context);
+  internal RenderBaseCallback OnRenderBase = null;
   #endregion
 
   public UIElement() {
@@ -1496,9 +1516,8 @@ public class UIElement : Visual {
     } 
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.UIElement_Effect_get(swigCPtr);
-      Effect ret = (cPtr == IntPtr.Zero) ? null : new Effect(cPtr, false);
-      return ret;
-    } 
+      return (Effect)Noesis.Extend.GetProxy(cPtr, false);
+    }
   }
 
   public bool Focusable {

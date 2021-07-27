@@ -48,12 +48,12 @@ public class BitmapImage : BitmapSource {
 
   public Uri UriSource {
     set {
-      NoesisGUI_PINVOKE.BitmapImage_UriSource_set(swigCPtr, value != null ? UriHelper.GetPath(value) : string.Empty);
+      NoesisGUI_PINVOKE.BitmapImage_UriSource_set(swigCPtr, value != null ? value.OriginalString : string.Empty);
     }
     get {
       IntPtr uriPtr = NoesisGUI_PINVOKE.BitmapImage_UriSource_get(swigCPtr);
       string uri = Noesis.Extend.StringFromNativeUtf8(uriPtr);
-      return new Uri(uri, UriKind.Relative);
+      return new Uri(uri, UriKind.RelativeOrAbsolute);
     }
   }
 

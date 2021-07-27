@@ -31,34 +31,32 @@ public class TextureProvider : BaseComponent {
   }
 
   /// <summary>
-  /// Returns metadata for the given texture filename. Returns 0x0 if no texture is found.
+  /// Returns metadata for the texture at the given URI. Returns 0x0 if no texture is found.
   /// </summary>
-  /// <param name="filename">Path to the texture.</param>
-  public virtual void GetTextureInfo(string filename, out uint width, out uint height) {
+  public virtual void GetTextureInfo(Uri uri, out uint width, out uint height) {
     width = 0;
     height = 0;
   }
 
   /// <summary>
-  /// Creates texture in the given device. Returns null if no texture is found.
+  /// Returns a texture compatible with the given device. Returns null if texture is not found.
   /// </summary>
-  /// <param name="filename">Path to the texture being loaded.</param>
-  public virtual Texture LoadTexture(string filename) {
+  public virtual Texture LoadTexture(Uri uri) {
     return null;
   }
 
   /// <summary>
-  /// Notifies of changes to the specified texture file
+  /// Notifies of changes to the specified texture file.
   /// </summary>
-  public delegate void TextureChangedHandler(string uri);
+  public delegate void TextureChangedHandler(Uri uri);
   public event TextureChangedHandler TextureChanged;
 
   /// <summary>
-  /// Raises TextureChanged event notifying Noesis that it should reload the specified texture
+  /// Raises TextureChanged event notifying Noesis that it should reload the specified texture.
   /// </summary>
-  public void RaiseTextureChanged(string uri) {
+  public void RaiseTextureChanged(Uri uri) {
     TextureChanged?.Invoke(uri);
-    Noesis_RaiseTextureChanged(swigCPtr, uri);
+    Noesis_RaiseTextureChanged(swigCPtr, uri.OriginalString);
   }
 
   [DllImport(Library.Name)]

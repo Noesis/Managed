@@ -8,7 +8,7 @@
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <license type="file">LICENSE.txt</license>
     <projectUrl>https://www.noesisengine.com/</projectUrl>
-    <iconUrl>https://www.noesisengine.com/images/logos/Icon-256.png</iconUrl>
+    <icon>Icon-256.png</icon>
     <description>NoesisGUI Micrososft UWP Display</description>
     <releaseNotes>https://www.noesisengine.com/docs/Gui.Core.Changelog.html</releaseNotes>
     <copyright>Copyright (c) 2013 Noesis Technologies S.L.</copyright>
@@ -23,5 +23,6 @@
   <files>
     <file src="../../../../LICENSE.txt" target="/" />
     <file src="../../../../THIRD_PARTY.txt" target="/" />
+    <file src="../../../../Icon-256.png" target="/" />
   </files>
 </package>

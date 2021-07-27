@@ -178,6 +178,7 @@ namespace Noesis
             unboxFunctions[typeof(Boxed<Noesis.CharacterCasing>)] = (cPtr) => NoesisGUI_.Unbox_CharacterCasing(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.ClickMode>)] = (cPtr) => NoesisGUI_.Unbox_ClickMode(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.ColorInterpolationMode>)] = (cPtr) => NoesisGUI_.Unbox_ColorInterpolationMode(cPtr);
+            unboxFunctions[typeof(Boxed<Noesis.Cursor>)] = (cPtr) => NoesisGUI_.Unbox_Cursor(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.Dock>)] = (cPtr) => NoesisGUI_.Unbox_Dock(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.ExpandDirection>)] = (cPtr) => NoesisGUI_.Unbox_ExpandDirection(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.FillRule>)] = (cPtr) => NoesisGUI_.Unbox_FillRule(cPtr);
@@ -188,6 +189,8 @@ namespace Noesis
             unboxFunctions[typeof(Boxed<Noesis.GeometryCombineMode>)] = (cPtr) => NoesisGUI_.Unbox_GeometryCombineMode(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.GradientSpreadMethod>)] = (cPtr) => NoesisGUI_.Unbox_GradientSpreadMethod(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.HorizontalAlignment>)] = (cPtr) => NoesisGUI_.Unbox_HorizontalAlignment(cPtr);
+            unboxFunctions[typeof(Boxed<Noesis.Key>)] = (cPtr) => NoesisGUI_.Unbox_Key(cPtr);
+            unboxFunctions[typeof(Boxed<Noesis.ModifierKeys>)] = (cPtr) => NoesisGUI_.Unbox_ModifierKeys(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.KeyboardNavigationMode>)] = (cPtr) => NoesisGUI_.Unbox_KeyboardNavigationMode(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.LineStackingStrategy>)] = (cPtr) => NoesisGUI_.Unbox_LineStackingStrategy(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.ListSortDirection>)] = (cPtr) => NoesisGUI_.Unbox_ListSortDirection(cPtr);
@@ -200,10 +203,11 @@ namespace Noesis
             unboxFunctions[typeof(Boxed<Noesis.PopupAnimation>)] = (cPtr) => NoesisGUI_.Unbox_PopupAnimation(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.RelativeSourceMode>)] = (cPtr) => NoesisGUI_.Unbox_RelativeSourceMode(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.SelectionMode>)] = (cPtr) => NoesisGUI_.Unbox_SelectionMode(cPtr);
-            unboxFunctions[typeof(Boxed<Noesis.CornerRadius>)] = (cPtr) => NoesisGUI_.Unbox_CornerRadius(cPtr);
+            unboxFunctions[typeof(Boxed<Noesis.ScrollBarVisibility>)] = (cPtr) => NoesisGUI_.Unbox_ScrollBarVisibility(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.Stretch>)] = (cPtr) => NoesisGUI_.Unbox_Stretch(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.StretchDirection>)] = (cPtr) => NoesisGUI_.Unbox_StretchDirection(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.TextAlignment>)] = (cPtr) => NoesisGUI_.Unbox_TextAlignment(cPtr);
+            unboxFunctions[typeof(Boxed<Noesis.TextDecorations>)] = (cPtr) => NoesisGUI_.Unbox_TextDecorations(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.TextTrimming>)] = (cPtr) => NoesisGUI_.Unbox_TextTrimming(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.TextWrapping>)] = (cPtr) => NoesisGUI_.Unbox_TextWrapping(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.TickBarPlacement>)] = (cPtr) => NoesisGUI_.Unbox_TickBarPlacement(cPtr);

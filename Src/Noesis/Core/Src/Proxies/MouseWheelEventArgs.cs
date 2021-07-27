@@ -58,7 +58,17 @@ public class MouseWheelEventArgs : MouseEventArgs {
     } 
   }
 
-  public MouseWheelEventArgs(object source, RoutedEvent arg1, int rotation) : this(NoesisGUI_PINVOKE.new_MouseWheelEventArgs(Noesis.Extend.GetInstanceHandle(source), RoutedEvent.getCPtr(arg1), rotation), true) {
+  public Orientation Orientation {
+    get {
+      Orientation ret = (Orientation)NoesisGUI_PINVOKE.MouseWheelEventArgs_Orientation_get(swigCPtr);
+      return ret;
+    } 
+  }
+
+  public MouseWheelEventArgs(object source, RoutedEvent arg1, int rotation, Orientation orientation) : this(NoesisGUI_PINVOKE.new_MouseWheelEventArgs__SWIG_0(Noesis.Extend.GetInstanceHandle(source), RoutedEvent.getCPtr(arg1), rotation, (int)orientation), true) {
+  }
+
+  public MouseWheelEventArgs(object source, RoutedEvent arg1, int rotation) : this(NoesisGUI_PINVOKE.new_MouseWheelEventArgs__SWIG_1(Noesis.Extend.GetInstanceHandle(source), RoutedEvent.getCPtr(arg1), rotation), true) {
   }
 
 }

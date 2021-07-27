@@ -26,18 +26,18 @@ namespace NoesisApp
             }
         }
 
-        public override Stream OpenStream(string filename)
+        public override Stream OpenStream(Uri uri)
         {
             Stream stream = null;
 
             if (_provider != null)
             {
-                stream = _provider.OpenStream(filename);
+                stream = _provider.OpenStream(uri);
             }
 
             if (stream == null)
             {
-                stream = Application.GetAssemblyResource(_assembly, _namespace, filename);
+                stream = Application.GetAssemblyResource(_assembly, _namespace, uri.GetPath());
             }
 
             return stream;

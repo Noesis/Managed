@@ -36,23 +36,25 @@ public class Clock : BaseComponent {
   public delegate void CompletedHandler(object sender, EventArgs e);
   public event CompletedHandler Completed {
     add {
-      if (!_Completed.ContainsKey(swigCPtr.Handle)) {
-        _Completed.Add(swigCPtr.Handle, null);
+      long ptr = swigCPtr.Handle.ToInt64();
+      if (!_Completed.ContainsKey(ptr)) {
+        _Completed.Add(ptr, null);
 
         NoesisGUI_PINVOKE.BindEvent_Clock_Completed(_raiseCompleted, swigCPtr.Handle);
       }
 
-      _Completed[swigCPtr.Handle] += value;
+      _Completed[ptr] += value;
     }
     remove {
-      if (_Completed.ContainsKey(swigCPtr.Handle)) {
+      long ptr = swigCPtr.Handle.ToInt64();
+      if (_Completed.ContainsKey(ptr)) {
 
-        _Completed[swigCPtr.Handle] -= value;
+        _Completed[ptr] -= value;
 
-        if (_Completed[swigCPtr.Handle] == null) {
+        if (_Completed[ptr] == null) {
           NoesisGUI_PINVOKE.UnbindEvent_Clock_Completed(_raiseCompleted, swigCPtr.Handle);
 
-          _Completed.Remove(swigCPtr.Handle);
+          _Completed.Remove(ptr);
         }
       }
     }
@@ -65,17 +67,16 @@ public class Clock : BaseComponent {
   private static void RaiseCompleted(IntPtr cPtr, IntPtr sender, IntPtr e) {
     try {
       if (Noesis.Extend.Initialized) {
+        long ptr = cPtr.ToInt64();
         if (sender == IntPtr.Zero && e == IntPtr.Zero) {
-          _Completed.Remove(cPtr);
+          _Completed.Remove(ptr);
           return;
         }
         CompletedHandler handler = null;
-        if (!_Completed.TryGetValue(cPtr, out handler)) {
+        if (!_Completed.TryGetValue(ptr, out handler)) {
           throw new InvalidOperationException("Delegate not registered for Completed event");
         }
-        if (handler != null) {
-          handler(Noesis.Extend.GetProxy(sender, false), new EventArgs(e, false));
-        }
+        handler?.Invoke(Noesis.Extend.GetProxy(sender, false), new EventArgs(e, false));
       }
     }
     catch (Exception exception) {
@@ -83,8 +84,8 @@ public class Clock : BaseComponent {
     }
   }
 
-  internal static Dictionary<IntPtr, CompletedHandler> _Completed =
-      new Dictionary<IntPtr, CompletedHandler>();
+  internal static Dictionary<long, CompletedHandler> _Completed =
+      new Dictionary<long, CompletedHandler>();
   #endregion
 
   #endregion

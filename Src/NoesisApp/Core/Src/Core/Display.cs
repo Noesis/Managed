@@ -188,7 +188,7 @@ namespace NoesisApp
         /// <summary>
         /// Plays a sound specified by the given filename
         /// </summary>
-        public virtual void PlayAudio(string filename, float volume) { }
+        public virtual void PlayAudio(Uri filename, float volume) { }
 
 
         /// <summary>

@@ -33,23 +33,25 @@ public class Popup : FrameworkElement {
   public delegate void ClosedHandler(object sender, EventArgs e);
   public event ClosedHandler Closed {
     add {
-      if (!_Closed.ContainsKey(swigCPtr.Handle)) {
-        _Closed.Add(swigCPtr.Handle, null);
+      long ptr = swigCPtr.Handle.ToInt64();
+      if (!_Closed.ContainsKey(ptr)) {
+        _Closed.Add(ptr, null);
 
         NoesisGUI_PINVOKE.BindEvent_Popup_Closed(_raiseClosed, swigCPtr.Handle);
       }
 
-      _Closed[swigCPtr.Handle] += value;
+      _Closed[ptr] += value;
     }
     remove {
-      if (_Closed.ContainsKey(swigCPtr.Handle)) {
+      long ptr = swigCPtr.Handle.ToInt64();
+      if (_Closed.ContainsKey(ptr)) {
 
-        _Closed[swigCPtr.Handle] -= value;
+        _Closed[ptr] -= value;
 
-        if (_Closed[swigCPtr.Handle] == null) {
+        if (_Closed[ptr] == null) {
           NoesisGUI_PINVOKE.UnbindEvent_Popup_Closed(_raiseClosed, swigCPtr.Handle);
 
-          _Closed.Remove(swigCPtr.Handle);
+          _Closed.Remove(ptr);
         }
       }
     }
@@ -62,17 +64,16 @@ public class Popup : FrameworkElement {
   private static void RaiseClosed(IntPtr cPtr, IntPtr sender, IntPtr e) {
     try {
       if (Noesis.Extend.Initialized) {
+        long ptr = cPtr.ToInt64();
         if (sender == IntPtr.Zero && e == IntPtr.Zero) {
-          _Closed.Remove(cPtr);
+          _Closed.Remove(ptr);
           return;
         }
         ClosedHandler handler = null;
-        if (!_Closed.TryGetValue(cPtr, out handler)) {
+        if (!_Closed.TryGetValue(ptr, out handler)) {
           throw new InvalidOperationException("Delegate not registered for Closed event");
         }
-        if (handler != null) {
-          handler(Noesis.Extend.GetProxy(sender, false), new EventArgs(e, false));
-        }
+        handler?.Invoke(Noesis.Extend.GetProxy(sender, false), new EventArgs(e, false));
       }
     }
     catch (Exception exception) {
@@ -80,31 +81,33 @@ public class Popup : FrameworkElement {
     }
   }
 
-  internal static Dictionary<IntPtr, ClosedHandler> _Closed =
-      new Dictionary<IntPtr, ClosedHandler>();
+  internal static Dictionary<long, ClosedHandler> _Closed =
+      new Dictionary<long, ClosedHandler>();
   #endregion
 
   #region Opened
   public delegate void OpenedHandler(object sender, EventArgs e);
   public event OpenedHandler Opened {
     add {
-      if (!_Opened.ContainsKey(swigCPtr.Handle)) {
-        _Opened.Add(swigCPtr.Handle, null);
+      long ptr = swigCPtr.Handle.ToInt64();
+      if (!_Opened.ContainsKey(ptr)) {
+        _Opened.Add(ptr, null);
 
         NoesisGUI_PINVOKE.BindEvent_Popup_Opened(_raiseOpened, swigCPtr.Handle);
       }
 
-      _Opened[swigCPtr.Handle] += value;
+      _Opened[ptr] += value;
     }
     remove {
-      if (_Opened.ContainsKey(swigCPtr.Handle)) {
+      long ptr = swigCPtr.Handle.ToInt64();
+      if (_Opened.ContainsKey(ptr)) {
 
-        _Opened[swigCPtr.Handle] -= value;
+        _Opened[ptr] -= value;
 
-        if (_Opened[swigCPtr.Handle] == null) {
+        if (_Opened[ptr] == null) {
           NoesisGUI_PINVOKE.UnbindEvent_Popup_Opened(_raiseOpened, swigCPtr.Handle);
 
-          _Opened.Remove(swigCPtr.Handle);
+          _Opened.Remove(ptr);
         }
       }
     }
@@ -117,17 +120,16 @@ public class Popup : FrameworkElement {
   private static void RaiseOpened(IntPtr cPtr, IntPtr sender, IntPtr e) {
     try {
       if (Noesis.Extend.Initialized) {
+        long ptr = cPtr.ToInt64();
         if (sender == IntPtr.Zero && e == IntPtr.Zero) {
-          _Opened.Remove(cPtr);
+          _Opened.Remove(ptr);
           return;
         }
         OpenedHandler handler = null;
-        if (!_Opened.TryGetValue(cPtr, out handler)) {
+        if (!_Opened.TryGetValue(ptr, out handler)) {
           throw new InvalidOperationException("Delegate not registered for Opened event");
         }
-        if (handler != null) {
-          handler(Noesis.Extend.GetProxy(sender, false), new EventArgs(e, false));
-        }
+        handler?.Invoke(Noesis.Extend.GetProxy(sender, false), new EventArgs(e, false));
       }
     }
     catch (Exception exception) {
@@ -135,8 +137,8 @@ public class Popup : FrameworkElement {
     }
   }
 
-  internal static Dictionary<IntPtr, OpenedHandler> _Opened =
-      new Dictionary<IntPtr, OpenedHandler>();
+  internal static Dictionary<long, OpenedHandler> _Opened =
+      new Dictionary<long, OpenedHandler>();
   #endregion
 
   #endregion

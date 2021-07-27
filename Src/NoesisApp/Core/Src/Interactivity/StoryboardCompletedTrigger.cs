@@ -59,7 +59,7 @@ namespace NoesisApp
 
             public void Completed(object sender, EventArgs e)
             {
-                ((StoryboardCompletedTrigger)wr.Target).OnStoryboardCompleted(sender, e);
+                ((StoryboardCompletedTrigger)wr.Target)?.OnStoryboardCompleted(sender, e);
             }
         }
 

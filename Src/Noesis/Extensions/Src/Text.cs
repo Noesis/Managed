@@ -6,7 +6,6 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 
 namespace NoesisGUIExtensions
 {
@@ -62,17 +61,17 @@ namespace NoesisGUIExtensions
         #region Stroke attached property
 
         public static readonly DependencyProperty StrokeProperty =
-            DependencyProperty.RegisterAttached("Stroke", typeof(Brush), typeof(Text),
+            DependencyProperty.RegisterAttached("Stroke", typeof(System.Windows.Media.Brush), typeof(Text),
             new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.Inherits));
 
-        public static void SetStroke(UIElement element, Brush value)
+        public static void SetStroke(UIElement element, System.Windows.Media.Brush value)
         {
             element.SetValue(StrokeProperty, value);
         }
 
-        public static Brush GetStroke(UIElement element)
+        public static System.Windows.Media.Brush GetStroke(UIElement element)
         {
-            return (Brush)element.GetValue(StrokeProperty);
+            return (System.Windows.Media.Brush)element.GetValue(StrokeProperty);
         }
 
         #endregion

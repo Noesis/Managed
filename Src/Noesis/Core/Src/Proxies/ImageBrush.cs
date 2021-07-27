@@ -45,6 +45,13 @@ public class ImageBrush : TileBrush {
     }
   }
 
+  public static DependencyProperty ShaderProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.ImageBrush_ShaderProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
   public ImageSource ImageSource {
     set {
       NoesisGUI_PINVOKE.ImageBrush_ImageSource_set(swigCPtr, ImageSource.getCPtr(value));
@@ -52,6 +59,16 @@ public class ImageBrush : TileBrush {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ImageBrush_ImageSource_get(swigCPtr);
       return (ImageSource)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public BrushShader Shader {
+    set {
+      NoesisGUI_PINVOKE.ImageBrush_Shader_set(swigCPtr, BrushShader.getCPtr(value));
+    } 
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.ImageBrush_Shader_get(swigCPtr);
+      return (BrushShader)Noesis.Extend.GetProxy(cPtr, false);
     }
   }
 

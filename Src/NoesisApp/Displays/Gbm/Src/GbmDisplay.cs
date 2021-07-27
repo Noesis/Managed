@@ -12,41 +12,12 @@ namespace NoesisApp
 
             IntPtr udev = LibUdev.New();
 
-            IntPtr enumerate = LibUdev.EnumerateNew(udev);
-
-            LibUdev.EnumerateAddMatchSubsystem(enumerate, "drm");
-            LibUdev.EnumerateScanDevices(enumerate);
-
-            IntPtr listEntry = LibUdev.EnumerateGetListEntry(enumerate);
-
-            while (_drmFd == -1 && listEntry != IntPtr.Zero)
-            {
-                IntPtr path = LibUdev.ListEntryGetName(listEntry);
-
-                IntPtr device = LibUdev.DeviceNewFromSyspath(udev, path);
-
-                IntPtr deviceName = LibUdev.DeviceGetDevnode(device);
-                if (deviceName != IntPtr.Zero)
-                {
-                    string devName = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(deviceName);
-
-                    if (devName == drmDevice)
-                    {
-                        _drmFd = LibC.Open(drmDevice, LibC.O_RDWR);
-                    }
-                }
-
-                LibUdev.DeviceUnref(device);
-
-                listEntry = LibUdev.ListEntryGetNext(listEntry);
-            }
-
-            LibUdev.EnumerateUnref(enumerate);
+            _drmFd = LibC.Open(drmDevice, LibC.O_RDWR);
 
             if (_drmFd == -1)
             {
                 IntPtr udevMonitor = LibUdev.MonitorNewFromNetlink(udev, "udev");
-            
+
                 LibUdev.MonitorFilterAddMatchSubsystemDevtype(udevMonitor, "drm", null);
                 LibUdev.MonitorEnableReceiving(udevMonitor);
 
@@ -72,14 +43,10 @@ namespace NoesisApp
                         IntPtr deviceName = LibUdev.DeviceGetDevnode(device);
 
                         string devAction = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(deviceAction);
-                        string devName = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(deviceName);
 
                         if (devAction == "add")
                         {
-                            if (devName == drmDevice)
-                            {
-                                _drmFd = LibC.Open(drmDevice, LibC.O_RDWR);
-                            }
+                            _drmFd = LibC.Open(drmDevice, LibC.O_RDWR);
                         }
 
                         LibUdev.DeviceUnref(device);
@@ -104,14 +71,20 @@ namespace NoesisApp
                     _drmConnectorId = connector.connectorId;
 
                     int SizeOfDrmModeModeInfo = System.Runtime.InteropServices.Marshal.SizeOf<Drm.ModeModeInfo>();
+                    int area = 0;
                     for (int j = 0; j < connector.countModes; ++j)
                     {
-                        _drmMode = System.Runtime.InteropServices.Marshal.PtrToStructure<Drm.ModeModeInfo>(IntPtr.Add(connector.modes, j * SizeOfDrmModeModeInfo));
-                        if ((_drmMode.type & Drm.MODE_TYPE_PREFERRED) != 0)
+                        Drm.ModeModeInfo drmMode = System.Runtime.InteropServices.Marshal.PtrToStructure<Drm.ModeModeInfo>(IntPtr.Add(connector.modes, j * SizeOfDrmModeModeInfo));
+                        if ((drmMode.type & Drm.MODE_TYPE_PREFERRED) != 0)
                         {
-                            _width = _drmMode.hdisplay;
-                            _height = _drmMode.vdisplay;
-                            break;
+                            int modeArea = drmMode.hdisplay * drmMode.vdisplay;
+                            if (modeArea > area)
+                            {
+                                _drmMode = drmMode;
+                                _width = drmMode.hdisplay;
+                                _height = drmMode.vdisplay;
+                                area = modeArea;
+                            }
                         }
                     }
 
@@ -120,10 +93,14 @@ namespace NoesisApp
                         uint encoderId = (uint)System.Runtime.InteropServices.Marshal.ReadInt32(resources.encoders, j * sizeof(uint));
                         IntPtr encoderPtr = Drm.ModeGetEncoder(_drmFd, encoderId);
                         Drm.ModeEncoder encoder = System.Runtime.InteropServices.Marshal.PtrToStructure<Drm.ModeEncoder>(encoderPtr);
-                        if (encoder.encoderId == connector.encoderId)
+                        for (int k = 0; k < resources.countCrtcs; ++k)
                         {
-                            _drmEncoderCrtcId = encoder.crtcId;
-                            break;
+                            uint crtcMask = (uint)(1 << k);
+                            if ((encoder.possibleCrtcs & crtcMask) != 0)
+                            {
+                                uint crtcId = (uint)System.Runtime.InteropServices.Marshal.ReadInt32(resources.crtcs, k * sizeof(uint));
+                                _drmEncoderCrtcId = crtcId;
+                            }
                         }
 
                         Drm.ModeFreeEncoder(encoderPtr);
@@ -167,8 +144,8 @@ namespace NoesisApp
 
         private uint GetFbForBo(IntPtr bo)
         {
-            uint fb;
-            if (!_gbmBoToDrmFb.TryGetValue(bo, out fb))
+            uint fbId;
+            if (!_gbmBoToDrmFb.TryGetValue(bo, out fbId))
             {
                 uint width = Gbm.BoGetWidth(bo);
                 uint height = Gbm.BoGetHeight(bo);
@@ -180,16 +157,16 @@ namespace NoesisApp
                 uint[] handles = new uint[] { handle.u32, 0, 0, 0};
                 uint[] offsets = new uint[] { 0, 0, 0, 0};
 
-                int rc = Drm.ModeAddFB2(_drmFd, width, height, format, handles, strides, offsets, ref fb, 0);
+                int rc = Drm.ModeAddFB2(_drmFd, width, height, format, handles, strides, offsets, ref fbId, 0);
                 if (rc != 0)
                 {
                     throw new Exception("Failed to create DRM FB");
                 }
 
-                _gbmBoToDrmFb.Add(bo, fb);
+                _gbmBoToDrmFb.Add(bo, fbId);
             }
 
-            return fb;
+            return fbId;
         }
 
         private bool PollReadable(int timeoutMs)
@@ -290,7 +267,7 @@ namespace NoesisApp
         private bool _close;
 
         private int _drmFd = -1;
-        private uint _drmConnectorId;
+        private uint _drmConnectorId = 0;
         private Drm.ModeModeInfo _drmMode;
         private uint _drmEncoderCrtcId;
 

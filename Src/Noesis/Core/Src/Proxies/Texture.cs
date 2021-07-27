@@ -15,48 +15,12 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-public partial class Texture : BaseComponent {
-  internal new static Texture CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
-    return new Texture(cPtr, cMemoryOwn);
-  }
-
+public abstract partial class Texture : BaseComponent {
   internal Texture(IntPtr cPtr, bool cMemoryOwn) : base(cPtr, cMemoryOwn) {
   }
 
   internal static HandleRef getCPtr(Texture obj) {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
-  }
-
-  public void SetPrivateData(object context) {
-    NoesisGUI_PINVOKE.Texture_SetPrivateData(swigCPtr, Noesis.Extend.GetInstanceHandle(context));
-  }
-
-  public uint Width {
-    get {
-      uint ret = NoesisGUI_PINVOKE.Texture_Width_get(swigCPtr);
-      return ret;
-    } 
-  }
-
-  public uint Height {
-    get {
-      uint ret = NoesisGUI_PINVOKE.Texture_Height_get(swigCPtr);
-      return ret;
-    } 
-  }
-
-  public bool HasMipMaps {
-    get {
-      bool ret = NoesisGUI_PINVOKE.Texture_HasMipMaps_get(swigCPtr);
-      return ret;
-    } 
-  }
-
-  public bool IsInverted {
-    get {
-      bool ret = NoesisGUI_PINVOKE.Texture_IsInverted_get(swigCPtr);
-      return ret;
-    } 
   }
 
 }
