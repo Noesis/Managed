@@ -1,2 +1,2 @@
-arm-linux-gnueabihf-gcc mp.cpp -o ../runtimes/linux-arm/native/mp -g -std=c++11 -fPIC -I. -I/usr/include `pkg-config --cflags --libs gstreamer-1.0 gstreamer-plugins-base-1.0 gstreamer-allocators-1.0 gstreamer-video-1.0 gstreamer-app-1.0`
-arm-linux-gnueabihf-gcc libGEMediaPlayer.cpp -o ../runtimes/linux-arm/native/libMediaPlayer.so -g -std=c++11 -fPIC -I. -I/usr/include -lEGL -lGLESv2 -shared -pthread
+arm-linux-gnueabihf-gcc mp.cpp -o ../runtimes/linux-arm/native/mp -g -std=c++11 -fPIC -I. -I/usr/include `pkg-config --cflags --libs gstreamer-1.0 gstreamer-plugins-base-1.0 gstreamer-allocators-1.0 gstreamer-video-1.0 gstreamer-app-1.0` --sysroot /home/pizzi/Noesis/GE/Max10Updater/rootfs
+arm-linux-gnueabihf-gcc libGEMediaPlayer.cpp -o ../runtimes/linux-arm/native/libMediaPlayer.so -g -std=c++11 -fPIC -I. -I/usr/include -lEGL -lGLESv2 -shared -pthread --sysroot /home/pizzi/Noesis/GE/Max10Updater/rootfs

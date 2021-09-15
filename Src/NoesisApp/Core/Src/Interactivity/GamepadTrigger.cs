@@ -134,6 +134,8 @@ namespace NoesisGUIExtensions
                 {
                     source.KeyUp += OnButtonPress;
                 }
+
+                source.Destroyed += OnSourceDestroyed;
             }
 
             _source = GetPtr(source);
@@ -144,6 +146,8 @@ namespace NoesisGUIExtensions
             UIElement source = (UIElement)GetProxy(_source);
             if (source != null)
             {
+                source.Destroyed -= OnSourceDestroyed;
+
                 if (firedOn == GamepadTriggerFiredOn.ButtonDown)
                 {
                     source.KeyDown -= OnButtonPress;
@@ -154,6 +158,11 @@ namespace NoesisGUIExtensions
                 }
             }
 
+            _source = IntPtr.Zero;
+        }
+
+        private void OnSourceDestroyed(IntPtr d)
+        {
             _source = IntPtr.Zero;
         }
 

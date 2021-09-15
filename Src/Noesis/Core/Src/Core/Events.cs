@@ -168,7 +168,7 @@ namespace Noesis
             {
                 events = new EventHandlerStore(element);
                 _elements.Add(ptr, events);
-                Noesis_Dependency_RegisterDestroyed(cPtr);
+                element.Destroyed += OnElementDestroyed;
             }
 
             long routedEventKey = routedEventPtr.ToInt64();
@@ -222,7 +222,7 @@ namespace Noesis
 
                 if (events._binds.Count == 0)
                 {
-                    Noesis_Dependency_UnregisterDestroyed(cPtr);
+                    element.Destroyed -= OnElementDestroyed;
                     _elements.Remove(ptr);
                 }
             }
@@ -302,7 +302,7 @@ namespace Noesis
             {
                 events = new EventHandlerStore(element);
                 _elements.Add(ptr, events);
-                Noesis_Dependency_RegisterDestroyed(cPtr);
+                element.Destroyed += OnElementDestroyed;
             }
 
             long eventKey = eventId.GetHashCode();
@@ -362,7 +362,7 @@ namespace Noesis
 
                 if (events._binds.Count == 0)
                 {
-                    Noesis_Dependency_UnregisterDestroyed(cPtr);
+                    element.Destroyed -= OnElementDestroyed;
                     _elements.Remove(ptr);
                 }
             }
@@ -416,11 +416,6 @@ namespace Noesis
         #endregion
 
         #region Private members
-        static EventHandlerStore()
-        {
-            Noesis_Dependency_SetDestroyedCallback(_destroyedCallback);
-        }
-
         private EventHandlerStore(UIElement element)
         {
             _element = BaseComponent.getCPtr(element).Handle;
@@ -446,14 +441,8 @@ namespace Noesis
             View._Rendering.Clear();
         }
 
-        private delegate void DestroyedCallback(IntPtr d);
-        private static DestroyedCallback _destroyedCallback = OnElementDestroyed;
-
-        [MonoPInvokeCallback(typeof(DestroyedCallback))]
         private static void OnElementDestroyed(IntPtr d)
         {
-            Noesis_Dependency_UnregisterDestroyed(d);
-
             EventHandlerStore events;
             long ptr = d.ToInt64();
             if (_elements.TryGetValue(ptr, out events))
@@ -485,15 +474,6 @@ namespace Noesis
         [DllImport(Library.Name)]
         private static extern void Noesis_Event_Unbind(RaiseEventCallback callback,
             IntPtr element, [MarshalAs(UnmanagedType.LPWStr)]string eventId);
-
-        [DllImport(Library.Name)]
-        private static extern void Noesis_Dependency_SetDestroyedCallback(DestroyedCallback callback);
-
-        [DllImport(Library.Name)]
-        private static extern void Noesis_Dependency_RegisterDestroyed(IntPtr cPtr);
-
-        [DllImport(Library.Name)]
-        private static extern void Noesis_Dependency_UnregisterDestroyed(IntPtr cPtr);
         #endregion
     }
 

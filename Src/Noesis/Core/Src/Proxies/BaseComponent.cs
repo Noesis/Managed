@@ -62,6 +62,11 @@ public partial class BaseComponent {
     NoesisGUI_PINVOKE.BaseComponent_Release(cPtr);
   }
 
+  public static int GetNumReferences(IntPtr cPtr) {
+    int ret = NoesisGUI_PINVOKE.BaseComponent_GetNumReferences(cPtr);
+    return ret;
+  }
+
   internal static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_BaseComponent(Marshal.StringToHGlobalAnsi(typeName));
   }

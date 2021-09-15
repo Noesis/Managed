@@ -56,6 +56,10 @@ namespace Noesis
             return false;
         }
 
+        internal protected virtual void OnApplyTemplate()
+        {
+        }
+
         #region FindResource implementation
 
         private object FindResourceHelper(string key)

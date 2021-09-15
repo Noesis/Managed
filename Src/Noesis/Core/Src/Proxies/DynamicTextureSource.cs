@@ -39,15 +39,10 @@ public class DynamicTextureSource : ImageSource {
   #region Private members
 
   private static IntPtr Create(uint width, uint height, TextureRenderCallback callback, object user) {
-    CallbackInfo info = new CallbackInfo { Callback = callback };
-    int callbackId = info.GetHashCode();
-    _callbacks[callbackId] = info;
+    int callbackId = CallbackId++;
+    _callbacks[callbackId] = callback;
     IntPtr userPtr = Noesis.Extend.GetInstanceHandle(user).Handle;
     return DynamicTextureSource_Create(width, height, callbackId, _removeCallback, _renderCallback, userPtr);
-  }
-
-  private struct CallbackInfo {
-    public TextureRenderCallback Callback;
   }
 
   private delegate IntPtr NoesisTextureRenderCallback(int callbackId, IntPtr devicePtr, IntPtr userPtr);
@@ -56,10 +51,10 @@ public class DynamicTextureSource : ImageSource {
   private static IntPtr OnTextureRender(int callbackId, IntPtr devicePtr, IntPtr userPtr) {
     try {
       if (Noesis.Extend.Initialized) {
-        CallbackInfo info = _callbacks[callbackId];
+        TextureRenderCallback callback = _callbacks[callbackId];
         RenderDevice device = (RenderDevice)Noesis.Extend.GetProxy(devicePtr, false);
         object user = Noesis.Extend.GetProxy(userPtr, false);
-        Texture texture = info.Callback(device, user);
+        Texture texture = callback(device, user);
         return Noesis.Extend.GetInstanceHandle(texture).Handle;
       }
     }
@@ -81,13 +76,19 @@ public class DynamicTextureSource : ImageSource {
     }
   }
 
-  private static Dictionary<int, CallbackInfo> _callbacks = new Dictionary<int, CallbackInfo>();
+  private static int CallbackId = 0;
+  private static Dictionary<int, TextureRenderCallback> _callbacks =
+    new Dictionary<int, TextureRenderCallback>();
 
   [DllImport(Library.Name)]
   private static extern IntPtr DynamicTextureSource_Create(uint width, uint height, int callbackId,
       NoesisRemoveCallback removeCallback, NoesisTextureRenderCallback renderCallback, IntPtr user);
 
   #endregion
+
+  public void Resize(uint width, uint height) {
+    NoesisGUI_PINVOKE.DynamicTextureSource_Resize(swigCPtr, width, height);
+  }
 
   public int PixelWidth {
     get {

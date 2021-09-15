@@ -121,6 +121,13 @@ public class TextBox : TextBoxBase {
     }
   }
 
+  public static DependencyProperty PlaceholderProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.TextBox_PlaceholderProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
   public static DependencyProperty TextAlignmentProperty {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.TextBox_TextAlignmentProperty_get();
@@ -248,6 +255,17 @@ public class TextBox : TextBoxBase {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.TextBox_TextView_get(swigCPtr);
       return (Visual)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public string Placeholder {
+    set {
+      NoesisGUI_PINVOKE.TextBox_Placeholder_set(swigCPtr, value != null ? value : string.Empty);
+    }
+    get {
+      IntPtr strPtr = NoesisGUI_PINVOKE.TextBox_Placeholder_get(swigCPtr);
+      string str = Noesis.Extend.StringFromNativeUtf8(strPtr);
+      return str;
     }
   }
 

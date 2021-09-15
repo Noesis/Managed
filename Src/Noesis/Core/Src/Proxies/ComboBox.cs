@@ -72,6 +72,13 @@ public class ComboBox : Selector {
     }
   }
 
+  public static DependencyProperty PlaceholderProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.ComboBox_PlaceholderProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
   public static DependencyProperty SelectionBoxItemProperty {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ComboBox_SelectionBoxItemProperty_get();
@@ -170,6 +177,17 @@ public class ComboBox : Selector {
     }
     get {
       IntPtr strPtr = NoesisGUI_PINVOKE.ComboBox_Text_get(swigCPtr);
+      string str = Noesis.Extend.StringFromNativeUtf8(strPtr);
+      return str;
+    }
+  }
+
+  public string Placeholder {
+    set {
+      NoesisGUI_PINVOKE.ComboBox_Placeholder_set(swigCPtr, value != null ? value : string.Empty);
+    }
+    get {
+      IntPtr strPtr = NoesisGUI_PINVOKE.ComboBox_Placeholder_get(swigCPtr);
       string str = Noesis.Extend.StringFromNativeUtf8(strPtr);
       return str;
     }

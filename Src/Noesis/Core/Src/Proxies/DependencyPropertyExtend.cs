@@ -30,6 +30,23 @@ namespace Noesis
             return RegisterCommon(name, propertyType, ownerType, defaultMetadata);
         }
 
+        public DependencyProperty AddOwner(Type ownerType)
+        {
+            return AddOwner(ownerType, null);
+        }
+
+        public DependencyProperty AddOwner(Type ownerType, PropertyMetadata metadata)
+        {
+            if (metadata != null)
+            {
+                ValidateDefaultValue(Name, PropertyType, ownerType, metadata.DefaultValue);
+            }
+
+            IntPtr ownerTypePtr = Noesis.Extend.EnsureNativeType(ownerType, false);
+            IntPtr dp = Noesis_AddOwnerDependencyProperty(swigCPtr, ownerTypePtr, PropertyMetadata.getCPtr(metadata));
+            return new DependencyProperty(dp, false);
+        }
+
         public void OverrideMetadata(Type forType, PropertyMetadata typeMetadata)
         {
             if (forType == null)
@@ -52,8 +69,7 @@ namespace Noesis
 
             IntPtr forTypePtr = Noesis.Extend.EnsureNativeType(forType, false);
 
-            Noesis_OverrideMetadata(forTypePtr, swigCPtr.Handle,
-                PropertyMetadata.getCPtr(typeMetadata).Handle);
+            Noesis_OverrideMetadata(forTypePtr, swigCPtr, PropertyMetadata.getCPtr(typeMetadata));
 
             DependencyPropertyRegistry.Override(this, forType, typeMetadata);
         }
@@ -77,7 +93,7 @@ namespace Noesis
 
             // Create and register dependency property
             IntPtr dependencyPtr = Noesis_RegisterDependencyProperty(ownerTypePtr,
-                name, nativeType, PropertyMetadata.getCPtr(propertyMetadata).Handle);
+                name, nativeType, PropertyMetadata.getCPtr(propertyMetadata));
 
             DependencyProperty dependencyProperty = existingProperty;
             if (!ReferenceEquals(dependencyProperty, null))
@@ -242,16 +258,18 @@ namespace Noesis
 
         #region Imports
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////
         [DllImport(Library.Name)]
-        private static extern IntPtr Noesis_RegisterDependencyProperty(IntPtr classType,
+        private static extern IntPtr Noesis_RegisterDependencyProperty(IntPtr ownerType,
             [MarshalAs(UnmanagedType.LPStr)]string propertyName,
-            IntPtr propertyType, IntPtr propertyMetadata);
+            IntPtr propertyType, HandleRef propertyMetadata);
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////
         [DllImport(Library.Name)]
-        private static extern void Noesis_OverrideMetadata(IntPtr classType,
-            IntPtr dependencyProperty, IntPtr propertyMetadata);
+        private static extern IntPtr Noesis_AddOwnerDependencyProperty(HandleRef source,
+            IntPtr ownerType, HandleRef propertyMetadata);
+
+        [DllImport(Library.Name)]
+        private static extern void Noesis_OverrideMetadata(IntPtr forType,
+            HandleRef dependencyProperty, HandleRef propertyMetadata);
 
         #endregion
     }

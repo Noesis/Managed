@@ -121,6 +121,7 @@ namespace Noesis
                 _frameworkElementMeasure,
                 _frameworkElementArrange,
                 _frameworkElementConnectEvent,
+                _frameworkElementApplyTemplate,
                 _freezableClone,
 
                 _toString,
@@ -250,7 +251,7 @@ namespace Noesis
             Noesis_RegisterReflectionCallbacks(
                 null,
                 null,
-                null, null, null, null, null,
+                null, null, null, null, null, null,
                 null, null,
                 null, null,
                 null, null, null, null,
@@ -1174,7 +1175,8 @@ namespace Noesis
             Measure     = 8,
             Arrange     = 16,
             Connect     = 32,
-            Clone       = 64
+            Template    = 64,
+            Clone       = 128
         }
 
         private struct ExtendPropertyData
@@ -1490,6 +1492,9 @@ namespace Noesis
 
             MethodInfo connectMethod = FindMethod(type, "ConnectEvent", new Type[] { typeof(object), typeof(string), typeof(string) });
             if (IsOverride(connectMethod)) overrides |= ExtendTypeOverrides.Connect;
+
+            MethodInfo templateMethod = FindMethod(type, "OnApplyTemplate", new Type[] { });
+            if (IsOverride(templateMethod)) overrides |= ExtendTypeOverrides.Template;
 
             MethodInfo cloneMethod = FindMethod(type, "CloneCommonCore", new Type[] { typeof(Freezable) });
             if (IsOverride(cloneMethod)) overrides |= ExtendTypeOverrides.Clone;
@@ -1971,6 +1976,27 @@ namespace Noesis
             }
 
             return false;
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void Callback_FrameworkElementApplyTemplate(IntPtr cPtr);
+        private static Callback_FrameworkElementApplyTemplate _frameworkElementApplyTemplate = FrameworkElementApplyTemplate;
+
+        [MonoPInvokeCallback(typeof(Callback_FrameworkElementApplyTemplate))]
+        private static void FrameworkElementApplyTemplate(IntPtr cPtr)
+        {
+            try
+            {
+                FrameworkElement element = (FrameworkElement)GetExtendInstance(cPtr);
+                if (element != null)
+                {
+                    element.OnApplyTemplate();
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -4940,10 +4966,10 @@ namespace Noesis
                 return (BaseComponent)Binding.DoNothing;
             }
 
-            long ptr = cPtr.ToInt64();
             lock (_proxies)
             {
                 WeakReference wr;
+                long ptr = cPtr.ToInt64();
                 if (_proxies.TryGetValue(ptr, out wr))
                 {
                     if (wr != null)
@@ -4966,7 +4992,12 @@ namespace Noesis
                 }
             }
 
-            return ((NativeTypeComponentInfo)info).Creator(cPtr, ownMemory);
+            if (BaseComponent.GetNumReferences(cPtr) > 0)
+            {
+                return ((NativeTypeComponentInfo)info).Creator(cPtr, ownMemory);
+            }
+
+            return null;
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////

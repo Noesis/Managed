@@ -81,6 +81,13 @@ public class PasswordBox : Control {
     }
   }
 
+  public static DependencyProperty PlaceholderProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.PasswordBox_PlaceholderProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
   public static DependencyProperty SelectionBrushProperty {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.PasswordBox_SelectionBrushProperty_get();
@@ -161,6 +168,17 @@ public class PasswordBox : Control {
       float ret = NoesisGUI_PINVOKE.PasswordBox_SelectionOpacity_get(swigCPtr);
       return ret;
     } 
+  }
+
+  public string Placeholder {
+    set {
+      NoesisGUI_PINVOKE.PasswordBox_Placeholder_set(swigCPtr, value != null ? value : string.Empty);
+    }
+    get {
+      IntPtr strPtr = NoesisGUI_PINVOKE.PasswordBox_Placeholder_get(swigCPtr);
+      string str = Noesis.Extend.StringFromNativeUtf8(strPtr);
+      return str;
+    }
   }
 
   internal new static IntPtr Extend(string typeName) {

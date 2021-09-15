@@ -128,6 +128,8 @@ namespace NoesisApp
                 {
                     source.KeyUp += OnKeyPress;
                 }
+
+                source.Destroyed += OnSourceDestroyed;
             }
 
             _source = GetPtr(source);
@@ -138,6 +140,8 @@ namespace NoesisApp
             UIElement source = (UIElement)GetProxy(_source);
             if (source != null)
             {
+                source.Destroyed -= OnSourceDestroyed;
+
                 if (firedOn == KeyTriggerFiredOn.KeyDown)
                 {
                     source.KeyDown -= OnKeyPress;
@@ -148,6 +152,11 @@ namespace NoesisApp
                 }
             }
 
+            _source = IntPtr.Zero;
+        }
+
+        private void OnSourceDestroyed(IntPtr d)
+        {
             _source = IntPtr.Zero;
         }
 

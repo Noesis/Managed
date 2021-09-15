@@ -877,6 +877,69 @@ namespace Noesis
 
         #endregion
 
+        #region Destroyed event
+        public delegate void DestroyedHandler(IntPtr d);
+        public event DestroyedHandler Destroyed
+        {
+            add
+            {
+                long ptr = swigCPtr.Handle.ToInt64();
+                if (!_Destroyed.ContainsKey(ptr))
+                {
+                    _Destroyed.Add(ptr, null);
+
+                    Noesis_Dependency_Destroyed_Bind(_raiseDestroyed, swigCPtr);
+                }
+
+                _Destroyed[ptr] += value;
+            }
+            remove
+            {
+                long ptr = swigCPtr.Handle.ToInt64();
+                if (_Destroyed.ContainsKey(ptr))
+                {
+
+                    _Destroyed[ptr] -= value;
+
+                    if (_Destroyed[ptr] == null)
+                    {
+                        Noesis_Dependency_Destroyed_Unbind(_raiseDestroyed, swigCPtr);
+
+                        _Destroyed.Remove(ptr);
+                    }
+                }
+            }
+        }
+
+        internal delegate void RaiseDestroyedCallback(IntPtr cPtr);
+        private static RaiseDestroyedCallback _raiseDestroyed = RaiseDestroyed;
+
+        [MonoPInvokeCallback(typeof(RaiseDestroyedCallback))]
+        private static void RaiseDestroyed(IntPtr cPtr)
+        {
+            try
+            {
+                if (Noesis.Extend.Initialized)
+                {
+                    long ptr = cPtr.ToInt64();
+                    DestroyedHandler handler = null;
+                    if (_Destroyed.TryGetValue(ptr, out handler))
+                    {
+                        handler?.Invoke(cPtr);
+                        _Destroyed.Remove(ptr);
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                Noesis.Error.UnhandledException(exception);
+            }
+        }
+
+        internal static Dictionary<long, DestroyedHandler> _Destroyed =
+            new Dictionary<long, DestroyedHandler>();
+        #endregion
+
         #region Imports
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1042,6 +1105,13 @@ namespace Noesis
         [DllImport(Library.Name)]
         private static extern void Noesis_Dependency_EnumProps(IntPtr dependencyObject, int id,
             NoesisEnumPropertiesCallback callback);
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        [DllImport(Library.Name)]
+        private static extern void Noesis_Dependency_Destroyed_Bind(RaiseDestroyedCallback callback, HandleRef instance);
+
+        [DllImport(Library.Name)]
+        private static extern void Noesis_Dependency_Destroyed_Unbind(RaiseDestroyedCallback callback, HandleRef instance);
 
         #endregion
     }

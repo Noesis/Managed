@@ -89,6 +89,67 @@ static GstFlowReturn NewSample(GstElement* sink, void* data)
     return GST_FLOW_ERROR;
 }
 
+static GstFlowReturn NewPreroll(GstElement* sink, void* data)
+{
+    GstSample *sample;
+
+    g_signal_emit_by_name (sink, "pull-preroll", &sample);
+    if (sample)
+    {
+        gint64 time;
+        gst_element_query_position(sink, GST_FORMAT_TIME, &time);
+
+        GstCaps* caps = gst_sample_get_caps (sample);
+        GstStructure* s = gst_caps_get_structure (caps, 0);
+        gint width;
+        gint height;
+        gst_structure_get_int (s, "width", &width);
+        gst_structure_get_int (s, "height", &height);
+
+        GstBuffer* buffer = gst_sample_get_buffer(sample);
+        GstMapInfo map;
+        if (gst_buffer_map(buffer, &map, GST_MAP_READ))
+        {
+            GstMemory* mem = gst_buffer_peek_memory(buffer, 0);
+
+            int gst_fd = gst_dmabuf_memory_get_fd(mem);
+            int fd = dup(gst_fd);
+            gst_buffer_unmap (buffer, &map);
+            msghdr msg;
+            iovec iov;
+            cmsghdr *cmsg;
+            char cmsg_buffer[sizeof(cmsghdr) + sizeof(int)];
+            MediaPlayerCommand command;
+            command.cmd = MPC_NewFrame;
+            command.arg[0] = time;
+            command.arg[1] = (((uint64_t)width) << 32) | height;
+            memset(&msg, 0, sizeof(msghdr));
+            memset(&iov, 0, sizeof(iovec));
+            iov.iov_base = &command;
+            iov.iov_len = sizeof(MediaPlayerCommand);
+            msg.msg_name = &serverSockaddr;
+            msg.msg_namelen = sizeof(sockaddr_un);
+            msg.msg_iov = &iov;
+            msg.msg_iovlen = 1;
+            msg.msg_control = cmsg_buffer;
+            msg.msg_controllen = sizeof(cmsg_buffer);
+            cmsg = CMSG_FIRSTHDR(&msg);
+            cmsg->cmsg_len = sizeof(cmsg_buffer);
+            cmsg->cmsg_level = SOL_SOCKET;
+            cmsg->cmsg_type = SCM_RIGHTS;
+            *((int *)CMSG_DATA(cmsg)) = fd;
+            int clientSocket = *(int*)data;
+            sendmsg(clientSocket, &msg, 0);
+            close(fd);
+        }
+
+        gst_sample_unref (sample);
+        return GST_FLOW_OK;
+    }
+
+    return GST_FLOW_ERROR;
+}
+
 static const gint64 Status_EOS = 1;
 static const gint64 Status_ERROR = 2;
 static const gint64 Status_READY = 3;
@@ -306,6 +367,7 @@ int main(int argc, char** argv)
     GstElement* sink = gst_bin_get_by_name (GST_BIN (pipeline), "sink");
     g_object_set (sink, "emit-signals", TRUE, NULL);
     g_signal_connect (sink, "new-sample", G_CALLBACK (NewSample), &clientSocket);
+    g_signal_connect (sink, "new-preroll", G_CALLBACK (NewPreroll), &clientSocket);
     gst_object_unref(sink);
 
     gint64 dimensions = 0;    
@@ -410,7 +472,15 @@ int main(int argc, char** argv)
                     fcntl(clientSocket, F_SETFL, flags);
 
                     gst_element_set_state (pipeline, GST_STATE_PAUSED);
+                    // Wait for the pipeline to preroll
+                    gst_element_get_state (pipeline, NULL, NULL, GST_CLOCK_TIME_NONE);
+
                     gst_element_seek_simple (pipeline, GST_FORMAT_TIME, (GstSeekFlags)(GST_SEEK_FLAG_ACCURATE | GST_SEEK_FLAG_FLUSH), 0);
+
+                    gst_element_set_state (pipeline, GST_STATE_PAUSED);
+
+                    // Wait for the pipeline to preroll
+                    gst_element_get_state (pipeline, NULL, NULL, GST_CLOCK_TIME_NONE);
                 }
                 else if (command.cmd == MPC_Seek)
                 {

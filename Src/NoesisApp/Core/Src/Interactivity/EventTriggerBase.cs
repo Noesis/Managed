@@ -142,25 +142,16 @@ namespace NoesisApp
                         newSource.GetType(), GetType()));
                 }
 
+                UnregisterSource(oldSource);
+
                 _source = GetPtr(newSource);
+
+                RegisterSource(newSource);
 
                 if (AssociatedObject != null)
                 {
                     OnSourceChangedImpl(oldSource, newSource);
                 }
-            }
-        }
-
-        private struct EventWrapper
-        {
-            public WeakReference weak;
-
-            public static readonly MethodInfo InvokeMethod = typeof(EventWrapper).GetMethod(
-                "Invoke", BindingFlags.Instance | BindingFlags.NonPublic);
-
-            private void Invoke(object sender, Noesis.EventArgs e)
-            {
-                ((EventTriggerBase)weak.Target)?.OnEventImpl(sender, e);
             }
         }
 
@@ -190,12 +181,12 @@ namespace NoesisApp
                             eventName));
                     }
                 }
-
-                EventWrapper wrapper = new EventWrapper { weak = new WeakReference(this) };
-
-                _event = ev;
-                _handler = Delegate.CreateDelegate(ev.EventHandlerType, wrapper, EventWrapper.InvokeMethod);
-                _event.AddEventHandler(source, _handler);
+                else
+                {
+                    _event = ev;
+                    _handler = Delegate.CreateDelegate(ev.EventHandlerType, this, OnEventMethod);
+                    _event.AddEventHandler(source, _handler);
+                }
             }
         }
 
@@ -228,6 +219,42 @@ namespace NoesisApp
             return false;
         }
 
+        #region Source registration
+        private void RegisterSource(object source)
+        {
+            if (source is DependencyObject)
+            {
+                DependencyObject dob = (DependencyObject)source;
+                dob.Destroyed += OnSourceDestroyed;
+            }
+            else
+            {
+                _keepSource = source;
+            }
+        }
+
+        private void UnregisterSource(object source)
+        {
+            if (source is DependencyObject)
+            {
+                DependencyObject dob = (DependencyObject)source;
+                dob.Destroyed -= OnSourceDestroyed;
+            }
+            else
+            {
+                _keepSource = source;
+            }
+        }
+
+        private void OnSourceDestroyed(IntPtr d)
+        {
+            _source = IntPtr.Zero;
+            _event = null;
+            _handler = null;
+        }
+        #endregion
+
+        #region SourceName resolver
         public object SourceNameResolver
         {
             get { return GetValue(SourceNameResolverProperty); }
@@ -245,11 +272,18 @@ namespace NoesisApp
                 trigger.UpdateSource(trigger.AssociatedObject);
             }
         }
+        #endregion
+
+        #region Private members
+        public static readonly MethodInfo OnEventMethod = typeof(EventTriggerBase).GetMethod(
+                "OnEventImpl", BindingFlags.Instance | BindingFlags.NonPublic);
 
         Type _sourceType;
         IntPtr _source;
+        object _keepSource;
         Delegate _handler;
         EventInfo _event;
+        #endregion
     }
 
     public abstract class EventTriggerBase<T> : EventTriggerBase where T : class

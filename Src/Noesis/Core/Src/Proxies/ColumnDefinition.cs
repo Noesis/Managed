@@ -93,6 +93,13 @@ public class ColumnDefinition : DefinitionBase {
     } 
   }
 
+  public new float ActualWidth {
+    get {
+      float ret = NoesisGUI_PINVOKE.ColumnDefinition_ActualWidth_get(swigCPtr);
+      return ret;
+    } 
+  }
+
 }
 
 }

@@ -13,9 +13,10 @@ namespace NoesisApp
             InitMediaPlayer();
         }
 
-        GEMediaPlayer(MediaElement owner, string uri)
+        GEMediaPlayer(MediaElement owner, Uri uri)
         {
-            _stream = Noesis.GUI.LoadXamlResource(uri);
+            string path = uri.GetPath();
+            _stream = Noesis.GUI.LoadXamlResource(path);
             if (_stream != null)
             {
                 _state = CreateState();
@@ -34,7 +35,7 @@ namespace NoesisApp
                 _mediaFailedFnHandle = GCHandle.Alloc(mediaFailedFn);
 
                 long streamSize = _stream.Length;
-                OpenMedia(_state, GCHandle.ToIntPtr(_streamHandle), uri, streamSize, readFn, seekFn, mediaOpenedFn, mediaEndedFn, mediaFailedFn);
+                OpenMedia(_state, GCHandle.ToIntPtr(_streamHandle), path, streamSize, readFn, seekFn, mediaOpenedFn, mediaEndedFn, mediaFailedFn);
             }
             owner.View.Rendering += OnRendering;
         }
@@ -159,7 +160,7 @@ namespace NoesisApp
             get { return _textureSource; }
         }
 
-        public static MediaPlayer Create(MediaElement owner, string uri, object user)
+        public static MediaPlayer Create(MediaElement owner, Uri uri, object user)
         {
             return new GEMediaPlayer(owner, uri);
         }

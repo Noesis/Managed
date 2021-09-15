@@ -142,6 +142,15 @@ public partial class FrameworkElement : UIElement {
     }
   }
 
+  public static FlowDirection GetFlowDirection(DependencyObject d) {
+    FlowDirection ret = (FlowDirection)NoesisGUI_PINVOKE.FrameworkElement_GetFlowDirection(DependencyObject.getCPtr(d));
+    return ret;
+  }
+
+  public static void SetFlowDirection(DependencyObject d, FlowDirection flowDirection) {
+    NoesisGUI_PINVOKE.FrameworkElement_SetFlowDirection(DependencyObject.getCPtr(d), (int)flowDirection);
+  }
+
   public BindingExpression GetBindingExpression(DependencyProperty dp) {
     IntPtr cPtr = NoesisGUI_PINVOKE.FrameworkElement_GetBindingExpression(swigCPtr, DependencyProperty.getCPtr(dp));
     return (BindingExpression)Noesis.Extend.GetProxy(cPtr, false);
@@ -248,6 +257,13 @@ public partial class FrameworkElement : UIElement {
   public static DependencyProperty DefaultStyleKeyProperty {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.FrameworkElement_DefaultStyleKeyProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static DependencyProperty FlowDirectionProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.FrameworkElement_FlowDirectionProperty_get();
       return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
     }
   }
@@ -535,6 +551,16 @@ public partial class FrameworkElement : UIElement {
       }
       return null;
     }
+  }
+
+  public FlowDirection FlowDirection {
+    set {
+      NoesisGUI_PINVOKE.FrameworkElement_FlowDirection_set(swigCPtr, (int)value);
+    } 
+    get {
+      FlowDirection ret = (FlowDirection)NoesisGUI_PINVOKE.FrameworkElement_FlowDirection_get(swigCPtr);
+      return ret;
+    } 
   }
 
   public Style FocusVisualStyle {

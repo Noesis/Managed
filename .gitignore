@@ -245,3 +245,5 @@ project.lock.json
 Src/Samples/
 BuildManagedSDK.py
 Samples.sln
+
+Src/NoesisApp/Controls/*

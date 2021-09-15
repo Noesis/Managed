@@ -385,6 +385,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern void BaseComponent_Release(IntPtr jarg1);
 
   [DllImport(Library.Name)]
+  public static extern int BaseComponent_GetNumReferences(IntPtr jarg1);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr Bool_GetStaticType();
 
   [DllImport(Library.Name)]
@@ -1361,6 +1364,9 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr TextureSource_Texture_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void DynamicTextureSource_Resize(HandleRef jarg1, uint jarg2, uint jarg3);
 
   [DllImport(Library.Name)]
   public static extern int DynamicTextureSource_PixelWidth_get(HandleRef jarg1);
@@ -4827,6 +4833,12 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr new_FrameworkElement();
 
   [DllImport(Library.Name)]
+  public static extern int FrameworkElement_GetFlowDirection(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void FrameworkElement_SetFlowDirection(HandleRef jarg1, int jarg2);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr FrameworkElement_GetBindingExpression(HandleRef jarg1, HandleRef jarg2);
 
   [DllImport(Library.Name)]
@@ -4887,6 +4899,9 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr FrameworkElement_DefaultStyleKeyProperty_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr FrameworkElement_FlowDirectionProperty_get();
 
   [DllImport(Library.Name)]
   public static extern IntPtr FrameworkElement_FocusVisualStyleProperty_get();
@@ -5016,6 +5031,12 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr FrameworkElement_DefaultStyleKey_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void FrameworkElement_FlowDirection_set(HandleRef jarg1, int jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern int FrameworkElement_FlowDirection_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern void FrameworkElement_FocusVisualStyle_set(HandleRef jarg1, HandleRef jarg2);
@@ -7102,6 +7123,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr ComboBox_MaxDropDownHeightProperty_get();
 
   [DllImport(Library.Name)]
+  public static extern IntPtr ComboBox_PlaceholderProperty_get();
+
+  [DllImport(Library.Name)]
   public static extern IntPtr ComboBox_SelectionBoxItemProperty_get();
 
   [DllImport(Library.Name)]
@@ -7158,6 +7182,12 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr ComboBox_Text_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void ComboBox_Placeholder_set(HandleRef jarg1, [MarshalAs(UnmanagedType.LPWStr)]string jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr ComboBox_Placeholder_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern void CanExecuteRoutedEventArgs_CanExecute_set(HandleRef jarg1, bool jarg2);
@@ -7875,6 +7905,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern float ColumnDefinition_MaxWidth_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
+  public static extern float ColumnDefinition_ActualWidth_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr new_ColumnDefinitionCollection();
 
   [DllImport(Library.Name)]
@@ -7906,6 +7939,9 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern float RowDefinition_MinHeight_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern float RowDefinition_ActualHeight_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern IntPtr new_RowDefinitionCollection();
@@ -8467,6 +8503,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr PasswordBox_PasswordCharProperty_get();
 
   [DllImport(Library.Name)]
+  public static extern IntPtr PasswordBox_PlaceholderProperty_get();
+
+  [DllImport(Library.Name)]
   public static extern IntPtr PasswordBox_SelectionBrushProperty_get();
 
   [DllImport(Library.Name)]
@@ -8510,6 +8549,12 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern float PasswordBox_SelectionOpacity_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void PasswordBox_Placeholder_set(HandleRef jarg1, [MarshalAs(UnmanagedType.LPWStr)]string jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr PasswordBox_Placeholder_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern IntPtr new_Popup();
@@ -10022,6 +10067,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr TextBox_MinLinesProperty_get();
 
   [DllImport(Library.Name)]
+  public static extern IntPtr TextBox_PlaceholderProperty_get();
+
+  [DllImport(Library.Name)]
   public static extern IntPtr TextBox_TextAlignmentProperty_get();
 
   [DllImport(Library.Name)]
@@ -10092,6 +10140,12 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr TextBox_TextView_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void TextBox_Placeholder_set(HandleRef jarg1, [MarshalAs(UnmanagedType.LPWStr)]string jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr TextBox_Placeholder_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   [return: MarshalAs(UnmanagedType.U1)]

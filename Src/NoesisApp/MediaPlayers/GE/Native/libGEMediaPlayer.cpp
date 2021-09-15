@@ -228,7 +228,8 @@ extern "C" void* CreateState()
 extern "C" void DestroyState(void* state)
 {
     GstMediaPlayerState* st = (GstMediaPlayerState*)state;
-    kill(st->child, SIGTERM);
+    kill(st->child, SIGKILL);
+    waitpid(st->child, NULL, 0);
 
     char tmpVideoPath[256];
     strcpy(tmpVideoPath, st->tmpDir);
@@ -304,8 +305,6 @@ extern "C" bool OpenMedia(void* state, const void* streamPtr, const char* stream
         sprintf(streamSizeStr, "%ld", streamSize);
         execlp("./mp", "mp", st->tmpDir, streamSizeStr, (char*)NULL);
     }
-
-    signal(SIGCHLD, SIG_IGN);
 
     MediaPlayerCommand command;
     socklen_t socklen = sizeof(sockaddr_un);
@@ -577,7 +576,7 @@ extern "C" void RenderFrame(void* state)
     glEGLImageTargetTexture2DOES(GL_TEXTURE_EXTERNAL_OES, EGL_NO_IMAGE_KHR);
     eglDestroyImageKHR(display, image);
     close(st->fd);
-    st->fd = -1;
+    // st->fd = -1;
     // st->fd = 0;
 
     st->lastRenderTime = st->time;

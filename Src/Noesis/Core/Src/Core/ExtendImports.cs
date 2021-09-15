@@ -54,6 +54,7 @@ namespace Noesis
             Callback_FrameworkElementMeasure callback_FrameworkElementMeasure,
             Callback_FrameworkElementArrange callback_FrameworkElementArrange,
             Callback_FrameworkElementConnectEvent callback_FrameworkElementConnectEvent,
+            Callback_FrameworkElementApplyTemplate callback_FrameworkElementApplyTemplate,
             Callback_FreezableClone callback_FreezableClone,
             Callback_ToString callback_ToString,
             Callback_Equals callback_Equals,

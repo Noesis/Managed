@@ -93,6 +93,13 @@ public class RowDefinition : DefinitionBase {
     } 
   }
 
+  public new float ActualHeight {
+    get {
+      float ret = NoesisGUI_PINVOKE.RowDefinition_ActualHeight_get(swigCPtr);
+      return ret;
+    } 
+  }
+
 }
 
 }
