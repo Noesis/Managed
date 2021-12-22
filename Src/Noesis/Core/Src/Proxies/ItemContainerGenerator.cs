@@ -36,23 +36,25 @@ public class ItemContainerGenerator : BaseComponent, Noesis.IRecyclingItemContai
   public delegate void ItemsChangedHandler(object sender, ItemsChangedEventArgs e);
   public event ItemsChangedHandler ItemsChanged {
     add {
-      if (!_ItemsChanged.ContainsKey(swigCPtr.Handle)) {
-        _ItemsChanged.Add(swigCPtr.Handle, null);
+      long ptr = swigCPtr.Handle.ToInt64();
+      if (!_ItemsChanged.ContainsKey(ptr)) {
+        _ItemsChanged.Add(ptr, null);
 
         NoesisGUI_PINVOKE.BindEvent_ItemContainerGenerator_ItemsChanged(_raiseItemsChanged, swigCPtr.Handle);
       }
 
-      _ItemsChanged[swigCPtr.Handle] += value;
+      _ItemsChanged[ptr] += value;
     }
     remove {
-      if (_ItemsChanged.ContainsKey(swigCPtr.Handle)) {
+      long ptr = swigCPtr.Handle.ToInt64();
+      if (_ItemsChanged.ContainsKey(ptr)) {
 
-        _ItemsChanged[swigCPtr.Handle] -= value;
+        _ItemsChanged[ptr] -= value;
 
-        if (_ItemsChanged[swigCPtr.Handle] == null) {
+        if (_ItemsChanged[ptr] == null) {
           NoesisGUI_PINVOKE.UnbindEvent_ItemContainerGenerator_ItemsChanged(_raiseItemsChanged, swigCPtr.Handle);
 
-          _ItemsChanged.Remove(swigCPtr.Handle);
+          _ItemsChanged.Remove(ptr);
         }
       }
     }
@@ -65,17 +67,16 @@ public class ItemContainerGenerator : BaseComponent, Noesis.IRecyclingItemContai
   private static void RaiseItemsChanged(IntPtr cPtr, IntPtr sender, IntPtr e) {
     try {
       if (Noesis.Extend.Initialized) {
+        long ptr = cPtr.ToInt64();
         if (sender == IntPtr.Zero && e == IntPtr.Zero) {
-          _ItemsChanged.Remove(cPtr);
+          _ItemsChanged.Remove(ptr);
           return;
         }
         ItemsChangedHandler handler = null;
-        if (!_ItemsChanged.TryGetValue(cPtr, out handler)) {
+        if (!_ItemsChanged.TryGetValue(ptr, out handler)) {
           throw new System.InvalidOperationException("Delegate not registered for ItemsChanged event");
         }
-        if (handler != null) {
-          handler(Noesis.Extend.GetProxy(sender, false), new ItemsChangedEventArgs(e, false));
-        }
+        handler?.Invoke(Noesis.Extend.GetProxy(sender, false), new ItemsChangedEventArgs(e, false));
       }
     }
     catch (Exception exception) {
@@ -83,31 +84,33 @@ public class ItemContainerGenerator : BaseComponent, Noesis.IRecyclingItemContai
     }
   }
 
-  internal static Dictionary<IntPtr, ItemsChangedHandler> _ItemsChanged =
-      new Dictionary<IntPtr, ItemsChangedHandler>();
+  internal static Dictionary<long, ItemsChangedHandler> _ItemsChanged =
+      new Dictionary<long, ItemsChangedHandler>();
   #endregion
 
   #region StatusChanged
   public delegate void StatusChangedHandler(object sender, EventArgs e);
   public event StatusChangedHandler StatusChanged {
     add {
-      if (!_StatusChanged.ContainsKey(swigCPtr.Handle)) {
-        _StatusChanged.Add(swigCPtr.Handle, null);
+      long ptr = swigCPtr.Handle.ToInt64();
+      if (!_StatusChanged.ContainsKey(ptr)) {
+        _StatusChanged.Add(ptr, null);
 
         NoesisGUI_PINVOKE.BindEvent_ItemContainerGenerator_StatusChanged(_raiseStatusChanged, swigCPtr.Handle);
       }
 
-      _StatusChanged[swigCPtr.Handle] += value;
+      _StatusChanged[ptr] += value;
     }
     remove {
-      if (_StatusChanged.ContainsKey(swigCPtr.Handle)) {
+      long ptr = swigCPtr.Handle.ToInt64();
+      if (_StatusChanged.ContainsKey(ptr)) {
 
-        _StatusChanged[swigCPtr.Handle] -= value;
+        _StatusChanged[ptr] -= value;
 
-        if (_StatusChanged[swigCPtr.Handle] == null) {
+        if (_StatusChanged[ptr] == null) {
           NoesisGUI_PINVOKE.UnbindEvent_ItemContainerGenerator_StatusChanged(_raiseStatusChanged, swigCPtr.Handle);
 
-          _StatusChanged.Remove(swigCPtr.Handle);
+          _StatusChanged.Remove(ptr);
         }
       }
     }
@@ -120,17 +123,16 @@ public class ItemContainerGenerator : BaseComponent, Noesis.IRecyclingItemContai
   private static void RaiseStatusChanged(IntPtr cPtr, IntPtr sender, IntPtr e) {
     try {
       if (Noesis.Extend.Initialized) {
+        long ptr = cPtr.ToInt64();
         if (sender == IntPtr.Zero && e == IntPtr.Zero) {
-          _StatusChanged.Remove(cPtr);
+          _StatusChanged.Remove(ptr);
           return;
         }
         StatusChangedHandler handler = null;
-        if (!_StatusChanged.TryGetValue(cPtr, out handler)) {
+        if (!_StatusChanged.TryGetValue(ptr, out handler)) {
           throw new System.InvalidOperationException("Delegate not registered for StatusChanged event");
         }
-        if (handler != null) {
-          handler(Noesis.Extend.GetProxy(sender, false), new EventArgs(e, false));
-        }
+        handler?.Invoke(Noesis.Extend.GetProxy(sender, false), new EventArgs(e, false));
       }
     }
     catch (Exception exception) {
@@ -138,8 +140,8 @@ public class ItemContainerGenerator : BaseComponent, Noesis.IRecyclingItemContai
     }
   }
 
-  internal static Dictionary<IntPtr, StatusChangedHandler> _StatusChanged =
-      new Dictionary<IntPtr, StatusChangedHandler>();
+  internal static Dictionary<long, StatusChangedHandler> _StatusChanged =
+      new Dictionary<long, StatusChangedHandler>();
   #endregion
 
   #endregion

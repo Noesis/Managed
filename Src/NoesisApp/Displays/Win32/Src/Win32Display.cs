@@ -411,9 +411,9 @@ namespace NoesisApp
                 {
                     if (LoWord(lParam) == (int)WinApi.HitTestResult.HTCLIENT)
                     {
-                        if (_cursors[(int)_cursor] != IntPtr.Zero)
+                        if (_cursors[(int)_cursor.Type] != IntPtr.Zero)
                         {
-                            WinApi.SetCursor(_cursors[(int)_cursor]);
+                            WinApi.SetCursor(_cursors[(int)_cursor.Type]);
                             return true;
                         }
                     }
@@ -964,21 +964,21 @@ namespace NoesisApp
 
         private static IntPtr[] CreateCursorsTable()
         {
-            IntPtr[] cursors = new IntPtr[(int)Noesis.Cursor.Count];
+            IntPtr[] cursors = new IntPtr[(int)Noesis.CursorType.Count];
 
-            cursors[(int)Noesis.Cursor.No] = WinApi.LoadCursor(IntPtr.Zero, new IntPtr((int)WinApi.SystemCursor.IDC_NO));
-            cursors[(int)Noesis.Cursor.Arrow] = WinApi.LoadCursor(IntPtr.Zero, new IntPtr((int)WinApi.SystemCursor.IDC_ARROW));
-            cursors[(int)Noesis.Cursor.AppStarting] = WinApi.LoadCursor(IntPtr.Zero, new IntPtr((int)WinApi.SystemCursor.IDC_APPSTARTING));
-            cursors[(int)Noesis.Cursor.Cross] = WinApi.LoadCursor(IntPtr.Zero, new IntPtr((int)WinApi.SystemCursor.IDC_CROSS));
-            cursors[(int)Noesis.Cursor.Help] = WinApi.LoadCursor(IntPtr.Zero, new IntPtr((int)WinApi.SystemCursor.IDC_HELP));
-            cursors[(int)Noesis.Cursor.IBeam] = WinApi.LoadCursor(IntPtr.Zero, new IntPtr((int)WinApi.SystemCursor.IDC_IBEAM));
-            cursors[(int)Noesis.Cursor.SizeAll] = WinApi.LoadCursor(IntPtr.Zero, new IntPtr((int)WinApi.SystemCursor.IDC_SIZEALL));
-            cursors[(int)Noesis.Cursor.SizeNESW] = WinApi.LoadCursor(IntPtr.Zero, new IntPtr((int)WinApi.SystemCursor.IDC_SIZENESW));
-            cursors[(int)Noesis.Cursor.SizeNS] = WinApi.LoadCursor(IntPtr.Zero, new IntPtr((int)WinApi.SystemCursor.IDC_SIZENS));
-            cursors[(int)Noesis.Cursor.SizeNWSE] = WinApi.LoadCursor(IntPtr.Zero, new IntPtr((int)WinApi.SystemCursor.IDC_SIZENWSE));
-            cursors[(int)Noesis.Cursor.SizeWE] = WinApi.LoadCursor(IntPtr.Zero, new IntPtr((int)WinApi.SystemCursor.IDC_SIZEWE));
-            cursors[(int)Noesis.Cursor.Wait] = WinApi.LoadCursor(IntPtr.Zero, new IntPtr((int)WinApi.SystemCursor.IDC_WAIT));
-            cursors[(int)Noesis.Cursor.Hand] = WinApi.LoadCursor(IntPtr.Zero, new IntPtr((int)WinApi.SystemCursor.IDC_HAND));
+            cursors[(int)Noesis.CursorType.No] = WinApi.LoadCursor(IntPtr.Zero, new IntPtr((int)WinApi.SystemCursor.IDC_NO));
+            cursors[(int)Noesis.CursorType.Arrow] = WinApi.LoadCursor(IntPtr.Zero, new IntPtr((int)WinApi.SystemCursor.IDC_ARROW));
+            cursors[(int)Noesis.CursorType.AppStarting] = WinApi.LoadCursor(IntPtr.Zero, new IntPtr((int)WinApi.SystemCursor.IDC_APPSTARTING));
+            cursors[(int)Noesis.CursorType.Cross] = WinApi.LoadCursor(IntPtr.Zero, new IntPtr((int)WinApi.SystemCursor.IDC_CROSS));
+            cursors[(int)Noesis.CursorType.Help] = WinApi.LoadCursor(IntPtr.Zero, new IntPtr((int)WinApi.SystemCursor.IDC_HELP));
+            cursors[(int)Noesis.CursorType.IBeam] = WinApi.LoadCursor(IntPtr.Zero, new IntPtr((int)WinApi.SystemCursor.IDC_IBEAM));
+            cursors[(int)Noesis.CursorType.SizeAll] = WinApi.LoadCursor(IntPtr.Zero, new IntPtr((int)WinApi.SystemCursor.IDC_SIZEALL));
+            cursors[(int)Noesis.CursorType.SizeNESW] = WinApi.LoadCursor(IntPtr.Zero, new IntPtr((int)WinApi.SystemCursor.IDC_SIZENESW));
+            cursors[(int)Noesis.CursorType.SizeNS] = WinApi.LoadCursor(IntPtr.Zero, new IntPtr((int)WinApi.SystemCursor.IDC_SIZENS));
+            cursors[(int)Noesis.CursorType.SizeNWSE] = WinApi.LoadCursor(IntPtr.Zero, new IntPtr((int)WinApi.SystemCursor.IDC_SIZENWSE));
+            cursors[(int)Noesis.CursorType.SizeWE] = WinApi.LoadCursor(IntPtr.Zero, new IntPtr((int)WinApi.SystemCursor.IDC_SIZEWE));
+            cursors[(int)Noesis.CursorType.Wait] = WinApi.LoadCursor(IntPtr.Zero, new IntPtr((int)WinApi.SystemCursor.IDC_WAIT));
+            cursors[(int)Noesis.CursorType.Hand] = WinApi.LoadCursor(IntPtr.Zero, new IntPtr((int)WinApi.SystemCursor.IDC_HAND));
 
             return cursors;
         }
@@ -1194,7 +1194,7 @@ namespace NoesisApp
         private IntPtr _hWnd = IntPtr.Zero;
         private IntPtr _hDC = IntPtr.Zero;
         private WindowStartupLocation _startupLocation = WindowStartupLocation.Manual;
-        private Noesis.Cursor _cursor = Noesis.Cursor.Arrow;
+        private Noesis.Cursor _cursor = Noesis.Cursors.Arrow;
         private WinApi.GetDpiForMonitor _getDpiForMonitor = null;
         private IntPtr _shcore = IntPtr.Zero;
         private bool _visible = false;

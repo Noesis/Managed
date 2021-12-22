@@ -82,6 +82,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr Extend_Freezable(IntPtr typeName);
 
   [DllImport(Library.Name)]
+  public static extern IntPtr Extend_Adorner(IntPtr typeName);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr Extend_Animatable(IntPtr typeName);
 
   [DllImport(Library.Name)]
@@ -314,6 +317,21 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr Extend_WrapPanel(IntPtr typeName);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Extend_GridView(IntPtr typeName);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Extend_GridViewColumn(IntPtr typeName);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Extend_GridViewColumnHeader(IntPtr typeName);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Extend_ListView(IntPtr typeName);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Extend_ListViewItem(IntPtr typeName);
 
   [DllImport(Library.Name)]
   public static extern void BindEvent_CommandBinding_PreviewCanExecute(CommandBinding.RaisePreviewCanExecuteCallback callback, IntPtr instance);
@@ -689,6 +707,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr NullableRect_GetStaticType();
 
   [DllImport(Library.Name)]
+  public static extern IntPtr NullableInt32Rect_GetStaticType();
+
+  [DllImport(Library.Name)]
   public static extern IntPtr NullableSize_GetStaticType();
 
   [DllImport(Library.Name)]
@@ -964,12 +985,6 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr Box_ColorInterpolationMode(int jarg1);
-
-  [DllImport(Library.Name)]
-  public static extern int Unbox_Cursor(IntPtr jarg1);
-
-  [DllImport(Library.Name)]
-  public static extern IntPtr Box_Cursor(int jarg1);
 
   [DllImport(Library.Name)]
   public static extern int Unbox_Dock(IntPtr jarg1);
@@ -1283,6 +1298,102 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr BaseFreezableCollection_Get(HandleRef jarg1, int jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr new_Cursor([MarshalAs(UnmanagedType.LPWStr)]string jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Cursor_ToString(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern int Cursor_Type_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Cursor_Filename_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Cursors_None_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Cursors_No_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Cursors_Arrow_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Cursors_AppStarting_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Cursors_Cross_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Cursors_Help_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Cursors_IBeam_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Cursors_SizeAll_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Cursors_SizeNESW_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Cursors_SizeNS_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Cursors_SizeNWSE_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Cursors_SizeWE_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Cursors_UpArrow_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Cursors_Wait_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Cursors_Hand_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Cursors_Pen_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Cursors_ScrollNS_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Cursors_ScrollWE_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Cursors_ScrollAll_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Cursors_ScrollN_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Cursors_ScrollS_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Cursors_ScrollW_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Cursors_ScrollE_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Cursors_ScrollNW_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Cursors_ScrollNE_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Cursors_ScrollSW_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Cursors_ScrollSE_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Cursors_ArrowCD_get();
 
   [DllImport(Library.Name)]
   public static extern IntPtr Uri_GetStaticType();
@@ -3277,6 +3388,15 @@ internal class NoesisGUI_PINVOKE {
   public static extern void Visual_RemoveLayer(HandleRef jarg1, HandleRef jarg2);
 
   [DllImport(Library.Name)]
+  public static extern IntPtr Visual_GetVisualParentHelper(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void Visual_AddVisualChild(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern void Visual_RemoveVisualChild(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr VisualTreeHelper_GetContentBounds(HandleRef jarg1);
 
   [DllImport(Library.Name)]
@@ -3834,10 +3954,10 @@ internal class NoesisGUI_PINVOKE {
   public static extern void delete_TextCompositionEventArgs(HandleRef jarg1);
 
   [DllImport(Library.Name)]
-  public static extern void QueryCursorEventArgs_Cursor_set(HandleRef jarg1, int jarg2);
+  public static extern void QueryCursorEventArgs_Cursor_set(HandleRef jarg1, HandleRef jarg2);
 
   [DllImport(Library.Name)]
-  public static extern int QueryCursorEventArgs_Cursor_get(HandleRef jarg1);
+  public static extern IntPtr QueryCursorEventArgs_Cursor_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern IntPtr new_QueryCursorEventArgs(HandleRef jarg1, HandleRef jarg2);
@@ -5015,10 +5135,10 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr FrameworkElement_ContextMenu_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
-  public static extern void FrameworkElement_Cursor_set(HandleRef jarg1, int jarg2);
+  public static extern void FrameworkElement_Cursor_set(HandleRef jarg1, HandleRef jarg2);
 
   [DllImport(Library.Name)]
-  public static extern int FrameworkElement_Cursor_get(HandleRef jarg1);
+  public static extern IntPtr FrameworkElement_Cursor_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern void FrameworkElement_DataContext_set(HandleRef jarg1, HandleRef jarg2);
@@ -6222,10 +6342,44 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr Selector_SelectedValuePath_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
+  public static extern IntPtr Adorner_AdornedElement_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void Adorner_IsClipEnabled_set(HandleRef jarg1, bool jarg2);
+
+  [DllImport(Library.Name)]
+  [return: MarshalAs(UnmanagedType.U1)]
+  public static extern bool Adorner_IsClipEnabled_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void Adorner_SetAdornedElement(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr new_AdornerLayer();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr AdornerLayer_GetAdornerLayer(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void AdornerLayer_Add(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern void AdornerLayer_Remove(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern void AdornerLayer_Update__SWIG_0(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void AdornerLayer_Update__SWIG_1(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr new_AdornerDecorator__SWIG_0(bool jarg1);
 
   [DllImport(Library.Name)]
   public static extern IntPtr new_AdornerDecorator__SWIG_1();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr AdornerDecorator_GetAdornerLayer(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern IntPtr ApplicationCommands_CancelPrintCommand_get();
@@ -8847,6 +9001,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr new_ScrollContentPresenter();
 
   [DllImport(Library.Name)]
+  public static extern IntPtr ScrollContentPresenter_GetAdornerLayer(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
   public static extern void ScrollContentPresenter_LineLeft(HandleRef jarg1);
 
   [DllImport(Library.Name)]
@@ -10208,6 +10365,67 @@ internal class NoesisGUI_PINVOKE {
   [DllImport(Library.Name)]
   [return: MarshalAs(UnmanagedType.U1)]
   public static extern bool Thumb_IsDragging_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr new_GridSplitter();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr GridSplitter_DragIncrementProperty_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr GridSplitter_KeyboardIncrementProperty_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr GridSplitter_ResizeDirectionProperty_get();
+
+  [DllImport(Library.Name)]
+  public static extern void GridSplitter_ResizeBehaviorProperty_set(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr GridSplitter_ResizeBehaviorProperty_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr GridSplitter_ShowsPreviewProperty_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr GridSplitter_PreviewStyleProperty_get();
+
+  [DllImport(Library.Name)]
+  public static extern void GridSplitter_DragIncrement_set(HandleRef jarg1, float jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern float GridSplitter_DragIncrement_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void GridSplitter_KeyboardIncrement_set(HandleRef jarg1, float jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern float GridSplitter_KeyboardIncrement_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void GridSplitter_ResizeDirection_set(HandleRef jarg1, int jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern int GridSplitter_ResizeDirection_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void GridSplitter_ResizeBehavior_set(HandleRef jarg1, int jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern int GridSplitter_ResizeBehavior_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void GridSplitter_ShowsPreview_set(HandleRef jarg1, bool jarg2);
+
+  [DllImport(Library.Name)]
+  [return: MarshalAs(UnmanagedType.U1)]
+  public static extern bool GridSplitter_ShowsPreview_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void GridSplitter_PreviewStyle_set(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr GridSplitter_PreviewStyle_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern IntPtr new_TickBar();

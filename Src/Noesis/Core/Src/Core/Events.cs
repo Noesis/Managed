@@ -421,13 +421,15 @@ namespace Noesis
             _element = BaseComponent.getCPtr(element).Handle;
         }
 
-        internal static void Clear(EventHandlerStore[] events)
+        internal static void Clear()
         {
-            foreach (EventHandlerStore ehs in events)
+            foreach (var entry in _elements)
             {
-                ehs._binds.Clear();
+                entry.Value._binds.Clear();
             }
+            _elements.Clear();
 
+            DependencyObject._Destroyed.Clear();
             Clock._Completed.Clear();
             CommandBinding._PreviewCanExecute.Clear();
             CommandBinding._PreviewExecuted.Clear();

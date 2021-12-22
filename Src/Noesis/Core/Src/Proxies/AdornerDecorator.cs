@@ -38,6 +38,11 @@ public class AdornerDecorator : Decorator {
     return NoesisGUI_PINVOKE.new_AdornerDecorator__SWIG_1();
   }
 
+  public AdornerLayer GetAdornerLayer() {
+    IntPtr cPtr = NoesisGUI_PINVOKE.AdornerDecorator_GetAdornerLayer(swigCPtr);
+    return (AdornerLayer)Noesis.Extend.GetProxy(cPtr, false);
+  }
+
 }
 
 }

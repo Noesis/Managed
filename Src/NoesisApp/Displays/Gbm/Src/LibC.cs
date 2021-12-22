@@ -17,6 +17,20 @@ namespace NoesisApp
         private const int F_GETFL = 3;
         private const int F_SETFL = 4;
 
+        internal const int LC_CTYPE = 0;
+        internal const int LC_NUMERIC = 1;
+        internal const int LC_TIME = 2;
+        internal const int LC_COLLATE = 3;
+        internal const int LC_MONETARY = 4;
+        internal const int LC_MESSAGES = 5;
+        internal const int LC_ALL = 6;
+        internal const int LC_PAPER = 7;
+        internal const int LC_NAME = 8;
+        internal const int LC_ADDRESS = 9;
+        internal const int LC_TELEPHONE = 10;
+        internal const int LC_MEASUREMENT = 11;
+        internal const int LC_IDENTIFICATION = 12;
+
         [StructLayout(LayoutKind.Sequential)]
         internal struct PollFd
         {
@@ -50,6 +64,18 @@ namespace NoesisApp
             return fcntl(fd, F_SETFL, flags_);
         }
 
+        internal static string GetLocale(int category)
+        {
+            IntPtr ret = setlocale(category, null);
+            return Marshal.PtrToStringAnsi(ret);
+        }
+
+        internal static string GetEnv(string name)
+        {
+            IntPtr ret = getenv(name);
+            return Marshal.PtrToStringAnsi(ret);
+        }
+
         [DllImport("libc")]
         private static extern int poll(IntPtr fds, ulong nfds, int timeout);
 
@@ -61,5 +87,11 @@ namespace NoesisApp
 
         [DllImport("libc", EntryPoint = "ioctl")]
         internal static extern int Ioctl(int fd, ulong request, IntPtr arg);
+
+        [DllImport("libc", EntryPoint = "setlocale")]
+        internal static extern IntPtr setlocale(int category, [MarshalAs(UnmanagedType.LPStr)] string locale);
+
+        [DllImport("libc", EntryPoint = "getenv")]
+        internal static extern IntPtr getenv([MarshalAs(UnmanagedType.LPStr)] string name);
     }
 }

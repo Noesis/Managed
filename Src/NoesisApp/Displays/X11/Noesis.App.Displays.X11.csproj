@@ -8,6 +8,7 @@
     <Copyright>Copyright (c) 2013 Noesis Technologies S.L.</Copyright>
     <PackageProjectUrl>https://www.noesisengine.com</PackageProjectUrl>
     <PackageIconUrl>https://www.noesisengine.com/images/logos/Icon-256.png</PackageIconUrl>
+    <PackageIcon>Icon-256.png</PackageIcon>
     <RepositoryUrl>https://github.com/Noesis/Managed/tree/master/Src/NoesisApp/Displays/X11</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>NoesisGUI XAML GUI C# Linux</PackageTags>
@@ -23,16 +24,18 @@
     </ProjectReference>
   </ItemGroup>
 
-  <PropertyGroup Condition="Exists('$(SolutionDir)LICENSE.txt')">
+  <PropertyGroup>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
   </PropertyGroup>
 
-  <ItemGroup Condition="Exists('$(SolutionDir)LICENSE.txt')">
+  <ItemGroup>
     <Content Include="$(SolutionDir)LICENSE.txt" PackagePath="" Pack="true" />
-  </ItemGroup>
-  <ItemGroup Condition="Exists('$(SolutionDir)THIRD_PARTY.txt')">
     <Content Include="$(SolutionDir)THIRD_PARTY.txt" PackagePath="" Pack="true" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="$(SolutionDir)Icon-256.png" Pack="true" PackagePath="\"/>
   </ItemGroup>
 
 </Project>

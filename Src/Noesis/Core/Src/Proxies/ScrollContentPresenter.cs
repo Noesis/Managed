@@ -35,6 +35,11 @@ public class ScrollContentPresenter : ContentPresenter, Noesis.IScrollInfo {
     return NoesisGUI_PINVOKE.new_ScrollContentPresenter();
   }
 
+  public AdornerLayer GetAdornerLayer() {
+    IntPtr cPtr = NoesisGUI_PINVOKE.ScrollContentPresenter_GetAdornerLayer(swigCPtr);
+    return (AdornerLayer)Noesis.Extend.GetProxy(cPtr, false);
+  }
+
   public void LineLeft() {
     NoesisGUI_PINVOKE.ScrollContentPresenter_LineLeft(swigCPtr);
   }

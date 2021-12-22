@@ -266,12 +266,10 @@ namespace NoesisApp
 
         public delegate int XErrorHandler(IntPtr dpy, IntPtr error);
 
-        private const string X11LibraryName = "X11";
-
-        [DllImport(X11LibraryName)]
+        [DllImport("libX11.so.6")]
         public static extern int XFree(IntPtr data);
 
-        [DllImport(X11LibraryName)]
+        [DllImport("libX11.so.6")]
         public extern static IntPtr XSetErrorHandler(XErrorHandler error_handler);
 
         public delegate IntPtr CreateContextAttribsARB(IntPtr dpy, IntPtr config, IntPtr share_context, bool direct, int[] attrib_list);
@@ -286,33 +284,31 @@ namespace NoesisApp
         public delegate int SwapIntervalSGI(int interval);
         public SwapIntervalSGI glXSwapIntervalSGI;
 
-        private const string GLXLibraryName = "GLX";
-
-        [DllImport(GLXLibraryName)]
+        [DllImport("libGLX.so.0")]
         static extern bool glXQueryVersion(IntPtr dpy, ref int major, ref int minor);
 
-        [DllImport(GLXLibraryName)]
+        [DllImport("libGLX.so.0")]
         static extern IntPtr glXQueryExtensionsString(IntPtr dpy, int screen);
 
-        [DllImport(GLXLibraryName)]
+        [DllImport("libGLX.so.0")]
         static extern IntPtr glXChooseFBConfig(IntPtr dpy, int screen, int[] attrib_list, ref int nelements);
 
-        [DllImport(GLXLibraryName)]
+        [DllImport("libGLX.so.0")]
         static extern IntPtr glXGetVisualFromFBConfig(IntPtr dpy, IntPtr config);
 
-        [DllImport(GLXLibraryName)]
+        [DllImport("libGLX.so.0")]
         static extern IntPtr glXCreateContext(IntPtr dpy, IntPtr vis, IntPtr shareList, bool direct);
 
-        [DllImport(GLXLibraryName)]
+        [DllImport("libGLX.so.0")]
         static extern void glXDestroyContext(IntPtr dpy, IntPtr ctx);
 
-        [DllImport(GLXLibraryName)]
+        [DllImport("libGLX.so.0")]
         static extern bool glXMakeCurrent(IntPtr dpy, IntPtr drawable, IntPtr ctx);
 
-        [DllImport(GLXLibraryName)]
+        [DllImport("libGLX.so.0")]
         static extern void glXSwapBuffers(IntPtr dpy, IntPtr drawable);
 
-        [DllImport(OpenGLLibraryName)]
+        [DllImport("libGL.so.1")]
         static extern IntPtr glXGetProcAddress(string lpszProc);
 
         private const uint GL_FRAMEBUFFER = 0x8D40;
@@ -323,33 +319,31 @@ namespace NoesisApp
         private const uint GL_UNSIGNED_BYTE = 0x00001401;
         private const uint GL_RGBA = 0x00001908;
 
-        private const string OpenGLLibraryName = "GL";
-
-        [DllImport(OpenGLLibraryName)]
+        [DllImport("libGL.so.1")]
         static extern void glBindFramebuffer(uint target, uint framebuffer);
 
-        [DllImport(OpenGLLibraryName)]
+        [DllImport("libGL.so.1")]
         static extern void glViewport(int x, int y, int width, int height);
 
-        [DllImport(OpenGLLibraryName)]
+        [DllImport("libGL.so.1")]
         static extern void glClearStencil(int s);
 
-        [DllImport(OpenGLLibraryName)]
+        [DllImport("libGL.so.1")]
         static extern void glClear(uint s);
 
-        [DllImport(OpenGLLibraryName)]
+        [DllImport("libGL.so.1")]
         static extern void glColorMask(bool r, bool g, bool b, bool a);
 
-        [DllImport(OpenGLLibraryName)]
+        [DllImport("libGL.so.1")]
         static extern void glClearColor(float r, float g, float b, float a);
 
-        [DllImport(OpenGLLibraryName)]
+        [DllImport("libGL.so.1")]
         public static extern void glGetIntegerv(uint pname, int[] param);
 
-        [DllImport(OpenGLLibraryName)]
+        [DllImport("libGL.so.1")]
         public static extern void glPixelStorei(uint pname, int param);
 
-        [DllImport(OpenGLLibraryName)]
+        [DllImport("libGL.so.1")]
         public static extern void glReadPixels(int x, int y, int width, int height,
             uint format, uint type, byte[] pixels);
     }

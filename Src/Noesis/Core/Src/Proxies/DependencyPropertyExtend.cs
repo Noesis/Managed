@@ -85,6 +85,12 @@ namespace Noesis
             // static constructor and DP are already being registered
             IntPtr ownerTypePtr = Noesis.Extend.EnsureNativeType(ownerType, false);
 
+            // Check dependency property with the same name is not already registered
+            if (Noesis_ExistsDependencyProperty(ownerTypePtr, name))
+            {
+                throw new ArgumentException($"DependencyProperty '{name}' already registered to type '{ownerType}'");
+            }
+
             // Check property type is supported and get the registered native type
             Type originalPropertyType = propertyType;
             IntPtr nativeType = ValidatePropertyType(ref propertyType);
@@ -257,6 +263,11 @@ namespace Noesis
         #endregion
 
         #region Imports
+
+        [DllImport(Library.Name)]
+        [return: MarshalAs(UnmanagedType.U1)]
+        private static extern bool Noesis_ExistsDependencyProperty(IntPtr ownerType,
+            [MarshalAs(UnmanagedType.LPStr)] string propertyName);
 
         [DllImport(Library.Name)]
         private static extern IntPtr Noesis_RegisterDependencyProperty(IntPtr ownerType,

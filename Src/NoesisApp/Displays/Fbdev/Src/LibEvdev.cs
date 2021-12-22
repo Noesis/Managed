@@ -11,6 +11,12 @@ namespace NoesisApp
         static private IntPtr _udevMonitor;
         static private int _udevMonitorFd;
 
+        static private IntPtr _xkbContext;
+        static private IntPtr _xkbKeymap;
+        static private IntPtr _xkbTable;
+        static private IntPtr _xkbState;
+        static private IntPtr _xkbComposeState;
+
         static LibEvdev()
         {
             InitKeyMap();
@@ -66,6 +72,22 @@ namespace NoesisApp
             _touchDown = new bool[MaxSlots];
             _touchUp = new bool[MaxSlots];
             _touchMove = new bool[MaxSlots];
+
+            string Locale = LibC.GetLocale(LibC.LC_CTYPE);
+            _xkbContext = LibXkbCommon.ContextNew(LibXkbCommon.CONTEXT_NO_FLAGS);
+
+            if (_xkbContext != IntPtr.Zero)
+            {
+                LibXkbCommon.RuleNames Names = new LibXkbCommon.RuleNames();
+                Names.rules = "evdev";
+                _xkbKeymap = LibXkbCommon.KeymapNewFromNames(_xkbContext, ref Names, LibXkbCommon.KEYMAP_COMPILE_NO_FLAGS);
+
+                _xkbTable = LibXkbCommon.ComposeTableNewFromLocale(_xkbContext, Locale, LibXkbCommon.COMPOSE_COMPILE_NO_FLAGS);
+
+                _xkbState = LibXkbCommon.StateNew(_xkbKeymap);
+
+                _xkbComposeState = LibXkbCommon.ComposeStateNew(_xkbTable, LibXkbCommon.COMPOSE_STATE_NO_FLAGS);
+            }
         }
 
         private static void AddDevice(string devName)
@@ -195,12 +217,15 @@ namespace NoesisApp
 
         public delegate void KeyDownEventHandler(Key key);
         public delegate void KeyUpEventHandler(Key key);
+        public delegate void CharEventHandler(uint c);
         public delegate void TouchMoveEventHandler(float x, float y, ulong id);
         public delegate void TouchDownEventHandler(float x, float y, ulong id);
         public delegate void TouchUpEventHandler(float x, float y, ulong id);
 
         public static KeyDownEventHandler KeyDown;
         public static KeyUpEventHandler KeyUp;
+
+        public static CharEventHandler Char;
 
         public static TouchDownEventHandler TouchDown;
         public static TouchMoveEventHandler TouchMove;
@@ -884,6 +909,68 @@ namespace NoesisApp
                 {
                     KeyDown?.Invoke(key);
                 }
+            }
+
+            if (_xkbContext != IntPtr.Zero)
+            {
+                uint keycode = (uint)ev.code + 8;
+                if (ev.value == 2 && LibXkbCommon.KeymapKeyRepeats(_xkbKeymap, keycode) == 0)
+                    return;
+
+                if (ev.value != 0)
+                {
+                    uint keysym = LibXkbCommon.StateKeyGetOneSym(_xkbState, keycode);
+                    LibXkbCommon.ComposeStateFeed(_xkbComposeState, keysym);
+                }
+
+                int status = LibXkbCommon.ComposeStateGetStatus(_xkbComposeState);
+                if (status == LibXkbCommon.COMPOSE_COMPOSED)
+                {
+                    if (ev.value != 0)
+                    {
+                        uint keysym = LibXkbCommon.ComposeStateGetOneSym(_xkbComposeState);
+                        uint utf32 = LibXkbCommon.KeysymToUtf32(keysym);
+                        if (utf32 != 0)
+                        {
+                        Char?.Invoke(utf32);
+                        }
+                    }
+
+                    LibXkbCommon.ComposeStateReset(_xkbComposeState);
+                }
+                else if (status == LibXkbCommon.COMPOSE_CANCELLED)
+                {
+                    LibXkbCommon.ComposeStateReset(_xkbComposeState);
+                }
+                else if (status == LibXkbCommon.COMPOSE_NOTHING)
+                {
+                    if (ev.value != 0)
+                    {
+                        uint[] keysyms = null;
+                        int numKeysyms = LibXkbCommon.StateKeyGetSyms(_xkbState, keycode, out keysyms);
+                        if (numKeysyms > 0)
+                        {
+                            foreach(uint keysym in keysyms)
+                            {
+                                uint utf32 = LibXkbCommon.KeysymToUtf32(keysym);
+                                if (utf32 != 0)
+                                {
+                                Char?.Invoke(utf32);
+                                }
+                            }
+                        }
+                    }
+                    LibXkbCommon.ComposeStateReset(_xkbComposeState);
+                }
+
+                if (ev.value != 0)
+                {
+                    LibXkbCommon.StateUpdateKey(_xkbState, keycode, LibXkbCommon.KEY_DOWN);
+                }
+                else
+                {
+                    LibXkbCommon.StateUpdateKey(_xkbState, keycode, LibXkbCommon.KEY_UP);
+                }    
             }
         }
 

@@ -199,11 +199,8 @@ public static class VisualTreeHelper {
   }
 
   private static HitTestResult HitTestHelper(Visual reference, Point point) {
-    if (reference == null) throw new ArgumentNullException("reference");
-    {
-      HitTestResult ret = new HitTestResult(NoesisGUI_PINVOKE.VisualTreeHelper_HitTestHelper(Visual.getCPtr(reference), ref point), true);
-      return ret;
-    }
+    HitTestResult ret = new HitTestResult(NoesisGUI_PINVOKE.VisualTreeHelper_HitTestHelper(Visual.getCPtr(reference), ref point), true);
+    return ret;
   }
 
 }

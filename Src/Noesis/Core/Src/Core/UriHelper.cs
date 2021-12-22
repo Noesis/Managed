@@ -58,7 +58,7 @@ namespace Noesis
         {
             if (uri.IsAbsoluteUri)
             {
-                isRootPath = false;
+                isRootPath = !uri.IsUnc && uri.OriginalString.StartsWith("file://");
                 return uri;
             }
 

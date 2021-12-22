@@ -16,34 +16,201 @@ namespace Noesis
 {
 
 public static class Cursors {
-  public static Cursor Black = Cursor.None;
-  public static Cursor No = Cursor.No;
-  public static Cursor Arrow = Cursor.Arrow;
-  public static Cursor AppStarting = Cursor.AppStarting;
-  public static Cursor Cross = Cursor.Cross;
-  public static Cursor Help = Cursor.Help;
-  public static Cursor IBeam = Cursor.IBeam;
-  public static Cursor SizeAll = Cursor.SizeAll;
-  public static Cursor SizeNESW = Cursor.SizeNESW;
-  public static Cursor SizeNS = Cursor.SizeNS;
-  public static Cursor SizeNWSE = Cursor.SizeNWSE;
-  public static Cursor SizeWE = Cursor.SizeWE;
-  public static Cursor UpArrow = Cursor.UpArrow;
-  public static Cursor Wait = Cursor.Wait;
-  public static Cursor Hand = Cursor.Hand;
-  public static Cursor Pen = Cursor.Pen;
-  public static Cursor ScrollNS = Cursor.ScrollNS;
-  public static Cursor ScrollWE = Cursor.ScrollWE;
-  public static Cursor ScrollAll = Cursor.ScrollAll;
-  public static Cursor ScrollN = Cursor.ScrollN;
-  public static Cursor ScrollS = Cursor.ScrollS;
-  public static Cursor ScrollW = Cursor.ScrollW;
-  public static Cursor ScrollE = Cursor.ScrollE;
-  public static Cursor ScrollNW = Cursor.ScrollNW;
-  public static Cursor ScrollNE = Cursor.ScrollNE;
-  public static Cursor ScrollSW = Cursor.ScrollSW;
-  public static Cursor ScrollSE = Cursor.ScrollSE;
-  public static Cursor ArrowCD = Cursor.ArrowCD;
+  public static Cursor None {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Cursors_None_get();
+      return (Cursor)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static Cursor No {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Cursors_No_get();
+      return (Cursor)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static Cursor Arrow {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Cursors_Arrow_get();
+      return (Cursor)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static Cursor AppStarting {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Cursors_AppStarting_get();
+      return (Cursor)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static Cursor Cross {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Cursors_Cross_get();
+      return (Cursor)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static Cursor Help {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Cursors_Help_get();
+      return (Cursor)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static Cursor IBeam {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Cursors_IBeam_get();
+      return (Cursor)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static Cursor SizeAll {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Cursors_SizeAll_get();
+      return (Cursor)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static Cursor SizeNESW {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Cursors_SizeNESW_get();
+      return (Cursor)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static Cursor SizeNS {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Cursors_SizeNS_get();
+      return (Cursor)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static Cursor SizeNWSE {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Cursors_SizeNWSE_get();
+      return (Cursor)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static Cursor SizeWE {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Cursors_SizeWE_get();
+      return (Cursor)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static Cursor UpArrow {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Cursors_UpArrow_get();
+      return (Cursor)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static Cursor Wait {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Cursors_Wait_get();
+      return (Cursor)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static Cursor Hand {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Cursors_Hand_get();
+      return (Cursor)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static Cursor Pen {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Cursors_Pen_get();
+      return (Cursor)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static Cursor ScrollNS {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Cursors_ScrollNS_get();
+      return (Cursor)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static Cursor ScrollWE {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Cursors_ScrollWE_get();
+      return (Cursor)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static Cursor ScrollAll {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Cursors_ScrollAll_get();
+      return (Cursor)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static Cursor ScrollN {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Cursors_ScrollN_get();
+      return (Cursor)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static Cursor ScrollS {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Cursors_ScrollS_get();
+      return (Cursor)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static Cursor ScrollW {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Cursors_ScrollW_get();
+      return (Cursor)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static Cursor ScrollE {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Cursors_ScrollE_get();
+      return (Cursor)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static Cursor ScrollNW {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Cursors_ScrollNW_get();
+      return (Cursor)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static Cursor ScrollNE {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Cursors_ScrollNE_get();
+      return (Cursor)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static Cursor ScrollSW {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Cursors_ScrollSW_get();
+      return (Cursor)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static Cursor ScrollSE {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Cursors_ScrollSE_get();
+      return (Cursor)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static Cursor ArrowCD {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Cursors_ArrowCD_get();
+      return (Cursor)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
 
 }
 

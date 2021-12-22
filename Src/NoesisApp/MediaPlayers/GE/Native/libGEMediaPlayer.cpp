@@ -521,6 +521,9 @@ extern "C" void RenderFrame(void* state)
 {
     GstMediaPlayerState* st = (GstMediaPlayerState*)state;
 
+    if (st->time == st->lastRenderTime)
+        return;
+
     if (st->fd == -1)
     {
         glDisable(GL_SCISSOR_TEST);
@@ -573,11 +576,18 @@ extern "C" void RenderFrame(void* state)
     glUniform1i(mYuyvSamplerLocation, 0);
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0);
+    // glFinish();
+    // printf("frametime %lu\n", st->time);
     glEGLImageTargetTexture2DOES(GL_TEXTURE_EXTERNAL_OES, EGL_NO_IMAGE_KHR);
     eglDestroyImageKHR(display, image);
     close(st->fd);
     // st->fd = -1;
     // st->fd = 0;
+
+    // if (st->time - st->lastRenderTime > 20000000)
+    // {
+    //     printf("frametime delta %lu\n", st->time - st->lastRenderTime);
+    // }
 
     st->lastRenderTime = st->time;
 }
@@ -646,6 +656,10 @@ extern "C" bool Update(void* state)
             return true;
         }
     }
+
+    command.cmd = MPC_FrameAck;
+    command.arg[0] = st->time;
+    sendto(st->serverSocket, &command, sizeof(MediaPlayerCommand), 0, (sockaddr*)&st->clientSockaddr, sizeof(struct sockaddr_un));
 
     assert(errno == EAGAIN || errno == EWOULDBLOCK);
     return true;

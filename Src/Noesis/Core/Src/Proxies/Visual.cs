@@ -37,6 +37,30 @@ public class Visual : DependencyObject {
     }
   }
 
+  protected DependencyObject VisualParent {
+    get {
+      return GetVisualParentHelper();
+    }
+  }
+
+  internal protected virtual int VisualChildrenCount {
+    get {
+      return ChildrenCountBase != null ? ChildrenCountBase(swigCPtr) : 0;
+    }
+  }
+
+  internal protected virtual Visual GetVisualChild(int index) {
+    return GetChildBase != null ? (Visual)Noesis.Extend.GetProxy(GetChildBase(swigCPtr, index), false) : null;
+  }
+
+  [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+  internal delegate int ChildrenCountBaseCallback(HandleRef cPtr);
+  internal ChildrenCountBaseCallback ChildrenCountBase = null;
+
+  [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+  internal delegate IntPtr GetChildBaseCallback(HandleRef cPtr, int index);
+  internal GetChildBaseCallback GetChildBase = null;
+
   public bool IsAncestorOf(Visual visual) {
     if (visual == null) throw new ArgumentNullException("visual");
     {
@@ -137,6 +161,19 @@ public class Visual : DependencyObject {
     {
       NoesisGUI_PINVOKE.Visual_RemoveLayer(swigCPtr, Visual.getCPtr(layer));
     }
+  }
+
+  private DependencyObject GetVisualParentHelper() {
+    IntPtr cPtr = NoesisGUI_PINVOKE.Visual_GetVisualParentHelper(swigCPtr);
+    return (DependencyObject)Noesis.Extend.GetProxy(cPtr, false);
+  }
+
+  protected void AddVisualChild(Visual child) {
+    NoesisGUI_PINVOKE.Visual_AddVisualChild(swigCPtr, Visual.getCPtr(child));
+  }
+
+  protected void RemoveVisualChild(Visual child) {
+    NoesisGUI_PINVOKE.Visual_RemoveVisualChild(swigCPtr, Visual.getCPtr(child));
   }
 
   internal new static IntPtr Extend(string typeName) {

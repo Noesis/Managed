@@ -521,12 +521,12 @@ public partial class FrameworkElement : UIElement {
 
   public Cursor Cursor {
     set {
-      NoesisGUI_PINVOKE.FrameworkElement_Cursor_set(swigCPtr, (int)value);
+      NoesisGUI_PINVOKE.FrameworkElement_Cursor_set(swigCPtr, Cursor.getCPtr(value));
     } 
     get {
-      Cursor ret = (Cursor)NoesisGUI_PINVOKE.FrameworkElement_Cursor_get(swigCPtr);
-      return ret;
-    } 
+      IntPtr cPtr = NoesisGUI_PINVOKE.FrameworkElement_Cursor_get(swigCPtr);
+      return (Cursor)Noesis.Extend.GetProxy(cPtr, false);
+    }
   }
 
   public object DataContext {

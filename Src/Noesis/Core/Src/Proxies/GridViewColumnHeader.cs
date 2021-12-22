@@ -31,8 +31,13 @@ public class GridViewColumnHeader : ButtonBase {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    registerExtend = false;
-    return NoesisGUI_PINVOKE.new_GridViewColumnHeader();
+    if (type == typeof(GridViewColumnHeader)) {
+      registerExtend = false;
+      return NoesisGUI_PINVOKE.new_GridViewColumnHeader();
+    }
+    else {
+      return base.CreateExtendCPtr(type, out registerExtend);
+    }
   }
 
   public static DependencyProperty RoleProperty {
@@ -56,6 +61,9 @@ public class GridViewColumnHeader : ButtonBase {
     } 
   }
 
+  internal new static IntPtr Extend(string typeName) {
+    return NoesisGUI_PINVOKE.Extend_GridViewColumnHeader(Marshal.StringToHGlobalAnsi(typeName));
+  }
 }
 
 }

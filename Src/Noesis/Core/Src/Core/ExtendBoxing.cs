@@ -38,6 +38,7 @@ namespace Noesis
             boxFunctions[typeof(Noesis.Color)] = (val) => NoesisGUI_.Box_Color((Noesis.Color)val);
             boxFunctions[typeof(Noesis.Point)] = (val) => NoesisGUI_.Box_Point((Noesis.Point)val);
             boxFunctions[typeof(Noesis.Rect)] = (val) => NoesisGUI_.Box_Rect((Noesis.Rect)val);
+            boxFunctions[typeof(Noesis.Int32Rect)] = (val) => NoesisGUI_.Box_Int32Rect((Noesis.Int32Rect)val);
             boxFunctions[typeof(Noesis.Size)] = (val) => NoesisGUI_.Box_Size((Noesis.Size)val);
             boxFunctions[typeof(Noesis.Thickness)] = (val) => NoesisGUI_.Box_Thickness((Noesis.Thickness)val);
             boxFunctions[typeof(Noesis.CornerRadius)] = (val) => NoesisGUI_.Box_CornerRadius((Noesis.CornerRadius)val);
@@ -55,7 +56,6 @@ namespace Noesis
             boxFunctions[typeof(Noesis.CharacterCasing)] = (val) => NoesisGUI_.Box_CharacterCasing((Noesis.CharacterCasing)val);
             boxFunctions[typeof(Noesis.ClickMode)] = (val) => NoesisGUI_.Box_ClickMode((Noesis.ClickMode)val);
             boxFunctions[typeof(Noesis.ColorInterpolationMode)] = (val) => NoesisGUI_.Box_ColorInterpolationMode((Noesis.ColorInterpolationMode)val);
-            boxFunctions[typeof(Noesis.Cursor)] = (val) => NoesisGUI_.Box_Cursor((Noesis.Cursor)val);
             boxFunctions[typeof(Noesis.Dock)] = (val) => NoesisGUI_.Box_Dock((Noesis.Dock)val);
             boxFunctions[typeof(Noesis.ExpandDirection)] = (val) => NoesisGUI_.Box_ExpandDirection((Noesis.ExpandDirection)val);
             boxFunctions[typeof(Noesis.FillRule)] = (val) => NoesisGUI_.Box_FillRule((Noesis.FillRule)val);
@@ -161,6 +161,7 @@ namespace Noesis
             unboxFunctions[typeof(Boxed<Noesis.Color>)] = (cPtr) => NoesisGUI_.Unbox_Color(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.Point>)] = (cPtr) => NoesisGUI_.Unbox_Point(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.Rect>)] = (cPtr) => NoesisGUI_.Unbox_Rect(cPtr);
+            unboxFunctions[typeof(Boxed<Noesis.Int32Rect>)] = (cPtr) => NoesisGUI_.Unbox_Int32Rect(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.Size>)] = (cPtr) => NoesisGUI_.Unbox_Size(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.Thickness>)] = (cPtr) => NoesisGUI_.Unbox_Thickness(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.CornerRadius>)] = (cPtr) => NoesisGUI_.Unbox_CornerRadius(cPtr);
@@ -178,7 +179,6 @@ namespace Noesis
             unboxFunctions[typeof(Boxed<Noesis.CharacterCasing>)] = (cPtr) => NoesisGUI_.Unbox_CharacterCasing(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.ClickMode>)] = (cPtr) => NoesisGUI_.Unbox_ClickMode(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.ColorInterpolationMode>)] = (cPtr) => NoesisGUI_.Unbox_ColorInterpolationMode(cPtr);
-            unboxFunctions[typeof(Boxed<Noesis.Cursor>)] = (cPtr) => NoesisGUI_.Unbox_Cursor(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.Dock>)] = (cPtr) => NoesisGUI_.Unbox_Dock(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.ExpandDirection>)] = (cPtr) => NoesisGUI_.Unbox_ExpandDirection(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.FillRule>)] = (cPtr) => NoesisGUI_.Unbox_FillRule(cPtr);

@@ -31,8 +31,13 @@ public class GridView : ViewBase {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    registerExtend = false;
-    return NoesisGUI_PINVOKE.new_GridView();
+    if (type == typeof(GridView)) {
+      registerExtend = false;
+      return NoesisGUI_PINVOKE.new_GridView();
+    }
+    else {
+      return base.CreateExtendCPtr(type, out registerExtend);
+    }
   }
 
   public static GridViewColumnCollection GetColumnCollection(DependencyObject element) {
@@ -184,6 +189,9 @@ public class GridView : ViewBase {
     }
   }
 
+  internal new static IntPtr Extend(string typeName) {
+    return NoesisGUI_PINVOKE.Extend_GridView(Marshal.StringToHGlobalAnsi(typeName));
+  }
 }
 
 }

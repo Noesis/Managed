@@ -183,6 +183,7 @@ namespace NoesisApp
         {
             LibEvdev.KeyDown += OnKeyDown;
             LibEvdev.KeyUp += OnKeyUp;
+            LibEvdev.Char += OnChar;
 
             LibEvdev.TouchDown += OnTouchDown;
             LibEvdev.TouchUp += OnTouchUp;
@@ -243,6 +244,11 @@ namespace NoesisApp
         private void OnKeyUp(Key key)
         {
             KeyUp?.Invoke(this, key);
+        }
+
+        private void OnChar(uint c)
+        {
+            Char?.Invoke(this, c);
         }
 
         private void OnTouchDown(float x, float y, ulong id)

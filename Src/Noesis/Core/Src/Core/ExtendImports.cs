@@ -50,14 +50,19 @@ namespace Noesis
         static extern void Noesis_RegisterReflectionCallbacks(
             Callback_FreeString callback_FreeString,
             Callback_RegisterType callback_RegisterType,
-            Callback_UIElementRender callback_UIElementRender,
-            Callback_FrameworkElementMeasure callback_FrameworkElementMeasure,
-            Callback_FrameworkElementArrange callback_FrameworkElementArrange,
-            Callback_FrameworkElementConnectEvent callback_FrameworkElementConnectEvent,
-            Callback_FrameworkElementApplyTemplate callback_FrameworkElementApplyTemplate,
-            Callback_FreezableClone callback_FreezableClone,
             Callback_ToString callback_ToString,
             Callback_Equals callback_Equals,
+            Callback_VisualChildrenCount callback_VisualChildrenCount,
+            Callback_VisualGetChild callback_VisualGetChild,
+            Callback_UIElementRender callback_UIElementRender,
+            Callback_FrameworkElementConnectEvent callback_FrameworkElementConnectEvent,
+            Callback_FrameworkElementMeasure callback_FrameworkElementMeasure,
+            Callback_FrameworkElementArrange callback_FrameworkElementArrange,
+            Callback_FrameworkElementApplyTemplate callback_FrameworkElementApplyTemplate,
+            Callback_ItemsControlGetContainer callback_ItemsControlGetContainer,
+            Callback_ItemsControlIsContainer callback_ItemsControlIsContainer,
+            Callback_AdornerGetTransform callback_AdornerGetTransform,
+            Callback_FreezableClone callback_FreezableClone,
             Callback_CommandCanExecute callback_CommandCanExecute,
             Callback_CommandExecute callback_CommandExecute,
             Callback_ConverterConvert callback_ConverterConvert,
@@ -129,6 +134,7 @@ namespace Noesis
             Callback_GetPropertyValue_Color callback_GetPropertyValue_Color,
             Callback_GetPropertyValue_Point callback_GetPropertyValue_Point,
             Callback_GetPropertyValue_Rect callback_GetPropertyValue_Rect,
+            Callback_GetPropertyValue_Int32Rect callback_GetPropertyValue_Int32Rect,
             Callback_GetPropertyValue_Size callback_GetPropertyValue_Size,
             Callback_GetPropertyValue_Thickness callback_GetPropertyValue_Thickness,
             Callback_GetPropertyValue_CornerRadius callback_GetPropertyValue_CornerRadius,
@@ -149,6 +155,7 @@ namespace Noesis
             Callback_SetPropertyValue_Color callback_SetPropertyValue_Color,
             Callback_SetPropertyValue_Point callback_SetPropertyValue_Point,
             Callback_SetPropertyValue_Rect callback_SetPropertyValue_Rect,
+            Callback_SetPropertyValue_Int32Rect callback_SetPropertyValue_Int32Rect,
             Callback_SetPropertyValue_Size callback_SetPropertyValue_Size,
             Callback_SetPropertyValue_Thickness callback_SetPropertyValue_Thickness,
             Callback_SetPropertyValue_CornerRadius callback_SetPropertyValue_CornerRadius,
@@ -160,6 +167,10 @@ namespace Noesis
             Callback_CreateInstance callback_CreateInstance,
             Callback_DeleteInstance callback_DeleteInstance,
             Callback_GrabInstance callback_GrabInstance);
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        [DllImport(Library.Name)]
+        static extern void Noesis_SetLoadAssemblyCallback(NoesisLoadAssemblyCallback callback);
     }
 }
 

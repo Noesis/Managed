@@ -46,6 +46,22 @@ public class ItemsControl : Control {
     }
   }
 
+  internal protected virtual DependencyObject GetContainerForItemOverride() {
+    return GetContainerForItemBase != null ? (DependencyObject)Noesis.Extend.GetProxy(GetContainerForItemBase(swigCPtr), true) : null;
+  }
+
+  internal protected virtual bool IsItemItsOwnContainerOverride(object item) {
+    return IsItemItsOwnContainerBase != null ? IsItemItsOwnContainerBase(swigCPtr, Noesis.Extend.GetInstanceHandle(item)) : false;
+  }
+
+  [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+  internal delegate IntPtr GetContainerForItemBaseCallback(HandleRef cPtr);
+  internal GetContainerForItemBaseCallback GetContainerForItemBase = null;
+
+  [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+  internal delegate bool IsItemItsOwnContainerBaseCallback(HandleRef cPtr, HandleRef item);
+  internal IsItemItsOwnContainerBaseCallback IsItemItsOwnContainerBase = null;
+
   public ItemsControl() {
   }
 

@@ -31,10 +31,18 @@ public class ListViewItem : ListBoxItem {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    registerExtend = false;
-    return NoesisGUI_PINVOKE.new_ListViewItem();
+    if (type == typeof(ListViewItem)) {
+      registerExtend = false;
+      return NoesisGUI_PINVOKE.new_ListViewItem();
+    }
+    else {
+      return base.CreateExtendCPtr(type, out registerExtend);
+    }
   }
 
+  internal new static IntPtr Extend(string typeName) {
+    return NoesisGUI_PINVOKE.Extend_ListViewItem(Marshal.StringToHGlobalAnsi(typeName));
+  }
 }
 
 }

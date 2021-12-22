@@ -31,8 +31,13 @@ public class ListView : ListBox {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    registerExtend = false;
-    return NoesisGUI_PINVOKE.new_ListView();
+    if (type == typeof(ListView)) {
+      registerExtend = false;
+      return NoesisGUI_PINVOKE.new_ListView();
+    }
+    else {
+      return base.CreateExtendCPtr(type, out registerExtend);
+    }
   }
 
   public static DependencyProperty ViewProperty {
@@ -52,6 +57,9 @@ public class ListView : ListBox {
     }
   }
 
+  internal new static IntPtr Extend(string typeName) {
+    return NoesisGUI_PINVOKE.Extend_ListView(Marshal.StringToHGlobalAnsi(typeName));
+  }
 }
 
 }

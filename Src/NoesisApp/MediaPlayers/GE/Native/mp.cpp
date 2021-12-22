@@ -28,39 +28,51 @@ int videoSocket;
 int64_t streamSize;
 GstElement* pipeline;
 
-static GstFlowReturn NewSample(GstElement* sink, void* data)
+struct frame
 {
-    GstSample *sample;
+    gint64 time;
+    GstSample* sample;
+    GstBuffer* buffer;
+    GstMapInfo map;
+    int fd;
+};
 
-    g_signal_emit_by_name (sink, "pull-sample", &sample);
-    if (sample)
+const uint MaxFrames = 64; // Way more than wee need so we don't have to bother checking for wraparound
+frame storedFrames[MaxFrames];
+uint firstFrame = 0;
+uint lastFrame = 0;
+
+static GstFlowReturn Sample(GstElement* sink, void* data, const char* signal)
+{
+    uint idx = lastFrame;
+    lastFrame = (lastFrame + 1) % MaxFrames;
+
+    g_signal_emit_by_name (sink, signal, &storedFrames[idx].sample);
+    if (storedFrames[idx].sample)
     {
-        gint64 time;
-        gst_element_query_position(sink, GST_FORMAT_TIME, &time);
-
-        GstCaps* caps = gst_sample_get_caps (sample);
+        GstCaps* caps = gst_sample_get_caps (storedFrames[idx].sample);
         GstStructure* s = gst_caps_get_structure (caps, 0);
         gint width;
         gint height;
         gst_structure_get_int (s, "width", &width);
         gst_structure_get_int (s, "height", &height);
 
-        GstBuffer* buffer = gst_sample_get_buffer(sample);
-        GstMapInfo map;
-        if (gst_buffer_map(buffer, &map, GST_MAP_READ))
+        storedFrames[idx].buffer = gst_sample_get_buffer(storedFrames[idx].sample);
+        GstSegment* segment = gst_sample_get_segment(storedFrames[idx].sample);
+        storedFrames[idx].time = storedFrames[idx].buffer->pts;
+        if (gst_buffer_map(storedFrames[idx].buffer, &storedFrames[idx].map, GST_MAP_READ))
         {
-            GstMemory* mem = gst_buffer_peek_memory(buffer, 0);
+            GstMemory* mem = gst_buffer_peek_memory(storedFrames[idx].buffer, 0);
 
             int gst_fd = gst_dmabuf_memory_get_fd(mem);
-            int fd = dup(gst_fd);
-            gst_buffer_unmap (buffer, &map);
+            storedFrames[idx].fd = dup(gst_fd);
             msghdr msg;
             iovec iov;
             cmsghdr *cmsg;
             char cmsg_buffer[sizeof(cmsghdr) + sizeof(int)];
             MediaPlayerCommand command;
             command.cmd = MPC_NewFrame;
-            command.arg[0] = time;
+            command.arg[0] = storedFrames[idx].time;
             command.arg[1] = (((uint64_t)width) << 32) | height;
             memset(&msg, 0, sizeof(msghdr));
             memset(&iov, 0, sizeof(iovec));
@@ -76,78 +88,25 @@ static GstFlowReturn NewSample(GstElement* sink, void* data)
             cmsg->cmsg_len = sizeof(cmsg_buffer);
             cmsg->cmsg_level = SOL_SOCKET;
             cmsg->cmsg_type = SCM_RIGHTS;
-            *((int *)CMSG_DATA(cmsg)) = fd;
+            *((int *)CMSG_DATA(cmsg)) = storedFrames[idx].fd;
             int clientSocket = *(int*)data;
             sendmsg(clientSocket, &msg, 0);
-            close(fd);
         }
 
-        gst_sample_unref (sample);
         return GST_FLOW_OK;
     }
 
     return GST_FLOW_ERROR;
 }
 
+static GstFlowReturn NewSample(GstElement* sink, void* data)
+{
+    return Sample(sink, data, "pull-sample");
+}
+
 static GstFlowReturn NewPreroll(GstElement* sink, void* data)
 {
-    GstSample *sample;
-
-    g_signal_emit_by_name (sink, "pull-preroll", &sample);
-    if (sample)
-    {
-        gint64 time;
-        gst_element_query_position(sink, GST_FORMAT_TIME, &time);
-
-        GstCaps* caps = gst_sample_get_caps (sample);
-        GstStructure* s = gst_caps_get_structure (caps, 0);
-        gint width;
-        gint height;
-        gst_structure_get_int (s, "width", &width);
-        gst_structure_get_int (s, "height", &height);
-
-        GstBuffer* buffer = gst_sample_get_buffer(sample);
-        GstMapInfo map;
-        if (gst_buffer_map(buffer, &map, GST_MAP_READ))
-        {
-            GstMemory* mem = gst_buffer_peek_memory(buffer, 0);
-
-            int gst_fd = gst_dmabuf_memory_get_fd(mem);
-            int fd = dup(gst_fd);
-            gst_buffer_unmap (buffer, &map);
-            msghdr msg;
-            iovec iov;
-            cmsghdr *cmsg;
-            char cmsg_buffer[sizeof(cmsghdr) + sizeof(int)];
-            MediaPlayerCommand command;
-            command.cmd = MPC_NewFrame;
-            command.arg[0] = time;
-            command.arg[1] = (((uint64_t)width) << 32) | height;
-            memset(&msg, 0, sizeof(msghdr));
-            memset(&iov, 0, sizeof(iovec));
-            iov.iov_base = &command;
-            iov.iov_len = sizeof(MediaPlayerCommand);
-            msg.msg_name = &serverSockaddr;
-            msg.msg_namelen = sizeof(sockaddr_un);
-            msg.msg_iov = &iov;
-            msg.msg_iovlen = 1;
-            msg.msg_control = cmsg_buffer;
-            msg.msg_controllen = sizeof(cmsg_buffer);
-            cmsg = CMSG_FIRSTHDR(&msg);
-            cmsg->cmsg_len = sizeof(cmsg_buffer);
-            cmsg->cmsg_level = SOL_SOCKET;
-            cmsg->cmsg_type = SCM_RIGHTS;
-            *((int *)CMSG_DATA(cmsg)) = fd;
-            int clientSocket = *(int*)data;
-            sendmsg(clientSocket, &msg, 0);
-            close(fd);
-        }
-
-        gst_sample_unref (sample);
-        return GST_FLOW_OK;
-    }
-
-    return GST_FLOW_ERROR;
+    return Sample(sink, data, "pull-preroll");
 }
 
 static const gint64 Status_EOS = 1;
@@ -183,7 +142,7 @@ gboolean BusCall(GstBus* bus, GstMessage* msg, gpointer data)
         }
         case GST_MESSAGE_ERROR:
         {
-            // *status = Status_ERROR;
+            *status = Status_ERROR;
             GError *err;
             gchar *dbg;
             gst_message_parse_error (msg, &err, &dbg);
@@ -388,15 +347,18 @@ int main(int argc, char** argv)
     MediaPlayerCommand command;
     sendto(clientSocket, &command, sizeof(MediaPlayerCommand), 0, (sockaddr*)&serverSockaddr, sizeof(struct sockaddr_un));
 
-    gint64 duration;
-    gst_element_query_duration(pipeline, GST_FORMAT_TIME, &duration);
+    if (status != Status_ERROR)
+    {
+        gint64 duration;
+        gst_element_query_duration(pipeline, GST_FORMAT_TIME, &duration);
 
-    //MediaPlayerCommand command;
-    command.cmd = MPC_MediaLoaded;
-    command.arg[0] = duration;
-    command.arg[1] = dimensions;
+        //MediaPlayerCommand command;
+        command.cmd = MPC_MediaLoaded;
+        command.arg[0] = duration;
+        command.arg[1] = dimensions;
 
-    sendto(clientSocket, &command, sizeof(MediaPlayerCommand), 0, (sockaddr*)&serverSockaddr, sizeof(struct sockaddr_un));
+        sendto(clientSocket, &command, sizeof(MediaPlayerCommand), 0, (sockaddr*)&serverSockaddr, sizeof(struct sockaddr_un));
+    }
     
     int flags = fcntl(clientSocket, F_GETFL, 0);
     flags |= O_NONBLOCK;
@@ -456,6 +418,7 @@ int main(int argc, char** argv)
                     fcntl(clientSocket, F_SETFL, flags);
 
                     gst_element_set_state (pipeline, GST_STATE_PLAYING);
+                    gst_element_get_state (pipeline, NULL, NULL, GST_CLOCK_TIME_NONE);
                 }
                 else if (command.cmd == MPC_Pause)
                 {
@@ -467,6 +430,12 @@ int main(int argc, char** argv)
                 }
                 else if (command.cmd == MPC_Stop)
                 {
+                    for (; firstFrame != lastFrame; firstFrame = (firstFrame + 1) % MaxFrames)
+                    {
+                        close(storedFrames[firstFrame].fd);
+                        gst_buffer_unmap (storedFrames[firstFrame].buffer, &storedFrames[firstFrame].map);
+                        gst_sample_unref (storedFrames[firstFrame].sample);
+                    }
                     int flags = fcntl(clientSocket, F_GETFL, 0);
                     flags &= ~O_NONBLOCK;
                     fcntl(clientSocket, F_SETFL, flags);
@@ -484,7 +453,17 @@ int main(int argc, char** argv)
                 }
                 else if (command.cmd == MPC_Seek)
                 {
-                    gst_element_seek_simple (pipeline, GST_FORMAT_TIME, (GstSeekFlags)(GST_SEEK_FLAG_ACCURATE | GST_SEEK_FLAG_FLUSH), command.arg[0]);
+                    if (((int64_t)command.arg[0]) >= 0)
+                    {
+                        for (; firstFrame != lastFrame; firstFrame = (firstFrame + 1) % MaxFrames)
+                        {
+                            close(storedFrames[firstFrame].fd);
+                            gst_buffer_unmap (storedFrames[firstFrame].buffer, &storedFrames[firstFrame].map);
+                            gst_sample_unref (storedFrames[firstFrame].sample);
+                        }
+                        gst_element_seek_simple (pipeline, GST_FORMAT_TIME, (GstSeekFlags)(GST_SEEK_FLAG_ACCURATE | GST_SEEK_FLAG_FLUSH), command.arg[0]);
+                        gst_element_get_state (pipeline, NULL, NULL, GST_CLOCK_TIME_NONE);
+                    }
                 }
                 else if (command.cmd == MPC_Volume)
                 {
@@ -496,6 +475,18 @@ int main(int argc, char** argv)
                     cast.u = command.arg[0];
                     
                     g_object_set (pipeline, "volume", (double)cast.f, NULL);
+                }
+                else if (command.cmd == MPC_FrameAck)
+                {
+                    gint64 lastFrameAck = command.arg[0];
+                    for (; firstFrame != lastFrame; firstFrame = (firstFrame + 1) % MaxFrames)
+                    {
+                        if (storedFrames[firstFrame].time == lastFrameAck)
+                            break;
+                        close(storedFrames[firstFrame].fd);
+                        gst_buffer_unmap (storedFrames[firstFrame].buffer, &storedFrames[firstFrame].map);
+                        gst_sample_unref (storedFrames[firstFrame].sample);
+                    }
                 }
             }
         }

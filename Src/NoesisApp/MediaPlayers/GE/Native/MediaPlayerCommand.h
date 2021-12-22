@@ -12,6 +12,7 @@ static const uint32_t MPC_Pause = 4;
 static const uint32_t MPC_Stop = 5;
 static const uint32_t MPC_Seek = 6;
 static const uint32_t MPC_Volume = 7;
+static const uint32_t MPC_FrameAck = 8;
     
 struct MediaPlayerCommand
 {

@@ -13,7 +13,7 @@ namespace NoesisApp
 
         public XDisplay(bool fullScreen)
         {
-            _display = XOpenDisplay("");
+            _display = XOpenDisplay(null);
 
             int screenNumber = XDefaultScreen(_display);
             int depth = XDefaultDepth(_display, screenNumber);

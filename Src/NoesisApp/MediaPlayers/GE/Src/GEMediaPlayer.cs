@@ -15,8 +15,7 @@ namespace NoesisApp
 
         GEMediaPlayer(MediaElement owner, Uri uri)
         {
-            string path = uri.GetPath();
-            _stream = Noesis.GUI.LoadXamlResource(path);
+            _stream = Noesis.GUI.LoadXamlResource(uri.OriginalString);
             if (_stream != null)
             {
                 _state = CreateState();
@@ -35,7 +34,7 @@ namespace NoesisApp
                 _mediaFailedFnHandle = GCHandle.Alloc(mediaFailedFn);
 
                 long streamSize = _stream.Length;
-                OpenMedia(_state, GCHandle.ToIntPtr(_streamHandle), path, streamSize, readFn, seekFn, mediaOpenedFn, mediaEndedFn, mediaFailedFn);
+                OpenMedia(_state, GCHandle.ToIntPtr(_streamHandle), uri.GetPath(), streamSize, readFn, seekFn, mediaOpenedFn, mediaEndedFn, mediaFailedFn);
             }
             owner.View.Rendering += OnRendering;
         }

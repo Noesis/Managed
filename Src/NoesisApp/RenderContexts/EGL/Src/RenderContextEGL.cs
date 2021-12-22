@@ -307,43 +307,43 @@ namespace NoesisApp
 
         private const uint EGL_PLATFORM_GBM_KHR = 0x31D7;
 
-        [DllImport("EGL")]
+        [DllImport("libEGL.so.1")]
         static extern IntPtr eglGetDisplay(IntPtr display_id);
 
-        [DllImport("EGL")]
+        [DllImport("libEGL.so.1")]
         static extern uint eglInitialize(IntPtr dpy, ref int major, ref int minor);
 
-        [DllImport("EGL")]
+        [DllImport("libEGL.so.1")]
         static extern uint eglChooseConfig(IntPtr dpy, int[] attrib_list, IntPtr[] configs, int config_size, ref int num_config);
 
-        [DllImport("EGL")]
+        [DllImport("libEGL.so.1")]
         static extern IntPtr eglCreateContext(IntPtr dpy, IntPtr config, IntPtr share_context, int[] attrib_list);
 
-        [DllImport("EGL")]
+        [DllImport("libEGL.so.1")]
         static extern uint eglDestroySurface(IntPtr dpy, IntPtr surface);
 
-        [DllImport("EGL")]
+        [DllImport("libEGL.so.1")]
         static extern IntPtr eglCreateWindowSurface(IntPtr dpy, IntPtr config, IntPtr win, int[] attrib_list);
 
-        [DllImport("EGL")]
+        [DllImport("libEGL.so.1")]
         static extern uint eglSurfaceAttrib(IntPtr dpy, IntPtr surface, int attribute, int value);
 
-        [DllImport("EGL")]
+        [DllImport("libEGL.so.1")]
         static extern uint eglMakeCurrent(IntPtr dpy, IntPtr draw, IntPtr read, IntPtr ctx);
 
-        [DllImport("EGL")]
+        [DllImport("libEGL.so.1")]
         static extern uint eglSwapInterval(IntPtr dpy, int interval);
 
-        [DllImport("EGL")]
+        [DllImport("libEGL.so.1")]
         static extern uint eglSwapBuffers(IntPtr dpy, IntPtr surface);
 
-        [DllImport("EGL")]
+        [DllImport("libEGL.so.1")]
         static extern uint eglDestroyContext(IntPtr dpy, IntPtr ctx);
 
-        [DllImport("EGL")]
+        [DllImport("libEGL.so.1")]
         static extern uint eglTerminate(IntPtr dpy);
 
-        [DllImport("EGL")]
+        [DllImport("libEGL.so.1")]
         public static extern int eglGetError();
 
         private const uint GL_FRAMEBUFFER = 0x8D40;
@@ -354,31 +354,31 @@ namespace NoesisApp
         private const uint GL_UNSIGNED_BYTE = 0x00001401;
         private const uint GL_RGBA = 0x00001908;
 
-        [DllImport("GLESv2")]
+        [DllImport("libGLESv2.so.2")]
         static extern void glBindFramebuffer(uint target, uint framebuffer);
 
-        [DllImport("GLESv2")]
+        [DllImport("libGLESv2.so.2")]
         static extern void glViewport(int x, int y, int width, int height);
 
-        [DllImport("GLESv2")]
+        [DllImport("libGLESv2.so.2")]
         static extern void glClearStencil(int s);
 
-        [DllImport("GLESv2")]
+        [DllImport("libGLESv2.so.2")]
         static extern void glClear(uint s);
 
-        [DllImport("GLESv2")]
+        [DllImport("libGLESv2.so.2")]
         static extern void glColorMask(bool r, bool g, bool b, bool a);
 
-        [DllImport("GLESv2")]
+        [DllImport("libGLESv2.so.2")]
         static extern void glClearColor(float r, float g, float b, float a);
 
-        [DllImport("GLESv2")]
+        [DllImport("libGLESv2.so.2")]
         public static extern void glGetIntegerv(uint pname, int[] param);
 
-        [DllImport("GLESv2")]
+        [DllImport("libGLESv2.so.2")]
         public static extern void glPixelStorei(uint pname, int param);
 
-        [DllImport("GLESv2")]
+        [DllImport("libGLESv2.so.2")]
         public static extern void glReadPixels(int x, int y, int width, int height,
             uint format, uint type, byte[] pixels);
     }

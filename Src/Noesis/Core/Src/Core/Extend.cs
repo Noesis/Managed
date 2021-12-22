@@ -49,11 +49,7 @@ namespace Noesis
                 {
                     Initialized = false;
 
-                    EventHandlerStore.Clear(_extends
-                        .Where(kv => kv.Value.weak.Target is EventHandlerStore)
-                        .Select(kv => kv.Value.weak.Target)
-                        .Cast<EventHandlerStore>()
-                        .ToArray());
+                    EventHandlerStore.Clear();
 
                     Noesis.GUI.SetApplicationResources(null);
 
@@ -117,15 +113,25 @@ namespace Noesis
 
                 _registerType,
 
-                _uiElementRender,
-                _frameworkElementMeasure,
-                _frameworkElementArrange,
-                _frameworkElementConnectEvent,
-                _frameworkElementApplyTemplate,
-                _freezableClone,
-
                 _toString,
                 _equals,
+
+                _visualChildrenCount,
+                _visualGetChild,
+
+                _uiElementRender,
+
+                _frameworkElementConnectEvent,
+                _frameworkElementMeasure,
+                _frameworkElementArrange,
+                _frameworkElementApplyTemplate,
+
+                _itemsControlGetContainer,
+                _itemsControlIsContainer,
+
+                _adornerGetTransform,
+
+                _freezableClone,
 
                 _commandCanExecute,
                 _commandExecute,
@@ -209,6 +215,7 @@ namespace Noesis
                 _getPropertyValue_Color,
                 _getPropertyValue_Point,
                 _getPropertyValue_Rect,
+                _getPropertyValue_Int32Rect,
                 _getPropertyValue_Size,
                 _getPropertyValue_Thickness,
                 _getPropertyValue_CornerRadius,
@@ -230,6 +237,7 @@ namespace Noesis
                 _setPropertyValue_Color,
                 _setPropertyValue_Point,
                 _setPropertyValue_Rect,
+                _setPropertyValue_Int32Rect,
                 _setPropertyValue_Size,
                 _setPropertyValue_Thickness,
                 _setPropertyValue_CornerRadius,
@@ -242,6 +250,8 @@ namespace Noesis
                 _createInstance,
                 _deleteInstance,
                 _grabInstance);
+
+            Noesis_SetLoadAssemblyCallback(_loadAssembly);
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -251,8 +261,13 @@ namespace Noesis
             Noesis_RegisterReflectionCallbacks(
                 null,
                 null,
-                null, null, null, null, null, null,
                 null, null,
+                null, null,
+                null,
+                null, null, null, null,
+                null, null,
+                null,
+                null,
                 null, null,
                 null, null, null, null,
                 null, null, null, null, null,
@@ -264,9 +279,11 @@ namespace Noesis
                 null, null, null, null, null, null,
                 null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
                 null,
-                null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-                null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
                 null, null, null);
+
+            Noesis_SetLoadAssemblyCallback(null);
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -532,6 +549,7 @@ namespace Noesis
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Color)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Point)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Rect)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Int32Rect)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Size)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Thickness)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(CornerRadius)));
@@ -553,6 +571,7 @@ namespace Noesis
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Color?)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Point?)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Rect?)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Int32Rect?)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Size?)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Thickness?)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(CornerRadius?)));
@@ -569,7 +588,6 @@ namespace Noesis
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(CharacterCasing)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(ClickMode)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(ColorInterpolationMode)));
-            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Cursor)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Dock)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(ExpandDirection)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(FillRule)));
@@ -633,6 +651,7 @@ namespace Noesis
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Color>)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Point>)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Rect>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Int32Rect>)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Size>)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Thickness>)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<CornerRadius>)));
@@ -652,7 +671,6 @@ namespace Noesis
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<CharacterCasing>)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<ClickMode>)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<ColorInterpolationMode>)));
-            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Cursor>)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Dock>)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<ExpandDirection>)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<FillRule>)));
@@ -713,6 +731,8 @@ namespace Noesis
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(View), View.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Renderer), Renderer.CreateProxy));
 
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Adorner), Adorner.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(AdornerLayer), AdornerLayer.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(AdornerDecorator), AdornerDecorator.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Animatable), Animatable.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ArcSegment), ArcSegment.CreateProxy));
@@ -760,6 +780,7 @@ namespace Noesis
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Control), Control.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ControlTemplate), ControlTemplate.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(CroppedBitmap), CroppedBitmap.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Cursor), Cursor.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DashStyle), DashStyle.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DataTemplate), DataTemplate.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DataTemplateSelector), DataTemplateSelector.CreateProxy));
@@ -789,6 +810,7 @@ namespace Noesis
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(GradientStop), GradientStop.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(GradientStopCollection), GradientStopCollection.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Grid), Grid.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(GridSplitter), GridSplitter.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(GroupBox), GroupBox.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(HeaderedContentControl), HeaderedContentControl.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(HeaderedItemsControl), HeaderedItemsControl.CreateProxy));
@@ -1168,15 +1190,20 @@ namespace Noesis
         [Flags]
         private enum ExtendTypeOverrides
         {
-            None        = 0,
-            ToString    = 1,
-            Equals      = 2,
-            OnRender    = 4,
-            Measure     = 8,
-            Arrange     = 16,
-            Connect     = 32,
-            Template    = 64,
-            Clone       = 128
+            None                            = 0,
+            Object_ToString                 = 1,
+            Object_Equals                   = 2,
+            Visual_GetChildrenCount         = 4,
+            Visual_GetChild                 = 8,
+            UIElement_OnRender              = 16,
+            FrameworkElement_ConnectEvent   = 32,
+            FrameworkElement_Measure        = 64,
+            FrameworkElement_Arrange        = 128,
+            FrameworkElement_ApplyTemplate  = 256,
+            ItemsControl_GetContainer       = 512,
+            ItemsControl_IsContainer        = 1024,
+            Adorner_GetTransform            = 2048,
+            Freezable_Clone                 = 4096
         }
 
         private struct ExtendPropertyData
@@ -1439,6 +1466,18 @@ namespace Noesis
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
+        public static PropertyInfo FindProperty(Type type, string name)
+        {
+            #if NETFX_CORE
+            return type.GetRuntimeProperties()
+                .Where(p => p.Name == name && !p.GetMethod.IsStatic).FirstOrDefault;
+            #else
+            return type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                .Where(p => p.Name == name).FirstOrDefault();
+            #endif
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
         private static ExtendTypeData CreateNativeTypeData(System.Type type, IntPtr nativeType)
         {
             ExtendTypeData typeData = new ExtendTypeData();
@@ -1476,28 +1515,61 @@ namespace Noesis
             ExtendTypeOverrides overrides = ExtendTypeOverrides.None;
 
             MethodInfo toStringMethod = FindMethod(type, "ToString", new Type[] { });
-            if (IsOverride(toStringMethod)) overrides |= ExtendTypeOverrides.ToString;
+            if (IsOverride(toStringMethod)) overrides |= ExtendTypeOverrides.Object_ToString;
 
             MethodInfo equalsMethod = FindMethod(type, "Equals", new Type[] { typeof(object) });
-            if (IsOverride(equalsMethod)) overrides |= ExtendTypeOverrides.Equals;
+            if (IsOverride(equalsMethod)) overrides |= ExtendTypeOverrides.Object_Equals;
 
-            MethodInfo renderMethod = FindMethod(type, "OnRender", new Type[] { typeof(DrawingContext) });
-            if (IsOverride(renderMethod)) overrides |= ExtendTypeOverrides.OnRender;
+            if (typeof(Visual).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
+            {
+                PropertyInfo childrenCountProp = FindProperty(type, "VisualChildrenCount");
+                if (IsOverride(childrenCountProp?.GetMethod)) overrides |= ExtendTypeOverrides.Visual_GetChildrenCount;
 
-            MethodInfo measureMethod = FindMethod(type, "MeasureOverride", new Type[] { typeof(Size) });
-            if (IsOverride(measureMethod)) overrides |= ExtendTypeOverrides.Measure;
+                MethodInfo getChildMethod = FindMethod(type, "GetVisualChild", new Type[] { typeof(int) });
+                if (IsOverride(getChildMethod)) overrides |= ExtendTypeOverrides.Visual_GetChild;
+            }
 
-            MethodInfo arrangeMethod = FindMethod(type, "ArrangeOverride", new Type[] { typeof(Size) });
-            if (IsOverride(arrangeMethod)) overrides |= ExtendTypeOverrides.Arrange;
+            if (typeof(UIElement).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
+            {
+                MethodInfo renderMethod = FindMethod(type, "OnRender", new Type[] { typeof(DrawingContext) });
+                if (IsOverride(renderMethod)) overrides |= ExtendTypeOverrides.UIElement_OnRender;
+            }
 
-            MethodInfo connectMethod = FindMethod(type, "ConnectEvent", new Type[] { typeof(object), typeof(string), typeof(string) });
-            if (IsOverride(connectMethod)) overrides |= ExtendTypeOverrides.Connect;
+            if (typeof(FrameworkElement).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
+            {
+                MethodInfo connectMethod = FindMethod(type, "ConnectEvent", new Type[] { typeof(object), typeof(string), typeof(string) });
+                if (IsOverride(connectMethod)) overrides |= ExtendTypeOverrides.FrameworkElement_ConnectEvent;
 
-            MethodInfo templateMethod = FindMethod(type, "OnApplyTemplate", new Type[] { });
-            if (IsOverride(templateMethod)) overrides |= ExtendTypeOverrides.Template;
+                MethodInfo measureMethod = FindMethod(type, "MeasureOverride", new Type[] { typeof(Size) });
+                if (IsOverride(measureMethod)) overrides |= ExtendTypeOverrides.FrameworkElement_Measure;
 
-            MethodInfo cloneMethod = FindMethod(type, "CloneCommonCore", new Type[] { typeof(Freezable) });
-            if (IsOverride(cloneMethod)) overrides |= ExtendTypeOverrides.Clone;
+                MethodInfo arrangeMethod = FindMethod(type, "ArrangeOverride", new Type[] { typeof(Size) });
+                if (IsOverride(arrangeMethod)) overrides |= ExtendTypeOverrides.FrameworkElement_Arrange;
+
+                MethodInfo templateMethod = FindMethod(type, "OnApplyTemplate", new Type[] { });
+                if (IsOverride(templateMethod)) overrides |= ExtendTypeOverrides.FrameworkElement_ApplyTemplate;
+            }
+
+            if (typeof(ItemsControl).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
+            {
+                MethodInfo getContainerMethod = FindMethod(type, "GetContainerForItemOverride", new Type[] { });
+                if (IsOverride(getContainerMethod)) overrides |= ExtendTypeOverrides.ItemsControl_GetContainer;
+
+                MethodInfo isContainerMethod = FindMethod(type, "IsItemItsOwnContainerOverride", new Type[] { typeof(object) });
+                if (IsOverride(isContainerMethod)) overrides |= ExtendTypeOverrides.ItemsControl_IsContainer;
+            }
+
+            if (typeof(Adorner).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
+            {
+                MethodInfo getTransformMethod = FindMethod(type, "GetDesiredTransform", new Type[] { typeof(Matrix4) });
+                if (IsOverride(getTransformMethod)) overrides |= ExtendTypeOverrides.Adorner_GetTransform;
+            }
+
+            if (typeof(Freezable).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
+            {
+                MethodInfo cloneMethod = FindMethod(type, "CloneCommonCore", new Type[] { typeof(Freezable) });
+                if (IsOverride(cloneMethod)) overrides |= ExtendTypeOverrides.Freezable_Clone;
+            }
 
             typeData.overrides = (int)overrides;
 
@@ -1838,6 +1910,27 @@ namespace Noesis
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void NoesisLoadAssemblyCallback(IntPtr assemblyPtr);
+        private static NoesisLoadAssemblyCallback _loadAssembly = OnLoadAssembly;
+
+        [MonoPInvokeCallback(typeof(NoesisLoadAssemblyCallback))]
+        private static void OnLoadAssembly(IntPtr assemblyPtr)
+        {
+            try
+            {
+                if (Initialized)
+                {
+                    string assembly = StringFromNativeUtf8(assemblyPtr);
+                    Assembly.Load(assembly);
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
         private delegate IntPtr Callback_ToString(IntPtr cPtr);
         private static Callback_ToString _toString = ToStringEx;
 
@@ -1879,71 +1972,84 @@ namespace Noesis
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-        private delegate void Callback_UIElementRender(IntPtr cPtr, IntPtr context,
+        private delegate int Callback_VisualChildrenCount(IntPtr cPtr,
+            Visual.ChildrenCountBaseCallback callback);
+        private static Callback_VisualChildrenCount _visualChildrenCount = VisualChildrenCount;
+
+        [MonoPInvokeCallback(typeof(Callback_VisualChildrenCount))]
+        private static int VisualChildrenCount(IntPtr cPtr,
+            Visual.ChildrenCountBaseCallback callback)
+        {
+            try
+            {
+                Visual visual = (Visual)GetExtendInstance(cPtr);
+                if (visual != null)
+                {
+                    visual.ChildrenCountBase = callback;
+                    int count = visual.VisualChildrenCount;
+                    visual.ChildrenCountBase = null;
+
+                    return count;
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+
+            return 0;
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate IntPtr Callback_VisualGetChild(IntPtr cPtr, int index,
+            Visual.ChildrenCountBaseCallback countCallback, Visual.GetChildBaseCallback childCallback);
+        private static Callback_VisualGetChild _visualGetChild  = VisualGetChild;
+
+        [MonoPInvokeCallback(typeof(Callback_VisualGetChild))]
+        private static IntPtr VisualGetChild(IntPtr cPtr, int index,
+            Visual.ChildrenCountBaseCallback countCallback, Visual.GetChildBaseCallback childCallback)
+        {
+            try
+            {
+                Visual visual = (Visual)GetExtendInstance(cPtr);
+                if (visual != null)
+                {
+                    visual.ChildrenCountBase = countCallback;
+                    visual.GetChildBase = childCallback;
+                    Visual child = visual.GetVisualChild(index);
+                    visual.GetChildBase = null;
+                    visual.ChildrenCountBase = null;
+
+                    HandleRef childPtr = GetInstanceHandle(child);
+                    BaseComponent.AddReference(childPtr.Handle); // released by native bindings
+                    return childPtr.Handle;
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+
+            return IntPtr.Zero;
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void Callback_UIElementRender(IntPtr cPtr, IntPtr contextType, IntPtr context,
             UIElement.RenderBaseCallback callback);
         private static Callback_UIElementRender _uiElementRender = UIElementRender;
 
         [MonoPInvokeCallback(typeof(Callback_UIElementRender))]
-        private static void UIElementRender(IntPtr cPtr, IntPtr context, UIElement.RenderBaseCallback callback)
+        private static void UIElementRender(IntPtr cPtr, IntPtr contextType, IntPtr context,
+            UIElement.RenderBaseCallback callback)
         {
             try
             {
                 UIElement element = (UIElement)GetExtendInstance(cPtr);
                 if (element != null)
                 {
-                    DrawingContext context_ = (DrawingContext)GetProxy(context, false);
                     element.OnRenderBase = callback;
-                    element.OnRender(context_);
-                }
-            }
-            catch (Exception e)
-            {
-                Error.UnhandledException(e);
-            }
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////
-        private delegate void Callback_FrameworkElementMeasure(IntPtr cPtr,
-            ref Size availableSize, ref Size desiredSize, FrameworkElement.LayoutBaseCallback callback);
-        private static Callback_FrameworkElementMeasure _frameworkElementMeasure = FrameworkElementMeasure;
-
-        [MonoPInvokeCallback(typeof(Callback_FrameworkElementMeasure))]
-        private static void FrameworkElementMeasure(IntPtr cPtr,
-            ref Size availableSize, ref Size desiredSize, FrameworkElement.LayoutBaseCallback callback)
-        {
-            try
-            {
-                FrameworkElement element = (FrameworkElement)GetExtendInstance(cPtr);
-                if (element != null)
-                {
-                    element.MeasureBase = callback;
-                    desiredSize = element.MeasureOverride(availableSize);
-                    if (desiredSize.IsEmpty) desiredSize = new Size(0, 0);
-                }
-            }
-            catch (Exception e)
-            {
-                Error.UnhandledException(e);
-            }
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////
-        private delegate void Callback_FrameworkElementArrange(IntPtr cPtr,
-            ref Size finalSize, ref Size renderSize, FrameworkElement.LayoutBaseCallback callback);
-        private static Callback_FrameworkElementArrange _frameworkElementArrange = FrameworkElementArrange;
-
-        [MonoPInvokeCallback(typeof(Callback_FrameworkElementArrange))]
-        private static void FrameworkElementArrange(IntPtr cPtr,
-            ref Size finalSize, ref Size renderSize, FrameworkElement.LayoutBaseCallback callback)
-        {
-            try
-            {
-                FrameworkElement element = (FrameworkElement)GetExtendInstance(cPtr);
-                if (element != null)
-                {
-                    element.ArrangeBase = callback;
-                    renderSize = element.ArrangeOverride(finalSize);
-                    if (renderSize.IsEmpty) renderSize = new Size(0, 0);
+                    element.OnRender((DrawingContext)GetProxy(contextType, context, false));
+                    element.OnRenderBase = null;
                 }
             }
             catch (Exception e)
@@ -1979,6 +2085,60 @@ namespace Noesis
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void Callback_FrameworkElementMeasure(IntPtr cPtr,
+            ref Size availableSize, ref Size desiredSize, FrameworkElement.LayoutBaseCallback callback);
+        private static Callback_FrameworkElementMeasure _frameworkElementMeasure = FrameworkElementMeasure;
+
+        [MonoPInvokeCallback(typeof(Callback_FrameworkElementMeasure))]
+        private static void FrameworkElementMeasure(IntPtr cPtr,
+            ref Size availableSize, ref Size desiredSize, FrameworkElement.LayoutBaseCallback callback)
+        {
+            try
+            {
+                FrameworkElement element = (FrameworkElement)GetExtendInstance(cPtr);
+                if (element != null)
+                {
+                    element.MeasureBase = callback;
+                    desiredSize = element.MeasureOverride(availableSize);
+                    element.MeasureBase = null;
+
+                    if (desiredSize.IsEmpty) desiredSize = new Size(0, 0);
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void Callback_FrameworkElementArrange(IntPtr cPtr,
+            ref Size finalSize, ref Size renderSize, FrameworkElement.LayoutBaseCallback callback);
+        private static Callback_FrameworkElementArrange _frameworkElementArrange = FrameworkElementArrange;
+
+        [MonoPInvokeCallback(typeof(Callback_FrameworkElementArrange))]
+        private static void FrameworkElementArrange(IntPtr cPtr,
+            ref Size finalSize, ref Size renderSize, FrameworkElement.LayoutBaseCallback callback)
+        {
+            try
+            {
+                FrameworkElement element = (FrameworkElement)GetExtendInstance(cPtr);
+                if (element != null)
+                {
+                    element.ArrangeBase = callback;
+                    renderSize = element.ArrangeOverride(finalSize);
+                    element.ArrangeBase = callback;
+
+                    if (renderSize.IsEmpty) renderSize = new Size(0, 0);
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
         private delegate void Callback_FrameworkElementApplyTemplate(IntPtr cPtr);
         private static Callback_FrameworkElementApplyTemplate _frameworkElementApplyTemplate = FrameworkElementApplyTemplate;
 
@@ -1991,6 +2151,89 @@ namespace Noesis
                 if (element != null)
                 {
                     element.OnApplyTemplate();
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate IntPtr Callback_ItemsControlGetContainer(IntPtr cPtr,
+            ItemsControl.GetContainerForItemBaseCallback callback);
+        private static Callback_ItemsControlGetContainer _itemsControlGetContainer = ItemsControlGetContainer;
+
+        [MonoPInvokeCallback(typeof(Callback_ItemsControlGetContainer))]
+        private static IntPtr ItemsControlGetContainer(IntPtr cPtr,
+            ItemsControl.GetContainerForItemBaseCallback callback)
+        {
+            try
+            {
+                ItemsControl itemsControl = (ItemsControl)GetExtendInstance(cPtr);
+                if (itemsControl != null)
+                {
+                    itemsControl.GetContainerForItemBase = callback;
+                    DependencyObject container = itemsControl.GetContainerForItemOverride();
+                    itemsControl.GetContainerForItemBase = null;
+
+                    HandleRef containerPtr = GetInstanceHandle(container);
+                    BaseComponent.AddReference(containerPtr.Handle); // released by native bindings
+                    return containerPtr.Handle;
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+
+            return IntPtr.Zero;
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate bool Callback_ItemsControlIsContainer(IntPtr cPtr, IntPtr itemTypePtr,
+            IntPtr itemPtr, ItemsControl.IsItemItsOwnContainerBaseCallback callback);
+        private static Callback_ItemsControlIsContainer _itemsControlIsContainer = ItemsControlIsContainer;
+
+        [MonoPInvokeCallback(typeof(Callback_ItemsControlIsContainer))]
+        private static bool ItemsControlIsContainer(IntPtr cPtr, IntPtr itemTypePtr, IntPtr itemPtr,
+            ItemsControl.IsItemItsOwnContainerBaseCallback callback)
+        {
+            try
+            {
+                ItemsControl itemsControl = (ItemsControl)GetExtendInstance(cPtr);
+                if (itemsControl != null)
+                {
+                    itemsControl.IsItemItsOwnContainerBase = callback;
+                    bool isContainer = itemsControl.IsItemItsOwnContainerOverride(GetProxy(itemTypePtr, itemPtr, false));
+                    itemsControl.IsItemItsOwnContainerBase = null;
+
+                    return isContainer;
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+
+            return false;
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void Callback_AdornerGetTransform(IntPtr cPtr,
+            ref Matrix4 transform, ref Matrix4 desiredTransform);
+        private static Callback_AdornerGetTransform _adornerGetTransform = AdornerGetTransform;
+
+        [MonoPInvokeCallback(typeof(Callback_AdornerGetTransform))]
+        private static void AdornerGetTransform(IntPtr cPtr,
+            ref Matrix4 transform, ref Matrix4 desiredTransform)
+        {
+            try
+            {
+                Adorner adorner = (Adorner)GetExtendInstance(cPtr);
+                if (adorner != null)
+                {
+                    desiredTransform = adorner.GetDesiredTransform(transform);
                 }
             }
             catch (Exception e)
@@ -3550,6 +3793,7 @@ namespace Noesis
             Color,
             Point,
             Rect,
+            Int32Rect,
             Size,
             Thickness,
             CornerRadius,
@@ -3566,6 +3810,7 @@ namespace Noesis
             NullableColor,
             NullablePoint,
             NullableRect,
+            NullableInt32Rect,
             NullableSize,
             NullableThickness,
             NullableCornerRadius,
@@ -3642,6 +3887,11 @@ namespace Noesis
             if (type.Equals(typeof(Rect)))
             {
                 return (int)NativePropertyType.Rect;
+            }
+
+            if (type.Equals(typeof(Int32Rect)))
+            {
+                return (int)NativePropertyType.Int32Rect;
             }
 
             if (type.Equals(typeof(Size)))
@@ -3728,6 +3978,11 @@ namespace Noesis
             if (type.Equals(typeof(Rect?)))
             {
                 return (int)NativePropertyType.NullableRect;
+            }
+
+            if (type.Equals(typeof(Int32Rect?)))
+            {
+                return (int)NativePropertyType.NullableInt32Rect;
             }
 
             if (type.Equals(typeof(Size?)))
@@ -4029,6 +4284,25 @@ namespace Noesis
             try
             {
                 value = GetPropertyValueNullable<Rect>(GetProperty(nativeType, propertyIndex),
+                    GetExtendInstance(cPtr), out isNull);
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        private delegate void Callback_GetPropertyValue_Int32Rect(IntPtr nativeType, int propertyIndex,
+            IntPtr cPtr, ref Int32Rect value, [MarshalAs(UnmanagedType.U1)] ref bool isNull);
+        private static Callback_GetPropertyValue_Int32Rect _getPropertyValue_Int32Rect = GetPropertyValue_Int32Rect;
+
+        [MonoPInvokeCallback(typeof(Callback_GetPropertyValue_Int32Rect))]
+        private static void GetPropertyValue_Int32Rect(IntPtr nativeType, int propertyIndex,
+            IntPtr cPtr, ref Int32Rect value, ref bool isNull)
+        {
+            try
+            {
+                value = GetPropertyValueNullable<Int32Rect>(GetProperty(nativeType, propertyIndex),
                     GetExtendInstance(cPtr), out isNull);
             }
             catch (Exception e)
@@ -4444,6 +4718,25 @@ namespace Noesis
             try
             {
                 SetPropertyValueNullable<Rect>(GetProperty(nativeType, propertyIndex),
+                    GetExtendInstance(cPtr), val, isNull);
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        private delegate void Callback_SetPropertyValue_Int32Rect(IntPtr nativeType, int propertyIndex,
+            IntPtr cPtr, ref Int32Rect val, [MarshalAs(UnmanagedType.U1)] bool isNull);
+        private static Callback_SetPropertyValue_Int32Rect _setPropertyValue_Int32Rect = SetPropertyValue_Int32Rect;
+
+        [MonoPInvokeCallback(typeof(Callback_SetPropertyValue_Int32Rect))]
+        private static void SetPropertyValue_Int32Rect(IntPtr nativeType, int propertyIndex,
+            IntPtr cPtr, ref Int32Rect val, bool isNull)
+        {
+            try
+            {
+                SetPropertyValueNullable<Int32Rect>(GetProperty(nativeType, propertyIndex),
                     GetExtendInstance(cPtr), val, isNull);
             }
             catch (Exception e)

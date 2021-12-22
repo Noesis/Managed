@@ -530,6 +530,11 @@ public class NoesisGUI_ {
     return ret;
   }
 
+  public static IntPtr NullableInt32Rect_GetStaticType() {
+    IntPtr ret = NoesisGUI_PINVOKE.NullableInt32Rect_GetStaticType();
+    return ret;
+  }
+
   public static IntPtr NullableSize_GetStaticType() {
     IntPtr ret = NoesisGUI_PINVOKE.NullableSize_GetStaticType();
     return ret;
@@ -657,16 +662,6 @@ public class NoesisGUI_ {
 
   public static IntPtr Box_ColorInterpolationMode(ColorInterpolationMode val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_ColorInterpolationMode((int)val);
-    return ret;
-  }
-
-  public static Cursor Unbox_Cursor(IntPtr val) {
-    Cursor ret = (Cursor)NoesisGUI_PINVOKE.Unbox_Cursor(val);
-    return ret;
-  }
-
-  public static IntPtr Box_Cursor(Cursor val) {
-    IntPtr ret = NoesisGUI_PINVOKE.Box_Cursor((int)val);
     return ret;
   }
 

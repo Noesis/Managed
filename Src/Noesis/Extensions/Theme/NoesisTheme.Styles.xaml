@@ -74,6 +74,7 @@
   <Style TargetType="HeaderedContentControl" BasedOn="{StaticResource Style.Base}"/>
   <Style TargetType="ItemsControl" BasedOn="{StaticResource Style.Base}">
     <Setter Property="ScrollViewer.PanningMode" Value="VerticalFirst"/>
+    <Setter Property="FocusVisualStyle" Value="{StaticResource Style.Focus.Outer.Uniform}"/>
   </Style>
   <Style TargetType="HeaderedItemsControl" BasedOn="{StaticResource Style.Base}">
     <Setter Property="ScrollViewer.PanningMode" Value="VerticalFirst"/>
@@ -1041,6 +1042,7 @@
     <Setter Property="Background" Value="Transparent"/>
     <Setter Property="PanningMode" Value="VerticalFirst"/>
     <Setter Property="Template" Value="{StaticResource Template.ScrollViewer}"/>
+    <Setter Property="FocusVisualStyle" Value="{StaticResource Style.Focus.Outer.Uniform}"/>
   </Style>
 
   <!-- GroupBox -->
@@ -2009,7 +2011,7 @@
   <Geometry x:Key="Geometry.ComboBox.Arrow">M0,0L6,6 12,0</Geometry>
   <ControlTemplate x:Key="Template.ComboBox" TargetType="ComboBox">
     <Grid>
-      <ToggleButton x:Name="DropDownButton" Style="{StaticResource Style.ComboBox.Toggle}" Foreground="{TemplateBinding Foreground}" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" IsTabStop="False">
+      <ToggleButton x:Name="DropDownButton" Style="{StaticResource Style.ComboBox.Toggle}" ClickMode="Press" Foreground="{TemplateBinding Foreground}" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" IsTabStop="False">
         <Grid>
           <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -2954,6 +2956,22 @@
     <Setter Property="Background" Value="Transparent"/>
     <Setter Property="Padding" Value="4"/>
     <Setter Property="Template" Value="{StaticResource Template.StatusBarItem}"/>
+  </Style>
+
+  <!-- GridSplitter -->
+  <ControlTemplate x:Key="Template.GridSplitter.Preview">
+    <Rectangle Fill="#80000000"/>
+  </ControlTemplate>
+  <Style x:Key="Style.GridSplitter.Preview">
+    <Setter Property="Control.Template" Value="{StaticResource Template.GridSplitter.Preview}"/>
+  </Style>
+  <ControlTemplate x:Key="Template.GridSplitter" TargetType="GridSplitter">
+    <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}"/>
+  </ControlTemplate>
+  <Style TargetType="GridSplitter">
+    <Setter Property="Background" Value="{DynamicResource Brush.Window.Background}"/>
+    <Setter Property="PreviewStyle" Value="{StaticResource Style.GridSplitter.Preview}"/>
+    <Setter Property="Template" Value="{StaticResource Template.GridSplitter}"/>
   </Style>
 
 </ResourceDictionary>

@@ -15,36 +15,46 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-public enum Cursor {
-  None = 0,
-  No = 1,
-  Arrow = 2,
-  AppStarting = 3,
-  Cross = 4,
-  Help = 5,
-  IBeam = 6,
-  SizeAll = 7,
-  SizeNESW = 8,
-  SizeNS = 9,
-  SizeNWSE = 10,
-  SizeWE = 11,
-  UpArrow = 12,
-  Wait = 13,
-  Hand = 14,
-  Pen = 15,
-  ScrollNS = 16,
-  ScrollWE = 17,
-  ScrollAll = 18,
-  ScrollN = 19,
-  ScrollS = 20,
-  ScrollW = 21,
-  ScrollE = 22,
-  ScrollNW = 23,
-  ScrollNE = 24,
-  ScrollSW = 25,
-  ScrollSE = 26,
-  ArrowCD = 27,
-  Count
+public class Cursor : BaseComponent {
+  internal new static Cursor CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
+    return new Cursor(cPtr, cMemoryOwn);
+  }
+
+  internal Cursor(IntPtr cPtr, bool cMemoryOwn) : base(cPtr, cMemoryOwn) {
+  }
+
+  internal static HandleRef getCPtr(Cursor obj) {
+    return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
+  }
+
+  protected Cursor() {
+  }
+
+  public Cursor(string filename) : this(NoesisGUI_PINVOKE.new_Cursor(filename != null ? filename : string.Empty), true) {
+  }
+
+  public override string ToString() {
+    IntPtr strPtr = NoesisGUI_PINVOKE.Cursor_ToString(swigCPtr);
+    string str = Noesis.Extend.StringFromNativeUtf8(strPtr);
+    NoesisGUI_PINVOKE.FreeString(strPtr);
+    return str;
+  }
+
+  public CursorType Type {
+    get {
+      CursorType ret = (CursorType)NoesisGUI_PINVOKE.Cursor_Type_get(swigCPtr);
+      return ret;
+    } 
+  }
+
+  public string Filename {
+    get {
+      IntPtr strPtr = NoesisGUI_PINVOKE.Cursor_Filename_get(swigCPtr);
+      string str = Noesis.Extend.StringFromNativeUtf8(strPtr);
+      return str;
+    }
+  }
+
 }
 
 }

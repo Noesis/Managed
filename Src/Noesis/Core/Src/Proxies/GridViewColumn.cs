@@ -31,8 +31,13 @@ public class GridViewColumn : Animatable {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    registerExtend = false;
-    return NoesisGUI_PINVOKE.new_GridViewColumn();
+    if (type == typeof(GridViewColumn)) {
+      registerExtend = false;
+      return NoesisGUI_PINVOKE.new_GridViewColumn();
+    }
+    else {
+      return base.CreateExtendCPtr(type, out registerExtend);
+    }
   }
 
   public static DependencyProperty CellTemplateProperty {
@@ -193,6 +198,9 @@ public class GridViewColumn : Animatable {
     } 
   }
 
+  internal new static IntPtr Extend(string typeName) {
+    return NoesisGUI_PINVOKE.Extend_GridViewColumn(Marshal.StringToHGlobalAnsi(typeName));
+  }
 }
 
 }

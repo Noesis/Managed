@@ -187,6 +187,13 @@ namespace Noesis
                 IntPtr ptr = Noesis_DependencyGet_Rect(cPtr, dp, false, out isNull);
                 return Marshal.PtrToStructure<Noesis.Rect>(ptr);
             };
+            getFunctions[typeof(Noesis.Int32Rect)] = (cPtr, dp) =>
+            {
+                CheckProperty(cPtr, dp, "get");
+                bool isNull;
+                IntPtr ptr = Noesis_DependencyGet_Int32Rect(cPtr, dp, false, out isNull);
+                return Marshal.PtrToStructure<Noesis.Int32Rect>(ptr);
+            };
             getFunctions[typeof(Noesis.Size)] = (cPtr, dp) =>
             {
                 CheckProperty(cPtr, dp, "get");
@@ -342,6 +349,13 @@ namespace Noesis
                 IntPtr ptr = Noesis_DependencyGet_Rect(cPtr, dp, true, out isNull);
                 return isNull ? null : (Noesis.Rect?)Marshal.PtrToStructure<Noesis.Rect>(ptr);
             };
+            getFunctions[typeof(Noesis.Int32Rect?)] = (cPtr, dp) =>
+            {
+                CheckProperty(cPtr, dp, "get");
+                bool isNull;
+                IntPtr ptr = Noesis_DependencyGet_Int32Rect(cPtr, dp, true, out isNull);
+                return isNull ? null : (Noesis.Int32Rect?)Marshal.PtrToStructure<Noesis.Int32Rect>(ptr);
+            };
             getFunctions[typeof(Noesis.Size?)] = (cPtr, dp) =>
             {
                 CheckProperty(cPtr, dp, "get");
@@ -495,6 +509,12 @@ namespace Noesis
                 CheckProperty(cPtr, dp, "set");
                 Noesis.Rect value_ = (Noesis.Rect)value;
                 Noesis_DependencySet_Rect(cPtr, dp, ref value_, false, false);
+            };
+            setFunctions[typeof(Noesis.Int32Rect)] = (cPtr, dp, value) =>
+            {
+                CheckProperty(cPtr, dp, "set");
+                Noesis.Int32Rect value_ = (Noesis.Int32Rect)value;
+                Noesis_DependencySet_Int32Rect(cPtr, dp, ref value_, false, false);
             };
             setFunctions[typeof(Noesis.Size)] = (cPtr, dp, value) =>
             {
@@ -728,6 +748,20 @@ namespace Noesis
                 {
                     Noesis.Rect value_ = (Noesis.Rect)value;
                     Noesis_DependencySet_Rect(cPtr, dp, ref value_, true, false);
+                }
+            };
+            setFunctions[typeof(Noesis.Int32Rect?)] = (cPtr, dp, value) =>
+            {
+                CheckProperty(cPtr, dp, "set");
+                if (value == null)
+                {
+                    Noesis.Int32Rect value_ = default(Noesis.Int32Rect);
+                    Noesis_DependencySet_Int32Rect(cPtr, dp, ref value_, true, true);
+                }
+                else
+                {
+                    Noesis.Int32Rect value_ = (Noesis.Int32Rect)value;
+                    Noesis_DependencySet_Int32Rect(cPtr, dp, ref value_, true, false);
                 }
             };
             setFunctions[typeof(Noesis.Size?)] = (cPtr, dp, value) =>
@@ -991,6 +1025,10 @@ namespace Noesis
             bool isNullable, [MarshalAs(UnmanagedType.U1)]out bool isNull);
 
         [DllImport(Library.Name)]
+        private static extern IntPtr Noesis_DependencyGet_Int32Rect(IntPtr dependencyObject, IntPtr dependencyProperty,
+            bool isNullable, [MarshalAs(UnmanagedType.U1)] out bool isNull);
+
+        [DllImport(Library.Name)]
         private static extern IntPtr Noesis_DependencyGet_Size(IntPtr dependencyObject, IntPtr dependencyProperty,
             bool isNullable, [MarshalAs(UnmanagedType.U1)]out bool isNull);
 
@@ -1068,6 +1106,10 @@ namespace Noesis
         [DllImport(Library.Name)]
         private static extern void Noesis_DependencySet_Rect(IntPtr dependencyObject, IntPtr dependencyProperty,
             ref Noesis.Rect val, bool isNullable, bool isNull);
+
+        [DllImport(Library.Name)]
+        private static extern void Noesis_DependencySet_Int32Rect(IntPtr dependencyObject, IntPtr dependencyProperty,
+            ref Noesis.Int32Rect val, bool isNullable, bool isNull);
 
         [DllImport(Library.Name)]
         private static extern void Noesis_DependencySet_Size(IntPtr dependencyObject, IntPtr dependencyProperty,

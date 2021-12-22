@@ -53,12 +53,12 @@ public class QueryCursorEventArgs : MouseEventArgs {
 
   public Cursor Cursor {
     set {
-      NoesisGUI_PINVOKE.QueryCursorEventArgs_Cursor_set(swigCPtr, (int)value);
+      NoesisGUI_PINVOKE.QueryCursorEventArgs_Cursor_set(swigCPtr, Cursor.getCPtr(value));
     } 
     get {
-      Cursor ret = (Cursor)NoesisGUI_PINVOKE.QueryCursorEventArgs_Cursor_get(swigCPtr);
-      return ret;
-    } 
+      IntPtr cPtr = NoesisGUI_PINVOKE.QueryCursorEventArgs_Cursor_get(swigCPtr);
+      return (Cursor)Noesis.Extend.GetProxy(cPtr, false);
+    }
   }
 
   public QueryCursorEventArgs(object source, RoutedEvent arg1) : this(NoesisGUI_PINVOKE.new_QueryCursorEventArgs(Noesis.Extend.GetInstanceHandle(source), RoutedEvent.getCPtr(arg1)), true) {

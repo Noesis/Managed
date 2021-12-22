@@ -114,13 +114,19 @@ namespace NoesisApp
                 }
                 else if (!string.IsNullOrEmpty(TargetName))
                 {
-                    newTarget = TargetNameResolver;
-
-                    if (newTarget != null)
+                    if (BindingOperations.GetBinding(this, TargetNameResolverProperty) != null)
                     {
-                        // Remove binding once we have found the TargetName object because keeping it
-                        // stored in this property could create circular references and memory leaks
-                        BindingOperations.ClearBinding(this, TargetNameResolverProperty);
+                        newTarget = TargetNameResolver;
+                        if (newTarget != null)
+                        {
+                            // Remove binding once we have found the TargetName object because keeping it
+                            // stored in this property could create circular references and memory leaks
+                            BindingOperations.ClearBinding(this, TargetNameResolverProperty);
+                        }
+                    }
+                    else
+                    {
+                        newTarget = Target;
                     }
                 }
             }

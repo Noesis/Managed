@@ -367,17 +367,18 @@ namespace Noesis
         #region Cursor
         private static UpdateCursorCallback _updateCursorCallback;
 
-        private delegate void NoesisUpdateCursorCallback(IntPtr cPtrView, int cursor);
+        private delegate void NoesisUpdateCursorCallback(IntPtr cPtrView, IntPtr cursorPtr);
         private static NoesisUpdateCursorCallback _updateCursor = OnUpdateCursor;
         [MonoPInvokeCallback(typeof(NoesisUpdateCursorCallback))]
-        private static void OnUpdateCursor(IntPtr cPtrView, int cursor)
+        private static void OnUpdateCursor(IntPtr cPtrView, IntPtr cursorPtr)
         {
             try
             {
                 if (_initialized)
                 {
                     View view = (View)Extend.GetProxy(cPtrView, false);
-                    _updateCursorCallback(view, (Cursor)cursor);
+                    Cursor cursor = (Cursor)Extend.GetProxy(cursorPtr, false);
+                    _updateCursorCallback(view, cursor);
                 }
             }
             catch (Exception e)

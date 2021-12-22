@@ -56,7 +56,7 @@ namespace Noesis
             return false;
         }
 
-        internal protected virtual void OnApplyTemplate()
+        public virtual void OnApplyTemplate()
         {
         }
 
