@@ -181,7 +181,7 @@ namespace NoesisApp
                 _renderTarget.Texture.Width != width ||
                 _renderTarget.Texture.Height != height*/)
             {
-                _renderTarget = device.CreateRenderTarget("MediaPlayer", width, height, 1);
+                _renderTarget = device.CreateRenderTarget("MediaPlayer", width, height, 1, false);
             }
 
             if (_stream != null)

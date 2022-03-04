@@ -16,7 +16,7 @@ namespace Noesis
         object GetData(Type format);
         //object GetData(string format, bool autoConvert);
         //bool GetDataPresent(string format);
-        //bool GetDataPresent(Type format);
+        bool GetDataPresent(Type format);
         //bool GetDataPresent(string format, bool autoConvert);
         //string[] GetFormats();
         //string[] GetFormats(bool autoConvert);
@@ -26,9 +26,10 @@ namespace Noesis
         //void SetData(string format, object data, bool autoConvert);
     }
 
-    internal struct DataObject : IDataObject
+    public struct DataObject : IDataObject
     {
         public DataObject(object data) { _data = data; }
+        public DataObject(Type type, object data) : this(data) {  }
 
         public static RoutedEvent CopyingEvent {
           get {
@@ -66,6 +67,7 @@ namespace Noesis
 
         #region IDataObject
         public object GetData(Type format) { return _data; }
+        public bool GetDataPresent(Type format) { return format.IsAssignableFrom(_data?.GetType()); }
         public void SetData(Type format, object data) { _data = data; }
         #endregion
 

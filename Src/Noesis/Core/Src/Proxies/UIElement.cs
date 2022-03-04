@@ -751,6 +751,27 @@ public class UIElement : Visual {
   internal RenderBaseCallback OnRenderBase = null;
   #endregion
 
+  /// <summary>
+  /// Translates a point relative to this element to coordinates that are relative to the specified element
+  /// </summary>
+  public Point TranslatePoint(Point point, UIElement relativeTo) {
+    return relativeTo != null ? relativeTo.PointFromScreen(PointToScreen(point)) : default(Point);
+  }
+
+  /// <summary>
+  /// Attempts to force capture of a touch to this element
+  /// </summary>
+  public bool CaptureTouch(TouchDevice touchDevice) {
+    return CaptureTouch(touchDevice.Id);
+  }
+
+  /// <summary>
+  /// Attempts to release the specified touch device from this element
+  /// </summary>
+  public bool ReleaseTouchCapture(TouchDevice touchDevice) {
+    return ReleaseTouchCapture(touchDevice.Id);
+  }
+
   public UIElement() {
   }
 
@@ -773,12 +794,12 @@ public class UIElement : Visual {
     NoesisGUI_PINVOKE.UIElement_ReleaseMouseCapture(swigCPtr);
   }
 
-  public bool CaptureTouch(ulong touchDevice) {
+  private bool CaptureTouch(ulong touchDevice) {
     bool ret = NoesisGUI_PINVOKE.UIElement_CaptureTouch(swigCPtr, touchDevice);
     return ret;
   }
 
-  public bool ReleaseTouchCapture(ulong touchDevice) {
+  private bool ReleaseTouchCapture(ulong touchDevice) {
     bool ret = NoesisGUI_PINVOKE.UIElement_ReleaseTouchCapture(swigCPtr, touchDevice);
     return ret;
   }

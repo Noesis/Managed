@@ -62,9 +62,9 @@ namespace Noesis
         /// <summary>
         /// Renders UI in the active render target and viewport dimensions
         /// </summary>
-        public void Render()
+        public void Render(bool flipY = false, bool clear = false)
         {
-            Noesis_Renderer_Render(CPtr);
+            Noesis_Renderer_Render(CPtr, flipY, clear);
         }
 
         #region Private members
@@ -100,7 +100,7 @@ namespace Noesis
         static extern bool Noesis_Renderer_RenderOffscreen(HandleRef renderer);
 
         [DllImport(Library.Name)]
-        static extern void Noesis_Renderer_Render(HandleRef renderer);
+        static extern void Noesis_Renderer_Render(HandleRef renderer, bool flipY, bool clear);
         #endregion
     }
 }

@@ -59,6 +59,25 @@ namespace NoesisApp
         }
 
         /// <summary>
+        /// Searches for a resource, such as a Style or Brush, with the specified key.
+        /// If the requested resource is not found, an Exception is thrown.
+        /// </summary>
+        public object FindResource(object key)
+        {
+            object resource = null;
+            ResourceDictionary resources = _resources;
+            if (resources != null)
+            {
+                resource = resources[key];
+            }
+            if (resource == null)
+            {
+                throw new Exception($"Resource {key} not found");
+            }
+            return resource;
+        }
+
+        /// <summary>
         /// Installs providers that expose resources for Noesis theme.
         /// </summary>
         public static void SetThemeProviders(XamlProvider xamlProvider = null, FontProvider fontProvider = null, TextureProvider textureProvider = null)

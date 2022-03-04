@@ -440,6 +440,8 @@ namespace Noesis
             Popup._Closed.Clear();
             Popup._Opened.Clear();
             Timeline._Completed.Clear();
+            VisualStateGroup._CurrentStateChanging.Clear();
+            VisualStateGroup._CurrentStateChanged.Clear();
             View._Rendering.Clear();
         }
 

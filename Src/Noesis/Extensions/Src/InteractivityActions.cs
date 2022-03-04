@@ -7,6 +7,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using Microsoft.Xaml.Behaviors;
 
 namespace NoesisGUIExtensions
@@ -28,6 +29,52 @@ namespace NoesisGUIExtensions
             if (element != null)
             {
                 element.Focus();
+            }
+        }
+    }
+
+    public enum FocusDirection
+    {
+        Left,
+        Right,
+        Up,
+        Down
+    }
+
+    public class MoveFocusAction : TriggerAction<UIElement>
+    {
+        public FocusDirection Direction
+        {
+            get { return (FocusDirection)GetValue(DirectionProperty); }
+            set { SetValue(DirectionProperty, value); }
+        }
+
+        public static readonly DependencyProperty DirectionProperty = DependencyProperty.Register(
+            "Direction", typeof(FocusDirection), typeof(MoveFocusAction), new PropertyMetadata(FocusDirection.Left));
+
+        public bool Engage
+        {
+            get { return (bool)GetValue(EngageProperty); }
+            set { SetValue(EngageProperty, value); }
+        }
+
+        public static readonly DependencyProperty EngageProperty = DependencyProperty.Register(
+            "Engage", typeof(bool), typeof(MoveFocusAction), new PropertyMetadata(true));
+
+        protected override void Invoke(object parameter)
+        {
+            UIElement element = AssociatedObject;
+            if (element != null)
+            {
+                UIElement source = (UIElement)Keyboard.FocusedElement ?? element;
+
+                int direction = (int)FocusNavigationDirection.Left + (int)Direction;
+                UIElement target = (UIElement)source.PredictFocus((FocusNavigationDirection)direction);
+
+                if (target != null)
+                {
+                    target.Focus();
+                }
             }
         }
     }

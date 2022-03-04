@@ -11,6 +11,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Collections.Generic;
 
 namespace Noesis
 {
@@ -26,6 +27,121 @@ public class VisualStateGroup : DependencyObject {
   internal static HandleRef getCPtr(VisualStateGroup obj) {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
+
+  #region Events
+  #region CurrentStateChanging
+  public delegate void CurrentStateChangingHandler(object sender, VisualStateChangedEventArgs e);
+  public event CurrentStateChangingHandler CurrentStateChanging {
+    add {
+      long ptr = swigCPtr.Handle.ToInt64();
+      if (!_CurrentStateChanging.ContainsKey(ptr)) {
+        _CurrentStateChanging.Add(ptr, null);
+
+        NoesisGUI_PINVOKE.BindEvent_VisualStateGroup_CurrentStateChanging(_raiseCurrentStateChanging, swigCPtr.Handle);
+      }
+
+      _CurrentStateChanging[ptr] += value;
+    }
+    remove {
+      long ptr = swigCPtr.Handle.ToInt64();
+      if (_CurrentStateChanging.ContainsKey(ptr)) {
+
+        _CurrentStateChanging[ptr] -= value;
+
+        if (_CurrentStateChanging[ptr] == null) {
+          NoesisGUI_PINVOKE.UnbindEvent_VisualStateGroup_CurrentStateChanging(_raiseCurrentStateChanging, swigCPtr.Handle);
+
+          _CurrentStateChanging.Remove(ptr);
+        }
+      }
+    }
+  }
+
+  internal delegate void RaiseCurrentStateChangingCallback(IntPtr cPtr, IntPtr sender, IntPtr e);
+  private static RaiseCurrentStateChangingCallback _raiseCurrentStateChanging = RaiseCurrentStateChanging;
+
+  [MonoPInvokeCallback(typeof(RaiseCurrentStateChangingCallback))]
+  private static void RaiseCurrentStateChanging(IntPtr cPtr, IntPtr sender, IntPtr e) {
+    try {
+      if (Noesis.Extend.Initialized) {
+        long ptr = cPtr.ToInt64();
+        if (sender == IntPtr.Zero && e == IntPtr.Zero) {
+          _CurrentStateChanging.Remove(ptr);
+          return;
+        }
+        CurrentStateChangingHandler handler = null;
+        if (!_CurrentStateChanging.TryGetValue(ptr, out handler)) {
+          throw new InvalidOperationException("Delegate not registered for CurrentStateChanging event");
+        }
+        handler?.Invoke(Noesis.Extend.GetProxy(sender, false), new VisualStateChangedEventArgs(e, false));
+      }
+    }
+    catch (Exception exception) {
+      Noesis.Error.UnhandledException(exception);
+    }
+  }
+
+  internal static Dictionary<long, CurrentStateChangingHandler> _CurrentStateChanging =
+      new Dictionary<long, CurrentStateChangingHandler>();
+  #endregion
+
+  #region CurrentStateChanged
+  public delegate void CurrentStateChangedHandler(object sender, VisualStateChangedEventArgs e);
+  public event CurrentStateChangedHandler CurrentStateChanged {
+    add {
+      long ptr = swigCPtr.Handle.ToInt64();
+      if (!_CurrentStateChanged.ContainsKey(ptr)) {
+        _CurrentStateChanged.Add(ptr, null);
+
+        NoesisGUI_PINVOKE.BindEvent_VisualStateGroup_CurrentStateChanged(_raiseCurrentStateChanged, swigCPtr.Handle);
+      }
+
+      _CurrentStateChanged[ptr] += value;
+    }
+    remove {
+      long ptr = swigCPtr.Handle.ToInt64();
+      if (_CurrentStateChanged.ContainsKey(ptr)) {
+
+        _CurrentStateChanged[ptr] -= value;
+
+        if (_CurrentStateChanged[ptr] == null) {
+          NoesisGUI_PINVOKE.UnbindEvent_VisualStateGroup_CurrentStateChanged(_raiseCurrentStateChanged, swigCPtr.Handle);
+
+          _CurrentStateChanged.Remove(ptr);
+        }
+      }
+    }
+  }
+
+  internal delegate void RaiseCurrentStateChangedCallback(IntPtr cPtr, IntPtr sender, IntPtr e);
+  private static RaiseCurrentStateChangedCallback _raiseCurrentStateChanged = RaiseCurrentStateChanged;
+
+  [MonoPInvokeCallback(typeof(RaiseCurrentStateChangedCallback))]
+  private static void RaiseCurrentStateChanged(IntPtr cPtr, IntPtr sender, IntPtr e) {
+    try {
+      if (Noesis.Extend.Initialized) {
+        long ptr = cPtr.ToInt64();
+        if (sender == IntPtr.Zero && e == IntPtr.Zero) {
+          _CurrentStateChanged.Remove(ptr);
+          return;
+        }
+        CurrentStateChangedHandler handler = null;
+        if (!_CurrentStateChanged.TryGetValue(ptr, out handler)) {
+          throw new InvalidOperationException("Delegate not registered for CurrentStateChanged event");
+        }
+        handler?.Invoke(Noesis.Extend.GetProxy(sender, false), new VisualStateChangedEventArgs(e, false));
+      }
+    }
+    catch (Exception exception) {
+      Noesis.Error.UnhandledException(exception);
+    }
+  }
+
+  internal static Dictionary<long, CurrentStateChangedHandler> _CurrentStateChanged =
+      new Dictionary<long, CurrentStateChangedHandler>();
+  #endregion
+
+  #endregion
 
   public VisualStateGroup() {
   }

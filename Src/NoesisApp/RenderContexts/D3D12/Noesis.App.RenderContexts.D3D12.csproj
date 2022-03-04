@@ -1,0 +1,42 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>3.0.0</Version>
+    <Authors>Noesis Technologies</Authors>
+    <Description>NoesisGUI Direct3D 12 Render Context</Description>
+    <Copyright>Copyright (c) 2013 Noesis Technologies S.L.</Copyright>
+    <PackageProjectUrl>https://www.noesisengine.com</PackageProjectUrl>
+    <PackageIconUrl>https://www.noesisengine.com/images/logos/Icon-256.png</PackageIconUrl>
+    <PackageIcon>Icon-256.png</PackageIcon>
+    <RepositoryUrl>https://github.com/Noesis/Managed/tree/master/Src/NoesisApp/RenderContexts/D3D12</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>NoesisGUI XAML GUI C# DirectX</PackageTags>
+    <PackageReleaseNotes>https://www.noesisengine.com/docs/Gui.Core.Changelog.html</PackageReleaseNotes>
+    <RootNamespace>NoesisApp</RootNamespace>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageOutputPath>$(SolutionDir)NuGet\</PackageOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Noesis.App.csproj">
+      <PrivateAssets>contentfiles;analyzers</PrivateAssets>
+    </ProjectReference>
+    <PackageReference Include="SharpDX.Direct3D12" Version="4.2.0" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="$(SolutionDir)LICENSE.txt" PackagePath="" Pack="true" />
+    <Content Include="$(SolutionDir)THIRD_PARTY.txt" PackagePath="" Pack="true" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="$(SolutionDir)Icon-256.png" Pack="true" PackagePath="\"/>
+  </ItemGroup>
+
+</Project>

@@ -1858,6 +1858,18 @@ namespace Noesis
         {
             try
             {
+#if UNITY_5_3_OR_NEWER
+                if (typeName == "NoesisApp.Application")
+                {
+                    UnityEngine.Debug.LogError("Application not supported in Unity, please set Application Resources in NoesisGUI settings.");
+                    return;
+                }
+                if (typeName == "NoesisApp.Window")
+                {
+                    UnityEngine.Debug.LogError("Window not supported in Unity, please use Page or UserControl instead.");
+                    return;
+                }
+#endif
                 Type type = FindType(typeName);
 
                 if (type != null)

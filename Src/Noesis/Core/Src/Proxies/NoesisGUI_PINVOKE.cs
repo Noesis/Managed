@@ -394,6 +394,18 @@ internal class NoesisGUI_PINVOKE {
   public static extern void UnbindEvent_Timeline_Completed(Timeline.RaiseCompletedCallback callback, IntPtr instance);
 
   [DllImport(Library.Name)]
+  public static extern void BindEvent_VisualStateGroup_CurrentStateChanging(VisualStateGroup.RaiseCurrentStateChangingCallback callback, IntPtr instance);
+
+  [DllImport(Library.Name)]
+  public static extern void UnbindEvent_VisualStateGroup_CurrentStateChanging(VisualStateGroup.RaiseCurrentStateChangingCallback callback, IntPtr instance);
+
+  [DllImport(Library.Name)]
+  public static extern void BindEvent_VisualStateGroup_CurrentStateChanged(VisualStateGroup.RaiseCurrentStateChangedCallback callback, IntPtr instance);
+
+  [DllImport(Library.Name)]
+  public static extern void UnbindEvent_VisualStateGroup_CurrentStateChanged(VisualStateGroup.RaiseCurrentStateChangedCallback callback, IntPtr instance);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr BaseComponent_GetBaseType(IntPtr jarg1);
 
   [DllImport(Library.Name)]
@@ -3342,6 +3354,24 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr FontFamily_Source_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr new_StaticResourceExtension__SWIG_0();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr new_StaticResourceExtension__SWIG_1([MarshalAs(UnmanagedType.LPWStr)]string jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr StaticResourceExtension_ProvideValueHelper(HandleRef jarg1, HandleRef jarg2, HandleRef jarg3);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr new_DynamicResourceExtension__SWIG_0();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr new_DynamicResourceExtension__SWIG_1([MarshalAs(UnmanagedType.LPWStr)]string jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr DynamicResourceExtension_ProvideValueHelper(HandleRef jarg1, HandleRef jarg2, HandleRef jarg3);
 
   [DllImport(Library.Name)]
   public static extern IntPtr new_HitTestResult();
@@ -12478,6 +12508,21 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr new_VisualStateCollection();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr VisualStateChangedEventArgs_OldState_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr VisualStateChangedEventArgs_NewState_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr VisualStateChangedEventArgs_Control_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr VisualStateChangedEventArgs_StateGroupsRoot_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void delete_VisualStateChangedEventArgs(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern IntPtr new_VisualStateGroup();

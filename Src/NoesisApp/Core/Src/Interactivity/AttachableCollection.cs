@@ -19,11 +19,6 @@ namespace NoesisApp
             CollectionChanged += OnCollectionChanged;
         }
 
-        ~AttachableCollection()
-        {
-            CollectionChanged -= OnCollectionChanged;
-        }
-
         protected DependencyObject AssociatedObject
         {
             get { return (DependencyObject)GetProxy(_associatedObject); }

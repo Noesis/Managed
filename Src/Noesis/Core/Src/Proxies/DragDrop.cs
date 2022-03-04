@@ -18,27 +18,30 @@ namespace Noesis
 
 public static class DragDrop {
   public static void DoDragDrop(DependencyObject dragSource, object data, DragDropEffects allowedEffects,
-    DragDropCompletedCallback onDragDropCompleted) {
-    DragDropCallbackInfo info = new DragDropCallbackInfo { Callback = onDragDropCompleted };
-    int callbackId = info.GetHashCode();
-    _dragDropCallbacks[callbackId] = info;
+    DragDropCompletedCallback onDragDropCompleted = null) {
+    int callbackId = CallbackId++;
+    _callbacks[callbackId] = onDragDropCompleted;
     DoDragDropHelper(dragSource, data, allowedEffects, callbackId, _dragDropCompleted);
   }
 
   #region DragDrop callback
-  private delegate void Callback_DragDropCompleted(int callbackId, IntPtr source,
-    IntPtr data, IntPtr target, IntPtr dropPoint, int effects);
+  private delegate void Callback_DragDropCompleted(int callbackId, IntPtr sourcePtr,
+    IntPtr dataPtr, IntPtr targetPtr, IntPtr dropPointPtr, int effects);
   private static Callback_DragDropCompleted _dragDropCompleted = OnDragDropCompleted;
 
   [MonoPInvokeCallback(typeof(Callback_DragDropCompleted))]
-  private static void OnDragDropCompleted(int callbackId, IntPtr source,
-    IntPtr data, IntPtr target, IntPtr dropPoint, int effects) {
+  private static void OnDragDropCompleted(int callbackId, IntPtr sourcePtr,
+    IntPtr dataPtr, IntPtr targetPtr, IntPtr dropPointPtr, int effects) {
     try {
-      DragDropCallbackInfo info = _dragDropCallbacks[callbackId];
-      info.Callback((DependencyObject)Extend.GetProxy(source, false),
-        new DataObject(Extend.GetProxy(data, false)), (UIElement)Extend.GetProxy(target, false),
-        Marshal.PtrToStructure<Point>(dropPoint), (DragDropEffects)effects);
-      _dragDropCallbacks.Remove(callbackId);
+      DragDropCompletedCallback callback = _callbacks[callbackId];
+      if (callback != null) {
+        DependencyObject source = (DependencyObject)Extend.GetProxy(sourcePtr, false);
+        DataObject data = new DataObject(Extend.GetProxy(dataPtr, false));
+        UIElement target = (UIElement)Extend.GetProxy(targetPtr, false);
+        Point dropPoint = Marshal.PtrToStructure<Point>(dropPointPtr);
+        callback(source, data, target, dropPoint, (DragDropEffects)effects);
+      }
+      _callbacks.Remove(callbackId);
     }
     catch (Exception e) {
       Noesis.Error.UnhandledException(e);
@@ -55,12 +58,9 @@ public static class DragDrop {
   private static extern void DragDrop_DoDragDrop(HandleRef source, HandleRef data, int allowedEffects,
     int callbackId, Callback_DragDropCompleted callback);
 
-  private struct DragDropCallbackInfo {
-    public DragDropCompletedCallback Callback { get; set; }
-  }
-
-  private static Dictionary<int, DragDropCallbackInfo> _dragDropCallbacks =
-    new Dictionary<int, DragDropCallbackInfo>();
+  private static int CallbackId = 0;
+  private static Dictionary<int, DragDropCompletedCallback> _callbacks =
+    new Dictionary<int, DragDropCompletedCallback>();
   #endregion
 
   public static RoutedEvent PreviewQueryContinueDragEvent {
