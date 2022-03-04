@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>1.0.6</Version>
+    <Authors>Noesis Technologies</Authors>
+    <Description>Hosts and navigates between HTML documents</Description>
+    <Copyright>Copyright (c) 2013 Noesis Technologies S.L.</Copyright>
+    <PackageProjectUrl>https://www.noesisengine.com</PackageProjectUrl>
+    <PackageIconUrl>https://www.noesisengine.com/images/logos/Icon-256.png</PackageIconUrl>
+    <PackageIcon>Icon-256.png</PackageIcon>
+    <RepositoryUrl>https://github.com/Noesis/Managed/tree/master/Src/NoesisApp/Controls/WebBrowser</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>NoesisGUI XAML GUI C# Web Browser</PackageTags>
+    <PackageReleaseNotes>https://www.noesisengine.com/docs/Gui.Core.Changelog.html</PackageReleaseNotes>
+    <RootNamespace>NoesisApp</RootNamespace>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageOutputPath>$(SolutionDir)NuGet\</PackageOutputPath>
+    <AssemblyVersion>1.0.6.0</AssemblyVersion>
+    <FileVersion>1.0.6.0</FileVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="$(SolutionDir)Icon-256.png" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="build\**" PackagePath="build" Pack="true" />
+    <Content Include="buildTransitive\**" PackagePath="buildTransitive" Pack="true" />
+    <Content Include="cef\**" PackagePath="cef" Pack="true" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CefGlue.Common" Version="91.4472.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Noesis\Core\Noesis.GUI.csproj" />
+  </ItemGroup>
+
+</Project>

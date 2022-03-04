@@ -246,4 +246,4 @@ Src/Samples/
 BuildManagedSDK.py
 Samples.sln
 
-Src/NoesisApp/Controls/*
+Src/NoesisApp/Controls/DockManager
