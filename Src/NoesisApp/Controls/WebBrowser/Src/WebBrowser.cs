@@ -1256,7 +1256,7 @@ namespace NoesisApp
                     int lastAmpersand = reply.LastIndexOf('&');
                     int firstAmpersand = reply.LastIndexOf('&', lastAmpersand - 1);
                     content = reply.Substring(0, firstAmpersand);
-                    string type = reply.Substring(firstAmpersand + 1, lastAmpersand);
+                    string type = reply.Substring(firstAmpersand + 1, lastAmpersand - firstAmpersand - 1);
                     if (type == "password")
                     {
                         browser._virtualKeyboardRequestedArgs.InputScope = InputScope.Password;
