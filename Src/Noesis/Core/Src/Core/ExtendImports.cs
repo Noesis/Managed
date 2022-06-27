@@ -91,6 +91,8 @@ namespace Noesis
             Callback_ProviderTextureInfo callback_ProviderTextureInfo,
             Callback_ProviderTextureLoad callback_ProviderTextureLoad,
             Callback_ProviderTextureOpen callback_ProviderTextureOpen,
+            Callback_ProviderMatchFont callback_ProviderMatchFont,
+            Callback_ProviderFamilyExists callback_ProviderFamilyExists,
             Callback_ProviderScanFolder callback_ProviderScanFolder,
             Callback_ProviderOpenFont callback_ProviderOpenFont,
             Callback_ScrollInfoBringIntoView callback_ScrollInfoBringIntoView,
@@ -167,10 +169,6 @@ namespace Noesis
             Callback_CreateInstance callback_CreateInstance,
             Callback_DeleteInstance callback_DeleteInstance,
             Callback_GrabInstance callback_GrabInstance);
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////
-        [DllImport(Library.Name)]
-        static extern void Noesis_SetLoadAssemblyCallback(NoesisLoadAssemblyCallback callback);
     }
 }
 

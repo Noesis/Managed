@@ -17,8 +17,7 @@ namespace Noesis
 
         public static string GetAssembly(this Uri uri)
         {
-            bool isRootPath;
-            Uri absUri = GetAbsoluteUri(uri, out isRootPath);
+            Uri absUri = GetAbsoluteUri(uri, out _);
 
             string[] segments = absUri.Segments;
             if (segments.Length > 1 && segments[1].Contains(";component"))

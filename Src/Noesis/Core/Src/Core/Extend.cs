@@ -169,6 +169,8 @@ namespace Noesis
                 _providerTextureInfo,
                 _providerTextureLoad,
                 _providerTextureOpen,
+                _providerMatchFont,
+                _providerFamilyExists,
                 _providerScanFolder,
                 _providerOpenFont,
 
@@ -250,8 +252,6 @@ namespace Noesis
                 _createInstance,
                 _deleteInstance,
                 _grabInstance);
-
-            Noesis_SetLoadAssemblyCallback(_loadAssembly);
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -276,14 +276,12 @@ namespace Noesis
                 null, null,
                 null,
                 null, null, null, null, null,
-                null, null, null, null, null, null,
+                null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
                 null,
                 null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
                 null, null, null);
-
-            Noesis_SetLoadAssemblyCallback(null);
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -598,6 +596,7 @@ namespace Noesis
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(GeometryCombineMode)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(GradientSpreadMethod)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(HorizontalAlignment)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(MouseAction)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Key)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(ModifierKeys)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(KeyboardNavigationMode)));
@@ -681,6 +680,7 @@ namespace Noesis
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<GeometryCombineMode>)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<GradientSpreadMethod>)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<HorizontalAlignment>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<MouseAction>)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Key>)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<ModifierKeys>)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<KeyboardNavigationMode>)));
@@ -848,6 +848,8 @@ namespace Noesis
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(MatrixTransform3D), MatrixTransform3D.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Menu), Menu.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(MenuItem), MenuItem.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(MouseBinding), MouseBinding.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(MouseGesture), MouseGesture.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(MultiBinding), MultiBinding.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(MultiBindingExpression), MultiBindingExpression.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(MultiDataTrigger), MultiDataTrigger.CreateProxy));
@@ -914,6 +916,7 @@ namespace Noesis
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(TextBox), TextBox.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(TextElement), TextElement.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(TextureSource), TextureSource.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DynamicTextureSource), DynamicTextureSource.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Thumb), Thumb.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(TickBar), TickBar.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(TileBrush), TileBrush.CreateProxy));
@@ -933,6 +936,7 @@ namespace Noesis
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(TreeView), TreeView.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(TreeViewItem), TreeViewItem.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(TriggerAction), TriggerAction.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(TriggerActionCollection), TriggerActionCollection.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Trigger), Trigger.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(TriggerCollection), TriggerCollection.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(UIElement), UIElement.CreateProxy));
@@ -963,6 +967,7 @@ namespace Noesis
 
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Int16Animation), Int16Animation.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Int32Animation), Int32Animation.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Int64Animation), Int64Animation.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DoubleAnimation), DoubleAnimation.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ColorAnimation), ColorAnimation.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(PointAnimation), PointAnimation.CreateProxy));
@@ -973,6 +978,7 @@ namespace Noesis
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(BooleanAnimationUsingKeyFrames), BooleanAnimationUsingKeyFrames.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Int16AnimationUsingKeyFrames), Int16AnimationUsingKeyFrames.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Int32AnimationUsingKeyFrames), Int32AnimationUsingKeyFrames.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Int64AnimationUsingKeyFrames), Int64AnimationUsingKeyFrames.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DoubleAnimationUsingKeyFrames), DoubleAnimationUsingKeyFrames.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ColorAnimationUsingKeyFrames), ColorAnimationUsingKeyFrames.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(PointAnimationUsingKeyFrames), PointAnimationUsingKeyFrames.CreateProxy));
@@ -986,6 +992,7 @@ namespace Noesis
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(BooleanKeyFrameCollection), BooleanKeyFrameCollection.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Int16KeyFrameCollection), Int16KeyFrameCollection.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Int32KeyFrameCollection), Int32KeyFrameCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Int64KeyFrameCollection), Int64KeyFrameCollection.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DoubleKeyFrameCollection), DoubleKeyFrameCollection.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ColorKeyFrameCollection), ColorKeyFrameCollection.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(PointKeyFrameCollection), PointKeyFrameCollection.CreateProxy));
@@ -997,9 +1004,10 @@ namespace Noesis
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(MatrixKeyFrameCollection), MatrixKeyFrameCollection.CreateProxy));
 
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(BooleanKeyFrame), BooleanKeyFrame.CreateProxy));
-            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DoubleKeyFrame), DoubleKeyFrame.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Int16KeyFrame), Int16KeyFrame.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Int32KeyFrame), Int32KeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Int64KeyFrame), Int64KeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DoubleKeyFrame), DoubleKeyFrame.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ColorKeyFrame), ColorKeyFrame.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(PointKeyFrame), PointKeyFrame.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(RectKeyFrame), RectKeyFrame.CreateProxy));
@@ -1011,6 +1019,7 @@ namespace Noesis
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DiscreteBooleanKeyFrame), DiscreteBooleanKeyFrame.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DiscreteInt16KeyFrame), DiscreteInt16KeyFrame.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DiscreteInt32KeyFrame), DiscreteInt32KeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DiscreteInt64KeyFrame), DiscreteInt64KeyFrame.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DiscreteDoubleKeyFrame), DiscreteDoubleKeyFrame.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DiscreteColorKeyFrame), DiscreteColorKeyFrame.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DiscretePointKeyFrame), DiscretePointKeyFrame.CreateProxy));
@@ -1023,6 +1032,7 @@ namespace Noesis
 
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(LinearInt16KeyFrame), LinearInt16KeyFrame.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(LinearInt32KeyFrame), LinearInt32KeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(LinearInt64KeyFrame), LinearInt64KeyFrame.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(LinearDoubleKeyFrame), LinearDoubleKeyFrame.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(LinearColorKeyFrame), LinearColorKeyFrame.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(LinearPointKeyFrame), LinearPointKeyFrame.CreateProxy));
@@ -1032,6 +1042,7 @@ namespace Noesis
 
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(SplineInt16KeyFrame), SplineInt16KeyFrame.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(SplineInt32KeyFrame), SplineInt32KeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(SplineInt64KeyFrame), SplineInt64KeyFrame.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(SplineDoubleKeyFrame), SplineDoubleKeyFrame.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(SplineColorKeyFrame), SplineColorKeyFrame.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(SplinePointKeyFrame), SplinePointKeyFrame.CreateProxy));
@@ -1043,6 +1054,7 @@ namespace Noesis
 
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(EasingInt16KeyFrame), EasingInt16KeyFrame.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(EasingInt32KeyFrame), EasingInt32KeyFrame.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(EasingInt64KeyFrame), EasingInt64KeyFrame.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(EasingDoubleKeyFrame), EasingDoubleKeyFrame.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(EasingColorKeyFrame), EasingColorKeyFrame.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(EasingPointKeyFrame), EasingPointKeyFrame.CreateProxy));
@@ -1919,27 +1931,6 @@ namespace Noesis
         private static void AddLoadedAssembly(object sender, AssemblyLoadEventArgs e)
         {
             _assemblies.Add(e.LoadedAssembly);
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////
-        private delegate void NoesisLoadAssemblyCallback(IntPtr assemblyPtr);
-        private static NoesisLoadAssemblyCallback _loadAssembly = OnLoadAssembly;
-
-        [MonoPInvokeCallback(typeof(NoesisLoadAssemblyCallback))]
-        private static void OnLoadAssembly(IntPtr assemblyPtr)
-        {
-            try
-            {
-                if (Initialized)
-                {
-                    string assembly = StringFromNativeUtf8(assemblyPtr);
-                    Assembly.Load(assembly);
-                }
-            }
-            catch (Exception e)
-            {
-                Error.UnhandledException(e);
-            }
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3099,6 +3090,74 @@ namespace Noesis
             }
 
             return IntPtr.Zero;
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate IntPtr Callback_ProviderMatchFont(IntPtr cPtr, IntPtr baseUri, IntPtr familyName,
+            ref int weight, ref int stretch, ref int style, ref uint index);
+        private static Callback_ProviderMatchFont _providerMatchFont = ProviderMatchFont;
+
+        [MonoPInvokeCallback(typeof(Callback_ProviderMatchFont))]
+        private static IntPtr ProviderMatchFont(IntPtr cPtr, IntPtr baseUri, IntPtr familyName,
+            ref int weight, ref int stretch, ref int style, ref uint index)
+        {
+            try
+            {
+                FontProvider provider = (FontProvider)GetExtendInstance(cPtr);
+                if (provider != null)
+                {
+                    Uri baseUri_ = new Uri(StringFromNativeUtf8(baseUri), UriKind.RelativeOrAbsolute);
+                    string familyName_ = StringFromNativeUtf8(familyName);
+
+                    FontWeight weight_ = (FontWeight)weight;
+                    FontStretch stretch_ = (FontStretch)stretch;
+                    FontStyle style_ = (FontStyle)style;
+                    FontProvider.FontSource font = provider.MatchFont(baseUri_, familyName_,
+                        ref weight_, ref stretch_, ref style_);
+
+                    weight = (int)weight_;
+                    stretch = (int)stretch_;
+                    style = (int)style_;
+                    index = font.faceIndex;
+
+                    HandleRef handle = GetInstanceHandle(font.file);
+                    BaseComponent.AddReference(handle.Handle); // released by C++
+                    return handle.Handle;
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+
+            return IntPtr.Zero;
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate bool Callback_ProviderFamilyExists(IntPtr cPtr, IntPtr baseUri, IntPtr familyName);
+        private static Callback_ProviderFamilyExists _providerFamilyExists = ProviderFamilyExists;
+
+        [MonoPInvokeCallback(typeof(Callback_ProviderFamilyExists))]
+        [return: MarshalAs(UnmanagedType.U1)]
+        private static bool ProviderFamilyExists(IntPtr cPtr, IntPtr baseUri, IntPtr familyName)
+        {
+            try
+            {
+                FontProvider provider = (FontProvider)GetExtendInstance(cPtr);
+                if (provider != null)
+                {
+                    Uri baseUri_ = new Uri(StringFromNativeUtf8(baseUri), UriKind.RelativeOrAbsolute);
+                    string familyName_ = StringFromNativeUtf8(familyName);
+
+                    return provider.FamilyExists(baseUri_, familyName_);
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+
+            return false;
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -5366,18 +5425,21 @@ namespace Noesis
 
                         #if UNITY_5_3_OR_NEWER
                         // Automatic conversion from Unity's Texture to a TextureSource proxy
-                        if (instance is UnityEngine.Texture)
+                        if (instance is UnityEngine.Texture texture)
                         {
-                            Noesis.TextureSource.SetTexture(cPtr, (UnityEngine.Texture)instance);
+                            Noesis.TextureSource.SetTexture(cPtr, texture);
                         }
                         // Automatic conversion from Unity's Sprite to a CroppedBitmap proxy
-                        else if (instance is UnityEngine.Sprite sprite)
+                        else if (instance is UnityEngine.Sprite sprite && sprite != null)
                         {
+                            UnityEngine.Rect spriteRect = sprite.packed && sprite.packingMode == UnityEngine.SpritePackingMode.Rectangle ?
+                                sprite.textureRect : sprite.rect;
+
                             Int32Rect rect = new Int32Rect(
-                                (int)sprite.rect.x,
-                                (int)(sprite.texture.height - sprite.rect.height - sprite.rect.y),
-                                (int)sprite.rect.width,
-                                (int)sprite.rect.height);
+                                (int)spriteRect.x,
+                                (int)(sprite.texture.height - spriteRect.height - spriteRect.y),
+                                (int)spriteRect.width,
+                                (int)spriteRect.height);
 
                             HandleRef bmp = new HandleRef(instance, cPtr);
                             NoesisGUI_PINVOKE.CroppedBitmap_Source_set(bmp, GetInstanceHandle(sprite.texture));

@@ -40,7 +40,7 @@ namespace Noesis
         /// </summary>
         public bool CheckAccess()
         {
-            return ThreadId == CurrentThreadId;
+            return ThreadId == CurrentThreadId && ManagedThreadId == CurrentManagedThreadId;
         }
 
         /// <summary>
@@ -228,10 +228,21 @@ namespace Noesis
         private static extern int Noesis_GetCurrentThreadId();
         #endregion
 
+        #region Managed Thread Id
+
+        private int ManagedThreadId { get => _managedThreadId; }
+
+        private static int CurrentManagedThreadId
+        {
+            get { return Thread.CurrentThread.ManagedThreadId; }
+        }
+        #endregion
+
         #region Private members
         private Dispatcher(int threadId)
         {
             _threadId = threadId;
+            _managedThreadId = CurrentManagedThreadId;
             _operations = new Queue<DispatcherOperation>();
             _context = new DispatcherSynchronizationContext(this);
         }
@@ -240,6 +251,7 @@ namespace Noesis
             new Dictionary<int, Dispatcher>();
 
         private int _threadId;
+        private int _managedThreadId;
         private Queue<DispatcherOperation> _operations;
         private DispatcherSynchronizationContext _context;
 

@@ -66,6 +66,7 @@ namespace Noesis
             boxFunctions[typeof(Noesis.GeometryCombineMode)] = (val) => NoesisGUI_.Box_GeometryCombineMode((Noesis.GeometryCombineMode)val);
             boxFunctions[typeof(Noesis.GradientSpreadMethod)] = (val) => NoesisGUI_.Box_GradientSpreadMethod((Noesis.GradientSpreadMethod)val);
             boxFunctions[typeof(Noesis.HorizontalAlignment)] = (val) => NoesisGUI_.Box_HorizontalAlignment((Noesis.HorizontalAlignment)val);
+            boxFunctions[typeof(Noesis.MouseAction)] = (val) => NoesisGUI_.Box_MouseAction((Noesis.MouseAction)val);
             boxFunctions[typeof(Noesis.Key)] = (val) => NoesisGUI_.Box_Key((Noesis.Key)val);
             boxFunctions[typeof(Noesis.ModifierKeys)] = (val) => NoesisGUI_.Box_ModifierKeys((Noesis.ModifierKeys)val);
             boxFunctions[typeof(Noesis.KeyboardNavigationMode)] = (val) => NoesisGUI_.Box_KeyboardNavigationMode((Noesis.KeyboardNavigationMode)val);
@@ -189,6 +190,7 @@ namespace Noesis
             unboxFunctions[typeof(Boxed<Noesis.GeometryCombineMode>)] = (cPtr) => NoesisGUI_.Unbox_GeometryCombineMode(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.GradientSpreadMethod>)] = (cPtr) => NoesisGUI_.Unbox_GradientSpreadMethod(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.HorizontalAlignment>)] = (cPtr) => NoesisGUI_.Unbox_HorizontalAlignment(cPtr);
+            unboxFunctions[typeof(Boxed<Noesis.MouseAction>)] = (cPtr) => NoesisGUI_.Unbox_MouseAction(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.Key>)] = (cPtr) => NoesisGUI_.Unbox_Key(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.ModifierKeys>)] = (cPtr) => NoesisGUI_.Unbox_ModifierKeys(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.KeyboardNavigationMode>)] = (cPtr) => NoesisGUI_.Unbox_KeyboardNavigationMode(cPtr);

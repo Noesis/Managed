@@ -60,6 +60,13 @@ namespace NoesisApp
                     "Noto Sans CJK JP"          // Japanese
                 };
             }
+            else
+            {
+                FontFallbacks = new string[]
+                {
+                    "Theme/Fonts/#PT Root UI"
+                };
+            }
         }
 
         public static Assembly Assembly

@@ -40,9 +40,10 @@ namespace NoesisApp
 
         public Window MainWindow { get; set; }
 
-        public XamlProvider XamlProvider { get; private set; }
-        public FontProvider FontProvider { get; private set; }
-        public TextureProvider TextureProvider { get; private set; }
+        private ApplicationProvider _resourceProvider = null;
+        public XamlProvider XamlProvider { get { return _resourceProvider?.XamlProvider; } }
+        public FontProvider FontProvider { get { return _resourceProvider?.FontProvider; } }
+        public TextureProvider TextureProvider { get { return _resourceProvider?.TextureProvider; } }
 
         private ResourceDictionary _resources = null;
         public ResourceDictionary Resources
@@ -82,8 +83,8 @@ namespace NoesisApp
         /// </summary>
         public static void SetThemeProviders(XamlProvider xamlProvider = null, FontProvider fontProvider = null, TextureProvider textureProvider = null)
         {
-            GUI.SetXamlProvider(new EmbeddedXamlProvider(null, null, xamlProvider));
-            GUI.SetFontProvider(new EmbeddedFontProvider(null, null, fontProvider));
+            GUI.SetXamlProvider(new EmbeddedXamlProvider(Theme.Assembly, Theme.Namespace, xamlProvider));
+            GUI.SetFontProvider(new EmbeddedFontProvider(Theme.Assembly, Theme.Namespace, fontProvider));
             GUI.SetTextureProvider(textureProvider);
 
             GUI.SetFontFallbacks(Theme.FontFallbacks);
@@ -102,6 +103,7 @@ namespace NoesisApp
             }
 
             Current = this;
+            Thread.BeginThreadAffinity();
             Dispatcher = Dispatcher.CurrentDispatcher;
             SynchronizationContext.SetSynchronizationContext(Dispatcher.SynchronizationContext);
 
@@ -145,7 +147,7 @@ namespace NoesisApp
 
         public static Stream GetAssemblyResource(Assembly assembly, string ns, string filename)
         {
-            if (assembly != null)
+            if (assembly != null && !string.IsNullOrEmpty(ns))
             {
                 string resource = ns + "." + filename.Replace("/", ".");
                 try
@@ -217,17 +219,25 @@ namespace NoesisApp
             });
 
             // Set resource providers
-            Type appType = typeof(Application);
-            EmbeddedXamlProvider xamlProvider = new EmbeddedXamlProvider(appType.Assembly, appType.Namespace, CreateXamlProvider());
-
-            Type type = this.GetType();
-            XamlProvider = new EmbeddedXamlProvider(type.Assembly, type.Namespace, xamlProvider);
-            FontProvider = new EmbeddedFontProvider(type.Assembly, type.Namespace, CreateFontProvider());
-            TextureProvider = new EmbeddedTextureProvider(type.Assembly, type.Namespace, CreateTextureProvider());
+            _resourceProvider = new ApplicationProvider(this, CreateXamlProvider(), CreateFontProvider(), CreateTextureProvider());
 
             GUI.SetXamlProvider(XamlProvider);
             GUI.SetFontProvider(FontProvider);
             GUI.SetTextureProvider(TextureProvider);
+
+            // Listen to load assembly callback to add new assemblies to the resource provider
+            GUI.SetLoadAssemblyCallback((name) =>
+            {
+                try
+                {
+                    Assembly assembly = Assembly.Load(name);
+                    if (assembly != null)
+                    {
+                        _resourceProvider.AddAssembly(assembly, name);
+                    }
+                }
+                catch { }
+            });
 
             // Load App.xaml
             if (string.IsNullOrEmpty(Uri))
@@ -310,9 +320,7 @@ namespace NoesisApp
                 MainWindow.Shutdown();
                 MainWindow = null;
 
-                XamlProvider = null;
-                FontProvider = null;
-                TextureProvider = null;
+                _resourceProvider = null;
 
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
@@ -323,6 +331,8 @@ namespace NoesisApp
 
                 // Shut down Noesis
                 GUI.Shutdown();
+
+                Thread.EndThreadAffinity();
             }
         }
 
@@ -343,6 +353,24 @@ namespace NoesisApp
         {
             _exitCode = exitCode;
             MainWindow.Close();
+        }
+
+        /// <summary> Logs an information message </summary>
+        public void LogInfo(string message)
+        {
+            OnLog(LogLevel.Info, "", message);
+        }
+
+        /// <summary> Logs a warning message </summary>
+        public void LogWarning(string message)
+        {
+            OnLog(LogLevel.Warning, "", message);
+        }
+
+        /// <summary> Logs an error message </summary>
+        public void LogError(string message)
+        {
+            OnLog(LogLevel.Error, "", message);
         }
 
         private void LogCallback(LogLevel level, string channel, string message)
@@ -410,8 +438,7 @@ namespace NoesisApp
         /// </summary>
         protected virtual XamlProvider CreateXamlProvider()
         {
-            Type type = this.GetType();
-            return new EmbeddedXamlProvider(type.Assembly, type.Namespace);
+            return null;
         }
 
         /// <summary>
@@ -419,8 +446,7 @@ namespace NoesisApp
         /// </summary>
         protected virtual FileTextureProvider CreateTextureProvider()
         {
-            Type type = this.GetType();
-            return new EmbeddedTextureProvider(type.Assembly, type.Namespace);
+            return null;
         }
 
         /// <summary>
@@ -428,8 +454,7 @@ namespace NoesisApp
         /// </summary>
         protected virtual FontProvider CreateFontProvider()
         {
-            Type type = this.GetType();
-            return new EmbeddedFontProvider(type.Assembly, type.Namespace);
+            return null;
         }
 
         protected virtual string[] GetFontFallbacks()

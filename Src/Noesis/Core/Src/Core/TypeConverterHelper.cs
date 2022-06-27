@@ -59,6 +59,24 @@ namespace Noesis
         }
     }
 
+    public class MouseActionConverter : TypeConverter
+    {
+        public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+        {
+            return sourceType == typeof(string);
+        }
+
+        public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+        {
+            if (value is string)
+            {
+                return MouseBinding.ParseMouseAction((string)value);
+            }
+
+            return base.ConvertFrom(context, culture, value);
+        }
+    }
+
     public class KeyConverter : TypeConverter
     {
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
@@ -107,6 +125,24 @@ namespace Noesis
             if (value is string)
             {
                 return KeyBinding.ParseKeyGesture((string)value);
+            }
+
+            return base.ConvertFrom(context, culture, value);
+        }
+    }
+
+    public class MouseGestureConverter : TypeConverter
+    {
+        public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+        {
+            return sourceType == typeof(string);
+        }
+
+        public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+        {
+            if (value is string)
+            {
+                return MouseBinding.ParseMouseGesture((string)value);
             }
 
             return base.ConvertFrom(context, culture, value);

@@ -18,7 +18,11 @@ namespace NoesisApp
         public override Stream LoadXaml(Uri uri)
         {
             string path = System.IO.Path.Combine(_basePath, uri.GetPath());
-            return new FileStream(path, FileMode.Open);
+            if (File.Exists(path))
+            {
+                return File.OpenRead(path);
+            }
+            return null;
         }
 
         private string _basePath;

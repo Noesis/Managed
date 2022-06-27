@@ -571,6 +571,12 @@ namespace Noesis
                 return CreatePropertyData(p, NativePropertyType.Rect);
             };
 
+            addPropFunctions[typeof(Noesis.Int32Rect)] = (info, p, usePropertyInfo) =>
+            {
+                AddPropertyAccessor<Noesis.Int32Rect>(info, p, usePropertyInfo);
+                return CreatePropertyData(p, NativePropertyType.Int32Rect);
+            };
+
             addPropFunctions[typeof(Noesis.Size)] = (info, p, usePropertyInfo) =>
             {
                 AddPropertyAccessor<Noesis.Size>(info, p, usePropertyInfo);
@@ -702,6 +708,12 @@ namespace Noesis
             {
                 AddPropertyAccessorNullable<Noesis.Rect?>(info, p, usePropertyInfo);
                 return CreatePropertyData(p, NativePropertyType.NullableRect);
+            };
+
+            addPropFunctions[typeof(Noesis.Int32Rect?)] = (info, p, usePropertyInfo) =>
+            {
+                AddPropertyAccessorNullable<Noesis.Int32Rect?>(info, p, usePropertyInfo);
+                return CreatePropertyData(p, NativePropertyType.NullableInt32Rect);
             };
 
             addPropFunctions[typeof(Noesis.Size?)] = (info, p, usePropertyInfo) =>

@@ -30,9 +30,31 @@ public class BitmapSource : ImageSource {
   protected BitmapSource() {
   }
 
+  /// <summary>
+  /// Create a BitmapSource from an array of pixels.
+  /// </summary>
   public static BitmapSource Create(int pixelWidth, int pixelHeight, double dpiX, double dpiY, byte[] pixels, int stride, Format format) {
     IntPtr cPtr = CreateHelper(pixelWidth, pixelHeight, (float)dpiX, (float)dpiY, pixels, stride, (uint)format);
     return (BitmapSource)Noesis.Extend.GetProxy(cPtr, true);
+  }
+
+  /// <summary>
+  /// Copy the pixel data from the bitmap into the array of pixels that
+  /// has the specified stride and offset
+  public void CopyPixels(byte[] pixels, int stride, int offset) {
+    if (stride <= 0)
+      throw new ArgumentOutOfRangeException("stride");
+    if (offset < 0)
+      throw new ArgumentOutOfRangeException("offset");
+    if (pixels == null)
+      throw new ArgumentNullException("pixels");
+
+    CopyPixelsHelper(pixels, (uint)pixels.Length, stride, offset);
+  }
+
+  public BitmapSource.Format GetFormat() {
+    BitmapSource.Format ret = (BitmapSource.Format)NoesisGUI_PINVOKE.BitmapSource_GetFormat(swigCPtr);
+    return ret;
   }
 
   public float DpiX {
@@ -66,6 +88,10 @@ public class BitmapSource : ImageSource {
   private static IntPtr CreateHelper(int pixelWidth, int pixelHeight, float dpiX, float dpiY, byte[] buffer, int stride, uint format) {
     IntPtr ret = NoesisGUI_PINVOKE.BitmapSource_CreateHelper(pixelWidth, pixelHeight, dpiX, dpiY, buffer, stride, format);
     return ret;
+  }
+
+  private void CopyPixelsHelper(byte[] buffer, uint bufferSize, int stride, int offset) {
+    NoesisGUI_PINVOKE.BitmapSource_CopyPixelsHelper(swigCPtr, buffer, bufferSize, stride, offset);
   }
 
   public enum Format {

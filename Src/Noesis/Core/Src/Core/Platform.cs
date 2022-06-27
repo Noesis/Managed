@@ -11,6 +11,11 @@ namespace Noesis
         OSX,
         iPhone,
         Android,
+        XboxOne,
+        XboxSeries,
+        PlayStation4,
+        PlayStation5,
+        Switch
     }
 
     public static class Platform

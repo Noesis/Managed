@@ -31,6 +31,35 @@ public class FontProvider : BaseComponent {
   protected FontProvider() {
   }
 
+  public struct FontSource {
+    public Stream file;
+    public uint faceIndex;
+  }
+
+  /// <summary>
+  /// Finds the font in the given URI that best matches the specified properties
+  /// Returns null stream when there are no matches
+  /// </summary>
+  public virtual FontSource MatchFont(Uri baseUri, string familyName,
+    ref FontWeight weight, ref FontStretch stretch, ref FontStyle style) {
+    string baseUri_ = baseUri != null ? baseUri.OriginalString : string.Empty;
+    int weight_ = (int)weight, stretch_ = (int)stretch, style_ = (int)style;
+    uint index = 0;
+    IntPtr filePtr = MatchFontHelper(baseUri_, familyName, ref weight_, ref stretch_, ref style_, ref index);
+    weight = (FontWeight)weight_;
+    stretch = (FontStretch)stretch_;
+    style = (FontStyle)style_;
+    return new FontSource { file = (Stream)Noesis.Extend.GetProxy(filePtr, true), faceIndex = index };
+  }
+
+  /// <summary>
+  /// Returns true if the requested font family exists in given URI
+  /// </summary>
+  public virtual bool FamilyExists(Uri baseUri, string familyName) {
+    string baseUri_ = baseUri != null ? baseUri.OriginalString : string.Empty;
+    return FamilyExistsHelper(baseUri_, familyName);
+  }
+
   /// <summary>
   /// Scans a folder looking for all font files available. For each file, RegisterFont() should be
   /// called to cache all font information in the base provider implementation.
@@ -76,6 +105,16 @@ public class FontProvider : BaseComponent {
 
   private void RegisterFontHelper(string folder, string id) {
     NoesisGUI_PINVOKE.FontProvider_RegisterFontHelper(swigCPtr, folder != null ? folder : string.Empty, id != null ? id : string.Empty);
+  }
+
+  private IntPtr MatchFontHelper(string baseUri, string familyName, ref int weight, ref int stretch, ref int style, ref uint index) {
+    IntPtr ret = NoesisGUI_PINVOKE.FontProvider_MatchFontHelper(swigCPtr, baseUri != null ? baseUri : string.Empty, familyName != null ? familyName : string.Empty, ref weight, ref stretch, ref style, ref index);
+    return ret;
+  }
+
+  private bool FamilyExistsHelper(string baseUri, string familyName) {
+    bool ret = NoesisGUI_PINVOKE.FontProvider_FamilyExistsHelper(swigCPtr, baseUri != null ? baseUri : string.Empty, familyName != null ? familyName : string.Empty);
+    return ret;
   }
 
   internal new static IntPtr Extend(string typeName) {

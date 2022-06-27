@@ -30,22 +30,14 @@ namespace NoesisApp
         {
             Stream stream = null;
 
-            // First try with user provider
             if (_provider != null)
             {
                 stream = _provider.LoadXaml(uri);
             }
 
-            // Next try with application assembly resources
             if (stream == null)
             {
                 stream = Application.GetAssemblyResource(_assembly, _namespace, uri.GetPath());
-            }
-
-            // Last try with Theme assembly resources
-            if (stream == null)
-            {
-                stream = Application.GetAssemblyResource(Theme.Assembly, "NoesisApp", uri.GetPath());
             }
 
             return stream;

@@ -145,6 +145,28 @@ public class Storyboard : ParallelTimeline {
     }
   }
 
+  public void Seek(TimeSpan offset) {
+    TimeSpanStruct tempoffset = offset;
+    {
+      NoesisGUI_PINVOKE.Storyboard_Seek__SWIG_0(swigCPtr, ref tempoffset);
+    }
+  }
+
+  public void Seek(TimeSpan offset, TimeSeekOrigin origin) {
+    TimeSpanStruct tempoffset = offset;
+    {
+      NoesisGUI_PINVOKE.Storyboard_Seek__SWIG_1(swigCPtr, ref tempoffset, (int)origin);
+    }
+  }
+
+  public void Seek(FrameworkElement target, TimeSpan offset, TimeSeekOrigin origin) {
+    if (target == null) throw new ArgumentNullException("target");
+    TimeSpanStruct tempoffset = offset;
+    {
+      NoesisGUI_PINVOKE.Storyboard_Seek__SWIG_2(swigCPtr, FrameworkElement.getCPtr(target), ref tempoffset, (int)origin);
+    }
+  }
+
   public void Pause() {
     NoesisGUI_PINVOKE.Storyboard_Pause__SWIG_0(swigCPtr);
   }

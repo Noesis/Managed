@@ -1236,6 +1236,18 @@ namespace Noesis
         {
             internal object Texture;
         }
+
+        protected static Texture WrapTexture(object texture, IntPtr texPtr)
+        {
+            Texture tex = new NativeTexture(texPtr, true);
+
+            if (texture != null)
+            {
+                tex.SetPrivateData(new ManagedTexture { Texture = texture });
+            }
+
+            return tex;
+        }
         #endregion
 
         #region Imports
@@ -1311,15 +1323,8 @@ namespace Noesis
         public static Texture WrapTexture(object texture, IntPtr nativePointer,
             int width, int height, int numMipMaps, bool isInverted, bool hasAlpha)
         {
-            IntPtr texPtr = Noesis_RenderDeviceGL_WrapTexture(nativePointer, width, height, numMipMaps, isInverted, hasAlpha);
-            Texture tex = new NativeTexture(texPtr, true);
-
-            if (texture != null)
-            {
-                tex.SetPrivateData(new ManagedTexture { Texture = texture });
-            }
-
-            return tex;
+            return WrapTexture(texture, Noesis_RenderDeviceGL_WrapTexture(nativePointer,
+                width, height, numMipMaps, isInverted, hasAlpha));
         }
 
         #region Imports
@@ -1353,15 +1358,8 @@ namespace Noesis
         public static Texture WrapTexture(object texture, IntPtr nativePointer,
             int width, int height, int numMipMaps, bool isInverted, bool hasAlpha)
         {
-            IntPtr texPtr = Noesis_RenderDeviceD3D11_WrapTexture(nativePointer, width, height, numMipMaps, isInverted, hasAlpha);
-            Texture tex = new NativeTexture(texPtr, true);
-
-            if (texture != null)
-            {
-                tex.SetPrivateData(new ManagedTexture { Texture = texture });
-            }
-
-            return tex;
+            return WrapTexture(texture, Noesis_RenderDeviceD3D11_WrapTexture(nativePointer,
+                width, height, numMipMaps, isInverted, hasAlpha));
         }
 
         /// <summary>
@@ -1407,15 +1405,8 @@ namespace Noesis
         public static Texture WrapTexture(object texture, IntPtr nativePointer,
             int width, int height, int numMipMaps, bool isInverted, bool hasAlpha)
         {
-            IntPtr texPtr = Noesis_RenderDeviceD3D12_WrapTexture(nativePointer, width, height, numMipMaps, isInverted, hasAlpha);
-            Texture tex = new NativeTexture(texPtr, true);
-
-            if (texture != null)
-            {
-                tex.SetPrivateData(new ManagedTexture { Texture = texture });
-            }
-
-            return tex;
+            return WrapTexture(texture, Noesis_RenderDeviceD3D12_WrapTexture(nativePointer,
+                width, height, numMipMaps, isInverted, hasAlpha));
         }
 
         /// <summary>
@@ -1469,15 +1460,8 @@ namespace Noesis
         public static Texture WrapTexture(object texture, IntPtr textureId,
             int width, int height, int numMipMaps, bool isInverted, bool hasAlpha)
         {
-            IntPtr texPtr = Noesis_RenderDeviceMTL_WrapTexture(textureId, width, height, numMipMaps, isInverted, hasAlpha);
-            Texture tex = new NativeTexture(texPtr, true);
-
-            if (texture != null)
-            {
-                tex.SetPrivateData(new ManagedTexture { Texture = texture });
-            }
-
-            return tex;
+            return WrapTexture(texture, Noesis_RenderDeviceMTL_WrapTexture(textureId,
+                width, height, numMipMaps, isInverted, hasAlpha));
         }
 
         public void SetOffscreenCommandBuffer(IntPtr commandBuffer)
@@ -1505,6 +1489,123 @@ namespace Noesis
         [DllImport(Library.Name)]
         static extern void Noesis_RenderDeviceMTL_SetOnScreenEncoder(HandleRef renderDevice,
             IntPtr encoder, uint colorFormat, uint stencilFormat, uint sampleCount);
+        #endregion
+    }
+
+    /// <summary>
+    /// Creates a GNM RenderDevice (PlayStation 4).
+    /// </summary>
+    public class RenderDeviceGNM : NativeRenderDevice
+    {
+        public struct GPUAllocator
+        {
+            public Func<uint, uint, IntPtr> AllocateGarlic;
+            public Action<IntPtr> ReleaseGarlic;
+            public Func<uint, uint, IntPtr> AllocateOnion;
+            public Action<IntPtr> ReleaseOnion;
+        }
+
+        public RenderDeviceGNM(bool sRGB, GPUAllocator allocator) :
+            base(Noesis_RenderDeviceGNM_Create(sRGB, _garlicAlloc, _garlicFree, _onionAlloc, _onionFree), true)
+        {
+            _allocator = allocator;
+        }
+
+        /// <summary>
+        /// Creates a Texture wrapper for the specified GNM texture native handle
+        /// </summary>
+        public static Texture WrapTexture(object texture, IntPtr nativePointer,
+            int width, int height, int numMipMaps, bool isInverted, bool hasAlpha)
+        {
+            return WrapTexture(texture, Noesis_RenderDeviceGNM_WrapTexture(nativePointer,
+                width, height, numMipMaps, isInverted, hasAlpha));
+        }
+
+        public void SetContext(IntPtr context)
+        {
+            Noesis_RenderDeviceGNM_SetContext(swigCPtr, context);
+        }
+
+        #region Allocator callbacks
+        [MonoPInvokeCallback(typeof(Callback_Alloc))]
+        private static IntPtr GarlicAlloc(IntPtr user, uint size, uint alignment)
+        {
+            try
+            {
+                return _allocator.AllocateGarlic(size, alignment);
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+
+            return IntPtr.Zero;
+        }
+
+        [MonoPInvokeCallback(typeof(Callback_Free))]
+        private static void GarlicFree(IntPtr user, IntPtr address)
+        {
+            try
+            {
+                _allocator.ReleaseGarlic(address);
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        [MonoPInvokeCallback(typeof(Callback_Alloc))]
+        private static IntPtr OnionAlloc(IntPtr user, uint size, uint alignment)
+        {
+            try
+            {
+                return _allocator.AllocateOnion(size, alignment);
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+
+            return IntPtr.Zero;
+        }
+
+        [MonoPInvokeCallback(typeof(Callback_Free))]
+        private static void OnionFree(IntPtr user, IntPtr address)
+        {
+            try
+            {
+                _allocator.ReleaseOnion(address);
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        private delegate IntPtr Callback_Alloc(IntPtr user, uint size, uint alignment);
+        private delegate void Callback_Free(IntPtr user, IntPtr address);
+
+        private static Callback_Alloc _garlicAlloc = GarlicAlloc;
+        private static Callback_Free _garlicFree = GarlicFree;
+        private static Callback_Alloc _onionAlloc = OnionAlloc;
+        private static Callback_Free _onionFree = OnionFree;
+
+        private static GPUAllocator _allocator;
+        #endregion
+
+        #region Imports
+        [DllImport(Library.Name)]
+        static extern IntPtr Noesis_RenderDeviceGNM_Create(bool sRGB,
+            Callback_Alloc garlicAlloc, Callback_Free garlicFree,
+            Callback_Alloc onionAlloc, Callback_Free onionFree);
+
+        [DllImport(Library.Name)]
+        static extern IntPtr Noesis_RenderDeviceGNM_WrapTexture(IntPtr nativePointer,
+            int width, int height, int numMipMaps, bool isInverted, bool hasAlpha);
+
+        [DllImport(Library.Name)]
+        static extern IntPtr Noesis_RenderDeviceGNM_SetContext(HandleRef device, IntPtr context);
         #endregion
     }
 }

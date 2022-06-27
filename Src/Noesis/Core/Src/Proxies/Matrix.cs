@@ -227,6 +227,32 @@ public struct Matrix {
       (_m21 * _offsetY - _offsetX * _m22) * invdet, (_offsetX * _m12 - _m11 * _offsetY) * invdet);
   }
 
+  public static bool operator ==(Matrix matrix1, Matrix matrix2) {
+    return matrix1.M11 == matrix2.M11 && matrix1.M12 == matrix2.M12 &&
+           matrix1.M21 == matrix2.M21 && matrix1.M22 == matrix2.M22 &&
+           matrix1.OffsetX == matrix2.OffsetX && matrix1.OffsetY == matrix2.OffsetY;
+  }
+
+  public static bool operator !=(Matrix matrix1, Matrix matrix2) {
+    return !(matrix1 == matrix2);
+  }
+
+  public static bool Equals(Matrix matrix1, Matrix matrix2) {
+    return matrix1 == matrix2;
+  }
+
+  public override bool Equals(object o) {
+    return o is Matrix && this == (Matrix)o;
+  }
+
+  public bool Equals(Matrix value) {
+    return Matrix.Equals(this, value);
+  }
+
+  public override int GetHashCode() {
+    return M11.GetHashCode() ^ M12.GetHashCode() ^ M21.GetHashCode() ^ M22.GetHashCode() ^ OffsetX.GetHashCode() ^ OffsetY.GetHashCode();
+  }
+
   #region Transform helpers
   private static Matrix CreateRotationRadians(float angle) {
     return CreateRotationRadians(angle, 0.0f, 0.0f);

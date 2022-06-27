@@ -775,6 +775,16 @@ public class NoesisGUI_ {
     return ret;
   }
 
+  public static MouseAction Unbox_MouseAction(IntPtr val) {
+    MouseAction ret = (MouseAction)NoesisGUI_PINVOKE.Unbox_MouseAction(val);
+    return ret;
+  }
+
+  public static IntPtr Box_MouseAction(MouseAction val) {
+    IntPtr ret = NoesisGUI_PINVOKE.Box_MouseAction((int)val);
+    return ret;
+  }
+
   public static Key Unbox_Key(IntPtr val) {
     Key ret = (Key)NoesisGUI_PINVOKE.Unbox_Key(val);
     return ret;

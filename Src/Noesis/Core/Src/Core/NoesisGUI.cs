@@ -24,6 +24,9 @@ namespace Noesis
     public delegate void FontFaceInfoCallback(int index, string familyName, FontWeight weight,
         FontStyle style, FontStretch stretch);
 
+    /// <summary> Called everytime an assembly is requested by xaml loading</summary>
+    public delegate void LoadAssemblyCallback(string assembly);
+
     public static class GUI
     {
         /// <summary>
@@ -98,6 +101,7 @@ namespace Noesis
             Noesis_SetOpenUrlCallback(null);
             Noesis_SetCursorCallback(null);
             Noesis_SetSoftwareKeyboardCallback(null);
+            Noesis_SetLoadAssemblyCallback(null);
 
             Extend.Shutdown();
 
@@ -323,6 +327,19 @@ namespace Noesis
         }
 
         /// <summary>
+        /// Callback for assembly loading. It will be called for each assembly referenced in a XAML,
+        /// for example when a xmlns attribute specifies an assembly:
+        ///   <UserControl xmlns:controls="clr-namespace:Noesis.Controls;assembly=Noesis.GUI.Controls"/>
+        /// or when a resource Uri specifies an assembly:
+        ///   <Image Source="/SharedResources;component/Images/account.png"/>
+        /// </summary>
+        public static void SetLoadAssemblyCallback(LoadAssemblyCallback callback)
+        {
+            _loadAssemblyCallback = callback;
+            Noesis_SetLoadAssemblyCallback(callback != null ? _loadAssembly : null);
+        }
+
+        /// <summary>
         /// Creates a View that manages a tree of UI elements.
         /// </summary>
         /// <param name="content">Root of the UI tree.</param>
@@ -493,6 +510,29 @@ namespace Noesis
         private static Dictionary<int, Faces> _facesCallbacks = new Dictionary<int, Faces>();
         #endregion
 
+        #region Load Assembly
+        private static LoadAssemblyCallback _loadAssemblyCallback;
+
+        private delegate void NoesisLoadAssemblyCallback(IntPtr assembly);
+        private static NoesisLoadAssemblyCallback _loadAssembly = OnLoadAssembly;
+        [MonoPInvokeCallback(typeof(NoesisLoadAssemblyCallback))]
+        private static void OnLoadAssembly(IntPtr assemblyPtr)
+        {
+            try
+            {
+                if (_initialized)
+                {
+                    string assembly = Extend.StringFromNativeUtf8(assemblyPtr);
+                    _loadAssemblyCallback(assembly);
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+        #endregion
+
         #region Imports
         [DllImport(Library.Name)]
         static extern IntPtr Noesis_GetBuildVersion();
@@ -578,6 +618,9 @@ namespace Noesis
         [DllImport(Library.Name)]
         static extern void Noesis_LoadComponent(HandleRef component,
             [MarshalAs(UnmanagedType.LPStr)] string filename);
+
+        [DllImport(Library.Name)]
+        static extern void Noesis_SetLoadAssemblyCallback(NoesisLoadAssemblyCallback callback);
         #endregion
     }
 }
