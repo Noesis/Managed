@@ -404,7 +404,7 @@ namespace Noesis
                 IntPtr ptr = Noesis_DependencyGet_Type(cPtr, dp);
                 if (ptr != IntPtr.Zero)
                 {
-                    Noesis.Extend.NativeTypeInfo info = Noesis.Extend.GetNativeTypeInfo(cPtr);
+                    Noesis.Extend.NativeTypeInfo info = Noesis.Extend.GetNativeTypeInfo(ptr);
                     return info.Type;
                 }
                 return null;
