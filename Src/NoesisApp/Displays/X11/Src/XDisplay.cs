@@ -664,7 +664,7 @@ namespace NoesisApp
             public EventMask do_not_propagate_mask;
             public bool override_redirect;
             public IntPtr colormap;
-            public Cursor cursor;
+            public IntPtr cursor;
         }
 
         [StructLayout(LayoutKind.Sequential)]
