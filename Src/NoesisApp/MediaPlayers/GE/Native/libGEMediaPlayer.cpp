@@ -174,11 +174,10 @@ extern "C" void InitMediaPlayer()
         mProgram = glCreateProgram();
         glAttachShader(mProgram, mVertexShader);
         glAttachShader(mProgram, mFragmentShader);
-        glLinkProgram(mProgram);
-
         glBindAttribLocation(mProgram, 0, "a_position");
         glBindAttribLocation(mProgram, 1, "a_tex_coord");
-
+        glLinkProgram(mProgram);
+        
         mYuyvSamplerLocation = glGetUniformLocation(mProgram, "s_yuyv_texture");
 
         mBlankProgram = glCreateProgram();
@@ -581,7 +580,7 @@ extern "C" void RenderFrame(void* state)
     glEGLImageTargetTexture2DOES(GL_TEXTURE_EXTERNAL_OES, EGL_NO_IMAGE_KHR);
     eglDestroyImageKHR(display, image);
     close(st->fd);
-    // st->fd = -1;
+    st->fd = -1;
     // st->fd = 0;
 
     // if (st->time - st->lastRenderTime > 20000000)
@@ -590,6 +589,11 @@ extern "C" void RenderFrame(void* state)
     // }
 
     st->lastRenderTime = st->time;
+
+    MediaPlayerCommand command;
+    command.cmd = MPC_FrameAck;
+    command.arg[0] = st->time;
+    sendto(st->serverSocket, &command, sizeof(MediaPlayerCommand), 0, (sockaddr*)&st->clientSockaddr, sizeof(struct sockaddr_un));
 }
 
 extern "C" bool IsValid(void* state)
@@ -627,18 +631,19 @@ extern "C" bool Update(void* state)
     {
         if (command.cmd == MPC_NewFrame)
         {
-            // close(st->fd);
+            if (st->fd != -1)
+                close(st->fd);
             st->fd = *((int *)CMSG_DATA(cmsg));
             st->time = command.arg[0];
             st->width = (uint32_t)(command.arg[1] >> 32);
             st->height = (uint32_t)(command.arg[1] & 0xffffffff);
-            return true;
+            //return true;
         }
         else if (command.cmd == MPC_MediaEnded)
         {
             st->time = st->duration;
             st->mediaEndedFn();
-            return true;
+            // return true;
         }
         else if (command.cmd == MPC_MediaFailed)
         {
@@ -653,13 +658,11 @@ extern "C" bool Update(void* state)
             st->width = (uint32_t)(command.arg[1] >> 32);
             st->height = (uint32_t)(command.arg[1] & 0xffffffff);
             st->mediaOpenedFn();
-            return true;
+            // return true;
         }
     }
 
-    command.cmd = MPC_FrameAck;
-    command.arg[0] = st->time;
-    sendto(st->serverSocket, &command, sizeof(MediaPlayerCommand), 0, (sockaddr*)&st->clientSockaddr, sizeof(struct sockaddr_un));
+    
 
     assert(errno == EAGAIN || errno == EWOULDBLOCK);
     return true;

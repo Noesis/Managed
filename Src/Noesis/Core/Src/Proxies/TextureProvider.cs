@@ -30,12 +30,26 @@ public class TextureProvider : BaseComponent {
   protected TextureProvider() {
   }
 
+  /// <summary> Texture metadata </summary>
+  public struct TextureInfo {
+    public Int32Rect Rect { get; }
+    public float DpiScale { get; } // 96 dpi = 1.0, 72 dpi = 0.75 (72/96), 120 dpi = 1.25 (120/96)
+
+    public TextureInfo(int width = 0, int height = 0): this(0, 0, width, height, 1.0f) {
+    }
+    public TextureInfo(int x, int y, int width, int height): this(x, y, width, height, 1.0f) {
+    }
+    public TextureInfo(int x, int y, int width, int height, float dpiScale) {
+      Rect = new Int32Rect(x, y, width, height);
+      DpiScale = dpiScale;
+    }
+  }
+
   /// <summary>
   /// Returns metadata for the texture at the given URI. Returns 0x0 if no texture is found.
   /// </summary>
-  public virtual void GetTextureInfo(Uri uri, out uint width, out uint height) {
-    width = 0;
-    height = 0;
+  public virtual TextureInfo GetTextureInfo(Uri uri) {
+    return new TextureInfo();
   }
 
   /// <summary>

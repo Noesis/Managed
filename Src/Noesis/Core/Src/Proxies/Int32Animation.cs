@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-public class Int32Animation : BaseAnimation {
+public class Int32Animation : Int32AnimationBase {
   internal new static Int32Animation CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
     return new Int32Animation(cPtr, cMemoryOwn);
   }
@@ -25,6 +25,10 @@ public class Int32Animation : BaseAnimation {
 
   internal static HandleRef getCPtr(Int32Animation obj) {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
+  }
+
+  protected internal override int GetCurrentValueCore(int defaultOriginValue, int defaultDestinationValue, AnimationClock animationClock) {
+    return GetCurrentValueCoreHelper(defaultOriginValue, defaultDestinationValue, animationClock);
   }
 
   public static DependencyProperty ByProperty {
@@ -44,6 +48,13 @@ public class Int32Animation : BaseAnimation {
   public static DependencyProperty ToProperty {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Int32Animation_ToProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static DependencyProperty EasingFunctionProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Int32Animation_EasingFunctionProperty_get();
       return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
     }
   }
@@ -102,14 +113,37 @@ public class Int32Animation : BaseAnimation {
 
   }
 
+  public EasingFunctionBase EasingFunction {
+    set {
+      NoesisGUI_PINVOKE.Int32Animation_EasingFunction_set(swigCPtr, EasingFunctionBase.getCPtr(value));
+    } 
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Int32Animation_EasingFunction_get(swigCPtr);
+      return (EasingFunctionBase)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  private int GetCurrentValueCoreHelper(int src, int dst, AnimationClock clock) {
+    int ret = NoesisGUI_PINVOKE.Int32Animation_GetCurrentValueCoreHelper(swigCPtr, src, dst, AnimationClock.getCPtr(clock));
+    return ret;
+  }
+
   public Int32Animation() {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    registerExtend = false;
-    return NoesisGUI_PINVOKE.new_Int32Animation();
+    if (type == typeof(Int32Animation)) {
+      registerExtend = false;
+      return NoesisGUI_PINVOKE.new_Int32Animation();
+    }
+    else {
+      return base.CreateExtendCPtr(type, out registerExtend);
+    }
   }
 
+  internal new static IntPtr Extend(string typeName) {
+    return NoesisGUI_PINVOKE.Extend_Int32Animation(Marshal.StringToHGlobalAnsi(typeName));
+  }
 }
 
 }

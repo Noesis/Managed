@@ -90,25 +90,32 @@ public class Clock : BaseComponent {
 
   #endregion
 
-  public int CurrentIteration {
+  public int? CurrentIteration {
     get {
-      int ret = NoesisGUI_PINVOKE.Clock_CurrentIteration_get(swigCPtr);
-      return ret;
-    } 
+      return GetCurrentIteration();
+    }
   }
 
-  public float CurrentProgress {
+  public float? CurrentProgress {
     get {
-      float ret = NoesisGUI_PINVOKE.Clock_CurrentProgress_get(swigCPtr);
-      return ret;
-    } 
+      return GetCurrentProgress();
+    }
   }
 
-  public double CurrentTime {
+  public TimeSpan? CurrentTime {
     get {
-      double ret = NoesisGUI_PINVOKE.Clock_CurrentTime_get(swigCPtr);
-      return ret;
-    } 
+      return TimeSpan.FromSeconds(GetCurrentTime());
+    }
+  }
+
+  private int GetCurrentIteration() {
+    int ret = NoesisGUI_PINVOKE.Clock_GetCurrentIteration__SWIG_0(swigCPtr);
+    return ret;
+  }
+
+  public double GetCurrentTime() {
+    double ret = NoesisGUI_PINVOKE.Clock_GetCurrentTime__SWIG_0(swigCPtr);
+    return ret;
   }
 
   public ClockState CurrentState {
@@ -137,6 +144,11 @@ public class Clock : BaseComponent {
       IntPtr cPtr = NoesisGUI_PINVOKE.Clock_Timeline_get(swigCPtr);
       return (Timeline)Noesis.Extend.GetProxy(cPtr, false);
     }
+  }
+
+  private float GetCurrentProgress() {
+    float ret = NoesisGUI_PINVOKE.Clock_GetCurrentProgress(swigCPtr);
+    return ret;
   }
 
 }

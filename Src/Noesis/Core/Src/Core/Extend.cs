@@ -205,6 +205,22 @@ namespace Noesis
 
                 _markupExtensionProvideValue,
 
+                _animationTimelineGetType,
+                _animationTimelineGetValue,
+                _booleanAnimationGetValue,
+                _int16AnimationGetValue,
+                _int32AnimationGetValue,
+                _int64AnimationGetValue,
+                _doubleAnimationGetValue,
+                _colorAnimationGetValue,
+                _pointAnimationGetValue,
+                _rectAnimationGetValue,
+                _sizeAnimationGetValue,
+                _thicknessAnimationGetValue,
+                _objectAnimationGetValue,
+                _stringAnimationGetValue,
+                _matrixAnimationGetValue,
+
                 _getPropertyValue_Bool,
                 _getPropertyValue_Float,
                 _getPropertyValue_Double,
@@ -279,6 +295,7 @@ namespace Noesis
                 null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
                 null,
+                null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
                 null, null, null);
@@ -965,6 +982,20 @@ namespace Noesis
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(AnimationTimeline), AnimationTimeline.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Storyboard), Storyboard.CreateProxy));
 
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(BooleanAnimationBase), BooleanAnimationBase.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Int16AnimationBase), Int16AnimationBase.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Int32AnimationBase), Int32AnimationBase.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Int64AnimationBase), Int64AnimationBase.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(DoubleAnimationBase), DoubleAnimationBase.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ColorAnimationBase), ColorAnimationBase.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(PointAnimationBase), PointAnimationBase.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(RectAnimationBase), RectAnimationBase.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(SizeAnimationBase), SizeAnimationBase.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ThicknessAnimationBase), ThicknessAnimationBase.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ObjectAnimationBase), ObjectAnimationBase.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(StringAnimationBase), StringAnimationBase.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(MatrixAnimationBase), MatrixAnimationBase.CreateProxy));
+
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Int16Animation), Int16Animation.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Int32Animation), Int32Animation.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Int64Animation), Int64Animation.CreateProxy));
@@ -1215,7 +1246,8 @@ namespace Noesis
             ItemsControl_GetContainer       = 512,
             ItemsControl_IsContainer        = 1024,
             Adorner_GetTransform            = 2048,
-            Freezable_Clone                 = 4096
+            Freezable_Clone                 = 4096,
+            Animation_GetValueCore          = 8192
         }
 
         private struct ExtendPropertyData
@@ -1583,6 +1615,64 @@ namespace Noesis
                 if (IsOverride(cloneMethod)) overrides |= ExtendTypeOverrides.Freezable_Clone;
             }
 
+            if (typeof(AnimationTimeline).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
+            {
+                if (typeof(Int16Animation).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
+                {
+                    MethodInfo getValueMethod = FindMethod(type, "GetCurrentValueCore", new Type[] { typeof(short), typeof(short), typeof(AnimationClock) });
+                    if (IsOverride(getValueMethod) && getValueMethod.DeclaringType != typeof(Int16Animation))
+                        overrides |= ExtendTypeOverrides.Animation_GetValueCore;
+                }
+                if (typeof(Int32Animation).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
+                {
+                    MethodInfo getValueMethod = FindMethod(type, "GetCurrentValueCore", new Type[] { typeof(int), typeof(int), typeof(AnimationClock) });
+                    if (IsOverride(getValueMethod) && getValueMethod.DeclaringType != typeof(Int32Animation))
+                        overrides |= ExtendTypeOverrides.Animation_GetValueCore;
+                }
+                if (typeof(Int64Animation).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
+                {
+                    MethodInfo getValueMethod = FindMethod(type, "GetCurrentValueCore", new Type[] { typeof(long), typeof(long), typeof(AnimationClock) });
+                    if (IsOverride(getValueMethod) && getValueMethod.DeclaringType != typeof(Int64Animation))
+                        overrides |= ExtendTypeOverrides.Animation_GetValueCore;
+                }
+                if (typeof(DoubleAnimation).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
+                {
+                    MethodInfo getValueMethod = FindMethod(type, "GetCurrentValueCore", new Type[] { typeof(float), typeof(float), typeof(AnimationClock) });
+                    if (IsOverride(getValueMethod) && getValueMethod.DeclaringType != typeof(DoubleAnimation))
+                        overrides |= ExtendTypeOverrides.Animation_GetValueCore;
+                }
+                if (typeof(ColorAnimation).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
+                {
+                    MethodInfo getValueMethod = FindMethod(type, "GetCurrentValueCore", new Type[] { typeof(Color), typeof(Color), typeof(AnimationClock) });
+                    if (IsOverride(getValueMethod) && getValueMethod.DeclaringType != typeof(ColorAnimation))
+                        overrides |= ExtendTypeOverrides.Animation_GetValueCore;
+                }
+                if (typeof(PointAnimation).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
+                {
+                    MethodInfo getValueMethod = FindMethod(type, "GetCurrentValueCore", new Type[] { typeof(Point), typeof(Point), typeof(AnimationClock) });
+                    if (IsOverride(getValueMethod) && getValueMethod.DeclaringType != typeof(PointAnimation))
+                        overrides |= ExtendTypeOverrides.Animation_GetValueCore;
+                }
+                if (typeof(RectAnimation).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
+                {
+                    MethodInfo getValueMethod = FindMethod(type, "GetCurrentValueCore", new Type[] { typeof(Rect), typeof(Rect), typeof(AnimationClock) });
+                    if (IsOverride(getValueMethod) && getValueMethod.DeclaringType != typeof(RectAnimation))
+                        overrides |= ExtendTypeOverrides.Animation_GetValueCore;
+                }
+                if (typeof(SizeAnimation).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
+                {
+                    MethodInfo getValueMethod = FindMethod(type, "GetCurrentValueCore", new Type[] { typeof(Size), typeof(Size), typeof(AnimationClock) });
+                    if (IsOverride(getValueMethod) && getValueMethod.DeclaringType != typeof(SizeAnimation))
+                        overrides |= ExtendTypeOverrides.Animation_GetValueCore;
+                }
+                if (typeof(ThicknessAnimation).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
+                {
+                    MethodInfo getValueMethod = FindMethod(type, "GetCurrentValueCore", new Type[] { typeof(Thickness), typeof(Thickness), typeof(AnimationClock) });
+                    if (IsOverride(getValueMethod) && getValueMethod.DeclaringType != typeof(ThicknessAnimation))
+                        overrides |= ExtendTypeOverrides.Animation_GetValueCore;
+                }
+            }
+
             typeData.overrides = (int)overrides;
 
             return typeData;
@@ -1636,7 +1726,7 @@ namespace Noesis
                 for (int i = 0; i < propsLen; ++i)
                 {
                     var p = props[i];
-                    if (p.GetGetMethod() != null && !p.PropertyType.IsPointer &&
+                    if (p.GetGetMethod() != null && !p.PropertyType.IsPointer && !p.PropertyType.IsByRef &&
                         (HasTypeConverter(p) || (!IsIndexerProperty(p) && !IsDependencyProperty(type, p))))
                     {
                         ExtendPropertyData propData = AddProperty(propsInfo, p, usePropertyInfo);
@@ -3011,12 +3101,12 @@ namespace Noesis
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
         private delegate void Callback_ProviderTextureInfo(IntPtr cPtr, IntPtr filename,
-            ref uint width, ref uint height);
+            ref uint x, ref uint y, ref uint width, ref uint height, ref float dpiScale);
         private static Callback_ProviderTextureInfo _providerTextureInfo = ProviderTextureInfo;
 
         [MonoPInvokeCallback(typeof(Callback_ProviderTextureInfo))]
         private static void ProviderTextureInfo(IntPtr cPtr, IntPtr filename,
-            ref uint width, ref uint height)
+            ref uint x, ref uint y, ref uint width, ref uint height, ref float dpiScale)
         {
             width = height = 0;
 
@@ -3027,7 +3117,13 @@ namespace Noesis
                 {
                     string filename_ = StringFromNativeUtf8(filename);
                     Uri uri = new Uri(filename_, UriKind.RelativeOrAbsolute);
-                    provider.GetTextureInfo(uri, out width, out height);
+                    TextureProvider.TextureInfo info = provider.GetTextureInfo(uri);
+
+                    x = (uint)info.Rect.X;
+                    y = (uint)info.Rect.Y;
+                    width = (uint)info.Rect.Width;
+                    height = (uint)info.Rect.Height;
+                    dpiScale = info.DpiScale;
                 }
             }
             catch (Exception e)
@@ -3848,6 +3944,348 @@ namespace Noesis
             {
                 Error.UnhandledException(e);
                 return IntPtr.Zero;
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate IntPtr Callback_AnimationTimelineGetType(IntPtr cPtr);
+        private static Callback_AnimationTimelineGetType _animationTimelineGetType = AnimationTimelineGetType;
+
+        [MonoPInvokeCallback(typeof(Callback_AnimationTimelineGetType))]
+        private static IntPtr AnimationTimelineGetType(IntPtr cPtr)
+        {
+            try
+            {
+                var animation = (AnimationTimeline)GetExtendInstance(cPtr);
+                Type type = animation.TargetPropertyType;
+                return EnsureNativeType(type);
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+                return IntPtr.Zero;
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate IntPtr Callback_AnimationTimelineGetValue(IntPtr cPtr,
+            IntPtr srcType, IntPtr srcPtr, IntPtr dstType, IntPtr dstPtr,
+            IntPtr clockType, IntPtr clockPtr);
+        private static Callback_AnimationTimelineGetValue _animationTimelineGetValue = AnimationTimelineGetValue;
+
+        [MonoPInvokeCallback(typeof(Callback_AnimationTimelineGetValue))]
+        private static IntPtr AnimationTimelineGetValue(IntPtr cPtr,
+            IntPtr srcType, IntPtr srcPtr, IntPtr dstType, IntPtr dstPtr,
+            IntPtr clockType, IntPtr clockPtr)
+        {
+            try
+            {
+                var animation = (AnimationTimeline)GetExtendInstance(cPtr);
+                object src = GetProxy(srcType, srcPtr, false);
+                object dst = GetProxy(dstType, dstPtr, false);
+                AnimationClock clock = (AnimationClock)GetProxy(clockType, clockPtr, false);
+                object value = animation.GetCurrentValue(src, dst, clock);
+                HandleRef valuePtr = GetInstanceHandle(value);
+                BaseComponent.AddReference(valuePtr.Handle); // released by native bindings
+                return valuePtr.Handle;
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+                return IntPtr.Zero;
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate bool Callback_BooleanAnimationGetValue(IntPtr cPtr,
+            bool src, bool dst, IntPtr clockType, IntPtr clockPtr);
+        private static Callback_BooleanAnimationGetValue _booleanAnimationGetValue = BooleanAnimationGetValue;
+
+        [MonoPInvokeCallback(typeof(Callback_BooleanAnimationGetValue))]
+        [return: MarshalAs(UnmanagedType.U1)]
+        private static bool BooleanAnimationGetValue(IntPtr cPtr,
+            bool src, bool dst, IntPtr clockType, IntPtr clockPtr)
+        {
+            try
+            {
+                var animation = (BooleanAnimationBase)GetExtendInstance(cPtr);
+                AnimationClock clock = (AnimationClock)GetProxy(clockType, clockPtr, false);
+                return animation.GetCurrentValueCore(src, dst, clock);
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+                return false;
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate short Callback_Int16AnimationGetValue(IntPtr cPtr,
+            short src, short dst, IntPtr clockType, IntPtr clockPtr);
+        private static Callback_Int16AnimationGetValue _int16AnimationGetValue = Int16AnimationGetValue;
+
+        [MonoPInvokeCallback(typeof(Callback_Int16AnimationGetValue))]
+        private static short Int16AnimationGetValue(IntPtr cPtr,
+            short src, short dst, IntPtr clockType, IntPtr clockPtr)
+        {
+            try
+            {
+                var animation = (Int16AnimationBase)GetExtendInstance(cPtr);
+                AnimationClock clock = (AnimationClock)GetProxy(clockType, clockPtr, false);
+                return animation.GetCurrentValueCore(src, dst, clock);
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+                return 0;
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate int Callback_Int32AnimationGetValue(IntPtr cPtr,
+            int src, int dst, IntPtr clockType, IntPtr clockPtr);
+        private static Callback_Int32AnimationGetValue _int32AnimationGetValue = Int32AnimationGetValue;
+
+        [MonoPInvokeCallback(typeof(Callback_Int32AnimationGetValue))]
+        private static int Int32AnimationGetValue(IntPtr cPtr,
+            int src, int dst, IntPtr clockType, IntPtr clockPtr)
+        {
+            try
+            {
+                var animation = (Int32AnimationBase)GetExtendInstance(cPtr);
+                AnimationClock clock = (AnimationClock)GetProxy(clockType, clockPtr, false);
+                return animation.GetCurrentValueCore(src, dst, clock);
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+                return 0;
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate long Callback_Int64AnimationGetValue(IntPtr cPtr,
+            long src, long dst, IntPtr clockType, IntPtr clockPtr);
+        private static Callback_Int64AnimationGetValue _int64AnimationGetValue = Int64AnimationGetValue;
+
+        [MonoPInvokeCallback(typeof(Callback_Int64AnimationGetValue))]
+        private static long Int64AnimationGetValue(IntPtr cPtr,
+            long src, long dst, IntPtr clockType, IntPtr clockPtr)
+        {
+            try
+            {
+                var animation = (Int64AnimationBase)GetExtendInstance(cPtr);
+                AnimationClock clock = (AnimationClock)GetProxy(clockType, clockPtr, false);
+                return animation.GetCurrentValueCore(src, dst, clock);
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+                return 0;
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate float Callback_DoubleAnimationGetValue(IntPtr cPtr,
+            float src, float dst, IntPtr clockType, IntPtr clockPtr);
+        private static Callback_DoubleAnimationGetValue _doubleAnimationGetValue = DoubleAnimationGetValue;
+
+        [MonoPInvokeCallback(typeof(Callback_DoubleAnimationGetValue))]
+        private static float DoubleAnimationGetValue(IntPtr cPtr,
+            float src, float dst, IntPtr clockType, IntPtr clockPtr)
+        {
+            try
+            {
+                var animation = (DoubleAnimationBase)GetExtendInstance(cPtr);
+                AnimationClock clock = (AnimationClock)GetProxy(clockType, clockPtr, false);
+                return animation.GetCurrentValueCore(src, dst, clock);
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+                return 0;
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void Callback_ColorAnimationGetValue(IntPtr cPtr,
+            ref Color src, ref Color dst, IntPtr clockType, IntPtr clockPtr, ref Color value);
+        private static Callback_ColorAnimationGetValue _colorAnimationGetValue = ColorAnimationGetValue;
+
+        [MonoPInvokeCallback(typeof(Callback_ColorAnimationGetValue))]
+        private static void ColorAnimationGetValue(IntPtr cPtr,
+            ref Color src, ref Color dst, IntPtr clockType, IntPtr clockPtr, ref Color value)
+        {
+            try
+            {
+                var animation = (ColorAnimationBase)GetExtendInstance(cPtr);
+                AnimationClock clock = (AnimationClock)GetProxy(clockType, clockPtr, false);
+                value = animation.GetCurrentValueCore(src, dst, clock);
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void Callback_PointAnimationGetValue(IntPtr cPtr,
+            ref Point src, ref Point dst, IntPtr clockType, IntPtr clockPtr, ref Point value);
+        private static Callback_PointAnimationGetValue _pointAnimationGetValue = PointAnimationGetValue;
+
+        [MonoPInvokeCallback(typeof(Callback_PointAnimationGetValue))]
+        private static void PointAnimationGetValue(IntPtr cPtr,
+            ref Point src, ref Point dst, IntPtr clockType, IntPtr clockPtr, ref Point value)
+        {
+            try
+            {
+                var animation = (PointAnimationBase)GetExtendInstance(cPtr);
+                AnimationClock clock = (AnimationClock)GetProxy(clockType, clockPtr, false);
+                value = animation.GetCurrentValueCore(src, dst, clock);
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void Callback_RectAnimationGetValue(IntPtr cPtr,
+            ref Rect src, ref Rect dst, IntPtr clockType, IntPtr clockPtr, ref Rect value);
+        private static Callback_RectAnimationGetValue _rectAnimationGetValue = RectAnimationGetValue;
+
+        [MonoPInvokeCallback(typeof(Callback_RectAnimationGetValue))]
+        private static void RectAnimationGetValue(IntPtr cPtr,
+            ref Rect src, ref Rect dst, IntPtr clockType, IntPtr clockPtr, ref Rect value)
+        {
+            try
+            {
+                var animation = (RectAnimationBase)GetExtendInstance(cPtr);
+                AnimationClock clock = (AnimationClock)GetProxy(clockType, clockPtr, false);
+                value = animation.GetCurrentValueCore(src, dst, clock);
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void Callback_SizeAnimationGetValue(IntPtr cPtr,
+            ref Size src, ref Size dst, IntPtr clockType, IntPtr clockPtr, ref Size value);
+        private static Callback_SizeAnimationGetValue _sizeAnimationGetValue = SizeAnimationGetValue;
+
+        [MonoPInvokeCallback(typeof(Callback_SizeAnimationGetValue))]
+        private static void SizeAnimationGetValue(IntPtr cPtr,
+            ref Size src, ref Size dst, IntPtr clockType, IntPtr clockPtr, ref Size value)
+        {
+            try
+            {
+                var animation = (SizeAnimationBase)GetExtendInstance(cPtr);
+                AnimationClock clock = (AnimationClock)GetProxy(clockType, clockPtr, false);
+                value = animation.GetCurrentValueCore(src, dst, clock);
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void Callback_ThicknessAnimationGetValue(IntPtr cPtr,
+            ref Thickness src, ref Thickness dst, IntPtr clockType, IntPtr clockPtr, ref Thickness value);
+        private static Callback_ThicknessAnimationGetValue _thicknessAnimationGetValue = ThicknessAnimationGetValue;
+
+        [MonoPInvokeCallback(typeof(Callback_ThicknessAnimationGetValue))]
+        private static void ThicknessAnimationGetValue(IntPtr cPtr,
+            ref Thickness src, ref Thickness dst, IntPtr clockType, IntPtr clockPtr, ref Thickness value)
+        {
+            try
+            {
+                var animation = (ThicknessAnimationBase)GetExtendInstance(cPtr);
+                AnimationClock clock = (AnimationClock)GetProxy(clockType, clockPtr, false);
+                value = animation.GetCurrentValueCore(src, dst, clock);
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate IntPtr Callback_ObjectAnimationGetValue(IntPtr cPtr,
+            IntPtr srcType, IntPtr srcPtr, IntPtr dstType, IntPtr dstPtr,
+            IntPtr clockType, IntPtr clockPtr);
+        private static Callback_ObjectAnimationGetValue _objectAnimationGetValue = ObjectAnimationGetValue;
+
+        [MonoPInvokeCallback(typeof(Callback_ObjectAnimationGetValue))]
+        private static IntPtr ObjectAnimationGetValue(IntPtr cPtr,
+            IntPtr srcType, IntPtr srcPtr, IntPtr dstType, IntPtr dstPtr,
+            IntPtr clockType, IntPtr clockPtr)
+        {
+            try
+            {
+                var animation = (ObjectAnimationBase)GetExtendInstance(cPtr);
+                object src = GetProxy(srcType, srcPtr, false);
+                object dst = GetProxy(dstType, dstPtr, false);
+                AnimationClock clock = (AnimationClock)GetProxy(clockType, clockPtr, false);
+                object value = animation.GetCurrentValueCore(src, dst, clock);
+                HandleRef valuePtr = GetInstanceHandle(value);
+                BaseComponent.AddReference(valuePtr.Handle); // released by native bindings
+                return valuePtr.Handle;
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+                return IntPtr.Zero;
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate IntPtr Callback_StringAnimationGetValue(IntPtr cPtr,
+            IntPtr srcPtr, IntPtr dstPtr,
+            IntPtr clockType, IntPtr clockPtr);
+        private static Callback_StringAnimationGetValue _stringAnimationGetValue = StringAnimationGetValue;
+
+        [MonoPInvokeCallback(typeof(Callback_StringAnimationGetValue))]
+        private static IntPtr StringAnimationGetValue(IntPtr cPtr,
+            IntPtr srcPtr, IntPtr dstPtr,
+            IntPtr clockType, IntPtr clockPtr)
+        {
+            try
+            {
+                var animation = (StringAnimationBase)GetExtendInstance(cPtr);
+                string src = StringFromNativeUtf8(srcPtr);
+                string dst = StringFromNativeUtf8(dstPtr);
+                AnimationClock clock = (AnimationClock)GetProxy(clockType, clockPtr, false);
+                string value = animation.GetCurrentValueCore(src, dst, clock);
+                return Marshal.StringToHGlobalUni(value != null ? value : string.Empty);
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+                return IntPtr.Zero;
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void Callback_MatrixAnimationGetValue(IntPtr cPtr,
+            ref Matrix src, ref Matrix dst, IntPtr clockType, IntPtr clockPtr, ref Matrix value);
+        private static Callback_MatrixAnimationGetValue _matrixAnimationGetValue = MatrixAnimationGetValue;
+
+        [MonoPInvokeCallback(typeof(Callback_MatrixAnimationGetValue))]
+        private static void MatrixAnimationGetValue(IntPtr cPtr,
+            ref Matrix src, ref Matrix dst, IntPtr clockType, IntPtr clockPtr, ref Matrix value)
+        {
+            try
+            {
+                var animation = (MatrixAnimationBase)GetExtendInstance(cPtr);
+                AnimationClock clock = (AnimationClock)GetProxy(clockType, clockPtr, false);
+                value = animation.GetCurrentValueCore(src, dst, clock);
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
             }
         }
 
@@ -5584,7 +6022,8 @@ namespace Noesis
             {
                 IntPtr nativeType = EnsureNativeType(sender.GetType());
 
-                Noesis_LaunchPropertyChangedEvent(nativeType, GetInstanceHandle(sender).Handle, e.PropertyName);
+                Noesis_LaunchPropertyChangedEvent(nativeType, GetInstanceHandle(sender).Handle,
+                    e.PropertyName != null ? e.PropertyName : string.Empty);
             }
         }
 

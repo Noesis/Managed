@@ -89,7 +89,7 @@ public struct RepeatBehavior {
       return r0._iterationCount == r1._iterationCount;
     }
     if (r0.HasDuration && r1.HasDuration) {
-      return r0._repeatDuration == r1._repeatDuration;
+      return (TimeSpan)r0._repeatDuration == (TimeSpan)r1._repeatDuration;
     }
     return r0._repeatBehaviorType == r1._repeatBehaviorType;
   }
@@ -111,7 +111,7 @@ public struct RepeatBehavior {
       return this._iterationCount.GetHashCode();
     }
     if (HasDuration) {
-      return this._repeatDuration.GetHashCode();
+      return ((TimeSpan)this._repeatDuration).GetHashCode();
     }
     return this._repeatBehaviorType.GetHashCode();
   }

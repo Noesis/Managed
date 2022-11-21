@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-public class Int64Animation : BaseAnimation {
+public class Int64Animation : Int64AnimationBase {
   internal new static Int64Animation CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
     return new Int64Animation(cPtr, cMemoryOwn);
   }
@@ -25,6 +25,10 @@ public class Int64Animation : BaseAnimation {
 
   internal static HandleRef getCPtr(Int64Animation obj) {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
+  }
+
+  protected internal override long GetCurrentValueCore(long defaultOriginValue, long defaultDestinationValue, AnimationClock animationClock) {
+    return GetCurrentValueCoreHelper(defaultOriginValue, defaultDestinationValue, animationClock);
   }
 
   public static DependencyProperty ByProperty {
@@ -44,6 +48,13 @@ public class Int64Animation : BaseAnimation {
   public static DependencyProperty ToProperty {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Int64Animation_ToProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static DependencyProperty EasingFunctionProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Int64Animation_EasingFunctionProperty_get();
       return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
     }
   }
@@ -102,14 +113,37 @@ public class Int64Animation : BaseAnimation {
 
   }
 
+  public EasingFunctionBase EasingFunction {
+    set {
+      NoesisGUI_PINVOKE.Int64Animation_EasingFunction_set(swigCPtr, EasingFunctionBase.getCPtr(value));
+    } 
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Int64Animation_EasingFunction_get(swigCPtr);
+      return (EasingFunctionBase)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  private long GetCurrentValueCoreHelper(long src, long dst, AnimationClock clock) {
+    long ret = NoesisGUI_PINVOKE.Int64Animation_GetCurrentValueCoreHelper(swigCPtr, src, dst, AnimationClock.getCPtr(clock));
+    return ret;
+  }
+
   public Int64Animation() {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    registerExtend = false;
-    return NoesisGUI_PINVOKE.new_Int64Animation();
+    if (type == typeof(Int64Animation)) {
+      registerExtend = false;
+      return NoesisGUI_PINVOKE.new_Int64Animation();
+    }
+    else {
+      return base.CreateExtendCPtr(type, out registerExtend);
+    }
   }
 
+  internal new static IntPtr Extend(string typeName) {
+    return NoesisGUI_PINVOKE.Extend_Int64Animation(Marshal.StringToHGlobalAnsi(typeName));
+  }
 }
 
 }

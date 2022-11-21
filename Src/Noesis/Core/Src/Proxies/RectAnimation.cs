@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-public class RectAnimation : BaseAnimation {
+public class RectAnimation : RectAnimationBase {
   internal new static RectAnimation CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
     return new RectAnimation(cPtr, cMemoryOwn);
   }
@@ -25,6 +25,10 @@ public class RectAnimation : BaseAnimation {
 
   internal static HandleRef getCPtr(RectAnimation obj) {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
+  }
+
+  protected internal override Rect GetCurrentValueCore(Rect defaultOriginValue, Rect defaultDestinationValue, AnimationClock animationClock) {
+    return GetCurrentValueCoreHelper(defaultOriginValue, defaultDestinationValue, animationClock);
   }
 
   public static DependencyProperty ByProperty {
@@ -44,6 +48,13 @@ public class RectAnimation : BaseAnimation {
   public static DependencyProperty ToProperty {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.RectAnimation_ToProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static DependencyProperty EasingFunctionProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.RectAnimation_EasingFunctionProperty_get();
       return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
     }
   }
@@ -102,14 +113,42 @@ public class RectAnimation : BaseAnimation {
 
   }
 
+  public EasingFunctionBase EasingFunction {
+    set {
+      NoesisGUI_PINVOKE.RectAnimation_EasingFunction_set(swigCPtr, EasingFunctionBase.getCPtr(value));
+    } 
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.RectAnimation_EasingFunction_get(swigCPtr);
+      return (EasingFunctionBase)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  private Rect GetCurrentValueCoreHelper(Rect src, Rect dst, AnimationClock clock) {
+    IntPtr ret = NoesisGUI_PINVOKE.RectAnimation_GetCurrentValueCoreHelper(swigCPtr, ref src, ref dst, AnimationClock.getCPtr(clock));
+    if (ret != IntPtr.Zero) {
+      return Marshal.PtrToStructure<Rect>(ret);
+    }
+    else {
+      return new Rect();
+    }
+  }
+
   public RectAnimation() {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    registerExtend = false;
-    return NoesisGUI_PINVOKE.new_RectAnimation();
+    if (type == typeof(RectAnimation)) {
+      registerExtend = false;
+      return NoesisGUI_PINVOKE.new_RectAnimation();
+    }
+    else {
+      return base.CreateExtendCPtr(type, out registerExtend);
+    }
   }
 
+  internal new static IntPtr Extend(string typeName) {
+    return NoesisGUI_PINVOKE.Extend_RectAnimation(Marshal.StringToHGlobalAnsi(typeName));
+  }
 }
 
 }

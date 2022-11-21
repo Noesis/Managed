@@ -13,7 +13,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>NoesisGUI XAML GUI C#</PackageTags>
     <PackageReleaseNotes>https://www.noesisengine.com/docs/Gui.Core.Changelog.html</PackageReleaseNotes>
-    <RootNamespace>NoesisApp</RootNamespace>
+    <RootNamespace></RootNamespace>
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageOutputPath>$(SolutionDir)NuGet\</PackageOutputPath>
@@ -43,7 +43,11 @@
   </ItemGroup>
   
   <ItemGroup>
-    <None Include="$(SolutionDir)Icon-256.png" Pack="true" PackagePath="\"/>
+    <None Include="$(SolutionDir)Icon-256.png" Pack="true" PackagePath="\" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="System.Memory" Version="4.5.5" />
   </ItemGroup>
 
 </Project>

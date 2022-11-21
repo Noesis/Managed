@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-public class ObjectAnimationUsingKeyFrames : AnimationTimeline {
+public sealed class ObjectAnimationUsingKeyFrames : ObjectAnimationBase {
   internal new static ObjectAnimationUsingKeyFrames CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
     return new ObjectAnimationUsingKeyFrames(cPtr, cMemoryOwn);
   }
@@ -25,6 +25,10 @@ public class ObjectAnimationUsingKeyFrames : AnimationTimeline {
 
   internal static HandleRef getCPtr(ObjectAnimationUsingKeyFrames obj) {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
+  }
+
+  protected internal override object GetCurrentValueCore(object defaultOriginValue, object defaultDestinationValue, AnimationClock animationClock) {
+    return GetCurrentValueCoreHelper(defaultOriginValue, defaultDestinationValue, animationClock);
   }
 
   public ObjectAnimationUsingKeyFrames() {
@@ -40,6 +44,11 @@ public class ObjectAnimationUsingKeyFrames : AnimationTimeline {
       IntPtr cPtr = NoesisGUI_PINVOKE.ObjectAnimationUsingKeyFrames_KeyFrames_get(swigCPtr);
       return (ObjectKeyFrameCollection)Noesis.Extend.GetProxy(cPtr, false);
     }
+  }
+
+  private object GetCurrentValueCoreHelper(object src, object dst, AnimationClock clock) {
+    IntPtr cPtr = NoesisGUI_PINVOKE.ObjectAnimationUsingKeyFrames_GetCurrentValueCoreHelper(swigCPtr, Noesis.Extend.GetInstanceHandle(src), Noesis.Extend.GetInstanceHandle(dst), AnimationClock.getCPtr(clock));
+    return Noesis.Extend.GetProxy(cPtr, false);
   }
 
 }

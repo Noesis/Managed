@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-public class StringAnimationUsingKeyFrames : AnimationTimeline {
+public sealed class StringAnimationUsingKeyFrames : StringAnimationBase {
   internal new static StringAnimationUsingKeyFrames CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
     return new StringAnimationUsingKeyFrames(cPtr, cMemoryOwn);
   }
@@ -25,6 +25,10 @@ public class StringAnimationUsingKeyFrames : AnimationTimeline {
 
   internal static HandleRef getCPtr(StringAnimationUsingKeyFrames obj) {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
+  }
+
+  protected internal override string GetCurrentValueCore(string defaultOriginValue, string defaultDestinationValue, AnimationClock animationClock) {
+    return GetCurrentValueCoreHelper(defaultOriginValue, defaultDestinationValue, animationClock);
   }
 
   public StringAnimationUsingKeyFrames() {
@@ -40,6 +44,13 @@ public class StringAnimationUsingKeyFrames : AnimationTimeline {
       IntPtr cPtr = NoesisGUI_PINVOKE.StringAnimationUsingKeyFrames_KeyFrames_get(swigCPtr);
       return (StringKeyFrameCollection)Noesis.Extend.GetProxy(cPtr, false);
     }
+  }
+
+  private string GetCurrentValueCoreHelper(string src, string dst, AnimationClock clock) {
+    IntPtr strPtr = NoesisGUI_PINVOKE.StringAnimationUsingKeyFrames_GetCurrentValueCoreHelper(swigCPtr, src != null ? src : string.Empty, dst != null ? dst : string.Empty, AnimationClock.getCPtr(clock));
+    string str = Noesis.Extend.StringFromNativeUtf8(strPtr);
+    NoesisGUI_PINVOKE.FreeString(strPtr);
+    return str;
   }
 
 }

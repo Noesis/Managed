@@ -32,7 +32,7 @@ namespace NoesisApp
 
         public string Uri { get; set; }
 
-        public string StartupUri { get; set; }
+        public Uri StartupUri { get; set; }
 
         public DateTime StartTime { get; private set; }
 
@@ -83,8 +83,8 @@ namespace NoesisApp
         /// </summary>
         public static void SetThemeProviders(XamlProvider xamlProvider = null, FontProvider fontProvider = null, TextureProvider textureProvider = null)
         {
-            GUI.SetXamlProvider(new EmbeddedXamlProvider(Theme.Assembly, Theme.Namespace, xamlProvider));
-            GUI.SetFontProvider(new EmbeddedFontProvider(Theme.Assembly, Theme.Namespace, fontProvider));
+            GUI.SetXamlProvider(new EmbeddedXamlProvider(Theme.Assembly, "", xamlProvider));
+            GUI.SetFontProvider(new EmbeddedFontProvider(Theme.Assembly, "Noesis.GUI.Extensions", "", fontProvider));
             GUI.SetTextureProvider(textureProvider);
 
             GUI.SetFontFallbacks(Theme.FontFallbacks);
@@ -125,8 +125,7 @@ namespace NoesisApp
 
         private LicenseInfo GetLicenseInfo()
         {
-            Type type = this.GetType();
-            Stream stream = GetAssemblyResource(type.Assembly, type.Namespace, "NoesisLicense.txt");
+            Stream stream = GetAssemblyResource(GetType().Assembly, "", "NoesisLicense.txt");
             if (stream != null)
             {
                 string name, key;
@@ -147,11 +146,14 @@ namespace NoesisApp
 
         public static Stream GetAssemblyResource(Assembly assembly, string ns, string filename)
         {
-            if (assembly != null && !string.IsNullOrEmpty(ns))
+            if (assembly != null)
             {
-                string resource = ns + "." + filename.Replace("/", ".");
                 try
                 {
+                    string resource = "";
+                    if (!string.IsNullOrEmpty(ns)) resource += ns + ".";
+                    resource += filename.Replace("/", ".");
+
                     return assembly.GetManifestResourceStream(resource);
                 }
                 catch { }
@@ -252,12 +254,12 @@ namespace NoesisApp
             GUI.SetApplicationResources(Resources);
 
             // Load StartupUri xaml as MainWindow
-            if (string.IsNullOrEmpty(StartupUri))
+            if (string.IsNullOrEmpty(StartupUri?.OriginalString))
             {
-                throw new InvalidOperationException("Startup window not defined");
+                throw new InvalidOperationException("Application StartupUri not defined");
             }
 
-            object root = GUI.LoadXaml(StartupUri);
+            object root = GUI.LoadXaml(StartupUri?.OriginalString);
             MainWindow = root as Window;
 
             if (MainWindow == null)
@@ -331,6 +333,8 @@ namespace NoesisApp
 
                 // Shut down Noesis
                 GUI.Shutdown();
+
+                Log.SetLogCallback(null);
 
                 Thread.EndThreadAffinity();
             }

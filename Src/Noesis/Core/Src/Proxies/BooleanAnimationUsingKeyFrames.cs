@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-public class BooleanAnimationUsingKeyFrames : AnimationTimeline {
+public sealed class BooleanAnimationUsingKeyFrames : BooleanAnimationBase {
   internal new static BooleanAnimationUsingKeyFrames CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
     return new BooleanAnimationUsingKeyFrames(cPtr, cMemoryOwn);
   }
@@ -25,6 +25,10 @@ public class BooleanAnimationUsingKeyFrames : AnimationTimeline {
 
   internal static HandleRef getCPtr(BooleanAnimationUsingKeyFrames obj) {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
+  }
+
+  protected internal override bool GetCurrentValueCore(bool defaultOriginValue, bool defaultDestinationValue, AnimationClock animationClock) {
+    return GetCurrentValueCoreHelper(defaultOriginValue, defaultDestinationValue, animationClock);
   }
 
   public BooleanAnimationUsingKeyFrames() {
@@ -40,6 +44,11 @@ public class BooleanAnimationUsingKeyFrames : AnimationTimeline {
       IntPtr cPtr = NoesisGUI_PINVOKE.BooleanAnimationUsingKeyFrames_KeyFrames_get(swigCPtr);
       return (BooleanKeyFrameCollection)Noesis.Extend.GetProxy(cPtr, false);
     }
+  }
+
+  private bool GetCurrentValueCoreHelper(bool src, bool dst, AnimationClock clock) {
+    bool ret = NoesisGUI_PINVOKE.BooleanAnimationUsingKeyFrames_GetCurrentValueCoreHelper(swigCPtr, src, dst, AnimationClock.getCPtr(clock));
+    return ret;
   }
 
 }

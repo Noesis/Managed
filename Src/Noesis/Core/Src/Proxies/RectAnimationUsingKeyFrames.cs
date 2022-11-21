@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-public class RectAnimationUsingKeyFrames : AnimationTimeline {
+public sealed class RectAnimationUsingKeyFrames : RectAnimationBase {
   internal new static RectAnimationUsingKeyFrames CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
     return new RectAnimationUsingKeyFrames(cPtr, cMemoryOwn);
   }
@@ -25,6 +25,10 @@ public class RectAnimationUsingKeyFrames : AnimationTimeline {
 
   internal static HandleRef getCPtr(RectAnimationUsingKeyFrames obj) {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
+  }
+
+  protected internal override Rect GetCurrentValueCore(Rect defaultOriginValue, Rect defaultDestinationValue, AnimationClock animationClock) {
+    return GetCurrentValueCoreHelper(defaultOriginValue, defaultDestinationValue, animationClock);
   }
 
   public RectAnimationUsingKeyFrames() {
@@ -39,6 +43,16 @@ public class RectAnimationUsingKeyFrames : AnimationTimeline {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.RectAnimationUsingKeyFrames_KeyFrames_get(swigCPtr);
       return (RectKeyFrameCollection)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  private Rect GetCurrentValueCoreHelper(Rect src, Rect dst, AnimationClock clock) {
+    IntPtr ret = NoesisGUI_PINVOKE.RectAnimationUsingKeyFrames_GetCurrentValueCoreHelper(swigCPtr, ref src, ref dst, AnimationClock.getCPtr(clock));
+    if (ret != IntPtr.Zero) {
+      return Marshal.PtrToStructure<Rect>(ret);
+    }
+    else {
+      return new Rect();
     }
   }
 

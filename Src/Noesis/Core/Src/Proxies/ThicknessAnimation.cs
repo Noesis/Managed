@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-public class ThicknessAnimation : BaseAnimation {
+public class ThicknessAnimation : ThicknessAnimationBase {
   internal new static ThicknessAnimation CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
     return new ThicknessAnimation(cPtr, cMemoryOwn);
   }
@@ -25,6 +25,10 @@ public class ThicknessAnimation : BaseAnimation {
 
   internal static HandleRef getCPtr(ThicknessAnimation obj) {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
+  }
+
+  protected internal override Thickness GetCurrentValueCore(Thickness defaultOriginValue, Thickness defaultDestinationValue, AnimationClock animationClock) {
+    return GetCurrentValueCoreHelper(defaultOriginValue, defaultDestinationValue, animationClock);
   }
 
   public static DependencyProperty ByProperty {
@@ -44,6 +48,13 @@ public class ThicknessAnimation : BaseAnimation {
   public static DependencyProperty ToProperty {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ThicknessAnimation_ToProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static DependencyProperty EasingFunctionProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.ThicknessAnimation_EasingFunctionProperty_get();
       return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
     }
   }
@@ -102,14 +113,42 @@ public class ThicknessAnimation : BaseAnimation {
 
   }
 
+  public EasingFunctionBase EasingFunction {
+    set {
+      NoesisGUI_PINVOKE.ThicknessAnimation_EasingFunction_set(swigCPtr, EasingFunctionBase.getCPtr(value));
+    } 
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.ThicknessAnimation_EasingFunction_get(swigCPtr);
+      return (EasingFunctionBase)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  private Thickness GetCurrentValueCoreHelper(Thickness src, Thickness dst, AnimationClock clock) {
+    IntPtr ret = NoesisGUI_PINVOKE.ThicknessAnimation_GetCurrentValueCoreHelper(swigCPtr, ref src, ref dst, AnimationClock.getCPtr(clock));
+    if (ret != IntPtr.Zero) {
+      return Marshal.PtrToStructure<Thickness>(ret);
+    }
+    else {
+      return new Thickness();
+    }
+  }
+
   public ThicknessAnimation() {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    registerExtend = false;
-    return NoesisGUI_PINVOKE.new_ThicknessAnimation();
+    if (type == typeof(ThicknessAnimation)) {
+      registerExtend = false;
+      return NoesisGUI_PINVOKE.new_ThicknessAnimation();
+    }
+    else {
+      return base.CreateExtendCPtr(type, out registerExtend);
+    }
   }
 
+  internal new static IntPtr Extend(string typeName) {
+    return NoesisGUI_PINVOKE.Extend_ThicknessAnimation(Marshal.StringToHGlobalAnsi(typeName));
+  }
 }
 
 }

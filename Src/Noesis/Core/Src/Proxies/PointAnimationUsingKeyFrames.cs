@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-public class PointAnimationUsingKeyFrames : AnimationTimeline {
+public sealed class PointAnimationUsingKeyFrames : PointAnimationBase {
   internal new static PointAnimationUsingKeyFrames CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
     return new PointAnimationUsingKeyFrames(cPtr, cMemoryOwn);
   }
@@ -25,6 +25,10 @@ public class PointAnimationUsingKeyFrames : AnimationTimeline {
 
   internal static HandleRef getCPtr(PointAnimationUsingKeyFrames obj) {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
+  }
+
+  protected internal override Point GetCurrentValueCore(Point defaultOriginValue, Point defaultDestinationValue, AnimationClock animationClock) {
+    return GetCurrentValueCoreHelper(defaultOriginValue, defaultDestinationValue, animationClock);
   }
 
   public PointAnimationUsingKeyFrames() {
@@ -39,6 +43,16 @@ public class PointAnimationUsingKeyFrames : AnimationTimeline {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.PointAnimationUsingKeyFrames_KeyFrames_get(swigCPtr);
       return (PointKeyFrameCollection)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  private Point GetCurrentValueCoreHelper(Point src, Point dst, AnimationClock clock) {
+    IntPtr ret = NoesisGUI_PINVOKE.PointAnimationUsingKeyFrames_GetCurrentValueCoreHelper(swigCPtr, ref src, ref dst, AnimationClock.getCPtr(clock));
+    if (ret != IntPtr.Zero) {
+      return Marshal.PtrToStructure<Point>(ret);
+    }
+    else {
+      return new Point();
     }
   }
 

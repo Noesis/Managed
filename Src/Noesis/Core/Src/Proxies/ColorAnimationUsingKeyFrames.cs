@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-public class ColorAnimationUsingKeyFrames : AnimationTimeline {
+public sealed class ColorAnimationUsingKeyFrames : ColorAnimationBase {
   internal new static ColorAnimationUsingKeyFrames CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
     return new ColorAnimationUsingKeyFrames(cPtr, cMemoryOwn);
   }
@@ -25,6 +25,10 @@ public class ColorAnimationUsingKeyFrames : AnimationTimeline {
 
   internal static HandleRef getCPtr(ColorAnimationUsingKeyFrames obj) {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
+  }
+
+  protected internal override Color GetCurrentValueCore(Color defaultOriginValue, Color defaultDestinationValue, AnimationClock animationClock) {
+    return GetCurrentValueCoreHelper(defaultOriginValue, defaultDestinationValue, animationClock);
   }
 
   public ColorAnimationUsingKeyFrames() {
@@ -39,6 +43,16 @@ public class ColorAnimationUsingKeyFrames : AnimationTimeline {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ColorAnimationUsingKeyFrames_KeyFrames_get(swigCPtr);
       return (ColorKeyFrameCollection)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  private Color GetCurrentValueCoreHelper(Color src, Color dst, AnimationClock clock) {
+    IntPtr ret = NoesisGUI_PINVOKE.ColorAnimationUsingKeyFrames_GetCurrentValueCoreHelper(swigCPtr, ref src, ref dst, AnimationClock.getCPtr(clock));
+    if (ret != IntPtr.Zero) {
+      return Marshal.PtrToStructure<Color>(ret);
+    }
+    else {
+      return new Color();
     }
   }
 

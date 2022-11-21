@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-public class SizeAnimationUsingKeyFrames : AnimationTimeline {
+public sealed class SizeAnimationUsingKeyFrames : SizeAnimationBase {
   internal new static SizeAnimationUsingKeyFrames CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
     return new SizeAnimationUsingKeyFrames(cPtr, cMemoryOwn);
   }
@@ -25,6 +25,10 @@ public class SizeAnimationUsingKeyFrames : AnimationTimeline {
 
   internal static HandleRef getCPtr(SizeAnimationUsingKeyFrames obj) {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
+  }
+
+  protected internal override Size GetCurrentValueCore(Size defaultOriginValue, Size defaultDestinationValue, AnimationClock animationClock) {
+    return GetCurrentValueCoreHelper(defaultOriginValue, defaultDestinationValue, animationClock);
   }
 
   public SizeAnimationUsingKeyFrames() {
@@ -39,6 +43,16 @@ public class SizeAnimationUsingKeyFrames : AnimationTimeline {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.SizeAnimationUsingKeyFrames_KeyFrames_get(swigCPtr);
       return (SizeKeyFrameCollection)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  private Size GetCurrentValueCoreHelper(Size src, Size dst, AnimationClock clock) {
+    IntPtr ret = NoesisGUI_PINVOKE.SizeAnimationUsingKeyFrames_GetCurrentValueCoreHelper(swigCPtr, ref src, ref dst, AnimationClock.getCPtr(clock));
+    if (ret != IntPtr.Zero) {
+      return Marshal.PtrToStructure<Size>(ret);
+    }
+    else {
+      return new Size();
     }
   }
 

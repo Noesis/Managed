@@ -60,15 +60,15 @@ public abstract class BrushShader : Animatable {
   }
 
 #if UNITY_5_3_OR_NEWER
-  protected NoesisShader CreateShader() {
+  protected NoesisShader CreateShader(int numTextures) {
     string name = GetType().Name.Replace("Brush", ".noesisbrush");
     NoesisShader shader = NoesisShaderProvider.instance.GetShader(name);
 
     if (shader != null) {
-      shader.brush_path = NoesisRenderer.CreatePixelShader((byte)Shader.Enum.Path_Pattern, shader.brush_path_bytecode);
-      shader.brush_path_aa = NoesisRenderer.CreatePixelShader((byte)Shader.Enum.Path_AA_Pattern, shader.brush_path_aa_bytecode);
-      shader.brush_sdf = NoesisRenderer.CreatePixelShader((byte)Shader.Enum.SDF_Pattern, shader.brush_sdf_bytecode);
-      shader.brush_opacity = NoesisRenderer.CreatePixelShader((byte)Shader.Enum.Opacity_Pattern, shader.brush_opacity_bytecode);
+      shader.brush_path = NoesisRenderer.CreatePixelShader((byte)Shader.Enum.Path_Pattern, numTextures, shader.brush_path_bytecode);
+      shader.brush_path_aa = NoesisRenderer.CreatePixelShader((byte)Shader.Enum.Path_AA_Pattern, numTextures, shader.brush_path_aa_bytecode);
+      shader.brush_sdf = NoesisRenderer.CreatePixelShader((byte)Shader.Enum.SDF_Pattern, numTextures, shader.brush_sdf_bytecode);
+      shader.brush_opacity = NoesisRenderer.CreatePixelShader((byte)Shader.Enum.Opacity_Pattern, numTextures, shader.brush_opacity_bytecode);
       return shader;
     }
 
@@ -84,10 +84,18 @@ public abstract class BrushShader : Animatable {
       SetPixelShader(shader.brush_opacity, BrushShader.Target.Opacity);
     }
   }
+
+  protected void SetTexture(UnityEngine.Texture texture, uint index) {
+    NoesisGUI_PINVOKE.BrushShader_SetTexture(swigCPtr, Noesis.Extend.GetInstanceHandle(texture), index);
+  }
 #endif
 
   private void SetPixelShader(IntPtr value, int target) {
     NoesisGUI_PINVOKE.BrushShader_SetPixelShader(swigCPtr, value, target);
+  }
+
+  protected void SetTexture(ImageSource texture, uint index) {
+    NoesisGUI_PINVOKE.BrushShader_SetTexture(swigCPtr, ImageSource.getCPtr(texture), index);
   }
 
   private void SetConstantBuffer(IntPtr buffer, uint size) {

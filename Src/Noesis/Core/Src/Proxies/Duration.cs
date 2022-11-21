@@ -34,7 +34,7 @@ public struct Duration {
     }
   }
 
-  public System.TimeSpan TimeSpan {
+  public TimeSpan TimeSpan {
     get {
       if (!HasTimeSpan) {
         throw new InvalidOperationException("Duration does not have TimeSpan");
@@ -55,21 +55,21 @@ public struct Duration {
     }
   }
 
-  public Duration(System.TimeSpan timeSpan) {
-    if (timeSpan < System.TimeSpan.Zero) {
+  public Duration(TimeSpan timeSpan) {
+    if (timeSpan < TimeSpan.Zero) {
       throw new ArgumentException("Duration cannot be negative");
     }
     this._durationType = Duration.DurationType.TimeSpan;
     this._timeSpan = timeSpan;
   }
 
-  public static implicit operator Duration(System.TimeSpan timeSpan) {
+  public static implicit operator Duration(TimeSpan timeSpan) {
     return new Duration(timeSpan);
   }
 
   public static Duration operator+(Duration t0, Duration t1) {
     if (t0.HasTimeSpan && t1.HasTimeSpan) {
-      return new Duration(t0._timeSpan + t1._timeSpan);
+      return new Duration((TimeSpan)t0._timeSpan + (TimeSpan)t1._timeSpan);
     }
     if (t0._durationType == Duration.DurationType.Forever && t1._durationType == Duration.DurationType.Forever) {
       return Duration.Forever;
@@ -79,7 +79,7 @@ public struct Duration {
 
   public static Duration operator-(Duration t0, Duration t1) {
     if (t0.HasTimeSpan && t1.HasTimeSpan) {
-      return new Duration(t0._timeSpan - t1._timeSpan);
+      return new Duration((TimeSpan)t0._timeSpan - (TimeSpan)t1._timeSpan);
     }
     if (t0._durationType == Duration.DurationType.Forever && t1.HasTimeSpan) {
       return Duration.Forever;
@@ -89,7 +89,7 @@ public struct Duration {
 
   public static bool operator==(Duration t0, Duration t1) {
     if (t0.HasTimeSpan && t1.HasTimeSpan) {
-      return t0._timeSpan == t1._timeSpan;
+      return (TimeSpan)t0._timeSpan == (TimeSpan)t1._timeSpan;
     }
     return t0._durationType == t1._durationType;
   }
@@ -100,7 +100,7 @@ public struct Duration {
 
   public static bool operator<(Duration t0, Duration t1) {
     if (t0.HasTimeSpan && t1.HasTimeSpan) {
-        return t0._timeSpan < t1._timeSpan;
+        return (TimeSpan)t0._timeSpan < (TimeSpan)t1._timeSpan;
     }
     return t0.HasTimeSpan && t1._durationType == Duration.DurationType.Forever;
   }
@@ -112,7 +112,7 @@ public struct Duration {
 
   public static bool operator>(Duration t0, Duration t1) {
     if (t0.HasTimeSpan && t1.HasTimeSpan) {
-      return t0._timeSpan > t1._timeSpan;
+      return (TimeSpan)t0._timeSpan > (TimeSpan)t1._timeSpan;
     }
     return (!t0.HasTimeSpan || t1._durationType != Duration.DurationType.Forever) &&
      (t0._durationType == Duration.DurationType.Forever && t1.HasTimeSpan);
@@ -123,7 +123,7 @@ public struct Duration {
      (t0._durationType != Duration.DurationType.Automatic && t1._durationType != Duration.DurationType.Automatic && !(t0 < t1));
   }
 
-  public override bool Equals(System.Object obj) {
+  public override bool Equals(Object obj) {
     return obj is Duration && this == (Duration)obj;
   }
 
@@ -133,14 +133,14 @@ public struct Duration {
 
   public override int GetHashCode() {
     if (HasTimeSpan) {
-        return this._timeSpan.GetHashCode();
+        return ((TimeSpan)this._timeSpan).GetHashCode();
     }
     return this._durationType.GetHashCode();
   }
 
   public override string ToString() {
     switch (this._durationType) {
-      case Duration.DurationType.TimeSpan: return ((System.TimeSpan)this._timeSpan).ToString();
+      case Duration.DurationType.TimeSpan: return ((TimeSpan)this._timeSpan).ToString();
       case Duration.DurationType.Forever: return "Forever";
       case Duration.DurationType.Automatic: return "Automatic";
       default: return "Automatic";

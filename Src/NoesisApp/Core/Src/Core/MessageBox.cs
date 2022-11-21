@@ -136,7 +136,7 @@ namespace NoesisApp
             SetValue(MessageBoxIconProperty, icon);
             SetValue(MessageBoxCloseProperty, close);
 
-            GUI.LoadComponent(this, "Src/Core/MessageBox.xaml");
+            GUI.LoadComponent(this, "/Noesis.App;component/Src/Core/MessageBox.xaml");
         }
 
         #region Private members

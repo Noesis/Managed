@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-public class DoubleAnimationUsingKeyFrames : AnimationTimeline {
+public sealed class DoubleAnimationUsingKeyFrames : DoubleAnimationBase {
   internal new static DoubleAnimationUsingKeyFrames CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
     return new DoubleAnimationUsingKeyFrames(cPtr, cMemoryOwn);
   }
@@ -25,6 +25,10 @@ public class DoubleAnimationUsingKeyFrames : AnimationTimeline {
 
   internal static HandleRef getCPtr(DoubleAnimationUsingKeyFrames obj) {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
+  }
+
+  protected internal override float GetCurrentValueCore(float defaultOriginValue, float defaultDestinationValue, AnimationClock animationClock) {
+    return GetCurrentValueCoreHelper(defaultOriginValue, defaultDestinationValue, animationClock);
   }
 
   public DoubleAnimationUsingKeyFrames() {
@@ -40,6 +44,11 @@ public class DoubleAnimationUsingKeyFrames : AnimationTimeline {
       IntPtr cPtr = NoesisGUI_PINVOKE.DoubleAnimationUsingKeyFrames_KeyFrames_get(swigCPtr);
       return (DoubleKeyFrameCollection)Noesis.Extend.GetProxy(cPtr, false);
     }
+  }
+
+  private float GetCurrentValueCoreHelper(float src, float dst, AnimationClock clock) {
+    float ret = NoesisGUI_PINVOKE.DoubleAnimationUsingKeyFrames_GetCurrentValueCoreHelper(swigCPtr, src, dst, AnimationClock.getCPtr(clock));
+    return ret;
   }
 
 }

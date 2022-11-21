@@ -15,11 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-public class AnimationTimeline : Timeline {
-  internal new static AnimationTimeline CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
-    return new AnimationTimeline(cPtr, cMemoryOwn);
-  }
-
+public abstract class AnimationTimeline : Timeline {
   internal AnimationTimeline(IntPtr cPtr, bool cMemoryOwn) : base(cPtr, cMemoryOwn) {
   }
 
@@ -30,10 +26,9 @@ public class AnimationTimeline : Timeline {
   protected AnimationTimeline() {
   }
 
-  public object GetCurrentValue(object defaultOriginValue, object defaultDestinationValue, AnimationClock animationClock) {
-    IntPtr cPtr = GetCurrentValueHelper(defaultOriginValue, defaultDestinationValue, animationClock);
-    return Noesis.Extend.GetProxy(cPtr, true);
-  }
+  public abstract Type TargetPropertyType { get; }
+
+  public abstract object GetCurrentValue(object defaultOriginValue, object defaultDestinationValue, AnimationClock animationClock);
 
   internal bool IsValidTarget(DependencyProperty dp) {
     return dp.PropertyType.IsAssignableFrom(TargetPropertyType) || TargetPropertyType == typeof(object);
@@ -50,17 +45,6 @@ public class AnimationTimeline : Timeline {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.AnimationTimeline_IsCumulativeProperty_get();
       return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
-    }
-  }
-
-  public Type TargetPropertyType {
-    get {
-      IntPtr cPtr = NoesisGUI_PINVOKE.AnimationTimeline_TargetPropertyType_get(swigCPtr);
-      if (cPtr != IntPtr.Zero) {
-        Noesis.Extend.NativeTypeInfo info = Noesis.Extend.GetNativeTypeInfo(cPtr);
-        return info.Type;
-      }
-      return null;
     }
   }
 
@@ -84,11 +68,9 @@ public class AnimationTimeline : Timeline {
     } 
   }
 
-  private IntPtr GetCurrentValueHelper(object defValSrc, object defValDest, AnimationClock clock) {
-    IntPtr ret = NoesisGUI_PINVOKE.AnimationTimeline_GetCurrentValueHelper(swigCPtr, Noesis.Extend.GetInstanceHandle(defValSrc), Noesis.Extend.GetInstanceHandle(defValDest), AnimationClock.getCPtr(clock));
-    return ret;
+  internal new static IntPtr Extend(string typeName) {
+    return NoesisGUI_PINVOKE.Extend_AnimationTimeline(Marshal.StringToHGlobalAnsi(typeName));
   }
-
 }
 
 }

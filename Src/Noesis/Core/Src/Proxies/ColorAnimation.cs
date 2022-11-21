@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-public class ColorAnimation : BaseAnimation {
+public class ColorAnimation : ColorAnimationBase {
   internal new static ColorAnimation CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
     return new ColorAnimation(cPtr, cMemoryOwn);
   }
@@ -25,6 +25,10 @@ public class ColorAnimation : BaseAnimation {
 
   internal static HandleRef getCPtr(ColorAnimation obj) {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
+  }
+
+  protected internal override Color GetCurrentValueCore(Color defaultOriginValue, Color defaultDestinationValue, AnimationClock animationClock) {
+    return GetCurrentValueCoreHelper(defaultOriginValue, defaultDestinationValue, animationClock);
   }
 
   public static DependencyProperty ByProperty {
@@ -44,6 +48,13 @@ public class ColorAnimation : BaseAnimation {
   public static DependencyProperty ToProperty {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ColorAnimation_ToProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static DependencyProperty EasingFunctionProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.ColorAnimation_EasingFunctionProperty_get();
       return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
     }
   }
@@ -102,14 +113,42 @@ public class ColorAnimation : BaseAnimation {
 
   }
 
+  public EasingFunctionBase EasingFunction {
+    set {
+      NoesisGUI_PINVOKE.ColorAnimation_EasingFunction_set(swigCPtr, EasingFunctionBase.getCPtr(value));
+    } 
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.ColorAnimation_EasingFunction_get(swigCPtr);
+      return (EasingFunctionBase)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  private Color GetCurrentValueCoreHelper(Color src, Color dst, AnimationClock clock) {
+    IntPtr ret = NoesisGUI_PINVOKE.ColorAnimation_GetCurrentValueCoreHelper(swigCPtr, ref src, ref dst, AnimationClock.getCPtr(clock));
+    if (ret != IntPtr.Zero) {
+      return Marshal.PtrToStructure<Color>(ret);
+    }
+    else {
+      return new Color();
+    }
+  }
+
   public ColorAnimation() {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    registerExtend = false;
-    return NoesisGUI_PINVOKE.new_ColorAnimation();
+    if (type == typeof(ColorAnimation)) {
+      registerExtend = false;
+      return NoesisGUI_PINVOKE.new_ColorAnimation();
+    }
+    else {
+      return base.CreateExtendCPtr(type, out registerExtend);
+    }
   }
 
+  internal new static IntPtr Extend(string typeName) {
+    return NoesisGUI_PINVOKE.Extend_ColorAnimation(Marshal.StringToHGlobalAnsi(typeName));
+  }
 }
 
 }

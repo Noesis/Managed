@@ -11,7 +11,7 @@ namespace NoesisApp
             {
                 FontFallbacks = new string[]
                 {
-                    "Theme/Fonts/#PT Root UI",
+                    "/Noesis.GUI.Extensions;component/Theme/Fonts/#PT Root UI",
                     "Arial",
                     "Segoe UI Emoji",           // Windows 10 Emojis
                     "Arial Unicode MS",         // Almost everything (but part of MS Office, not Windows)
@@ -25,7 +25,7 @@ namespace NoesisApp
             {
                 FontFallbacks = new string[]
                 {
-                    "Theme/Fonts/#PT Root UI",
+                    "/Noesis.GUI.Extensions;component/Theme/Fonts/#PT Root UI",
                     "Arial",
                     "Arial Unicode MS"          // MacOS 10.5+
                 };
@@ -34,7 +34,7 @@ namespace NoesisApp
             {
                 FontFallbacks = new string[]
                 {
-                    "Theme/Fonts/#PT Root UI",
+                    "/Noesis.GUI.Extensions;component/Theme/Fonts/#PT Root UI",
                     "PingFang SC",              // Simplified Chinese (iOS 9+)
                     "Apple SD Gothic Neo",      // Korean (iOS 7+)
                     "Hiragino Sans"             // Japanese (iOS 9+)
@@ -44,7 +44,7 @@ namespace NoesisApp
             {
                 FontFallbacks = new string[]
                 {
-                    "Theme/Fonts/#PT Root UI",
+                    "/Noesis.GUI.Extensions;component/Theme/Fonts/#PT Root UI",
                     "Noto Sans CJK SC",         // Simplified Chinese
                     "Noto Sans CJK KR",         // Korean
                     "Noto Sans CJK JP"          // Japanese
@@ -54,7 +54,7 @@ namespace NoesisApp
             {
                 FontFallbacks = new string[]
                 {
-                    "Theme/Fonts/#PT Root UI",
+                    "/Noesis.GUI.Extensions;component/Theme/Fonts/#PT Root UI",
                     "Noto Sans CJK SC",         // Simplified Chinese
                     "Noto Sans CJK KR",         // Korean
                     "Noto Sans CJK JP"          // Japanese
@@ -64,7 +64,7 @@ namespace NoesisApp
             {
                 FontFallbacks = new string[]
                 {
-                    "Theme/Fonts/#PT Root UI"
+                    "/Noesis.GUI.Extensions;component/Theme/Fonts/#PT Root UI"
                 };
             }
         }

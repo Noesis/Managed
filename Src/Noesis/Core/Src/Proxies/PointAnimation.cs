@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-public class PointAnimation : BaseAnimation {
+public class PointAnimation : PointAnimationBase {
   internal new static PointAnimation CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
     return new PointAnimation(cPtr, cMemoryOwn);
   }
@@ -25,6 +25,10 @@ public class PointAnimation : BaseAnimation {
 
   internal static HandleRef getCPtr(PointAnimation obj) {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
+  }
+
+  protected internal override Point GetCurrentValueCore(Point defaultOriginValue, Point defaultDestinationValue, AnimationClock animationClock) {
+    return GetCurrentValueCoreHelper(defaultOriginValue, defaultDestinationValue, animationClock);
   }
 
   public static DependencyProperty ByProperty {
@@ -44,6 +48,13 @@ public class PointAnimation : BaseAnimation {
   public static DependencyProperty ToProperty {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.PointAnimation_ToProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static DependencyProperty EasingFunctionProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.PointAnimation_EasingFunctionProperty_get();
       return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
     }
   }
@@ -102,14 +113,42 @@ public class PointAnimation : BaseAnimation {
 
   }
 
+  public EasingFunctionBase EasingFunction {
+    set {
+      NoesisGUI_PINVOKE.PointAnimation_EasingFunction_set(swigCPtr, EasingFunctionBase.getCPtr(value));
+    } 
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.PointAnimation_EasingFunction_get(swigCPtr);
+      return (EasingFunctionBase)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  private Point GetCurrentValueCoreHelper(Point src, Point dst, AnimationClock clock) {
+    IntPtr ret = NoesisGUI_PINVOKE.PointAnimation_GetCurrentValueCoreHelper(swigCPtr, ref src, ref dst, AnimationClock.getCPtr(clock));
+    if (ret != IntPtr.Zero) {
+      return Marshal.PtrToStructure<Point>(ret);
+    }
+    else {
+      return new Point();
+    }
+  }
+
   public PointAnimation() {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    registerExtend = false;
-    return NoesisGUI_PINVOKE.new_PointAnimation();
+    if (type == typeof(PointAnimation)) {
+      registerExtend = false;
+      return NoesisGUI_PINVOKE.new_PointAnimation();
+    }
+    else {
+      return base.CreateExtendCPtr(type, out registerExtend);
+    }
   }
 
+  internal new static IntPtr Extend(string typeName) {
+    return NoesisGUI_PINVOKE.Extend_PointAnimation(Marshal.StringToHGlobalAnsi(typeName));
+  }
 }
 
 }

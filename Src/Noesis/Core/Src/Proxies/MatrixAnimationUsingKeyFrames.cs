@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-public class MatrixAnimationUsingKeyFrames : AnimationTimeline {
+public sealed class MatrixAnimationUsingKeyFrames : MatrixAnimationBase {
   internal new static MatrixAnimationUsingKeyFrames CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
     return new MatrixAnimationUsingKeyFrames(cPtr, cMemoryOwn);
   }
@@ -25,6 +25,10 @@ public class MatrixAnimationUsingKeyFrames : AnimationTimeline {
 
   internal static HandleRef getCPtr(MatrixAnimationUsingKeyFrames obj) {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
+  }
+
+  protected internal override Matrix GetCurrentValueCore(Matrix defaultOriginValue, Matrix defaultDestinationValue, AnimationClock animationClock) {
+    return GetCurrentValueCoreHelper(defaultOriginValue, defaultDestinationValue, animationClock);
   }
 
   public MatrixAnimationUsingKeyFrames() {
@@ -39,6 +43,16 @@ public class MatrixAnimationUsingKeyFrames : AnimationTimeline {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.MatrixAnimationUsingKeyFrames_KeyFrames_get(swigCPtr);
       return (MatrixKeyFrameCollection)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  private Matrix GetCurrentValueCoreHelper(Matrix src, Matrix dst, AnimationClock clock) {
+    IntPtr ret = NoesisGUI_PINVOKE.MatrixAnimationUsingKeyFrames_GetCurrentValueCoreHelper(swigCPtr, ref src, ref dst, AnimationClock.getCPtr(clock));
+    if (ret != IntPtr.Zero) {
+      return Marshal.PtrToStructure<Matrix>(ret);
+    }
+    else {
+      return Matrix.Identity;
     }
   }
 

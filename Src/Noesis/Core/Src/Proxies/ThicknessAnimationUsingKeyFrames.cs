@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-public class ThicknessAnimationUsingKeyFrames : AnimationTimeline {
+public sealed class ThicknessAnimationUsingKeyFrames : ThicknessAnimationBase {
   internal new static ThicknessAnimationUsingKeyFrames CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
     return new ThicknessAnimationUsingKeyFrames(cPtr, cMemoryOwn);
   }
@@ -25,6 +25,10 @@ public class ThicknessAnimationUsingKeyFrames : AnimationTimeline {
 
   internal static HandleRef getCPtr(ThicknessAnimationUsingKeyFrames obj) {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
+  }
+
+  protected internal override Thickness GetCurrentValueCore(Thickness defaultOriginValue, Thickness defaultDestinationValue, AnimationClock animationClock) {
+    return GetCurrentValueCoreHelper(defaultOriginValue, defaultDestinationValue, animationClock);
   }
 
   public ThicknessAnimationUsingKeyFrames() {
@@ -39,6 +43,16 @@ public class ThicknessAnimationUsingKeyFrames : AnimationTimeline {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ThicknessAnimationUsingKeyFrames_KeyFrames_get(swigCPtr);
       return (ThicknessKeyFrameCollection)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  private Thickness GetCurrentValueCoreHelper(Thickness src, Thickness dst, AnimationClock clock) {
+    IntPtr ret = NoesisGUI_PINVOKE.ThicknessAnimationUsingKeyFrames_GetCurrentValueCoreHelper(swigCPtr, ref src, ref dst, AnimationClock.getCPtr(clock));
+    if (ret != IntPtr.Zero) {
+      return Marshal.PtrToStructure<Thickness>(ret);
+    }
+    else {
+      return new Thickness();
     }
   }
 

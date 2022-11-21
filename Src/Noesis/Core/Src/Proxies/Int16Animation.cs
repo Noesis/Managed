@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-public class Int16Animation : BaseAnimation {
+public class Int16Animation : Int16AnimationBase {
   internal new static Int16Animation CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
     return new Int16Animation(cPtr, cMemoryOwn);
   }
@@ -25,6 +25,10 @@ public class Int16Animation : BaseAnimation {
 
   internal static HandleRef getCPtr(Int16Animation obj) {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
+  }
+
+  protected internal override short GetCurrentValueCore(short defaultOriginValue, short defaultDestinationValue, AnimationClock animationClock) {
+    return GetCurrentValueCoreHelper(defaultOriginValue, defaultDestinationValue, animationClock);
   }
 
   public static DependencyProperty ByProperty {
@@ -44,6 +48,13 @@ public class Int16Animation : BaseAnimation {
   public static DependencyProperty ToProperty {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Int16Animation_ToProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static DependencyProperty EasingFunctionProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Int16Animation_EasingFunctionProperty_get();
       return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
     }
   }
@@ -102,14 +113,37 @@ public class Int16Animation : BaseAnimation {
 
   }
 
+  public EasingFunctionBase EasingFunction {
+    set {
+      NoesisGUI_PINVOKE.Int16Animation_EasingFunction_set(swigCPtr, EasingFunctionBase.getCPtr(value));
+    } 
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Int16Animation_EasingFunction_get(swigCPtr);
+      return (EasingFunctionBase)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  private short GetCurrentValueCoreHelper(short src, short dst, AnimationClock clock) {
+    short ret = NoesisGUI_PINVOKE.Int16Animation_GetCurrentValueCoreHelper(swigCPtr, src, dst, AnimationClock.getCPtr(clock));
+    return ret;
+  }
+
   public Int16Animation() {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    registerExtend = false;
-    return NoesisGUI_PINVOKE.new_Int16Animation();
+    if (type == typeof(Int16Animation)) {
+      registerExtend = false;
+      return NoesisGUI_PINVOKE.new_Int16Animation();
+    }
+    else {
+      return base.CreateExtendCPtr(type, out registerExtend);
+    }
   }
 
+  internal new static IntPtr Extend(string typeName) {
+    return NoesisGUI_PINVOKE.Extend_Int16Animation(Marshal.StringToHGlobalAnsi(typeName));
+  }
 }
 
 }

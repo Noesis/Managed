@@ -13,7 +13,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>NoesisGUI XAML GUI Application C# Theme</PackageTags>
     <PackageReleaseNotes>https://www.noesisengine.com/docs/Gui.Core.Changelog.html</PackageReleaseNotes>
-    <RootNamespace>NoesisApp</RootNamespace>
+    <RootNamespace></RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageOutputPath>$(SolutionDir)NuGet\</PackageOutputPath>
   </PropertyGroup>

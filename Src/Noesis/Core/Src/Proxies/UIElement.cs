@@ -712,6 +712,15 @@ public class UIElement : Visual {
       RemoveEventHandler("IsKeyboardFocusWithinChanged", value);
     }
   }
+
+  public event EventHandler LayoutChanged {
+    add {
+      AddEventHandler("LayoutChanged", value);
+    }
+    remove {
+      RemoveEventHandler("LayoutChanged", value);
+    }
+  }
   #endregion
 
   #region Animation
