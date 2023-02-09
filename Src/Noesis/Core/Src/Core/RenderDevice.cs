@@ -1311,8 +1311,12 @@ namespace Noesis
     /// </summary>
     public class RenderDeviceGL : NativeRenderDevice
     {
-        public RenderDeviceGL() :
-            base(Noesis_RenderDeviceGL_Create(), true)
+        public RenderDeviceGL() : this(false)
+        {
+        }
+
+        public RenderDeviceGL(bool sRGB) :
+            base(Noesis_RenderDeviceGL_Create(sRGB), true)
         {
         }
 
@@ -1329,7 +1333,7 @@ namespace Noesis
 
         #region Imports
         [DllImport(Library.Name)]
-        static extern IntPtr Noesis_RenderDeviceGL_Create();
+        static extern IntPtr Noesis_RenderDeviceGL_Create(bool sRGB);
 
         [DllImport(Library.Name)]
         static extern IntPtr Noesis_RenderDeviceGL_WrapTexture(IntPtr nativePointer,
@@ -1499,16 +1503,25 @@ namespace Noesis
     {
         public struct GPUAllocator
         {
+            // IntPtr AllocateGarlic(uint size, uint alignment)
             public Func<uint, uint, IntPtr> AllocateGarlic;
+            // void ReleaseGarlic(IntPtr ptr)
             public Action<IntPtr> ReleaseGarlic;
+            // IntPtr AllocateOnion(uint size, uint alignment)
             public Func<uint, uint, IntPtr> AllocateOnion;
+            // void ReleaseOnion(IntPtr ptr)
             public Action<IntPtr> ReleaseOnion;
         }
 
         public RenderDeviceGNM(bool sRGB, GPUAllocator allocator) :
-            base(Noesis_RenderDeviceGNM_Create(sRGB, _garlicAlloc, _garlicFree, _onionAlloc, _onionFree), true)
+            base(CreateDevice(sRGB, allocator), true)
+        {
+        }
+
+        private static IntPtr CreateDevice(bool sRGB, GPUAllocator allocator)
         {
             _allocator = allocator;
+            return Noesis_RenderDeviceGNM_Create(sRGB, _garlicAlloc, _garlicFree, _onionAlloc, _onionFree);
         }
 
         /// <summary>
@@ -1606,6 +1619,118 @@ namespace Noesis
 
         [DllImport(Library.Name)]
         static extern IntPtr Noesis_RenderDeviceGNM_SetContext(HandleRef device, IntPtr context);
+        #endregion
+    }
+
+    /// <summary>
+    /// Creates an AGC RenderDevice (PlayStation 5).
+    /// </summary>
+    public class RenderDeviceAGC : NativeRenderDevice
+    {
+        public struct GPUAllocator
+        {
+            // IntPtr Alloc(uint size, uint alignment)
+            public Func<uint, uint, IntPtr> Alloc;
+            // void Free(IntPtr ptr)
+            public Action<IntPtr> Free;
+            // void RegisterResource(IntPtr ptr, uint size, uint type, string label)
+            public Action<IntPtr, uint, uint, string> RegisterResource;
+        }
+
+        public RenderDeviceAGC(bool sRGB, GPUAllocator allocator) :
+            base(CreateDevice(sRGB, allocator), true)
+        {
+        }
+
+        private static IntPtr CreateDevice(bool sRGB, GPUAllocator allocator)
+        {
+            _allocator = allocator;
+            return Noesis_RenderDeviceAGC_Create(sRGB, _alloc, _free, _registerResource);
+        }
+
+        /// <summary>
+        /// Creates a Texture wrapper for the specified AGC texture native handle
+        /// </summary>
+        public static Texture WrapTexture(object texture, IntPtr nativePointer,
+            int width, int height, int numMipMaps, bool isInverted, bool hasAlpha)
+        {
+            return WrapTexture(texture, Noesis_RenderDeviceAGC_WrapTexture(nativePointer,
+                width, height, numMipMaps, isInverted, hasAlpha));
+        }
+
+        public void SetCommandBuffer(IntPtr drawCommandBuffer)
+        {
+            Noesis_RenderDeviceAGC_SetCommandBuffer(swigCPtr, drawCommandBuffer);
+        }
+
+        #region Allocator callbacks
+        [MonoPInvokeCallback(typeof(Callback_Alloc))]
+        private static IntPtr Alloc(IntPtr user, uint size, uint alignment)
+        {
+            try
+            {
+                return _allocator.Alloc(size, alignment);
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+
+            return IntPtr.Zero;
+        }
+
+        [MonoPInvokeCallback(typeof(Callback_Free))]
+        private static void Free(IntPtr user, IntPtr address)
+        {
+            try
+            {
+                _allocator.Free(address);
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        [MonoPInvokeCallback(typeof(Callback_RegisterResource))]
+        private static void RegisterResource(IntPtr user, IntPtr ptr, uint size, uint type,
+            IntPtr labelPtr)
+        {
+            try
+            {
+                string label = Noesis.Extend.StringFromNativeUtf8(labelPtr);
+                _allocator.RegisterResource(ptr, size, type, label);
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        private delegate IntPtr Callback_Alloc(IntPtr user, uint size, uint alignment);
+        private delegate void Callback_Free(IntPtr user, IntPtr address);
+        private delegate void Callback_RegisterResource(IntPtr user, IntPtr ptr, uint size,
+            uint type, IntPtr label);
+
+        private static Callback_Alloc _alloc = Alloc;
+        private static Callback_Free _free = Free;
+        private static Callback_RegisterResource _registerResource = RegisterResource;
+
+        private static GPUAllocator _allocator;
+        #endregion
+
+        #region Imports
+        [DllImport(Library.Name)]
+        static extern IntPtr Noesis_RenderDeviceAGC_Create(bool sRGB,
+            Callback_Alloc alloc, Callback_Free free, Callback_RegisterResource registerResource);
+
+        [DllImport(Library.Name)]
+        static extern IntPtr Noesis_RenderDeviceAGC_WrapTexture(IntPtr nativePointer,
+            int width, int height, int numMipMaps, bool isInverted, bool hasAlpha);
+
+        [DllImport(Library.Name)]
+        static extern IntPtr Noesis_RenderDeviceAGC_SetCommandBuffer(HandleRef device,
+            IntPtr drawCommandBuffer);
         #endregion
     }
 }

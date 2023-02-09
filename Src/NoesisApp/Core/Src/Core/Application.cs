@@ -125,7 +125,13 @@ namespace NoesisApp
 
         private LicenseInfo GetLicenseInfo()
         {
-            Stream stream = GetAssemblyResource(GetType().Assembly, "", "NoesisLicense.txt");
+            Type app = GetType();
+            Stream stream = GetAssemblyResource(app.Assembly, app.Namespace, "NoesisLicense.txt");
+            if (stream == null)
+            {
+                stream = GetAssemblyResource(app.Assembly, "", "NoesisLicense.txt");
+            }
+
             if (stream != null)
             {
                 string name, key;
