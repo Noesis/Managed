@@ -175,6 +175,7 @@ namespace NoesisApp
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
             glViewport(0, 0, width, height);
+            glDisable(GL_SCISSOR_TEST);
 
             glClearStencil(0);
             uint mask = GL_STENCIL_BUFFER_BIT;
@@ -314,6 +315,7 @@ namespace NoesisApp
         private const uint GL_FRAMEBUFFER = 0x8D40;
         private const uint GL_STENCIL_BUFFER_BIT = 0x00000400;
         private const uint GL_COLOR_BUFFER_BIT = 0x00004000;
+        private const uint GL_SCISSOR_TEST = 0x00000C11;
         private const uint GL_VIEWPORT = 0x00000BA2;
         private const uint GL_PACK_ALIGNMENT = 0x00000D05;
         private const uint GL_UNSIGNED_BYTE = 0x00001401;
@@ -336,6 +338,9 @@ namespace NoesisApp
 
         [DllImport("libGL.so.1")]
         static extern void glClearColor(float r, float g, float b, float a);
+
+        [DllImport("libGL.so.1")]
+        public static extern void glDisable(uint cap);
 
         [DllImport("libGL.so.1")]
         public static extern void glGetIntegerv(uint pname, int[] param);

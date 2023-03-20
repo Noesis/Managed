@@ -30,12 +30,20 @@ namespace NoesisApp
 
         protected override void OnAttached()
         {
-            AssociatedObject.PreviewInvoke += OnPreviewInvoke;
+            TriggerBase trigger = AssociatedObject;
+            if (trigger != null)
+            {
+                trigger.PreviewInvoke += OnPreviewInvoke;
+            }
         }
 
         protected override void OnDetaching()
         {
-            AssociatedObject.PreviewInvoke -= OnPreviewInvoke;
+            TriggerBase trigger = AssociatedObject;
+            if (trigger != null)
+            {
+                trigger.PreviewInvoke -= OnPreviewInvoke;
+            }
         }
 
         private void OnPreviewInvoke(object sender, PreviewInvokeEventArgs e)

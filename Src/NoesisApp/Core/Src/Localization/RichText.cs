@@ -9,68 +9,94 @@ namespace NoesisGUIExtensions
     /// Adds a *Text* attached property for TextBlock which formats
     /// BBCode <https://www.bbcode.org/reference.php> into Inlines.
     ///
-    /// Default supported BBCode tags, with their Inline output:
-    ///
-    /// * *b*: Bold
-    ///
-    /// * *i*: Italic
-    ///
-    /// * *u*: Underline
-    ///
-    /// * *size*: Span with FontSize set to the parameter value
-    ///
-    /// * *font*: Span with FontFamily set to the parameter value
-    ///
-    /// * *color*: Span with Foreground set to the parameter value
-    ///
-    /// * *style*: Span with the Style property set to the resource key provided by the parameter value
-    ///
-    /// * *img*: Image contained in an InlineUIContainer
-    ///
-    /// * *bind*: Run containing a Binding with the Path property set to the tag contents. This tag
-    ///   has an optional "format" parameter which can be used to modify the StringFormat property
-    ///   of the Binding.
-    ///
-    ///
     /// Usage:
-    ///
-    ///    <Grid
-    ///      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    ///      xmlns:noesis="clr-namespace:NoesisGUIExtensions;assembly=Noesis.GUI.Extensions">
-    ///      <TextBlock noesis:RichText.Text="Plain. [b]Bold, [i]bold italic, [/i]
-    ///        [size=60]Size 60 text.[/size] [img height=80]disk.png[/img]" />
-    ///    </Grid>
-    ///
-    ///
-    /// Usage:
-    ///
-    ///    <Grid
-    ///      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    ///      xmlns:noesis="clr-namespace:NoesisGUIExtensions;assembly=Noesis.GUI.Extensions">
-    ///      <Grid.Resources>
-    ///        <Style x:Key="Header1" TargetType="{x:Type Span}">
-    ///          <Setter Property="FontSize" Value="30"/>
-    ///          <Setter Property="Foreground" Value="Green"/>
-    ///        </Style>
-    ///      </Grid.Resources>
-    ///      <TextBlock noesis:RichText.Text="[style='Header1']Styled text.[/style]" />
-    ///    </Grid>
-    ///
-    ///
-    /// Usage:
-    ///
-    ///    <Grid
-    ///      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    ///      xmlns:noesis="clr-namespace:NoesisGUIExtensions;assembly=Noesis.GUI.Extensions"
-    ///      xmlns:local="clr-namespace:MyGame">
-    ///      <Grid.DataContext>
-    ///        <local:MyViewModel CurrentHealth="66.75" MaxHealth="100" />
-    ///      </Grid.DataContext>
-    ///      <TextBlock noesis:RichText.Text="Health is [bind format='{0:0}']CurrentHealth[/bind] out of
-    ///        [bind format='{0:0}']MaxHealth[/bind]" />
-    ///    </Grid>
-    /// 
-    /// </summary>
+	///
+	///    <Grid
+	///      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	///      xmlns:noesis="clr-namespace:NoesisGUIExtensions;assembly=Noesis.GUI.Extensions">
+	///      <TextBlock noesis:RichText.Text="Plain. [b]Bold, [i]bold italic, [/i]
+	///        [size=60]Size 60 text.[/size] [color=Red]Red text.[/color] [img height=80]disk.png[/img]
+	///        [br/] [url='https://www.noesisengine.com/']NoesisEngine.com[/url]" />
+	///    </Grid>
+	///
+	///
+	/// Default supported BBCode tags, with their Inline output:
+	///
+	/// * *b*: Bold,
+	///   `"[b]bold.[/b]"`
+	///
+	///
+	/// * *i*: Italic,
+	///   `"[i]italic.[/i]"`
+	///
+	///
+	/// * *u*: Underline,
+	///   `"[u]underline.[/u]"`
+	///
+	///
+	/// * *size*: Span with FontSize set to the parameter value,
+	///   `"[size=60]size 60 text.[/size]"`
+	///
+	///
+	/// * *font*: Span with FontFamily set to the parameter value,
+	///   `"[font='#PT Root UI']PT Root UI font.[/]"`
+	///
+	///
+	/// * *color*: Span with Foreground set to the parameter value (a color name, or ARBG hex),
+	///   `"[color=Red]red.[/color][color=#FF0000FF]blue.[/color]"`
+	///
+	///
+	/// * *url*: Hyperlink with NavigateUri set to the parameter value,
+	///   `"[url='https://www.noesisengine.com/']NoesisEngine.com[/url]"`
+	///
+	///
+	/// * *br*: A LineBreak,
+	///   `"Line one.[br/]Line two."`
+	///
+	///
+	/// * *img*: Image contained in an InlineUIContainer,
+	///   `"[img height=80]disk.png[/img]"`
+	///
+	///
+	/// * *style*: Span with the Style property set to the resource key provided by the parameter value,
+	///   `"[style='Header1']Styled text.[/style]"`
+	///
+	///
+	/// Usage:
+	///
+	///      <Grid
+	///        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	///        xmlns:noesis="clr-namespace:NoesisGUIExtensions;assembly=Noesis.GUI.Extensions">
+	///        <Grid.Resources>
+	///          <Style x:Key="Header1" TargetType="{x:Type Span}">
+	///            <Setter Property="FontSize" Value="30"/>
+	///            <Setter Property="Foreground" Value="Green"/>
+	///          </Style>
+	///        </Grid.Resources>
+	///        <TextBlock noesis:RichText.Text="[style='Header1']Styled text.[/style]" />
+	///      </Grid>
+	///
+	///
+	/// * *bind*: Run containing a Binding with the Path property set to the tag contents. This tag
+	///   has an optional "format" parameter which can be used to modify the StringFormat property
+	///   of the Binding,
+	///   `"[bind format='{0:0}']Path[/bind]"`
+	///
+	///
+	/// Usage:
+	///
+	///      <Grid
+	///        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	///        xmlns:noesis="clr-namespace:NoesisGUIExtensions;assembly=Noesis.GUI.Extensions"
+	///        xmlns:local="clr-namespace:MyGame">
+	///        <Grid.DataContext>
+	///          <local:MyViewModel CurrentHealth="66.75" MaxHealth="100" />
+	///        </Grid.DataContext>
+	///        <TextBlock noesis:RichText.Text="Health is [bind format='{0:0}']CurrentHealth[/bind] out of
+	///          [bind format='{0:0}']MaxHealth[/bind]" />
+	///      </Grid>
+	/// 
+	/// </summary>
     public static class RichText
     {
         /// <summary>
@@ -101,9 +127,8 @@ namespace NoesisGUIExtensions
             {
                 InlineCollection collection = textBlock.Inlines;
                 collection.Clear();
-
-                string newValue = (string)args.NewValue;
-                TryParse(newValue.AsSpan(), textBlock, collection, out _);
+                
+                TryParse((string)args.NewValue, 0, textBlock, collection, out _);
             }
         }
 
@@ -336,47 +361,46 @@ namespace NoesisGUIExtensions
             Console.WriteLine("NOESIS: BBCode tag '%s' is not currently supported", tagName);
         }
 
-        private static void TryParse(ReadOnlySpan<char> input, TextBlock parent, InlineCollection inlineCollection, out ReadOnlySpan<char> output)
+        private static void TryParse(string input, int current, TextBlock parent, InlineCollection inlineCollection, out int output)
         {
-            if (input.Length == 0)
+            if (input.Length - current == 0)
             {
-                output = input;
+                output = current;
                 return;
             }
 
-            while (input.Length > 0)
+            while (input.Length - current > 0)
             {
-                if (input[0] == '[')
+                if (input[current] == '[')
                 {
-                    if (input.Length > 1 && input[1] == '/')
+                    if (input.Length - current > 1 && input[current + 1] == '/')
                     {
-                        output = input.Slice(1);
+                        output = current + 1;
                         return;
                     }
-                    ParseTag(input, parent, inlineCollection, out input);
+                    ParseTag(input, current, parent, inlineCollection, out current);
                 }
                 else
                 {
-                    ParseText(input, inlineCollection, out input);
+                    ParseText(input, current, inlineCollection, out current);
                 }
             }
 
-            output = input;
+            output = current;
         }
 
-        private static void ParseText(in ReadOnlySpan<char> input, InlineCollection inlineCollection, out ReadOnlySpan<char> output)
+        private static void ParseText(string input, int begin, InlineCollection inlineCollection, out int output)
         {
             StringBuilder stringBuilder = new StringBuilder();
-
-            int begin = 0;
-            int current = 0;
+            
+            int current = begin;
             for (; current < input.Length; current++)
             {
                 if (input[current] == '\\')
                 {
                     if (current - 1 > begin)
                     {
-                        stringBuilder.Append(input.Slice(begin, current - begin).ToString());
+                        stringBuilder.Append(input.Substring(begin, current - begin));
                     }
                     ++current;
                     begin = current;
@@ -384,7 +408,7 @@ namespace NoesisGUIExtensions
                 else if (input[current] == ']')
                 {
                     Console.WriteLine("NOESIS: BBCode contains a malformed closing bracket");
-                    output = ReadOnlySpan<char>.Empty;
+                    output = input.Length;
                     return;
                 }
                 else if (input[current] == '[')
@@ -395,20 +419,19 @@ namespace NoesisGUIExtensions
 
             if (current != begin)
             {
-                stringBuilder.Append(input.Slice(begin, current - begin).ToString());
+                stringBuilder.Append(input.Substring(begin, current - begin));
             }
 
             inlineCollection.Add(new Run(stringBuilder.ToString()));
 
-            output = input.Slice(current);
+            output = current;
         }
 
-        private static bool TryParseContent(in ReadOnlySpan<char> input, out string content, out ReadOnlySpan<char> output)
+        private static bool TryParseContent(string input, int begin, out string content, out int output)
         {
             StringBuilder stringBuilder = new StringBuilder();
-
-            int begin = 0;
-            int current = 0;
+            
+            int current = begin;
 
             bool useQuotationMarks = false;
             bool singleQuotes = false;
@@ -424,7 +447,7 @@ namespace NoesisGUIExtensions
             {
                 if (input[current] == '\\')
                 {
-                    stringBuilder.Append(input.Slice(begin, current - begin).ToString());
+                    stringBuilder.Append(input.Substring(begin, current - begin));
                     ++current;
                     begin = current;
                 }
@@ -434,17 +457,18 @@ namespace NoesisGUIExtensions
                     {
                         if (current - 1 > begin)
                         {
-                            stringBuilder.Append(input.Slice(begin, current - begin).ToString());
+                            stringBuilder.Append(input.Substring(begin, current - begin));
                         }
                         content = stringBuilder.ToString();
-                        output = input.Slice(current + 1);
+                        output = current + 1;
                         return true;
                     }
                     if (input[current] == '[' || input[current] == ']')
                     {
                         Console.WriteLine("NOESIS: BBCode parameter value is missing a closing quotation mark");
                         content = string.Empty;
-                        output = ReadOnlySpan<char>.Empty;
+                        output = input.Length;
+                        return false;
                     }
                 }
                 else if (input[current] == '[' || input[current] == ']')
@@ -455,34 +479,32 @@ namespace NoesisGUIExtensions
 
             if (current != begin)
             {
-                stringBuilder.Append(input.Slice(begin, current - begin).ToString());
+                stringBuilder.Append(input.Substring(begin, current - begin));
             }
 
             content = stringBuilder.ToString();
-            output = input.Slice(current);
+            output = current;
             return true;
         }
 
-        private static void ParseName(in ReadOnlySpan<char> input, out string name, out ReadOnlySpan<char> output)
+        private static void ParseName(string input, int begin, out string name, out int output)
         {
-            int current = 0;
-            for (; current < input.Length; current++)
+            for (int current = begin; current < input.Length; current++)
             {
                 if (!char.IsLetter(input[current]))
                 {
-                    name = input.Slice(0, current).ToString().ToLowerInvariant();
-                    output = input.Slice(current);
+                    name = input.Substring(begin, current - begin).ToLowerInvariant();
+                    output = current;
                     return;
                 }
             }
 
-            name = String.Empty;
-            output = ReadOnlySpan<char>.Empty; ;
+            name = string.Empty;
+            output = input.Length;
         }
 
-        private static void ParseKeyValuePair(ReadOnlySpan<char> input, List<Parameter> parameters, out ReadOnlySpan<char> output)
+        private static void ParseKeyValuePair(string input, int current, List<Parameter> parameters, out int output)
         {
-            int current = 0;
             while (char.IsWhiteSpace(input[current]) && current < input.Length - 1)
             {
                 ++current;
@@ -490,30 +512,30 @@ namespace NoesisGUIExtensions
 
             if (current == input.Length - 1 || !char.IsLetter(input[current]))
             {
-                output = input.Slice(current);
+                output = current;
                 return;
             }
 
-            input = input.Slice(current);
-            ParseName(input, out string key, out input);
+            ParseName(input, current, out string key, out current);
 
             if (key == null)
             {
                 Console.WriteLine("NOESIS: A parameter for BBCode tag key is malformed");
-                output = ReadOnlySpan<char>.Empty;
+                output = input.Length;
                 return;
             }
 
-            if (input.Length == 0 || input[0] != '=')
+            if (input.Length - current == 0 || input[current] != '=')
             {
                 Console.WriteLine("NOESIS: A parameter for BBCode tag key '{0}' is malformed (missing '=')", key);
-                output = ReadOnlySpan<char>.Empty;
+                output = input.Length;
+                return;
             }
 
-            if (!TryParseContent(input.Slice(1), out string value, out output))
+            if (!TryParseContent(input, current + 1, out string value, out output))
             {
                 Console.WriteLine("NOESIS: A parameter for BBCode tag key '{0}' is malformed", key);
-                output = ReadOnlySpan<char>.Empty;
+                output = input.Length;
                 return;
             }
 
@@ -524,24 +546,25 @@ namespace NoesisGUIExtensions
             });
         }
 
-        private static void ParseTag(ReadOnlySpan<char> input, TextBlock parent, InlineCollection inlineCollection, out ReadOnlySpan<char> output)
+        private static void ParseTag(string input, int current, TextBlock parent, InlineCollection inlineCollection, out int output)
         {
-            ParseName(input.Slice(1), out string tagName, out input);
+            int begin = current;
+            ParseName(input, current + 1, out string tagName, out current);
 
             if (string.IsNullOrEmpty(tagName))
             {
                 Console.WriteLine("NOESIS: A BBCode tag is malformed (contains no name)");
-                output = ReadOnlySpan<char>.Empty;
+                output = input.Length;
                 return;
             }
 
             List<Parameter> parameters = new List<Parameter>();
 
-            if (input[0] == '=')
+            if (input[current] == '=')
             {
-                if (!TryParseContent(input.Slice(1), out string value, out input))
+                if (!TryParseContent(input, current + 1, out string value, out current))
                 {
-                    output = ReadOnlySpan<char>.Empty;
+                    output = input.Length;
                     return;
                 }
 
@@ -549,34 +572,39 @@ namespace NoesisGUIExtensions
             }
             else
             {
-                while (input[0] == ' ')
+                while (input[current] == ' ')
                 {
-                    ParseKeyValuePair(input, parameters, out input);
+                    ParseKeyValuePair(input, current, parameters, out current);
+                    if (current == input.Length)
+                    {
+                        output = input.Length;
+                        return;
+                    }
                 }
             }
 
-            if (input.Length > 1 && input[0] == '/' && input[1] == ']')
+            if (input.Length - current > 1 && input[current] == '/' && input[current + 1] == ']')
             {
                 TryCreateInlineForTag(tagName, "", parameters, inlineCollection);
                 if (input.Length == 2)
                 {
-                    output = ReadOnlySpan<char>.Empty;
+                    output = input.Length;
                 }
                 else
                 {
-                    output = input.Slice(2);
+                    output = current + 2;
                 }
                 return;
             }
 
-            if (input[0] != ']' || input.Length < 5) // 5 allows for the necessary brackets and forward slash for a minimal closing bracket
+            if (input[current] != ']' || input.Length - current < 5) // 5 allows for the necessary brackets and forward slash for a minimal closing bracket
             {
                 Console.WriteLine("NOESIS: BBCode tag '{0}' has a malformed closing tag", tagName);
-                output = ReadOnlySpan<char>.Empty;
+                output = input.Length;
                 return;
             }
 
-            input = input.Slice(1);
+            current += 1;
 
             InlineCollection newCollection = TryCreateSpanForTag(tagName, parameters,
                 parent, inlineCollection);
@@ -584,62 +612,62 @@ namespace NoesisGUIExtensions
             if (newCollection != null)
             {
                 inlineCollection = newCollection;
-                TryParse(input, parent, inlineCollection, out input);
+                TryParse(input, current, parent, inlineCollection, out current);
             }
             else
             {
-                if (!TryParseContent(input, out string value, out input))
+                if (!TryParseContent(input, current, out string value, out current))
                 {
-                    output = ReadOnlySpan<char>.Empty;
+                    output = input.Length;
                     return;
                 }
 
-                input = input.Slice(1);
+                current += 1;
 
                 TryCreateInlineForTag(tagName, value, parameters,
                     inlineCollection);
             }
 
-            if (input.Length < 2)
+            if (input.Length - current < 2)
             {
                 Console.WriteLine("NOESIS: BBCode tag '{0}' is missing a closing tag", tagName);
-                output = input;
+                output = current;
                 return;
             }
 
-            if (input[0] != '/')
+            if (input[current] != '/')
             {
                 Console.WriteLine("NOESIS: BBCode tag '{0}' is missing a closing tag", tagName);
-                output = ReadOnlySpan<char>.Empty;
+                output = input.Length;
                 return;
             }
 
-            ParseName(input.Slice(1), out string closingTagName, out input);
+            ParseName(input, current + 1, out string closingTagName, out current);
 
             if (closingTagName != tagName)
             {
                 Console.WriteLine("NOESIS: BBCode tag opening name '{0}' does not match closing tag name '{0}'", tagName, closingTagName);
-                output = ReadOnlySpan<char>.Empty;
+                output = input.Length;
                 return;
             }
 
-            if (input[0] != ']')
+            if (input[current] != ']')
             {
                 Console.WriteLine("NOESIS: BBCode tag '{0}' has a malformed closing tag", tagName);
-                output = ReadOnlySpan<char>.Empty;
+                output = input.Length;
                 return;
             }
 
-            if (input.Length == 1)
+            if (input.Length - current == 1)
             {
-                output = ReadOnlySpan<char>.Empty;
+                output = input.Length;
             }
             else
             {
-                output = input.Slice(1);
+                output = current + 1;
             }
         }
 
-        #endregion
+#endregion
     }
 }

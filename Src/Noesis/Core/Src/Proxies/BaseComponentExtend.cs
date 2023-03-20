@@ -3,7 +3,6 @@ using System.Runtime.InteropServices;
 
 namespace Noesis
 {
-
     public partial class BaseComponent
     {
         protected BaseComponent()
@@ -53,19 +52,22 @@ namespace Noesis
             }
         }
 
+        public void Dispose()
+        {
+            ForceRelease(this, swigCPtr.Handle);
+            GC.SuppressFinalize(this);
+        }
+
         internal static void ForceRelease(object instance, IntPtr cPtr)
         {
-            lock (instance)
+            BaseComponent component = instance as BaseComponent;
+            if (component != null)
             {
-                BaseComponent component = instance as BaseComponent;
-                if (component != null)
-                {
-                    component.swigCPtr = new HandleRef(null, IntPtr.Zero);
-                    Noesis.Extend.RemoveProxy(cPtr);
-                }
-
-                Release(cPtr);
+                component.swigCPtr = new HandleRef(null, IntPtr.Zero);
+                Noesis.Extend.RemoveProxy(cPtr);
             }
+
+            Release(cPtr);
         }
 
         private void ReleaseProxy(IntPtr cPtr)

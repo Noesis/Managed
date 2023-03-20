@@ -162,5 +162,37 @@ namespace NoesisGUIExtensions
         }
 
         #endregion
+
+        /// <summary>
+        /// Specifies the duration in milliseconds that the last character typed in a PasswordBox
+        /// remains visible before it is converted into the corresponding *PasswordChar*
+        ///
+        /// Usage:
+        /// 
+        ///     <Grid 
+        ///       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        ///       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        ///       xmlns:noesis="clr-namespace:NoesisGUIExtensions;assembly=Noesis.GUI.Extensions">
+        ///         <PasswordBox noesis:Text.ShowLastCharacterDuration="2000"/>
+        ///     </Grid>
+        ///
+        /// </summary>
+        #region ShowLastCharacterDuration attached property
+
+        public static readonly DependencyProperty ShowLastCharacterDurationProperty =
+            DependencyProperty.RegisterAttached("ShowLastCharacterDuration", typeof(int), typeof(Text),
+            new PropertyMetadata(0));
+
+        public static int GetShowLastCharacterDuration(DependencyObject obj)
+        {
+            return (int)obj.GetValue(ShowLastCharacterDurationProperty);
+        }
+
+        public static void SetShowLastCharacterDuration(DependencyObject obj, int value)
+        {
+            obj.SetValue(ShowLastCharacterDurationProperty, value);
+        }
+
+        #endregion
     }
 }

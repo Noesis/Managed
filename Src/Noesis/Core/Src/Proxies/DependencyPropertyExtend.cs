@@ -214,7 +214,7 @@ namespace Noesis
                     return false;
                 }
             }
-            else if (!type.IsInstanceOfType(value) && (!type.IsEnum || !(value.GetType() == IntType)))
+            else if (!type.IsInstanceOfType(value) && (!type.IsEnum || !(value.GetType() == EnumType)))
             {
                 return false;
             }
@@ -222,7 +222,7 @@ namespace Noesis
         }
 
         private static Type NullableType = typeof(Nullable<>);
-        private static Type IntType = typeof(int);
+        private static Type EnumType = typeof(ulong);
 
         private Type OriginalPropertyType { get; set; }
 
@@ -244,15 +244,11 @@ namespace Noesis
             Dictionary<Type, Type> validTypes = new Dictionary<Type, Type>(13);
 
             validTypes[typeof(decimal)] = typeof(double);
-            validTypes[typeof(long)] = typeof(int);
-            validTypes[typeof(ulong)] = typeof(uint);
             validTypes[typeof(char)] = typeof(uint);
             validTypes[typeof(sbyte)] = typeof(short);
             validTypes[typeof(byte)] = typeof(ushort);
 
             validTypes[typeof(decimal?)] = typeof(double?);
-            validTypes[typeof(long?)] = typeof(int?);
-            validTypes[typeof(ulong?)] = typeof(uint?);
             validTypes[typeof(char?)] = typeof(uint?);
             validTypes[typeof(sbyte?)] = typeof(short?);
             validTypes[typeof(byte?)] = typeof(ushort?);

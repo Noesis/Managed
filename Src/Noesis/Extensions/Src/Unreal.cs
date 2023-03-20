@@ -4,8 +4,12 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using System;
+using System.Collections.ObjectModel;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Markup;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Microsoft.Xaml.Behaviors;
 
 namespace NoesisGUIExtensions
@@ -144,7 +148,7 @@ namespace NoesisGUIExtensions
     ///         </b:Interaction.Triggers>
     ///         <Rectangle x:Name="rect" Fill="Transparent"/>
     ///     </Grid>
-    ///     
+    /// 
     /// </summary>
     public class InputActionTrigger : TriggerBase<UIElement>
     {
@@ -183,5 +187,38 @@ namespace NoesisGUIExtensions
 
         public static readonly DependencyProperty ConsumeProperty = DependencyProperty.Register(
             "Consume", typeof(bool), typeof(InputActionTrigger), new PropertyMetadata(false));
+    }
+
+    /// <summary>
+    /// Image source that captures backbuffer of the Unreal 3D scene
+    /// 
+    /// Usage:
+    /// 
+    ///     <Grid
+    ///       xmlns=http://schemas.microsoft.com/winfx/2006/xaml/presentation
+    ///       xmlns:x=http://schemas.microsoft.com/winfx/2006/xaml
+    ///       xmlns:b=http://schemas.microsoft.com/xaml/behaviors
+    ///       xmlns:noesis="clr-namespace:NoesisGUIExtensions;assembly=NoesisGUI.GUI.Extensions">
+    ///       <Grid.Resources>
+    ///         <noesis:BackgroundImage x:Key="bgImg"/>
+    ///       </Grid.Resources>
+    ///       <Image x:Name="img" Source="{StaticResource bgImg}" Stretch="Fill"/>
+    ///     </Grid>
+    /// 
+    /// </summary>
+    public class BackgroundImage : BitmapFrame
+    {
+        public BackgroundImage()
+        {
+            typeof(BitmapSource).GetField("_useVirtuals",
+                BindingFlags.Instance | BindingFlags.NonPublic).SetValue(this, true);
+        }
+
+        public override Uri BaseUri { get; set; }
+        public override BitmapSource Thumbnail => null;
+        public override BitmapDecoder Decoder => null;
+        public override ReadOnlyCollection<ColorContext> ColorContexts => null;
+        public override InPlaceBitmapMetadataWriter CreateInPlaceBitmapMetadataWriter() { return null; }
+        protected override Freezable CreateInstanceCore() { return new BackgroundImage(); }
     }
 }

@@ -27,6 +27,10 @@ public class TextBox : TextBoxBase {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
+  public Typography Typography {
+    get { return new Typography(this); }
+  }
+
   public TextBox() {
   }
 

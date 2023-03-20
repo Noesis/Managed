@@ -39,6 +39,24 @@ namespace Noesis
         }
 
         /// <summary>
+        /// Disables Hot Reload feature. It is enabled by default and takes a bit of extra memory
+        /// Must be invoked before Noesis.GUI.Init()
+        /// </summary>
+        public static void DisableHotReload()
+        {
+            Noesis_DisableHotReload();
+        }
+
+        /// <summary>
+        /// If sockets are already initialized before Noesis, use this function to avoid double init
+        /// Must be invoked before Noesis.GUI.Init()
+        /// </summary>
+        public static void DisableSocketInit()
+        {
+            Noesis_DisableSocketInit();
+        }
+
+        /// <summary>
         /// Disables all connections from the remote Inspector tool.
         /// Must be invoked before Noesis.GUI.Init()
         /// </summary>
@@ -536,6 +554,12 @@ namespace Noesis
         #region Imports
         [DllImport(Library.Name)]
         static extern IntPtr Noesis_GetBuildVersion();
+
+        [DllImport(Library.Name)]
+        static extern void Noesis_DisableHotReload();
+
+        [DllImport(Library.Name)]
+        static extern void Noesis_DisableSocketInit();
 
         [DllImport(Library.Name)]
         static extern void Noesis_DisableInspector();

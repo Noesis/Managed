@@ -27,6 +27,10 @@ public class Path : Shape {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
+  internal protected override Geometry DefiningGeometry {
+    get { return Data; }
+  }
+
   public Path() {
   }
 

@@ -55,7 +55,7 @@ namespace NoesisApp
 
         public void Detach()
         {
-            if (AssociatedObject != null)
+            if (_associatedObject != IntPtr.Zero)
             {
                 OnDetaching();
 

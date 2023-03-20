@@ -27,6 +27,10 @@ public class TextElement : FrameworkElement {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
+  public Typography Typography {
+    get { return new Typography(this); }
+  }
+
   public static FontFamily GetFontFamily(DependencyObject element) {
     if (element == null) throw new ArgumentNullException("element");
     {

@@ -103,6 +103,8 @@ namespace NoesisApp
             _dev.ImmediateContext.ClearDepthStencilView(_depthStencil, DepthStencilClearFlags.Stencil, 0.0f, 0);
             _dev.ImmediateContext.OutputMerger.SetRenderTargets(_depthStencil, _renderTarget);
             _dev.ImmediateContext.Rasterizer.SetViewport(_viewport);
+
+            _device.DisableScissorRect();
         }
 
         public override ImageCapture CaptureRenderTarget(RenderTarget surface)

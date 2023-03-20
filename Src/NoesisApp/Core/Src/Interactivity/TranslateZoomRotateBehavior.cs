@@ -136,21 +136,24 @@ namespace NoesisApp
 
         protected override void OnDetaching()
         {
-            FrameworkElement associatedObject = AssociatedObject;
-
             _scale = null;
             _rotate = null;
             _translate = null;
-            associatedObject.RenderTransform = null;
-            associatedObject.RenderTransformOrigin = new Point(0.0f, 0.0f);
 
-            associatedObject.IsManipulationEnabled = false;
-            associatedObject.ManipulationStarting -= OnManipulationStarting;
-            associatedObject.ManipulationInertiaStarting -= OnManipulationInertia;
-            associatedObject.ManipulationDelta -= OnManipulationDelta;
-            associatedObject.MouseLeftButtonDown -= OnMouseDown;
-            associatedObject.MouseLeftButtonUp -= OnMouseUp;
-            associatedObject.MouseWheel -= OnMouseWheel;
+            FrameworkElement associatedObject = AssociatedObject;
+            if (associatedObject != null)
+            {
+                associatedObject.RenderTransform = null;
+                associatedObject.RenderTransformOrigin = new Point(0.0f, 0.0f);
+
+                associatedObject.IsManipulationEnabled = false;
+                associatedObject.ManipulationStarting -= OnManipulationStarting;
+                associatedObject.ManipulationInertiaStarting -= OnManipulationInertia;
+                associatedObject.ManipulationDelta -= OnManipulationDelta;
+                associatedObject.MouseLeftButtonDown -= OnMouseDown;
+                associatedObject.MouseLeftButtonUp -= OnMouseUp;
+                associatedObject.MouseWheel -= OnMouseWheel;
+            }
         }
 
         private void OnManipulationStarting(object sender, ManipulationStartingEventArgs e)

@@ -54,15 +54,57 @@ public class FormattedText : BaseComponent {
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
     registerExtend = false;
-    return NoesisGUI_PINVOKE.new_FormattedText();
+    return NoesisGUI_PINVOKE.new_FormattedText__SWIG_0();
   }
 
-  public void BuildTextRuns(string text, InlineCollection inlines, FontFamily fontFamily, FontWeight fontWeight, FontStretch fontStretch, FontStyle fontStyle, float fontSize, float strokeThickness, Brush background, Brush foreground, Brush stroke, TextDecorations textDecorations, int charSpacing) {
-    NoesisGUI_PINVOKE.FormattedText_BuildTextRuns(swigCPtr, text != null ? text : string.Empty, InlineCollection.getCPtr(inlines), FontFamily.getCPtr(fontFamily), (int)fontWeight, (int)fontStretch, (int)fontStyle, fontSize, strokeThickness, Brush.getCPtr(background), Brush.getCPtr(foreground), Brush.getCPtr(stroke), (int)textDecorations, charSpacing);
+  public FormattedText(string text, FontFamily fontFamily, float fontSize, Brush foreground, FlowDirection flowDirection, float maxWidth, float maxHeight, float lineHeight, TextAlignment textAlignment, TextTrimming textTrimming) : this(NoesisGUI_PINVOKE.new_FormattedText__SWIG_1(text != null ? text : string.Empty, FontFamily.getCPtr(fontFamily), fontSize, Brush.getCPtr(foreground), (int)flowDirection, maxWidth, maxHeight, lineHeight, (int)textAlignment, (int)textTrimming), true) {
   }
 
-  public Size Measure(TextAlignment alignment, TextWrapping wrapping, TextTrimming trimming, float maxWidth, float maxHeight, float lineHeight, LineStackingStrategy lineStacking) {
-    IntPtr ret = NoesisGUI_PINVOKE.FormattedText_Measure(swigCPtr, (int)alignment, (int)wrapping, (int)trimming, maxWidth, maxHeight, lineHeight, (int)lineStacking);
+  public FormattedText(string text, FontFamily fontFamily, float fontSize, Brush foreground, FlowDirection flowDirection, float maxWidth, float maxHeight, float lineHeight, TextAlignment textAlignment) : this(NoesisGUI_PINVOKE.new_FormattedText__SWIG_2(text != null ? text : string.Empty, FontFamily.getCPtr(fontFamily), fontSize, Brush.getCPtr(foreground), (int)flowDirection, maxWidth, maxHeight, lineHeight, (int)textAlignment), true) {
+  }
+
+  public FormattedText(string text, FontFamily fontFamily, float fontSize, Brush foreground, FlowDirection flowDirection, float maxWidth, float maxHeight, float lineHeight) : this(NoesisGUI_PINVOKE.new_FormattedText__SWIG_3(text != null ? text : string.Empty, FontFamily.getCPtr(fontFamily), fontSize, Brush.getCPtr(foreground), (int)flowDirection, maxWidth, maxHeight, lineHeight), true) {
+  }
+
+  public FormattedText(string text, FontFamily fontFamily, float fontSize, Brush foreground, FlowDirection flowDirection, float maxWidth, float maxHeight) : this(NoesisGUI_PINVOKE.new_FormattedText__SWIG_4(text != null ? text : string.Empty, FontFamily.getCPtr(fontFamily), fontSize, Brush.getCPtr(foreground), (int)flowDirection, maxWidth, maxHeight), true) {
+  }
+
+  public FormattedText(string text, FontFamily fontFamily, float fontSize, Brush foreground, FlowDirection flowDirection, float maxWidth) : this(NoesisGUI_PINVOKE.new_FormattedText__SWIG_5(text != null ? text : string.Empty, FontFamily.getCPtr(fontFamily), fontSize, Brush.getCPtr(foreground), (int)flowDirection, maxWidth), true) {
+  }
+
+  public FormattedText(string text, FontFamily fontFamily, float fontSize, Brush foreground, FlowDirection flowDirection) : this(NoesisGUI_PINVOKE.new_FormattedText__SWIG_6(text != null ? text : string.Empty, FontFamily.getCPtr(fontFamily), fontSize, Brush.getCPtr(foreground), (int)flowDirection), true) {
+  }
+
+  public FormattedText(string text, FontFamily fontFamily, float fontSize, Brush foreground) : this(NoesisGUI_PINVOKE.new_FormattedText__SWIG_7(text != null ? text : string.Empty, FontFamily.getCPtr(fontFamily), fontSize, Brush.getCPtr(foreground)), true) {
+  }
+
+  public FormattedText(string text, FontFamily fontFamily, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize, Brush foreground, FlowDirection flowDirection, float maxWidth, float maxHeight, float lineHeight, TextAlignment textAlignment, TextTrimming textTrimming) : this(NoesisGUI_PINVOKE.new_FormattedText__SWIG_8(text != null ? text : string.Empty, FontFamily.getCPtr(fontFamily), (int)weight, (int)stretch, (int)style, fontSize, Brush.getCPtr(foreground), (int)flowDirection, maxWidth, maxHeight, lineHeight, (int)textAlignment, (int)textTrimming), true) {
+  }
+
+  public FormattedText(string text, FontFamily fontFamily, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize, Brush foreground, FlowDirection flowDirection, float maxWidth, float maxHeight, float lineHeight, TextAlignment textAlignment) : this(NoesisGUI_PINVOKE.new_FormattedText__SWIG_9(text != null ? text : string.Empty, FontFamily.getCPtr(fontFamily), (int)weight, (int)stretch, (int)style, fontSize, Brush.getCPtr(foreground), (int)flowDirection, maxWidth, maxHeight, lineHeight, (int)textAlignment), true) {
+  }
+
+  public FormattedText(string text, FontFamily fontFamily, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize, Brush foreground, FlowDirection flowDirection, float maxWidth, float maxHeight, float lineHeight) : this(NoesisGUI_PINVOKE.new_FormattedText__SWIG_10(text != null ? text : string.Empty, FontFamily.getCPtr(fontFamily), (int)weight, (int)stretch, (int)style, fontSize, Brush.getCPtr(foreground), (int)flowDirection, maxWidth, maxHeight, lineHeight), true) {
+  }
+
+  public FormattedText(string text, FontFamily fontFamily, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize, Brush foreground, FlowDirection flowDirection, float maxWidth, float maxHeight) : this(NoesisGUI_PINVOKE.new_FormattedText__SWIG_11(text != null ? text : string.Empty, FontFamily.getCPtr(fontFamily), (int)weight, (int)stretch, (int)style, fontSize, Brush.getCPtr(foreground), (int)flowDirection, maxWidth, maxHeight), true) {
+  }
+
+  public FormattedText(string text, FontFamily fontFamily, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize, Brush foreground, FlowDirection flowDirection, float maxWidth) : this(NoesisGUI_PINVOKE.new_FormattedText__SWIG_12(text != null ? text : string.Empty, FontFamily.getCPtr(fontFamily), (int)weight, (int)stretch, (int)style, fontSize, Brush.getCPtr(foreground), (int)flowDirection, maxWidth), true) {
+  }
+
+  public FormattedText(string text, FontFamily fontFamily, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize, Brush foreground, FlowDirection flowDirection) : this(NoesisGUI_PINVOKE.new_FormattedText__SWIG_13(text != null ? text : string.Empty, FontFamily.getCPtr(fontFamily), (int)weight, (int)stretch, (int)style, fontSize, Brush.getCPtr(foreground), (int)flowDirection), true) {
+  }
+
+  public FormattedText(string text, FontFamily fontFamily, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize, Brush foreground) : this(NoesisGUI_PINVOKE.new_FormattedText__SWIG_14(text != null ? text : string.Empty, FontFamily.getCPtr(fontFamily), (int)weight, (int)stretch, (int)style, fontSize, Brush.getCPtr(foreground)), true) {
+  }
+
+  public void BuildTextRuns(string text, InlineCollection inlines, FontFamily fontFamily, FontWeight fontWeight, FontStretch fontStretch, FontStyle fontStyle, float fontSize, float strokeThickness, Brush background, Brush foreground, Brush stroke, FlowDirection flowDirection, TextDecorations textDecorations, int charSpacing) {
+    NoesisGUI_PINVOKE.FormattedText_BuildTextRuns(swigCPtr, text != null ? text : string.Empty, InlineCollection.getCPtr(inlines), FontFamily.getCPtr(fontFamily), (int)fontWeight, (int)fontStretch, (int)fontStyle, fontSize, strokeThickness, Brush.getCPtr(background), Brush.getCPtr(foreground), Brush.getCPtr(stroke), (int)flowDirection, (int)textDecorations, charSpacing);
+  }
+
+  public Size Measure(TextAlignment alignment, TextWrapping wrapping, TextTrimming trimming, float maxWidth, float maxHeight, float lineHeight, LineStackingStrategy lineStacking, FlowDirection flowDirection) {
+    IntPtr ret = NoesisGUI_PINVOKE.FormattedText_Measure(swigCPtr, (int)alignment, (int)wrapping, (int)trimming, maxWidth, maxHeight, lineHeight, (int)lineStacking, (int)flowDirection);
     if (ret != IntPtr.Zero) {
       return Marshal.PtrToStructure<Size>(ret);
     }
@@ -71,8 +113,8 @@ public class FormattedText : BaseComponent {
     }
   }
 
-  public void Layout(TextAlignment alignment, TextWrapping wrapping, TextTrimming trimming, float maxWidth, float maxHeight, float lineHeight, LineStackingStrategy lineStacking) {
-    NoesisGUI_PINVOKE.FormattedText_Layout(swigCPtr, (int)alignment, (int)wrapping, (int)trimming, maxWidth, maxHeight, lineHeight, (int)lineStacking);
+  public void Layout(TextAlignment alignment, TextWrapping wrapping, TextTrimming trimming, float maxWidth, float maxHeight, Thickness padding, float lineHeight, LineStackingStrategy lineStacking, FlowDirection flowDirection, bool discardNonVisibleGlyphs) {
+    NoesisGUI_PINVOKE.FormattedText_Layout(swigCPtr, (int)alignment, (int)wrapping, (int)trimming, maxWidth, maxHeight, ref padding, lineHeight, (int)lineStacking, (int)flowDirection, discardNonVisibleGlyphs);
   }
 
   public void GetGlyphPosition(uint chIndex, bool afterChar, ref float x, ref float y) {
@@ -82,6 +124,15 @@ public class FormattedText : BaseComponent {
   public uint HitTest(float x, float y, ref bool isInside, ref bool isTrailing) {
     uint ret = NoesisGUI_PINVOKE.FormattedText_HitTest(swigCPtr, x, y, ref isInside, ref isTrailing);
     return ret;
+  }
+
+  public bool IsInitialized() {
+    bool ret = NoesisGUI_PINVOKE.FormattedText_IsInitialized(swigCPtr);
+    return ret;
+  }
+
+  public void Init() {
+    NoesisGUI_PINVOKE.FormattedText_Init(swigCPtr);
   }
 
   public bool IsEmpty {

@@ -165,14 +165,6 @@ public class BaseFreezableCollection : Animatable, IList {
     }
   }
 
-  public void RemoveAt(int index) {
-    NoesisGUI_PINVOKE.BaseFreezableCollection_RemoveAt(swigCPtr, index);
-  }
-
-  public void Clear() {
-    NoesisGUI_PINVOKE.BaseFreezableCollection_Clear(swigCPtr);
-  }
-
   private void Set(int index, object item) {
     NoesisGUI_PINVOKE.BaseFreezableCollection_Set(swigCPtr, index, Noesis.Extend.GetInstanceHandle(item));
   }
@@ -182,9 +174,21 @@ public class BaseFreezableCollection : Animatable, IList {
     return ret;
   }
 
+  public void Insert(int index, object item) {
+    NoesisGUI_PINVOKE.BaseFreezableCollection_Insert(swigCPtr, index, Noesis.Extend.GetInstanceHandle(item));
+  }
+
   public int IndexOf(object item) {
     int ret = NoesisGUI_PINVOKE.BaseFreezableCollection_IndexOf(swigCPtr, Noesis.Extend.GetInstanceHandle(item));
     return ret;
+  }
+
+  public void RemoveAt(int index) {
+    NoesisGUI_PINVOKE.BaseFreezableCollection_RemoveAt(swigCPtr, index);
+  }
+
+  public void Clear() {
+    NoesisGUI_PINVOKE.BaseFreezableCollection_Clear(swigCPtr);
   }
 
   public int Count {
@@ -192,10 +196,6 @@ public class BaseFreezableCollection : Animatable, IList {
       int ret = NoesisGUI_PINVOKE.BaseFreezableCollection_Count_get(swigCPtr);
       return ret;
     } 
-  }
-
-  public void Insert(int index, object item) {
-    NoesisGUI_PINVOKE.BaseFreezableCollection_Insert(swigCPtr, index, Noesis.Extend.GetInstanceHandle(item));
   }
 
   public bool Contains(object item) {

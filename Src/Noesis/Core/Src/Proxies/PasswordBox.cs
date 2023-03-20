@@ -102,6 +102,13 @@ public class PasswordBox : Control {
     }
   }
 
+  public static DependencyProperty ShowLastCharacterDurationProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.PasswordBox_ShowLastCharacterDurationProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
   public static RoutedEvent PasswordChangedEvent {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.PasswordBox_PasswordChangedEvent_get();
@@ -179,6 +186,16 @@ public class PasswordBox : Control {
       string str = Noesis.Extend.StringFromNativeUtf8(strPtr);
       return str;
     }
+  }
+
+  public int ShowLastCharacterDuration {
+    set {
+      NoesisGUI_PINVOKE.PasswordBox_ShowLastCharacterDuration_set(swigCPtr, value);
+    } 
+    get {
+      int ret = NoesisGUI_PINVOKE.PasswordBox_ShowLastCharacterDuration_get(swigCPtr);
+      return ret;
+    } 
   }
 
   internal new static IntPtr Extend(string typeName) {

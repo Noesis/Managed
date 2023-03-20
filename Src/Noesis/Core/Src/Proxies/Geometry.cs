@@ -76,6 +76,27 @@ public class Geometry : Animatable {
     }
   }
 
+  public static DependencyProperty TrimStartProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Geometry_TrimStartProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static DependencyProperty TrimEndProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Geometry_TrimEndProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static DependencyProperty TrimOffsetProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Geometry_TrimOffsetProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
   public Transform Transform {
     set {
       NoesisGUI_PINVOKE.Geometry_Transform_set(swigCPtr, Transform.getCPtr(value));
@@ -84,6 +105,36 @@ public class Geometry : Animatable {
       IntPtr cPtr = NoesisGUI_PINVOKE.Geometry_Transform_get(swigCPtr);
       return (Transform)Noesis.Extend.GetProxy(cPtr, false);
     }
+  }
+
+  public float TrimStart {
+    set {
+      NoesisGUI_PINVOKE.Geometry_TrimStart_set(swigCPtr, value);
+    } 
+    get {
+      float ret = NoesisGUI_PINVOKE.Geometry_TrimStart_get(swigCPtr);
+      return ret;
+    } 
+  }
+
+  public float TrimEnd {
+    set {
+      NoesisGUI_PINVOKE.Geometry_TrimEnd_set(swigCPtr, value);
+    } 
+    get {
+      float ret = NoesisGUI_PINVOKE.Geometry_TrimEnd_get(swigCPtr);
+      return ret;
+    } 
+  }
+
+  public float TrimOffset {
+    set {
+      NoesisGUI_PINVOKE.Geometry_TrimOffset_set(swigCPtr, value);
+    } 
+    get {
+      float ret = NoesisGUI_PINVOKE.Geometry_TrimOffset_get(swigCPtr);
+      return ret;
+    } 
   }
 
   private void GetBoundsHelper(out Rect bounds) {

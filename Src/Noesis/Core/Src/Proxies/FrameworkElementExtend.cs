@@ -56,6 +56,10 @@ namespace Noesis
             return false;
         }
 
+        internal protected virtual void ConnectField(object source, string fieldName)
+        {
+        }
+
         public virtual void OnApplyTemplate()
         {
         }

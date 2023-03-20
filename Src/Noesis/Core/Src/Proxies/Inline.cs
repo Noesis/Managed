@@ -27,12 +27,37 @@ public class Inline : TextElement {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
+  public new FlowDirection FlowDirection {
+    set {
+      SetFlowDirection(value);
+    }
+    get {
+      return GetFlowDirection();
+    }
+  }
+
   public Inline() {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
     registerExtend = false;
     return NoesisGUI_PINVOKE.new_Inline();
+  }
+
+  private FlowDirection GetFlowDirection() {
+    FlowDirection ret = (FlowDirection)NoesisGUI_PINVOKE.Inline_GetFlowDirection(swigCPtr);
+    return ret;
+  }
+
+  private void SetFlowDirection(FlowDirection flowDirection) {
+    NoesisGUI_PINVOKE.Inline_SetFlowDirection(swigCPtr, (int)flowDirection);
+  }
+
+  public new static DependencyProperty FlowDirectionProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Inline_FlowDirectionProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
   }
 
   public static DependencyProperty TextDecorationsProperty {

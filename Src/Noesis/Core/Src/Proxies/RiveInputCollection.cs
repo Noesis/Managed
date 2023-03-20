@@ -15,28 +15,24 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-public class Ellipse : Shape {
-  internal new static Ellipse CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
-    return new Ellipse(cPtr, cMemoryOwn);
+public class RiveInputCollection : UICollection<RiveInput> {
+  internal new static RiveInputCollection CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
+    return new RiveInputCollection(cPtr, cMemoryOwn);
   }
 
-  internal Ellipse(IntPtr cPtr, bool cMemoryOwn) : base(cPtr, cMemoryOwn) {
+  internal RiveInputCollection(IntPtr cPtr, bool cMemoryOwn) : base(cPtr, cMemoryOwn) {
   }
 
-  internal static HandleRef getCPtr(Ellipse obj) {
+  internal static HandleRef getCPtr(RiveInputCollection obj) {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
-  internal protected override Geometry DefiningGeometry {
-    get { return new EllipseGeometry(); }
-  }
-
-  public Ellipse() {
+  public RiveInputCollection() {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
     registerExtend = false;
-    return NoesisGUI_PINVOKE.new_Ellipse();
+    return NoesisGUI_PINVOKE.new_RiveInputCollection();
   }
 
 }

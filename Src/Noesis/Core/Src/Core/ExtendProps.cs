@@ -507,8 +507,8 @@ namespace Noesis
 
             addPropFunctions[typeof(long)] = (info, p, usePropertyInfo) =>
             {
-                AddPropertyAccessor<int, long>(info, p, (v) => (int)v, (v) => (long)v, usePropertyInfo);
-                return CreatePropertyData(p, NativePropertyType.Int);
+                AddPropertyAccessor<long>(info, p, usePropertyInfo);
+                return CreatePropertyData(p, NativePropertyType.Long);
             };
 
             addPropFunctions[typeof(uint)] = (info, p, usePropertyInfo) =>
@@ -519,8 +519,8 @@ namespace Noesis
 
             addPropFunctions[typeof(ulong)] = (info, p, usePropertyInfo) =>
             {
-                AddPropertyAccessor<uint, ulong>(info, p, (v) => (uint)v, (v) => (ulong)v, usePropertyInfo);
-                return CreatePropertyData(p, NativePropertyType.UInt);
+                AddPropertyAccessor<ulong>(info, p, usePropertyInfo);
+                return CreatePropertyData(p, NativePropertyType.ULong);
             };
 
             addPropFunctions[typeof(char)] = (info, p, usePropertyInfo) =>
@@ -646,8 +646,8 @@ namespace Noesis
 
             addPropFunctions[typeof(long?)] = (info, p, usePropertyInfo) =>
             {
-                AddPropertyAccessorNullable<int?, long?>(info, p, (v) => (int?)v, (v) => (long?)v, usePropertyInfo);
-                return CreatePropertyData(p, NativePropertyType.NullableInt);
+                AddPropertyAccessorNullable<long?>(info, p, usePropertyInfo);
+                return CreatePropertyData(p, NativePropertyType.NullableLong);
             };
 
             addPropFunctions[typeof(uint?)] = (info, p, usePropertyInfo) =>
@@ -658,8 +658,8 @@ namespace Noesis
 
             addPropFunctions[typeof(ulong?)] = (info, p, usePropertyInfo) =>
             {
-                AddPropertyAccessorNullable<uint?, ulong?>(info, p, (v) => (uint?)v, (v) => (ulong?)v, usePropertyInfo);
-                return CreatePropertyData(p, NativePropertyType.NullableUInt);
+                AddPropertyAccessorNullable<ulong?>(info, p, usePropertyInfo);
+                return CreatePropertyData(p, NativePropertyType.NullableULong);
             };
 
             addPropFunctions[typeof(char?)] = (info, p, usePropertyInfo) =>
@@ -788,8 +788,8 @@ namespace Noesis
 
             if (p.PropertyType.GetTypeInfo().IsEnum)
             {
-                AddPropertyAccessor<int, object>(info, p,
-                    (v) => (int)Convert.ToInt64(v),
+                AddPropertyAccessor<ulong, object>(info, p,
+                    (v) => Convert.ToUInt64(v),
                     (v) => Enum.ToObject(p.PropertyType, v),
                     true);
 

@@ -135,6 +135,7 @@ namespace NoesisApp
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
             glViewport(0, 0, width, height);
+            glDisable(GL_SCISSOR_TEST);
 
             glClearStencil(0);
             uint mask = GL_STENCIL_BUFFER_BIT;
@@ -259,6 +260,7 @@ namespace NoesisApp
                 glClear                 = AndroidImports.glClear;
                 glColorMask             = AndroidImports.glColorMask;
                 glClearColor            = AndroidImports.glClearColor;
+                glDisable               = AndroidImports.glDisable;
                 glGetIntegerv           = AndroidImports.glGetIntegerv;
                 glPixelStorei           = AndroidImports.glPixelStorei;
                 glReadPixels            = AndroidImports.glReadPixels;
@@ -284,6 +286,7 @@ namespace NoesisApp
                 glClear                 = LinuxImports.glClear;
                 glColorMask             = LinuxImports.glColorMask;
                 glClearColor            = LinuxImports.glClearColor;
+                glDisable               = LinuxImports.glDisable;
                 glGetIntegerv           = LinuxImports.glGetIntegerv;
                 glPixelStorei           = LinuxImports.glPixelStorei;
                 glReadPixels            = LinuxImports.glReadPixels;
@@ -331,6 +334,7 @@ namespace NoesisApp
         private const uint GL_FRAMEBUFFER = 0x8D40;
         private const uint GL_STENCIL_BUFFER_BIT = 0x00000400;
         private const uint GL_COLOR_BUFFER_BIT = 0x00004000;
+        private const uint GL_SCISSOR_TEST = 0x00000C11;
         private const uint GL_VIEWPORT = 0x00000BA2;
         private const uint GL_PACK_ALIGNMENT = 0x00000D05;
         private const uint GL_UNSIGNED_BYTE = 0x00001401;
@@ -355,6 +359,7 @@ namespace NoesisApp
         private delegate void GLClearFn(uint s);
         private delegate void GLColorMaskFn(bool r, bool g, bool b, bool a);
         private delegate void GLClearColorFn(float r, float g, float b, float a);
+        private delegate void GLDisableFn(uint cap);
         private delegate void GLGetIntegervFn(uint pname, int[] param);
         private delegate void GLPixelStoreiFn(uint pname, int param);
         private delegate void GLReadPixelsFn(int x, int y, int width, int height, uint format, uint type, byte[] pixels);
@@ -378,6 +383,7 @@ namespace NoesisApp
         private static GLClearFn glClear;
         private static GLColorMaskFn glColorMask;
         private static GLClearColorFn glClearColor;
+        private static GLDisableFn glDisable;
         private static GLGetIntegervFn glGetIntegerv;
         private static GLPixelStoreiFn glPixelStorei;
         private static GLReadPixelsFn glReadPixels;
@@ -440,6 +446,9 @@ namespace NoesisApp
 
             [DllImport("libGLESv2.so")]
             public static extern void glClearColor(float r, float g, float b, float a);
+
+            [DllImport("libGLESv2.so")]
+            public static extern void glDisable(uint cap);
 
             [DllImport("libGLESv2.so")]
             public static extern void glGetIntegerv(uint pname, int[] param);
@@ -510,6 +519,9 @@ namespace NoesisApp
 
             [DllImport("libGLESv2.so.2")]
             public static extern void glClearColor(float r, float g, float b, float a);
+
+            [DllImport("libGLESv2.so.2")]
+            public static extern void glDisable(uint cap);
 
             [DllImport("libGLESv2.so.2")]
             public static extern void glGetIntegerv(uint pname, int[] param);

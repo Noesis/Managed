@@ -420,6 +420,31 @@ public class NoesisGUI_ {
     return ret;
   }
 
+  public static IntPtr Matrix_GetStaticType() {
+    IntPtr ret = NoesisGUI_PINVOKE.Matrix_GetStaticType();
+    return ret;
+  }
+
+  public static IntPtr Boxed_Matrix_GetStaticType() {
+    IntPtr ret = NoesisGUI_PINVOKE.Boxed_Matrix_GetStaticType();
+    return ret;
+  }
+
+  public static Matrix Unbox_Matrix(IntPtr val) {
+    IntPtr ret = NoesisGUI_PINVOKE.Unbox_Matrix(val);
+    if (ret != IntPtr.Zero) {
+      return Marshal.PtrToStructure<Matrix>(ret);
+    }
+    else {
+      return Matrix.Identity;
+    }
+  }
+
+  public static IntPtr Box_Matrix(Matrix val) {
+    IntPtr ret = NoesisGUI_PINVOKE.Box_Matrix(ref val);
+    return ret;
+  }
+
   public static IntPtr Vector4_GetStaticType() {
     IntPtr ret = NoesisGUI_PINVOKE.Vector4_GetStaticType();
     return ret;
@@ -467,6 +492,31 @@ public class NoesisGUI_ {
 
   public static IntPtr Box_Matrix4(Matrix4 val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_Matrix4(ref val);
+    return ret;
+  }
+
+  public static IntPtr Matrix3D_GetStaticType() {
+    IntPtr ret = NoesisGUI_PINVOKE.Matrix3D_GetStaticType();
+    return ret;
+  }
+
+  public static IntPtr Boxed_Matrix3D_GetStaticType() {
+    IntPtr ret = NoesisGUI_PINVOKE.Boxed_Matrix3D_GetStaticType();
+    return ret;
+  }
+
+  public static Matrix3D Unbox_Matrix3D(IntPtr val) {
+    IntPtr ret = NoesisGUI_PINVOKE.Unbox_Matrix3D(val);
+    if (ret != IntPtr.Zero) {
+      return Marshal.PtrToStructure<Matrix3D>(ret);
+    }
+    else {
+      return Matrix3D.Identity;
+    }
+  }
+
+  public static IntPtr Box_Matrix3D(Matrix3D val) {
+    IntPtr ret = NoesisGUI_PINVOKE.Box_Matrix3D(ref val);
     return ret;
   }
 
@@ -1075,12 +1125,12 @@ public class NoesisGUI_ {
     return ret;
   }
 
-  public static IntPtr Box_CustomEnum(IntPtr type, int val) {
+  public static IntPtr Box_CustomEnum(IntPtr type, ulong val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_CustomEnum(type, val);
     return ret;
   }
 
-  public static IntPtr Unbox_CustomEnum(IntPtr val, ref int enumVal) {
+  public static IntPtr Unbox_CustomEnum(IntPtr val, ref ulong enumVal) {
     IntPtr ret = NoesisGUI_PINVOKE.Unbox_CustomEnum(val, ref enumVal);
     return ret;
   }

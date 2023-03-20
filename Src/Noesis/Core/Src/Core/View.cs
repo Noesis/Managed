@@ -251,11 +251,29 @@ namespace Noesis
         }
 
         /// <summary>
+        /// Notifies the View to scroll vertically. Value typically ranges from -1 to 1.
+        /// Raises the event on the element under the specified x,y.
+        /// <summary>
+        public bool Scroll(int x, int y, float value)
+        {
+            return Noesis_View_ScrollPos(CPtr, x, y, value);
+        }
+
+        /// <summary>
         /// Notifies the View to scroll horizontally. Value typically ranges from -1 to 1.
         /// <summary>
         public bool HScroll(float value)
         {
             return Noesis_View_HScroll(CPtr, value);
+        }
+
+        /// <summary>
+        /// Notifies the View to scroll horizontally. Value typically ranges from -1 to 1.
+        /// Raises the event on the element under the specified x,y.
+        /// <summary>
+        public bool HScroll(int x, int y, float value)
+        {
+            return Noesis_View_HScrollPos(CPtr, x, y, value);
         }
         #endregion
 
@@ -620,7 +638,13 @@ namespace Noesis
         static extern bool Noesis_View_Scroll(HandleRef view, float value);
 
         [DllImport(Library.Name)]
+        static extern bool Noesis_View_ScrollPos(HandleRef view, int x, int y, float value);
+
+        [DllImport(Library.Name)]
         static extern bool Noesis_View_HScroll(HandleRef view, float value);
+
+        [DllImport(Library.Name)]
+        static extern bool Noesis_View_HScrollPos(HandleRef view, int x, int y, float value);
 
         [DllImport(Library.Name)]
         static extern bool Noesis_View_TouchMove(HandleRef view, int x, int y, ulong touchId);
@@ -709,7 +733,22 @@ namespace Noesis
         /// <summary>
         /// Enables subpixel rendering compatible with LCD displays
         /// </summary>
-        LCD = 32
+        LCD = 32,
+
+        /// <summary>
+        /// Displays glyph atlas as a small overlay for debugging purposes
+        /// </summary>
+        ShowGlyphs = 64,
+
+        /// <summary>
+        /// Displays ramp atlas as a small overlay for debugging purposes
+        /// </summary>
+        ShowRamps = 128,
+
+        /// <summary>
+        /// Enables testing against the content of the depth buffer
+        /// </summary>
+        DepthTesting = 256
     };
 
     /// <summary>

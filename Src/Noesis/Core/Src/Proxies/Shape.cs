@@ -15,11 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-public class Shape : FrameworkElement {
-  internal new static Shape CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
-    return new Shape(cPtr, cMemoryOwn);
-  }
-
+public abstract class Shape : FrameworkElement {
   internal Shape(IntPtr cPtr, bool cMemoryOwn) : base(cPtr, cMemoryOwn) {
   }
 
@@ -29,6 +25,8 @@ public class Shape : FrameworkElement {
 
   protected Shape() {
   }
+
+  internal protected abstract Geometry DefiningGeometry { get; }
 
   public static DependencyProperty FillProperty {
     get {

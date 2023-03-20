@@ -713,12 +713,12 @@ public class UIElement : Visual {
     }
   }
 
-  public event EventHandler LayoutChanged {
+  public event EventHandler LayoutUpdated {
     add {
-      AddEventHandler("LayoutChanged", value);
+      AddEventHandler("LayoutUpdated", value);
     }
     remove {
-      RemoveEventHandler("LayoutChanged", value);
+      RemoveEventHandler("LayoutUpdated", value);
     }
   }
   #endregion

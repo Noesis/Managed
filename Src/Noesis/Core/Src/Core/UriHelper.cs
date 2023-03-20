@@ -61,9 +61,7 @@ namespace Noesis
                 return uri;
             }
 
-            Uri uri_ = new Uri(uri.OriginalString, UriKind.RelativeOrAbsolute);
-            isRootPath = uri.OriginalString.StartsWith("\\") || uri.OriginalString.StartsWith("/");
-
+            isRootPath = false;
             return new Uri(new Uri("file://"), uri);
         }
     }

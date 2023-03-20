@@ -91,27 +91,6 @@ public class Pen : Animatable {
     }
   }
 
-  public static DependencyProperty TrimStartProperty {
-    get {
-      IntPtr cPtr = NoesisGUI_PINVOKE.Pen_TrimStartProperty_get();
-      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
-    }
-  }
-
-  public static DependencyProperty TrimEndProperty {
-    get {
-      IntPtr cPtr = NoesisGUI_PINVOKE.Pen_TrimEndProperty_get();
-      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
-    }
-  }
-
-  public static DependencyProperty TrimOffsetProperty {
-    get {
-      IntPtr cPtr = NoesisGUI_PINVOKE.Pen_TrimOffsetProperty_get();
-      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
-    }
-  }
-
   public Brush Brush {
     set {
       NoesisGUI_PINVOKE.Pen_Brush_set(swigCPtr, Brush.getCPtr(value));
@@ -188,36 +167,6 @@ public class Pen : Animatable {
     } 
     get {
       float ret = NoesisGUI_PINVOKE.Pen_Thickness_get(swigCPtr);
-      return ret;
-    } 
-  }
-
-  public float TrimStart {
-    set {
-      NoesisGUI_PINVOKE.Pen_TrimStart_set(swigCPtr, value);
-    } 
-    get {
-      float ret = NoesisGUI_PINVOKE.Pen_TrimStart_get(swigCPtr);
-      return ret;
-    } 
-  }
-
-  public float TrimEnd {
-    set {
-      NoesisGUI_PINVOKE.Pen_TrimEnd_set(swigCPtr, value);
-    } 
-    get {
-      float ret = NoesisGUI_PINVOKE.Pen_TrimEnd_get(swigCPtr);
-      return ret;
-    } 
-  }
-
-  public float TrimOffset {
-    set {
-      NoesisGUI_PINVOKE.Pen_TrimOffset_set(swigCPtr, value);
-    } 
-    get {
-      float ret = NoesisGUI_PINVOKE.Pen_TrimOffset_get(swigCPtr);
       return ret;
     } 
   }

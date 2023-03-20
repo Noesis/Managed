@@ -11,6 +11,10 @@ namespace Noesis
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
         [DllImport(Library.Name)]
+        private static extern IntPtr Noesis_GetTypeName(IntPtr type);
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        [DllImport(Library.Name)]
         private static extern IntPtr Noesis_RegisterEnumType([MarshalAs(UnmanagedType.LPStr)]string typeName,
             int numEnums, IntPtr enumsData);
 
@@ -56,6 +60,7 @@ namespace Noesis
             Callback_VisualGetChild callback_VisualGetChild,
             Callback_UIElementRender callback_UIElementRender,
             Callback_FrameworkElementConnectEvent callback_FrameworkElementConnectEvent,
+            Callback_FrameworkElementConnectField callback_FrameworkElementConnectField,
             Callback_FrameworkElementMeasure callback_FrameworkElementMeasure,
             Callback_FrameworkElementArrange callback_FrameworkElementArrange,
             Callback_FrameworkElementApplyTemplate callback_FrameworkElementApplyTemplate,
@@ -63,6 +68,7 @@ namespace Noesis
             Callback_ItemsControlIsContainer callback_ItemsControlIsContainer,
             Callback_AdornerGetTransform callback_AdornerGetTransform,
             Callback_FreezableClone callback_FreezableClone,
+            Callback_ShapeGetGeometry callback_ShapeGetGeometry,
             Callback_CommandCanExecute callback_CommandCanExecute,
             Callback_CommandExecute callback_CommandExecute,
             Callback_ConverterConvert callback_ConverterConvert,
@@ -73,10 +79,14 @@ namespace Noesis
             Callback_ListGet callback_ListGet,
             Callback_ListSet callback_ListSet,
             Callback_ListAdd callback_ListAdd,
+            Callback_ListInsert callback_ListInsert,
             Callback_ListIndexOf callback_ListIndexOf,
+            Callback_ListRemoveAt callback_ListRemoveAt,
+            Callback_ListClear callback_ListClear,
             Callback_DictionaryFind callback_DictionaryFind,
             Callback_DictionarySet callback_DictionarySet,
             Callback_DictionaryAdd callback_DictionaryAdd,
+            Callback_DictionaryRemove callback_DictionaryRemove,
             Callback_ListIndexerTryGet callback_ListIndexerTryGet,
             Callback_ListIndexerTrySet callback_ListIndexerTrySet,
             Callback_DictionaryIndexerTryGet callback_DictionaryIndexerTryGet,
@@ -142,6 +152,8 @@ namespace Noesis
             Callback_GetPropertyValue_Bool callback_GetPropertyValue_Bool,
             Callback_GetPropertyValue_Float callback_GetPropertyValue_Float,
             Callback_GetPropertyValue_Double callback_GetPropertyValue_Double,
+            Callback_GetPropertyValue_Int64 callback_GetPropertyValue_Int64,
+            Callback_GetPropertyValue_UInt64 callback_GetPropertyValue_UInt64,
             Callback_GetPropertyValue_Int callback_GetPropertyValue_Int,
             Callback_GetPropertyValue_UInt callback_GetPropertyValue_UInt,
             Callback_GetPropertyValue_Short callback_GetPropertyValue_Short,
@@ -163,6 +175,8 @@ namespace Noesis
             Callback_SetPropertyValue_Bool callback_SetPropertyValue_Bool,
             Callback_SetPropertyValue_Float callback_SetPropertyValue_Float,
             Callback_SetPropertyValue_Double callback_SetPropertyValue_Double,
+            Callback_SetPropertyValue_Int64 callback_SetPropertyValue_Int64,
+            Callback_SetPropertyValue_UInt64 callback_SetPropertyValue_UInt64,
             Callback_SetPropertyValue_Int callback_SetPropertyValue_Int,
             Callback_SetPropertyValue_UInt callback_SetPropertyValue_UInt,
             Callback_SetPropertyValue_Short callback_SetPropertyValue_Short,

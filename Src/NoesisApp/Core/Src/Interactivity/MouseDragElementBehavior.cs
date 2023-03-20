@@ -104,11 +104,14 @@ namespace NoesisApp
 
         protected override void OnDetaching()
         {
-            FrameworkElement associatedObject = AssociatedObject;
-
             _transform = null;
-            associatedObject.RenderTransform = null;
-            associatedObject.MouseLeftButtonDown -= OnMouseLeftButtonDown;
+
+            FrameworkElement associatedObject = AssociatedObject;
+            if (associatedObject != null)
+            {
+                associatedObject.RenderTransform = null;
+                associatedObject.MouseLeftButtonDown -= OnMouseLeftButtonDown;
+            }
         }
 
         private void OnMouseLeftButtonDown(object sender, MouseEventArgs e)

@@ -75,6 +75,10 @@ public class DrawingContext : BaseComponent {
     NoesisGUI_PINVOKE.DrawingContext_PushTransform(swigCPtr, Transform.getCPtr(transform));
   }
 
+  public void PushBlendingMode(BlendingMode mode) {
+    NoesisGUI_PINVOKE.DrawingContext_PushBlendingMode(swigCPtr, (int)mode);
+  }
+
 }
 
 }

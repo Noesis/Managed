@@ -584,6 +584,18 @@ namespace Noesis
         public abstract void SetRenderTarget(RenderTarget surface);
 
         /// <summary>
+        /// Indicates that until the next call to EndTile(), all drawing commands will only update
+        /// the contents of the render target defined by the extension of the given tile. This is a
+        /// good place to enable scissoring and apply optimizations for tile-based GPU architectures.
+        /// </summary>
+        public abstract void BeginTile(RenderTarget surface, Tile tile);
+
+        /// <summary>
+        /// Completes rendering to the tile specified by BeginTile().
+        /// </summary>
+        public abstract void EndTile(RenderTarget surface);
+
+        /// <summary>
         /// Resolves multisample render target.
         /// </summary>
         public abstract void ResolveRenderTarget(RenderTarget surface, Tile[] tiles);
@@ -656,6 +668,8 @@ namespace Noesis
                 _createRenderTarget,
                 _cloneRenderTarget,
                 _setRenderTarget,
+                _beginTile,
+                _endTile,
                 _resolveRenderTarget,
                 _createTexture,
                 _updateTexture,
@@ -766,6 +780,48 @@ namespace Noesis
                 {
                     RenderTarget surface = (RenderTarget)Noesis.Extend.GetExtendInstance(surfacePtr);
                     device.SetRenderTarget(surface);
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        private delegate void Callback_BeginTile(IntPtr cPtr, IntPtr surface, ref Tile tile);
+        private static Callback_BeginTile _beginTile = BeginTile;
+
+        [MonoPInvokeCallback(typeof(Callback_BeginTile))]
+        private static void BeginTile(IntPtr cPtr, IntPtr surfacePtr, ref Tile tile)
+        {
+            try
+            {
+                RenderDevice device = (RenderDevice)Noesis.Extend.GetExtendInstance(cPtr);
+                if (device != null)
+                {
+                    RenderTarget surface = (RenderTarget)Noesis.Extend.GetExtendInstance(surfacePtr);
+                    device.BeginTile(surface, tile);
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        private delegate void Callback_EndTile(IntPtr cPtr, IntPtr surface);
+        private static Callback_EndTile _endTile = EndTile;
+
+        [MonoPInvokeCallback(typeof(Callback_EndTile))]
+        private static void EndTile(IntPtr cPtr, IntPtr surfacePtr)
+        {
+            try
+            {
+                RenderDevice device = (RenderDevice)Noesis.Extend.GetExtendInstance(cPtr);
+                if (device != null)
+                {
+                    RenderTarget surface = (RenderTarget)Noesis.Extend.GetExtendInstance(surfacePtr);
+                    device.EndTile(surface);
                 }
             }
             catch (Exception e)
@@ -1039,6 +1095,8 @@ namespace Noesis
             Callback_CreateRenderTarget createRenderTarget,
             Callback_CloneRenderTarget cloneRenderTarget,
             Callback_SetRenderTarget setRenderTarget,
+            Callback_BeginTile beginTile,
+            Callback_EndTile endTile,
             Callback_ResolveRenderTarget resolveRenderTarget,
             Callback_CreateTexture createTexture,
             Callback_UpdateTexture updateTexture,
@@ -1140,6 +1198,26 @@ namespace Noesis
             }
 
             Noesis_RenderDevice_SetRenderTarget(swigCPtr, BaseComponent.getCPtr(surface));
+        }
+
+        public override void BeginTile(RenderTarget surface, Tile tile)
+        {
+            if (surface == null)
+            {
+                throw new ArgumentNullException("surface");
+            }
+
+            Noesis_RenderDevice_BeginTile(swigCPtr, BaseComponent.getCPtr(surface), ref tile);
+        }
+
+        public override void EndTile(RenderTarget surface)
+        {
+            if (surface == null)
+            {
+                throw new ArgumentNullException("surface");
+            }
+
+            Noesis_RenderDevice_EndTile(swigCPtr, BaseComponent.getCPtr(surface));
         }
 
         public override void ResolveRenderTarget(RenderTarget surface, Tile[] tiles)
@@ -1265,6 +1343,13 @@ namespace Noesis
         static extern void Noesis_RenderDevice_SetRenderTarget(HandleRef device, HandleRef surface);
 
         [DllImport(Library.Name)]
+        static extern void Noesis_RenderDevice_BeginTile(HandleRef device, HandleRef surface,
+            [In] ref Tile tile);
+
+        [DllImport(Library.Name)]
+        static extern void Noesis_RenderDevice_EndTile(HandleRef device, HandleRef surface);
+
+        [DllImport(Library.Name)]
         static extern void Noesis_RenderDevice_ResolveRenderTarget(HandleRef device, HandleRef surface,
             [In, Out] Tile[] tiles, int numTiles);
 
@@ -1374,16 +1459,38 @@ namespace Noesis
             return Noesis_RenderDeviceD3D11_GetTextureNativePointer(BaseComponent.getCPtr(texture));
         }
 
+        /// <summary>
+        /// Enables the hardware scissor rectangle
+        /// </summary>
+        public void EnableScissorRect()
+        {
+            Noesis_RenderDeviceD3D11_EnableScissorRect(swigCPtr);
+        }
+
+        /// <summary>
+        /// Disables the hardware scissor rectangle
+        /// </summary>
+        public void DisableScissorRect()
+        {
+            Noesis_RenderDeviceD3D11_DisableScissorRect(swigCPtr);
+        }
+
         #region Imports
         [DllImport(Library.Name)]
-        static extern IntPtr Noesis_RenderDeviceD3D11_Create(IntPtr deviceContext, bool sRGB);
+        private static extern IntPtr Noesis_RenderDeviceD3D11_Create(IntPtr deviceContext, bool sRGB);
 
         [DllImport(Library.Name)]
-        static extern IntPtr Noesis_RenderDeviceD3D11_WrapTexture(IntPtr nativePointer,
+        private static extern IntPtr Noesis_RenderDeviceD3D11_WrapTexture(IntPtr nativePointer,
             int width, int height, int numMipMaps, bool isInverted, bool hasAlpha);
 
         [DllImport(Library.Name)]
         private static extern IntPtr Noesis_RenderDeviceD3D11_GetTextureNativePointer(HandleRef texture);
+
+        [DllImport(Library.Name)]
+        private static extern void Noesis_RenderDeviceD3D11_EnableScissorRect(HandleRef device);
+
+        [DllImport(Library.Name)]
+        private static extern void Noesis_RenderDeviceD3D11_DisableScissorRect(HandleRef device);
         #endregion
     }
 

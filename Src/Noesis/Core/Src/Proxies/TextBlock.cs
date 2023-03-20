@@ -27,6 +27,10 @@ public class TextBlock : FrameworkElement {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
+  public Typography Typography {
+    get { return new Typography(this); }
+  }
+
   public override string ToString() {
     return ToStringHelper();
   }

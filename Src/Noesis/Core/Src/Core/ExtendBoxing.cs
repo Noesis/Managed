@@ -47,6 +47,9 @@ namespace Noesis
             boxFunctions[typeof(Noesis.KeyTime)] = (val) => NoesisGUI_.Box_KeyTime((Noesis.KeyTime)val);
             boxFunctions[typeof(System.TimeSpan)] = (val) => NoesisGUI_.Box_TimeSpan((System.TimeSpan)val);
             boxFunctions[typeof(Noesis.VirtualizationCacheLength)] = (val) => NoesisGUI_.Box_VirtualizationCacheLength((Noesis.VirtualizationCacheLength)val);
+            boxFunctions[typeof(Noesis.Matrix)] = (val) => NoesisGUI_.Box_Matrix((Noesis.Matrix)val);
+            boxFunctions[typeof(Noesis.Matrix3D)] = (val) => NoesisGUI_.Box_Matrix3D((Noesis.Matrix3D)val);
+            boxFunctions[typeof(Noesis.Matrix4)] = (val) => NoesisGUI_.Box_Matrix4((Noesis.Matrix4)val);
             boxFunctions[typeof(Noesis.AlignmentX)] = (val) => NoesisGUI_.Box_AlignmentX((Noesis.AlignmentX)val);
             boxFunctions[typeof(Noesis.AlignmentY)] = (val) => NoesisGUI_.Box_AlignmentY((Noesis.AlignmentY)val);
             boxFunctions[typeof(Noesis.AutoToolTipPlacement)] = (val) => NoesisGUI_.Box_AutoToolTipPlacement((Noesis.AutoToolTipPlacement)val);
@@ -120,7 +123,7 @@ namespace Noesis
             else if (val.GetType().GetTypeInfo().IsEnum)
             {
                 IntPtr nativeType = EnsureNativeType(val.GetType());
-                int enumValue = (int)Convert.ToInt64(val);
+                ulong enumValue = Convert.ToUInt64(val);
                 return RegisterPendingRelease(NoesisGUI_.Box_CustomEnum(nativeType, enumValue));
             }
             else if (val is Type)
@@ -171,6 +174,9 @@ namespace Noesis
             unboxFunctions[typeof(Boxed<Noesis.KeyTime>)] = (cPtr) => NoesisGUI_.Unbox_KeyTime(cPtr);
             unboxFunctions[typeof(Boxed<System.TimeSpan>)] = (cPtr) => NoesisGUI_.Unbox_TimeSpan(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.VirtualizationCacheLength>)] = (cPtr) => NoesisGUI_.Unbox_VirtualizationCacheLength(cPtr);
+            unboxFunctions[typeof(Boxed<Noesis.Matrix>)] = (cPtr) => NoesisGUI_.Unbox_Matrix(cPtr);
+            unboxFunctions[typeof(Boxed<Noesis.Matrix3D>)] = (cPtr) => NoesisGUI_.Unbox_Matrix3D(cPtr);
+            unboxFunctions[typeof(Boxed<Noesis.Matrix4>)] = (cPtr) => NoesisGUI_.Unbox_Matrix4(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.AlignmentX>)] = (cPtr) => NoesisGUI_.Unbox_AlignmentX(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.AlignmentY>)] = (cPtr) => NoesisGUI_.Unbox_AlignmentY(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.AutoToolTipPlacement>)] = (cPtr) => NoesisGUI_.Unbox_AutoToolTipPlacement(cPtr);
@@ -244,7 +250,7 @@ namespace Noesis
             }
             else if (info.Type == typeof(Boxed<Enum>))
             {
-                int enumValue = 0;
+                ulong enumValue = 0;
                 IntPtr enumType = NoesisGUI_.Unbox_CustomEnum(cPtr, ref enumValue);
                 NativeTypeInfo enumTypeInfo = GetNativeTypeInfo(enumType);
                 value = Enum.ToObject(enumTypeInfo.Type, enumValue);

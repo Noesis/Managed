@@ -45,16 +45,6 @@ public class CompositeTransform3D : Transform3D {
     }
   }
 
-  public override Matrix3D GetTransform() {
-    IntPtr ret = NoesisGUI_PINVOKE.CompositeTransform3D_GetTransform(swigCPtr);
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Matrix3D>(ret);
-    }
-    else {
-      return Matrix3D.Identity;
-    }
-  }
-
   public static DependencyProperty CenterXProperty {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.CompositeTransform3D_CenterXProperty_get();

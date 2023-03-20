@@ -7,6 +7,7 @@ namespace Noesis
 {
     public delegate HitTestFilterBehavior HitTestFilterCallback(Visual target);
     public delegate HitTestResultBehavior HitTestResultCallback(HitTestResult hit);
+    public delegate HitTestResultBehavior HitTest3DResultCallback(HitTest3DResult hit);
 
     /// <summary>
     /// This is the base class for packing together parameters for a hit test pass.

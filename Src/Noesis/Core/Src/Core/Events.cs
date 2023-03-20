@@ -741,6 +741,7 @@ namespace Noesis
             RegisterCLREvent("IsMouseDirectlyOverChanged", typeof(DependencyPropertyChangedEventHandler), DependencyPropertyChangedEventArgs.InvokeHandler);
             RegisterCLREvent("IsKeyboardFocusedChanged", typeof(DependencyPropertyChangedEventHandler), DependencyPropertyChangedEventArgs.InvokeHandler);
             RegisterCLREvent("IsKeyboardFocusWithinChanged", typeof(DependencyPropertyChangedEventHandler), DependencyPropertyChangedEventArgs.InvokeHandler);
+            RegisterCLREvent("LayoutUpdated", typeof(EventHandler), EventArgs.InvokeHandler);
 
             // FrameworkElement
             RegisterRoutedEvent(FrameworkElement.LoadedEvent, typeof(RoutedEventHandler), RoutedEventArgs.InvokeHandler);

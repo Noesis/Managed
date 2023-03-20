@@ -77,7 +77,7 @@ namespace Noesis
             return new Renderer(cPtr, cMemoryOwn);
         }
 
-        private HandleRef CPtr { get { return BaseComponent.getCPtr(this); } }
+        internal HandleRef CPtr { get { return BaseComponent.getCPtr(this); } }
         #endregion
 
         #region Imports

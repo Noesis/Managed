@@ -39,6 +39,7 @@ namespace NoesisApp
 
         private const int FrameCount = 2;
         private SharpDX.Direct3D12.Viewport[] _viewport = new SharpDX.Direct3D12.Viewport[1];
+        private SharpDX.Mathematics.Interop.RawRectangle _scissorRect;
         private SharpDX.Direct3D12.Resource _stencilBuffer;
         private SharpDX.Direct3D12.Resource[] _backBuffers = new SharpDX.Direct3D12.Resource[FrameCount];
         private SharpDX.Direct3D12.Resource[] _backBuffersAA = new SharpDX.Direct3D12.Resource[FrameCount];
@@ -310,6 +311,8 @@ namespace NoesisApp
             _viewport[0].Height = desc.Height;
             _viewport[0].MinDepth = 0.0f;
             _viewport[0].MaxDepth = 1.0f;
+
+            _scissorRect = new SharpDX.Mathematics.Interop.RawRectangle(0, 0, (int)desc.Width, (int)desc.Height);
         }
 
         void CreateCommandList()
@@ -380,6 +383,7 @@ namespace NoesisApp
             _commands.ClearDepthStencilView(dsv, SharpDX.Direct3D12.ClearFlags.FlagsStencil, 0.0f, 0, 0, null);
             _commands.SetRenderTargets(1, rtv, dsv);
             _commands.SetViewports(1, _viewport );
+            _commands.SetScissorRectangles(_scissorRect);
         }
 
         public override ImageCapture CaptureRenderTarget(RenderTarget surface)
