@@ -67,14 +67,6 @@ namespace Noesis
                     GC.Collect();
                     GC.WaitForPendingFinalizers();
 
-#if !NETSTANDARD
-                    _weakExtendsIndex = 0;
-                    while (_weakExtendsIndex < _weakExtends.Count)
-                    {
-                        AddDestroyedExtends();
-                    }
-#endif
-
                     // NOTE: During release of pending objects new proxies could be created and those
                     // references will show as leaks when Noesis shuts down.
                     // TODO: Find a way to track those objects and correctly release them.
@@ -319,10 +311,6 @@ namespace Noesis
             _nativeTypes.Clear();
             _managedTypes.Clear();
             _extends.Clear();
-#if !NETSTANDARD
-            _weakExtends.Clear();
-            _weakExtendsHash.Clear();
-#endif
             _proxies.Clear();
             _pendingRelease.Clear();
 
@@ -5874,26 +5862,7 @@ namespace Noesis
 
                 if (!(instance is BaseComponent))
                 {
-#if NETSTANDARD
                     _weakExtends.Add(instance, new ExtendNotifier { cPtr = cPtr });
-#else
-                    WeakInfo info = new WeakInfo
-                    {
-                        hash = RuntimeHelpers.GetHashCode(instance),
-                        ptr = cPtr.ToInt64(),
-                        weak = extend.weak
-                    };
-
-                    _weakExtends.Add(info);
-
-                    List<WeakInfo> extends;
-                    if (!_weakExtendsHash.TryGetValue(info.hash, out extends))
-                    {
-                        extends = new List<WeakInfo>();
-                        _weakExtendsHash.Add(info.hash, extends);
-                    }
-                    extends.Add(info);
-#endif
                 }
             }
         }
@@ -5907,60 +5876,6 @@ namespace Noesis
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-        private static void AddDestroyedExtends()
-        {
-#if !NETSTANDARD
-            lock (_extends)
-            {
-                const int ExtendRange = 100;
-
-                int count = _weakExtends.Count;
-                int start = _weakExtendsIndex >= count ? 0 : _weakExtendsIndex;
-                int end = start + ExtendRange > count ? count : start + ExtendRange;
-                int index = start;
-                while (index < end)
-                {
-                    WeakInfo info = _weakExtends[index];
-                    if (!info.weak.IsAlive)
-                    {
-                        IntPtr cPtr = new IntPtr(info.ptr);
-                        AddPendingRelease(cPtr);
-
-                        // Fast swap-remove from the list
-                        int last = _weakExtends.Count - 1;
-                        _weakExtends[index] = _weakExtends[last];
-                        _weakExtends.RemoveAt(last);
-
-                        // Remove hashed extend
-                        List<WeakInfo> extends = _weakExtendsHash[info.hash];
-                        int numExtends = extends.Count;
-                        for (int i = 0; i < numExtends; ++i)
-                        {
-                            if (extends[i].ptr == info.ptr)
-                            {
-                                extends[i] = extends[numExtends - 1];
-                                extends.RemoveAt(numExtends - 1);
-                                break;
-                            }
-                        }
-                        if (extends.Count == 0)
-                        {
-                            _weakExtendsHash.Remove(info.hash);
-                        }
-
-                        --end;
-                    }
-                    else
-                    {
-                        ++index;
-                    }
-                }
-                _weakExtendsIndex = end;
-            }
-#endif
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////
         private class ExtendInfo
         {
             public object instance;
@@ -5970,31 +5885,40 @@ namespace Noesis
         ////////////////////////////////////////////////////////////////////////////////////////////////
         private static Dictionary<long, ExtendInfo> _extends = new Dictionary<long, ExtendInfo>();
 
-#if NETSTANDARD
         private class ExtendNotifier
         {
             public IntPtr cPtr;
 
             ~ExtendNotifier()
             {
-                AddPendingRelease(cPtr);
+                // There is a weird situation in NETSTANDARD (a possible bug) that destroys the
+                // value even when the key is still alive. The workaround is to re-register the
+                // key instance in the ConditionalWeakTable until the key is really destroyed
+                object instance = null;
+                lock (_extends)
+                {
+                    if (_extends.TryGetValue(cPtr.ToInt64(), out ExtendInfo extend) &&
+                        extend.weak.IsAlive)
+                    {
+                        instance = extend.weak.Target;
+                    }
+                }
+
+                if (instance != null)
+                {
+                    _weakExtends.Remove(instance);
+                    _weakExtends.Add(instance, this);
+                    GC.ReRegisterForFinalize(this);
+                }
+                else
+                {
+                    AddPendingRelease(cPtr);
+                }
             }
         }
 
         private static ConditionalWeakTable<object, ExtendNotifier> _weakExtends =
             new ConditionalWeakTable<object, ExtendNotifier>();
-#else
-        private struct WeakInfo
-        {
-            public int hash;
-            public long ptr;
-            public WeakReference weak;
-        }
-
-        private static List<WeakInfo> _weakExtends = new List<WeakInfo>(400);
-        private static Dictionary<int, List<WeakInfo>> _weakExtendsHash = new Dictionary<int, List<WeakInfo>>();
-        private static int _weakExtendsIndex = 0;
-#endif
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
         private static BaseComponent GetProxyInstance(IntPtr cPtr, bool ownMemory, NativeTypeInfo info)
@@ -6156,39 +6080,12 @@ namespace Noesis
         {
             IntPtr cPtr = IntPtr.Zero;
 
-#if NETSTANDARD
             ExtendNotifier notifier;
             if (_weakExtends.TryGetValue(instance, out notifier))
             {
                 cPtr = notifier.cPtr;
             }
-#else
-            lock (_extends)
-            {
-                List<WeakInfo> extends;
-                if (_weakExtendsHash.TryGetValue(RuntimeHelpers.GetHashCode(instance), out extends))
-                {
-                    int numExtends = extends.Count;
-                    for (int i = 0; i < numExtends; ++i)
-                    {
-                        WeakInfo info = extends[i];
-                        if (info.weak.Target == instance)
-                        {
-                            if (!Initialized && !_extends.ContainsKey(info.ptr))
-                            {
-                                // Extend already destroyed
-                                cPtr = IntPtr.Zero;
-                            }
-                            else
-                            {
-                                cPtr = new IntPtr(info.ptr);
-                            }
-                            break;
-                        }
-                    }
-                }
-            }
-#endif
+
             return cPtr;
         }
 
@@ -6219,7 +6116,6 @@ namespace Noesis
         ////////////////////////////////////////////////////////////////////////////////////////////////
         public static void Update()
         {
-            AddDestroyedExtends();
             ReleasePending();
         }
 

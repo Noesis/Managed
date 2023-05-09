@@ -6677,148 +6677,148 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr AdornerDecorator_GetAdornerLayer(HandleRef jarg1);
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ApplicationCommands_CancelPrintCommand_get();
+  public static extern IntPtr ApplicationCommands_CancelPrint_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ApplicationCommands_CloseCommand_get();
+  public static extern IntPtr ApplicationCommands_Close_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ApplicationCommands_ContextMenuCommand_get();
+  public static extern IntPtr ApplicationCommands_ContextMenu_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ApplicationCommands_CopyCommand_get();
+  public static extern IntPtr ApplicationCommands_Copy_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ApplicationCommands_CorrectionListCommand_get();
+  public static extern IntPtr ApplicationCommands_CorrectionList_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ApplicationCommands_CutCommand_get();
+  public static extern IntPtr ApplicationCommands_Cut_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ApplicationCommands_DeleteCommand_get();
+  public static extern IntPtr ApplicationCommands_Delete_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ApplicationCommands_FindCommand_get();
+  public static extern IntPtr ApplicationCommands_Find_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ApplicationCommands_HelpCommand_get();
+  public static extern IntPtr ApplicationCommands_Help_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ApplicationCommands_NewCommand_get();
+  public static extern IntPtr ApplicationCommands_New_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ApplicationCommands_OpenCommand_get();
+  public static extern IntPtr ApplicationCommands_Open_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ApplicationCommands_PasteCommand_get();
+  public static extern IntPtr ApplicationCommands_Paste_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ApplicationCommands_PrintCommand_get();
+  public static extern IntPtr ApplicationCommands_Print_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ApplicationCommands_PrintPreviewCommand_get();
+  public static extern IntPtr ApplicationCommands_PrintPreview_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ApplicationCommands_PropertiesCommand_get();
+  public static extern IntPtr ApplicationCommands_Properties_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ApplicationCommands_RedoCommand_get();
+  public static extern IntPtr ApplicationCommands_Redo_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ApplicationCommands_ReplaceCommand_get();
+  public static extern IntPtr ApplicationCommands_Replace_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ApplicationCommands_SaveCommand_get();
+  public static extern IntPtr ApplicationCommands_Save_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ApplicationCommands_SaveAsCommand_get();
+  public static extern IntPtr ApplicationCommands_SaveAs_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ApplicationCommands_SelectAllCommand_get();
+  public static extern IntPtr ApplicationCommands_SelectAll_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ApplicationCommands_StopCommand_get();
+  public static extern IntPtr ApplicationCommands_Stop_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ApplicationCommands_UndoCommand_get();
+  public static extern IntPtr ApplicationCommands_Undo_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ComponentCommands_ExtendSelectionDownCommand_get();
+  public static extern IntPtr ComponentCommands_ExtendSelectionDown_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ComponentCommands_ExtendSelectionLeftCommand_get();
+  public static extern IntPtr ComponentCommands_ExtendSelectionLeft_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ComponentCommands_ExtendSelectionRightCommand_get();
+  public static extern IntPtr ComponentCommands_ExtendSelectionRight_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ComponentCommands_ExtendSelectionUpCommand_get();
+  public static extern IntPtr ComponentCommands_ExtendSelectionUp_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ComponentCommands_MoveDownCommand_get();
+  public static extern IntPtr ComponentCommands_MoveDown_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ComponentCommands_MoveFocusBackCommand_get();
+  public static extern IntPtr ComponentCommands_MoveFocusBack_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ComponentCommands_MoveFocusDownCommand_get();
+  public static extern IntPtr ComponentCommands_MoveFocusDown_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ComponentCommands_MoveFocusForwardCommand_get();
+  public static extern IntPtr ComponentCommands_MoveFocusForward_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ComponentCommands_MoveFocusPageDownCommand_get();
+  public static extern IntPtr ComponentCommands_MoveFocusPageDown_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ComponentCommands_MoveFocusPageUpCommand_get();
+  public static extern IntPtr ComponentCommands_MoveFocusPageUp_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ComponentCommands_MoveFocusUpCommand_get();
+  public static extern IntPtr ComponentCommands_MoveFocusUp_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ComponentCommands_MoveLeftCommand_get();
+  public static extern IntPtr ComponentCommands_MoveLeft_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ComponentCommands_MoveRightCommand_get();
+  public static extern IntPtr ComponentCommands_MoveRight_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ComponentCommands_MoveToEndCommand_get();
+  public static extern IntPtr ComponentCommands_MoveToEnd_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ComponentCommands_MoveToHomeCommand_get();
+  public static extern IntPtr ComponentCommands_MoveToHome_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ComponentCommands_MoveToPageDownCommand_get();
+  public static extern IntPtr ComponentCommands_MoveToPageDown_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ComponentCommands_MoveToPageUpCommand_get();
+  public static extern IntPtr ComponentCommands_MoveToPageUp_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ComponentCommands_MoveUpCommand_get();
+  public static extern IntPtr ComponentCommands_MoveUp_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ComponentCommands_ScrollByLineCommand_get();
+  public static extern IntPtr ComponentCommands_ScrollByLine_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ComponentCommands_ScrollPageDownCommand_get();
+  public static extern IntPtr ComponentCommands_ScrollPageDown_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ComponentCommands_ScrollPageLeftCommand_get();
+  public static extern IntPtr ComponentCommands_ScrollPageLeft_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ComponentCommands_ScrollPageRightCommand_get();
+  public static extern IntPtr ComponentCommands_ScrollPageRight_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ComponentCommands_ScrollPageUpCommand_get();
+  public static extern IntPtr ComponentCommands_ScrollPageUp_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ComponentCommands_SelectToEndCommand_get();
+  public static extern IntPtr ComponentCommands_SelectToEnd_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ComponentCommands_SelectToHomeCommand_get();
+  public static extern IntPtr ComponentCommands_SelectToHome_get();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ComponentCommands_SelectToPageDownCommand_get();
+  public static extern IntPtr ComponentCommands_SelectToPageDown_get();
 
   [DllImport(Library.Name)]
   public static extern IntPtr ComponentCommands_SelectToPageUp_get();

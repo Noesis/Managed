@@ -16,7 +16,7 @@ namespace NoesisApp
             _fontProvider = new ApplicationFontProvider(this, fontProvider);
             _texProvider = new ApplicationTextureProvider(this, texProvider);
 
-            // Register Noesis.Theme assembly as exposed in Blend
+            // Register Noesis.App.Theme assembly as exposed in Blend
             AddAssembly(Theme.Assembly, "Noesis.GUI.Extensions");
 
             // Register current assemblies
@@ -25,6 +25,7 @@ namespace NoesisApp
                 string name = assembly.GetName().Name;
 
                 if (!assembly.IsDynamic &&
+                    name != "Noesis.App.Theme" &&
                     name != "mscorlib" && name != "netstandard" && name != "System" &&
                     !name.StartsWith("System.") && !name.StartsWith("Microsoft."))
                 {
@@ -172,7 +173,8 @@ namespace NoesisApp
                     }
                 }
 
-                return base.MatchFont(baseUri, familyName, ref weight, ref stretch, ref style);
+                string folder = NormalizeFolder(baseUri);
+                return base.MatchFont(new Uri(folder, UriKind.RelativeOrAbsolute), familyName, ref weight, ref stretch, ref style);
             }
 
             public override bool FamilyExists(Uri baseUri, string familyName)
@@ -185,7 +187,8 @@ namespace NoesisApp
                     }
                 }
 
-                return base.FamilyExists(baseUri, familyName);
+                string folder = NormalizeFolder(baseUri);
+                return base.FamilyExists(new Uri(folder, UriKind.RelativeOrAbsolute), familyName);
             }
 
             public override void ScanFolder(Uri folder)
@@ -209,14 +212,25 @@ namespace NoesisApp
                 // Next try with application assembly resources
                 if (stream == null)
                 {
-                    string uri = folder.OriginalString;
-                    if (uri.Length > 0 && !uri.EndsWith("/")) uri += "/";
-                    uri += filename;
+                    string path = NormalizeFolder(folder);
+                    if (path.Length > 0 && !path.EndsWith("/")) path += "/";
+                    path += filename;
 
-                    stream = _appProvider.GetAssemblyResource(new Uri(uri, UriKind.RelativeOrAbsolute));
+                    stream = _appProvider.GetAssemblyResource(new Uri(path, UriKind.RelativeOrAbsolute));
                 }
 
                 return stream;
+            }
+
+            private string NormalizeFolder(Uri folder)
+            {
+                string component = folder.GetAssembly();
+                if (!string.IsNullOrEmpty(component))
+                {
+                    return $"/{component};component/{folder.GetPath()}";
+                }
+
+                return folder.OriginalString;
             }
 
             private ApplicationProvider _appProvider;

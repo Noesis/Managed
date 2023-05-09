@@ -57,7 +57,7 @@ namespace NoesisApp
 #else
             // Mac
             NSView view = (NSView)ObjCRuntime.Runtime.GetNSObject(window);
-            view.Layer.AddSublayer(_layer);
+            view.Layer = _layer;
 #endif
             _cmdQueue = _dev.CreateCommandQueue();
 

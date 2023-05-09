@@ -116,6 +116,15 @@ namespace Noesis
         }
 
         /// <summary>
+        /// Minimun distance since first contact, in pixels, to start a manipulation. Once this
+        /// threshold is reached, the event ManipulationStarted is sent. By default it is 10 pixels
+        /// </summary>
+        public void SetManipulationDistanceThreshold(uint pixels)
+        {
+            Noesis_View_SetManipulationDistanceThreshold(CPtr, pixels);
+        }
+
+        /// <summary>
         /// The maximum delay required for two consecutives Tapped events to be interpreted as
         /// a DoubleTapped event. By default it is 500 milliseconds
         /// </summary>
@@ -597,6 +606,9 @@ namespace Noesis
 
         [DllImport(Library.Name)]
         static extern void Noesis_View_SetHoldingDistanceThreshold(HandleRef view, uint pixels);
+
+        [DllImport(Library.Name)]
+        static extern void Noesis_View_SetManipulationDistanceThreshold(HandleRef view, uint pixels);
 
         [DllImport(Library.Name)]
         static extern void Noesis_View_SetDoubleTapTimeThreshold(HandleRef view, uint milliseconds);

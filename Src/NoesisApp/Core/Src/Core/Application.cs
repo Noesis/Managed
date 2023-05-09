@@ -84,7 +84,7 @@ namespace NoesisApp
         public static void SetThemeProviders(XamlProvider xamlProvider = null, FontProvider fontProvider = null, TextureProvider textureProvider = null)
         {
             GUI.SetXamlProvider(new EmbeddedXamlProvider(Theme.Assembly, "", xamlProvider));
-            GUI.SetFontProvider(new EmbeddedFontProvider(Theme.Assembly, "Noesis.GUI.Extensions", "", fontProvider));
+            GUI.SetFontProvider(new EmbeddedFontProvider(Theme.Assembly, "Noesis.GUI.Extensions", fontProvider));
             GUI.SetTextureProvider(textureProvider);
 
             GUI.SetFontFallbacks(Theme.FontFallbacks);

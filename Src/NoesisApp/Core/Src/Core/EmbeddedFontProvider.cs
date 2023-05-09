@@ -8,22 +8,17 @@ namespace NoesisApp
     public class EmbeddedFontProvider : FontProvider
     {
         public EmbeddedFontProvider(Assembly assembly, string ns) :
-            this(assembly, assembly?.GetName().Name, ns, null)
+            this(assembly, ns, null)
         {
         }
 
-        public EmbeddedFontProvider(Assembly assembly, string ns, FontProvider provider) :
-             this(assembly, assembly?.GetName().Name, ns, provider)
-        {
-        }
-
-        internal EmbeddedFontProvider(Assembly assembly, string component, string ns, FontProvider provider)
+        public EmbeddedFontProvider(Assembly assembly, string ns, FontProvider provider)
         {
             _assembly = assembly;
             _namespace = ns;
             _provider = provider;
 
-            RegisterFontResources(component);
+            RegisterFontResources();
 
             if (_provider != null)
             {
@@ -35,7 +30,7 @@ namespace NoesisApp
             }
         }
 
-        private void RegisterFontResources(string component)
+        private void RegisterFontResources()
         {
             if (_assembly == null) return;
 
@@ -45,14 +40,11 @@ namespace NoesisApp
                     name.EndsWith(".ttc", StringComparison.OrdinalIgnoreCase) ||
                     name.EndsWith(".otf", StringComparison.OrdinalIgnoreCase))
                 {
-                    string resource = string.IsNullOrEmpty(_namespace) ? name : name.Substring(_namespace.Length + 1);
+                    string resource = !string.IsNullOrEmpty(_namespace) && name.StartsWith(_namespace) ? name.Substring(_namespace.Length + 1) : name;
                     int lastDot = resource.LastIndexOf('.', resource.Length - 5);
                     string folder = lastDot != -1 ? resource.Substring(0, lastDot).Replace('.', '/') : string.Empty;
                     string filename = lastDot != -1 ? resource.Substring(lastDot + 1) : resource;
 
-                    RegisterFont(new Uri(folder, UriKind.RelativeOrAbsolute), filename);
-
-                    folder = $"/{component};component/{folder}";
                     RegisterFont(new Uri(folder, UriKind.RelativeOrAbsolute), filename);
                 }
             }
@@ -70,7 +62,7 @@ namespace NoesisApp
                 }
             }
 
-            return base.MatchFont(baseUri, familyName, ref weight, ref stretch, ref style);
+            return base.MatchFont(new Uri(baseUri.GetPath(), UriKind.RelativeOrAbsolute), familyName, ref weight, ref stretch, ref style);
         }
 
         public override bool FamilyExists(Uri baseUri, string familyName)
@@ -83,7 +75,7 @@ namespace NoesisApp
                 }
             }
 
-            return base.FamilyExists(baseUri, familyName);
+            return base.FamilyExists(new Uri(baseUri.GetPath(), UriKind.RelativeOrAbsolute), familyName);
         }
 
         public override void ScanFolder(Uri folder)
