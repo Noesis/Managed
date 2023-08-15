@@ -306,7 +306,9 @@ namespace Noesis
                 1, 3, 1, 1, 0, 4, 2, 2
             };
 
-            return (Shader.Vertex.Format.Attr.Type.Enum)map[(int)attr];
+            int index = Array.IndexOf(Enum.GetValues(typeof(Shader.Vertex.Format.Attr.Enum)), attr);
+
+            return (Shader.Vertex.Format.Attr.Type.Enum)map[index];
         }
 
         /// <summary>
