@@ -53,7 +53,7 @@ public abstract class ShaderEffect : Effect {
     NoesisShader shader = NoesisShaderProvider.instance.GetShader(name);
 
     if (shader != null) {
-      shader.effect = NoesisRenderer.CreatePixelShader((byte)Shader.Enum.Custom_Effect, 0, shader.effect_bytecode);
+      NoesisRenderer.CreatePixelShader(shader);
       return shader;
     }
 

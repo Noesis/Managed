@@ -761,13 +761,6 @@ public class UIElement : Visual {
   #endregion
 
   /// <summary>
-  /// Translates a point relative to this element to coordinates that are relative to the specified element
-  /// </summary>
-  public Point TranslatePoint(Point point, UIElement relativeTo) {
-    return relativeTo != null ? relativeTo.PointFromScreen(PointToScreen(point)) : default(Point);
-  }
-
-  /// <summary>
   /// Attempts to force capture of a touch to this element
   /// </summary>
   public bool CaptureTouch(TouchDevice touchDevice) {
@@ -801,6 +794,16 @@ public class UIElement : Visual {
 
   public void ReleaseMouseCapture() {
     NoesisGUI_PINVOKE.UIElement_ReleaseMouseCapture(swigCPtr);
+  }
+
+  public Point TranslatePoint(Point point, UIElement relativeTo) {
+    IntPtr ret = NoesisGUI_PINVOKE.UIElement_TranslatePoint(swigCPtr, ref point, UIElement.getCPtr(relativeTo));
+    if (ret != IntPtr.Zero) {
+      return Marshal.PtrToStructure<Point>(ret);
+    }
+    else {
+      return new Point();
+    }
   }
 
   private bool CaptureTouch(ulong touchDevice) {

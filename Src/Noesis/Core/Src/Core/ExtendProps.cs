@@ -788,10 +788,20 @@ namespace Noesis
 
             if (p.PropertyType.GetTypeInfo().IsEnum)
             {
-                AddPropertyAccessor<ulong, object>(info, p,
-                    (v) => Convert.ToUInt64(v),
-                    (v) => Enum.ToObject(p.PropertyType, v),
-                    true);
+                if (IsSignedEnum(p.PropertyType))
+                {
+                    AddPropertyAccessor<ulong, object>(info, p,
+                        (v) => (ulong)Convert.ToInt64(v),
+                        (v) => Enum.ToObject(p.PropertyType, (long)v),
+                        true);
+                }
+                else
+                {
+                    AddPropertyAccessor<ulong, object>(info, p,
+                        (v) => Convert.ToUInt64(v),
+                        (v) => Enum.ToObject(p.PropertyType, v),
+                        true);
+                }
 
                 return CreatePropertyData(p, NativePropertyType.Enum, propertyType);
             }
@@ -801,6 +811,15 @@ namespace Noesis
 
                 return CreatePropertyData(p, NativePropertyType.BaseComponent, propertyType);
             }
+        }
+
+        private static bool IsSignedEnum(Type enumType)
+        {
+            Type underlyingType = enumType.GetTypeInfo().GetEnumUnderlyingType();
+            return underlyingType.Equals(typeof(sbyte)) ||
+                underlyingType.Equals(typeof(short)) ||
+                underlyingType.Equals(typeof(int)) ||
+                underlyingType.Equals(typeof(long));
         }
 
         private static void AddPropertyAccessor<PropertyT>(NativeTypePropsInfo info, PropertyInfo p, bool usePropertyInfo)

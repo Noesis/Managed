@@ -43,5 +43,30 @@ namespace NoesisApp
         protected virtual void OnStoryboardChanged(DependencyPropertyChangedEventArgs e)
         {
         }
+
+        /// Returns the element that is used as target to interact with the Storyboard
+        public static FrameworkElement FindStoryboardTarget(Storyboard storyboard,
+            DependencyObject associatedObject)
+        {
+            // For Storyboards defined in the Template Resources use the associated object
+            if (FrameworkElement.FindTreeParent(storyboard) is ResourceDictionary resources)
+            {
+                if (FrameworkElement.FindTreeParent(resources) is FrameworkTemplate)
+                {
+                    return FrameworkElement.FindTreeElement(associatedObject);
+                }
+            }
+
+            // Next try with the scope where Storyboard was defined
+            FrameworkElement target = FrameworkElement.FindTreeElement(storyboard);
+            if (target != null && target.View != null)
+            {
+                return target;
+            }
+
+            // In case Storyboard was defined in Application resources or the Resources of a
+            // template element, we next try with the scope of the associated object
+            return FrameworkElement.FindTreeElement(associatedObject);
+        }
     }
 }

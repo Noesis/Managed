@@ -113,6 +113,12 @@ namespace NoesisGUIExtensions
         {
             Uri source = (Uri)d.GetValue(SourceProperty);
 
+            if (source == null)
+            {
+                d.SetValue(ResourcesProperty, null);
+                return;
+            }
+
             ResourceDictionary resourceDictionary = new ResourceDictionary
             {
                 Source = source

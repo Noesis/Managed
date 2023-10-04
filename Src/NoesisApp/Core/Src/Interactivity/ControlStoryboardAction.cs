@@ -28,6 +28,20 @@ namespace NoesisApp
             return (ControlStoryboardAction)base.CloneCurrentValue();
         }
 
+        protected override void CloneCommonCore(Freezable source)
+        {
+            base.CloneCommonCore(source);
+
+            ControlStoryboardAction action = (ControlStoryboardAction)source;
+            Storyboard storyboard = action.Storyboard;
+            if (storyboard != null &&
+                FrameworkElement.FindTreeParent(storyboard) is ResourceDictionary)
+            {
+                // use original Storyboard resource, not a clone
+                Storyboard = storyboard;
+            }
+        }
+
         /// <summary>
         /// Gets or sets the targeted Storyboard
         /// </summary>
@@ -47,14 +61,7 @@ namespace NoesisApp
             DependencyObject associatedObject = AssociatedObject;
             if (associatedObject != null && storyboard != null)
             {
-                // First try with the scope where Storyboard was defined as target
-                FrameworkElement target = FrameworkElement.FindTreeElement(storyboard);
-                if (target == null || target.View == null)
-                {
-                    // In case Storyboard was defined in Application resources or the Resources of a
-                    // template element, we next try with the scope of the associated object as target
-                    target = FrameworkElement.FindTreeElement(associatedObject);
-                }
+                FrameworkElement target = FindStoryboardTarget(storyboard, associatedObject);
 
                 // Execute the Storyboard action if we have a valid target connected to the UI tree
                 if (target != null && target.View != null)

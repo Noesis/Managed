@@ -171,8 +171,7 @@ namespace NoesisApp
                             eventName, type));
                     }
                 }
-
-                if (!IsValidEvent(ev))
+                else if (!IsValidEvent(ev))
                 {
                     if (SourceObject != null)
                     {

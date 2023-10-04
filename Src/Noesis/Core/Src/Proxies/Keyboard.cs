@@ -55,6 +55,11 @@ public class Keyboard : BaseComponent {
     return (UIElement)Noesis.Extend.GetProxy(cPtr, false);
   }
 
+  public bool IsFocusable(UIElement element) {
+    bool ret = NoesisGUI_PINVOKE.Keyboard_IsFocusable(swigCPtr, UIElement.getCPtr(element));
+    return ret;
+  }
+
   public void ClearFocus() {
     NoesisGUI_PINVOKE.Keyboard_ClearFocus(swigCPtr);
   }

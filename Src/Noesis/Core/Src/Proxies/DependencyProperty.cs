@@ -31,7 +31,15 @@ public partial class DependencyProperty : BaseComponent {
   }
 
   internal static IntPtr UnsetValuePtr = NoesisGUI_PINVOKE.DependencyProperty_GetUnsetValue();
-  public static object UnsetValue = new NamedObject("DependencyProperty.UnsetValue", UnsetValuePtr);
+  private static NamedObject _unsetValue;
+  public static object UnsetValue {
+    get {
+      if (_unsetValue == null || _unsetValue.IsDisposed) {
+        _unsetValue = new NamedObject("DependencyProperty.UnsetValue", UnsetValuePtr);
+      }
+      return _unsetValue;
+    }
+  }
 
   public Type OwnerType {
     get {

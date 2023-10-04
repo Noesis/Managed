@@ -82,15 +82,15 @@ namespace Noesis
 
                     ReleasePending();
 
-                    Noesis_ClearExtendTypes();
-                    Noesis_EnableExtend(false);
                 }
                 catch (Exception)
                 {
                     // clear errors generated releasing all C# proxies, throwing during
                     // assembly unload will close Unity without notifying
                 }
-
+                
+                Noesis_ClearExtendTypes();
+                Noesis_EnableExtend(false);
                 ClearTables();
             }
         }
@@ -6034,14 +6034,14 @@ namespace Noesis
                         // Automatic conversion from Unity's Sprite to a CroppedBitmap proxy
                         else if (instance is UnityEngine.Sprite sprite && sprite != null)
                         {
-                            UnityEngine.Rect spriteRect = sprite.packed && sprite.packingMode == UnityEngine.SpritePackingMode.Rectangle ?
+                            UnityEngine.Rect r = sprite.packed && sprite.packingMode == UnityEngine.SpritePackingMode.Rectangle ?
                                 sprite.textureRect : sprite.rect;
 
                             Int32Rect rect = new Int32Rect(
-                                (int)spriteRect.x,
-                                (int)(sprite.texture.height - spriteRect.height - spriteRect.y),
-                                (int)spriteRect.width,
-                                (int)spriteRect.height);
+                                (int)(r.x * sprite.spriteAtlasTextureScale),
+                                sprite.texture.height - (int)((r.height + r.y) * sprite.spriteAtlasTextureScale),
+                                (int)(r.width * sprite.spriteAtlasTextureScale),
+                                (int)(r.height * sprite.spriteAtlasTextureScale));
 
                             HandleRef bmp = new HandleRef(instance, cPtr);
                             NoesisGUI_PINVOKE.CroppedBitmap_Source_set(bmp, GetInstanceHandle(sprite.texture));

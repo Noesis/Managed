@@ -79,6 +79,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr Extend_DependencyObject(IntPtr typeName);
 
   [DllImport(Library.Name)]
+  public static extern IntPtr Extend_DispatcherObject(IntPtr typeName);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr Extend_Freezable(IntPtr typeName);
 
   [DllImport(Library.Name)]
@@ -3486,27 +3489,6 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr DynamicResourceExtension_ProvideValueHelper(HandleRef jarg1, HandleRef jarg2, HandleRef jarg3);
 
   [DllImport(Library.Name)]
-  public static extern IntPtr new_HitTestResult();
-
-  [DllImport(Library.Name)]
-  public static extern IntPtr HitTestResult_GetVisualHit(HandleRef jarg1);
-
-  [DllImport(Library.Name)]
-  public static extern void delete_HitTestResult(HandleRef jarg1);
-
-  [DllImport(Library.Name)]
-  public static extern IntPtr new_HitTest3DResult();
-
-  [DllImport(Library.Name)]
-  public static extern IntPtr HitTest3DResult_GetVisualHit(HandleRef jarg1);
-
-  [DllImport(Library.Name)]
-  public static extern IntPtr HitTest3DResult_GetWorldPos(HandleRef jarg1);
-
-  [DllImport(Library.Name)]
-  public static extern void delete_HitTest3DResult(HandleRef jarg1);
-
-  [DllImport(Library.Name)]
   [return: MarshalAs(UnmanagedType.U1)]
   public static extern bool Visual_IsAncestorOf(HandleRef jarg1, HandleRef jarg2);
 
@@ -3584,10 +3566,10 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr VisualTreeHelper_GetChildHelper(HandleRef jarg1, int jarg2);
 
   [DllImport(Library.Name)]
-  public static extern IntPtr VisualTreeHelper_HitTestHelper(HandleRef jarg1, ref Point jarg2);
+  public static extern void VisualTreeHelper_HitTestHelper(HandleRef jarg1, ref Point jarg2, ref HitTestResult jarg3);
 
   [DllImport(Library.Name)]
-  public static extern IntPtr VisualTreeHelper_HitTest3DHelper(HandleRef jarg1, ref Point3D jarg2, ref Point3D jarg3);
+  public static extern void VisualTreeHelper_HitTest3DHelper(HandleRef jarg1, ref Point3D jarg2, ref Point3D jarg3, ref HitTest3DResult jarg4);
 
   [DllImport(Library.Name)]
   public static extern IntPtr VisualCollection_Create(HandleRef jarg1);
@@ -4273,6 +4255,10 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr Keyboard_Focus(HandleRef jarg1, HandleRef jarg2);
 
   [DllImport(Library.Name)]
+  [return: MarshalAs(UnmanagedType.U1)]
+  public static extern bool Keyboard_IsFocusable(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
   public static extern void Keyboard_ClearFocus(HandleRef jarg1);
 
   [DllImport(Library.Name)]
@@ -4306,6 +4292,46 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr Keyboard_FocusedElement_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
+  public static extern IntPtr FocusManager_GetFocusedElement(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void FocusManager_SetFocusedElement(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  [return: MarshalAs(UnmanagedType.U1)]
+  public static extern bool FocusManager_GetIsFocusScope(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void FocusManager_SetIsFocusScope(HandleRef jarg1, bool jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr FocusManager_GetFocusScope(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void FocusManager_AddGotFocusHandler(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern void FocusManager_RemoveGotFocusHandler(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern void FocusManager_AddLostFocusHandler(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern void FocusManager_RemoveLostFocusHandler(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr FocusManager_FocusedElementProperty_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr FocusManager_IsFocusScopeProperty_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr FocusManager_LostFocusEvent_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr FocusManager_GotFocusEvent_get();
+
+  [DllImport(Library.Name)]
   public static extern int TraversalRequest_FocusNavigationDirection_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
@@ -4330,6 +4356,9 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern void UIElement_ReleaseMouseCapture(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr UIElement_TranslatePoint(HandleRef jarg1, ref Point jarg2, HandleRef jarg3);
 
   [DllImport(Library.Name)]
   [return: MarshalAs(UnmanagedType.U1)]
@@ -5015,6 +5044,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr BindingExpression_ParentBinding_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
+  public static extern IntPtr BindingExpression_ResolvedSource_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
   public static extern void MultiBindingExpression_UpdateTarget(HandleRef jarg1);
 
   [DllImport(Library.Name)]
@@ -5475,6 +5507,9 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr FrameworkElement_FindTreeElement(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr FrameworkElement_FindTreeParent(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern IntPtr Typography_AnnotationAlternatesProperty_get();
@@ -11644,6 +11679,18 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr Box_FillBehavior(int jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr TimelineEventArgs_Target_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr new_TimelineEventArgs__SWIG_0(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr new_TimelineEventArgs__SWIG_1();
+
+  [DllImport(Library.Name)]
+  public static extern void delete_TimelineEventArgs(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern int Timeline_GetDesiredFrameRate(HandleRef jarg1);

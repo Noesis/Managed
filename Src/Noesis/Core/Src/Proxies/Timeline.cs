@@ -76,7 +76,7 @@ public class Timeline : Animatable {
         if (!_Completed.TryGetValue(ptr, out handler)) {
           throw new InvalidOperationException("Delegate not registered for Completed event");
         }
-        handler?.Invoke(Noesis.Extend.GetProxy(sender, false), new EventArgs(e, false));
+        handler?.Invoke(Noesis.Extend.GetProxy(sender, false), new TimelineEventArgs(e, false));
       }
     }
     catch (Exception exception) {

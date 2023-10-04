@@ -50,6 +50,9 @@ public class DispatcherObject : BaseComponent {
     } 
   }
 
+  internal new static IntPtr Extend(string typeName) {
+    return NoesisGUI_PINVOKE.Extend_DispatcherObject(Marshal.StringToHGlobalAnsi(typeName));
+  }
 }
 
 }

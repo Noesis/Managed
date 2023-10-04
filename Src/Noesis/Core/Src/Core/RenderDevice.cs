@@ -1752,7 +1752,7 @@ namespace Noesis
         private static IntPtr CreateDevice(bool sRGB, GPUAllocator allocator)
         {
             _allocator = allocator;
-            return Noesis_RenderDeviceAGC_Create(sRGB, _alloc, _free, _registerResource);
+            return Noesis_RenderDeviceAGC_Create(sRGB, _alloc, _free);
         }
 
         /// <summary>
@@ -1799,37 +1799,19 @@ namespace Noesis
             }
         }
 
-        [MonoPInvokeCallback(typeof(Callback_RegisterResource))]
-        private static void RegisterResource(IntPtr user, IntPtr ptr, uint size, uint type,
-            IntPtr labelPtr)
-        {
-            try
-            {
-                string label = Noesis.Extend.StringFromNativeUtf8(labelPtr);
-                _allocator.RegisterResource(ptr, size, type, label);
-            }
-            catch (Exception e)
-            {
-                Error.UnhandledException(e);
-            }
-        }
-
         private delegate IntPtr Callback_Alloc(IntPtr user, uint size, uint alignment);
         private delegate void Callback_Free(IntPtr user, IntPtr address);
-        private delegate void Callback_RegisterResource(IntPtr user, IntPtr ptr, uint size,
-            uint type, IntPtr label);
 
         private static Callback_Alloc _alloc = Alloc;
         private static Callback_Free _free = Free;
-        private static Callback_RegisterResource _registerResource = RegisterResource;
 
         private static GPUAllocator _allocator;
         #endregion
 
         #region Imports
         [DllImport(Library.Name)]
-        static extern IntPtr Noesis_RenderDeviceAGC_Create(bool sRGB,
-            Callback_Alloc alloc, Callback_Free free, Callback_RegisterResource registerResource);
+        static extern IntPtr Noesis_RenderDeviceAGC_Create(bool sRGB, Callback_Alloc alloc,
+            Callback_Free free);
 
         [DllImport(Library.Name)]
         static extern IntPtr Noesis_RenderDeviceAGC_WrapTexture(IntPtr nativePointer,

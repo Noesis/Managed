@@ -80,7 +80,7 @@ namespace NoesisGUIExtensions
 
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
-            IProvideValueTarget valueTarget = serviceProvider as IProvideValueTarget;
+            IProvideValueTarget valueTarget = serviceProvider.GetService(typeof(IProvideValueTarget)) as IProvideValueTarget;
             if (valueTarget == null)
             {
                 return null;
@@ -114,6 +114,12 @@ namespace NoesisGUIExtensions
         {
             Uri source = (Uri)d.GetValue(SourceProperty);
 
+            if (source == null)
+            {
+                d.SetValue(ResourcesProperty, null);
+                return;
+            }
+
             ResourceDictionary resourceDictionary = new ResourceDictionary
             {
                 Source = source
@@ -136,9 +142,9 @@ namespace NoesisGUIExtensions
 
         #region Resources attached property
 
-        private static readonly DependencyProperty ResourcesProperty =
+        public static readonly DependencyProperty ResourcesProperty =
             DependencyProperty.RegisterAttached(
-                ".Resources",
+                "Resources",
                 typeof(ResourceDictionary),
                 typeof(LocExtension),
                 new FrameworkPropertyMetadata(null, flags: FrameworkPropertyMetadataOptions.Inherits, ResourcesChangedCallback)
@@ -157,6 +163,11 @@ namespace NoesisGUIExtensions
         public static ResourceDictionary GetResources(DependencyObject dependencyObject)
         {
             return (ResourceDictionary)dependencyObject.GetValue(ResourcesProperty);
+        }
+
+        public static void SetResources(DependencyObject dependencyObject, ResourceDictionary resources)
+        {
+            dependencyObject.SetValue(ResourcesProperty, resources);
         }
 
         #endregion
