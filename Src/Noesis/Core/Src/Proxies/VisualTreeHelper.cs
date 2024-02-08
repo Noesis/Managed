@@ -137,6 +137,12 @@ public static class VisualTreeHelper {
   private static extern void VisualTreeHelper_HitTest3DCallback(HandleRef reference, ref Point3D point, ref Vector3D direction, Callback_HitTestFilter filter, Callback_HitTestResult result);
   #endregion
 
+  public static bool IntersectPlane(Visual reference, Point3D point, Vector3D direction, out Point3D outPoint) {
+    if (reference == null) throw new ArgumentNullException("reference");
+    outPoint = new Point3D();
+    return IntersectPlaneHelper(reference, point, new Point3D(direction.X, direction.Y, direction.Z), ref outPoint);
+  }
+
   public static Rect GetContentBounds(Visual visual) {
     if (visual == null) throw new ArgumentNullException("visual");
     {
@@ -239,6 +245,11 @@ public static class VisualTreeHelper {
 
   private static void HitTest3DHelper(Visual reference, Point3D point, Point3D direction, ref HitTest3DResult result) {
     NoesisGUI_PINVOKE.VisualTreeHelper_HitTest3DHelper(Visual.getCPtr(reference), ref point, ref direction, ref result);
+  }
+
+  private static bool IntersectPlaneHelper(Visual reference, Point3D point, Point3D direction, ref Point3D outPoint) {
+    bool ret = NoesisGUI_PINVOKE.VisualTreeHelper_IntersectPlaneHelper(Visual.getCPtr(reference), ref point, ref direction, ref outPoint);
+    return ret;
   }
 
 }

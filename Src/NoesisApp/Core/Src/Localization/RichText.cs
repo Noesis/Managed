@@ -323,7 +323,7 @@ namespace NoesisGUIExtensions
                 case "img":
                     {
                         Image image = new Image();
-                        image.Source = new BitmapImage(new Uri(content));
+                        image.Source = new BitmapImage(new Uri(content, UriKind.RelativeOrAbsolute));
                         inlineCollection.Add(new InlineUIContainer(image));
                         foreach (Parameter element in parameters)
                         {

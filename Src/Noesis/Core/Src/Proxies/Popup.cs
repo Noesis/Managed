@@ -141,6 +141,20 @@ public class Popup : FrameworkElement {
       new Dictionary<long, OpenedHandler>();
   #endregion
 
+  internal static new void ResetEvents() {
+    foreach (var kv in _Closed) {
+      IntPtr cPtr = new IntPtr(kv.Key);
+      NoesisGUI_PINVOKE.UnbindEvent_Popup_Closed(_raiseClosed, cPtr);
+    }
+    _Closed.Clear();
+
+    foreach (var kv in _Opened) {
+      IntPtr cPtr = new IntPtr(kv.Key);
+      NoesisGUI_PINVOKE.UnbindEvent_Popup_Opened(_raiseOpened, cPtr);
+    }
+    _Opened.Clear();
+  }
+
   #endregion
 
   public Popup() {

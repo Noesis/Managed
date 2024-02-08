@@ -126,6 +126,99 @@ namespace NoesisGUIExtensions
         #endregion
 
         /// <summary>
+        /// Adds support for XY Focus Navigation. It overrides default directional keyboard
+        /// navigation by indicating the target element of the focus when user presses a direction
+        /// on a keyboard or a controller.
+        ///
+        /// Usage:
+        ///
+        ///     <Grid
+        ///       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        ///       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        ///       xmlns:noesis="clr-namespace:NoesisGUIExtensions;assembly=Noesis.GUI.Extensions">
+        ///       <StackPanel Orientation="Horizontal">
+        ///         <ContentControl Margin="20" noesis:Element.XYFocusRight="{Binding ElementName=Btn_3_A}">
+        ///           <StackPanel>
+        ///             <Button x:Name="Btn_1_A" Content="Button 1 A" Margin="0,5"/>
+        ///             <Button x:Name="Btn_1_B" Content="Button 1 B" Margin="0,5"/>
+        ///           </StackPanel>
+        ///         </ContentControl>
+        ///         <StackPanel Margin="20">
+        ///           <Button x:Name="Btn_2_A" Content="Button 2 A" Margin="0,5"/>
+        ///           <Button x:Name="Btn_2_B" Content="Button 2 B" Margin="0,5"
+        ///                   noesis:Element.XYFocusDown="{Binding ElementName=Btn_3_A}"/>
+        ///         </StackPanel>
+        ///         <StackPanel Margin="20">
+        ///           <Button x:Name="Btn_3_A" Content="Button 2 A" Margin="0,5"
+        ///                   noesis:Element.XYFocusUp="{Binding ElementName=Btn_2_B}"/>
+        ///           <Button x:Name="Btn_3_B" Content="Button 2 B" Margin="0,5"
+        ///                   noesis:Element.XYFocusLeft="{Binding ElementName=Btn_1_A}"/>
+        ///         </StackPanel>
+        ///       </StackPanel>
+        ///     </Grid>
+        ///
+        /// </summary>
+        #region XY Focus Navigation attached properties
+
+        public static UIElement GetXYFocusLeft(DependencyObject obj)
+        {
+            return (UIElement)obj.GetValue(XYFocusLeftProperty);
+        }
+
+        public static void SetXYFocusLeft(DependencyObject obj, UIElement value)
+        {
+            obj.SetValue(XYFocusLeftProperty, value);
+        }
+
+        public static readonly DependencyProperty XYFocusLeftProperty = DependencyProperty.RegisterAttached(
+            "XYFocusLeft", typeof(UIElement), typeof(Element),
+            new PropertyMetadata(null));
+
+        public static UIElement GetXYFocusRight(DependencyObject obj)
+        {
+            return (UIElement)obj.GetValue(XYFocusRightProperty);
+        }
+
+        public static void SetXYFocusRight(DependencyObject obj, UIElement value)
+        {
+            obj.SetValue(XYFocusRightProperty, value);
+        }
+
+        public static readonly DependencyProperty XYFocusRightProperty = DependencyProperty.RegisterAttached(
+            "XYFocusRight", typeof(UIElement), typeof(Element),
+            new PropertyMetadata(null));
+
+        public static UIElement GetXYFocusUp(DependencyObject obj)
+        {
+            return (UIElement)obj.GetValue(XYFocusUpProperty);
+        }
+
+        public static void SetXYFocusUp(DependencyObject obj, UIElement value)
+        {
+            obj.SetValue(XYFocusUpProperty, value);
+        }
+
+        public static readonly DependencyProperty XYFocusUpProperty = DependencyProperty.RegisterAttached(
+            "XYFocusUp", typeof(UIElement), typeof(Element),
+            new PropertyMetadata(null));
+
+        public static UIElement GetXYFocusDown(DependencyObject obj)
+        {
+            return (UIElement)obj.GetValue(XYFocusDownProperty);
+        }
+
+        public static void SetXYFocusDown(DependencyObject obj, UIElement value)
+        {
+            obj.SetValue(XYFocusDownProperty, value);
+        }
+
+        public static readonly DependencyProperty XYFocusDownProperty = DependencyProperty.RegisterAttached(
+            "XYFocusDown", typeof(UIElement), typeof(Element),
+            new PropertyMetadata(null));
+
+        #endregion
+
+        /// <summary>
         /// Determines whether antialiasing geometry is generated for this element. This property is
         /// inherited down the visual tree.
         /// </summary>

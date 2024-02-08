@@ -111,7 +111,7 @@ namespace NoesisApp
             UIElement source = (UIElement)GetProxy(_source);
             if (Key == e.Key && Modifiers == source.Keyboard.Modifiers)
             {
-                InvokeActions(0);
+                InvokeActions(e);
             }
         }
 

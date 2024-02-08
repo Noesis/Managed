@@ -140,9 +140,23 @@ public class ItemContainerGenerator : BaseComponent, Noesis.IRecyclingItemContai
     }
   }
 
-  internal static Dictionary<long, StatusChangedHandler> _StatusChanged =
+  private static Dictionary<long, StatusChangedHandler> _StatusChanged =
       new Dictionary<long, StatusChangedHandler>();
   #endregion
+
+  internal static void ResetEvents() {
+    foreach (var kv in _ItemsChanged) {
+      IntPtr cPtr = new IntPtr(kv.Key);
+      NoesisGUI_PINVOKE.UnbindEvent_ItemContainerGenerator_ItemsChanged(_raiseItemsChanged, cPtr);
+    }
+    _ItemsChanged.Clear();
+
+    foreach (var kv in _StatusChanged) {
+      IntPtr cPtr = new IntPtr(kv.Key);
+      NoesisGUI_PINVOKE.UnbindEvent_ItemContainerGenerator_StatusChanged(_raiseStatusChanged, cPtr);
+    }
+    _StatusChanged.Clear();
+  }
 
   #endregion
 

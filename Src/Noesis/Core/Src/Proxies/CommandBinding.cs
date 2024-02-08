@@ -83,7 +83,7 @@ public class CommandBinding : BaseComponent {
     }
   }
 
-  internal static Dictionary<long, PreviewCanExecuteHandler> _PreviewCanExecute =
+  private static Dictionary<long, PreviewCanExecuteHandler> _PreviewCanExecute =
       new Dictionary<long, PreviewCanExecuteHandler>();
   #endregion
 
@@ -139,7 +139,7 @@ public class CommandBinding : BaseComponent {
     }
   }
 
-  internal static Dictionary<long, CanExecuteHandler> _CanExecute =
+  private static Dictionary<long, CanExecuteHandler> _CanExecute =
       new Dictionary<long, CanExecuteHandler>();
   #endregion
 
@@ -195,7 +195,7 @@ public class CommandBinding : BaseComponent {
     }
   }
 
-  internal static Dictionary<long, PreviewExecutedHandler> _PreviewExecuted =
+  private static Dictionary<long, PreviewExecutedHandler> _PreviewExecuted =
       new Dictionary<long, PreviewExecutedHandler>();
   #endregion
 
@@ -251,9 +251,35 @@ public class CommandBinding : BaseComponent {
     }
   }
 
-  internal static Dictionary<long, ExecutedHandler> _Executed =
+  private static Dictionary<long, ExecutedHandler> _Executed =
       new Dictionary<long, ExecutedHandler>();
   #endregion
+
+  internal static void ResetEvents() {
+    foreach (var kv in _PreviewCanExecute) {
+      IntPtr cPtr = new IntPtr(kv.Key);
+      NoesisGUI_PINVOKE.UnbindEvent_CommandBinding_PreviewCanExecute(_raisePreviewCanExecute, cPtr);
+    }
+    _PreviewCanExecute.Clear();
+
+    foreach (var kv in _CanExecute) {
+      IntPtr cPtr = new IntPtr(kv.Key);
+      NoesisGUI_PINVOKE.UnbindEvent_CommandBinding_CanExecute(_raiseCanExecute, cPtr);
+    }
+    _CanExecute.Clear();
+
+    foreach (var kv in _PreviewExecuted) {
+      IntPtr cPtr = new IntPtr(kv.Key);
+      NoesisGUI_PINVOKE.UnbindEvent_CommandBinding_PreviewExecuted(_raisePreviewExecuted, cPtr);
+    }
+    _PreviewExecuted.Clear();
+
+    foreach (var kv in _Executed) {
+      IntPtr cPtr = new IntPtr(kv.Key);
+      NoesisGUI_PINVOKE.UnbindEvent_CommandBinding_Executed(_raiseExecuted, cPtr);
+    }
+    _Executed.Clear();
+  }
 
   #endregion
 

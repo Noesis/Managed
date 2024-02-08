@@ -117,7 +117,7 @@ namespace NoesisGUIExtensions
         {
             if (Button == (GamepadButton)(e.OriginalKey - Key.GamepadLeft))
             {
-                InvokeActions(0);
+                InvokeActions(e);
             }
         }
 

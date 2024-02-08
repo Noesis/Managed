@@ -88,7 +88,7 @@ namespace Noesis
                     // clear errors generated releasing all C# proxies, throwing during
                     // assembly unload will close Unity without notifying
                 }
-                
+
                 Noesis_ClearExtendTypes();
                 Noesis_EnableExtend(false);
                 ClearTables();
@@ -331,20 +331,20 @@ namespace Noesis
         public class NativeTypeInfo
         {
             public NativeTypeKind Kind { get; private set; }
-            public System.Type Type { get; private set; }
+            public Type Type { get; private set; }
 
-            public NativeTypeInfo(NativeTypeKind kind, System.Type type)
+            public NativeTypeInfo(NativeTypeKind kind, Type type)
             {
                 Kind = kind;
                 Type = type;
             }
         }
 
-        public class NativeTypeComponentInfo: NativeTypeInfo
+        public class NativeTypeComponentInfo : NativeTypeInfo
         {
             public Func<IntPtr, bool, BaseComponent> Creator { get; private set; }
 
-            public NativeTypeComponentInfo(NativeTypeKind kind, System.Type type, Func<IntPtr, bool, BaseComponent> creator)
+            public NativeTypeComponentInfo(NativeTypeKind kind, Type type, Func<IntPtr, bool, BaseComponent> creator)
                 : base(kind, type)
             {
                 Creator = creator;
@@ -362,33 +362,33 @@ namespace Noesis
             }
         }
 
-        public class NativeTypeExtendedInfo: NativeTypeInfo, INativeTypeExtended
+        public class NativeTypeExtendedInfo : NativeTypeInfo, INativeTypeExtended
         {
             public Func<object> Creator { get; private set; }
 
-            public NativeTypeExtendedInfo(NativeTypeKind kind, System.Type type, Func<object> creator)
+            public NativeTypeExtendedInfo(NativeTypeKind kind, Type type, Func<object> creator)
                 : base(kind, type)
             {
                 Creator = creator;
             }
         }
 
-        public class NativeTypePropsInfo: NativeTypeExtendedInfo
+        public class NativeTypePropsInfo : NativeTypeExtendedInfo
         {
             public List<PropertyAccessor> Properties { get; private set; }
 
-            public NativeTypePropsInfo(NativeTypeKind kind, System.Type type, Func<object> creator)
+            public NativeTypePropsInfo(NativeTypeKind kind, Type type, Func<object> creator)
                 : base(kind, type, creator)
             {
                 Properties = new List<PropertyAccessor>();
             }
         }
 
-        public class NativeTypeIndexerInfo: NativeTypePropsInfo
+        public class NativeTypeIndexerInfo : NativeTypePropsInfo
         {
             public IndexerAccessor Indexer { get; private set; }
 
-            public NativeTypeIndexerInfo(NativeTypeKind kind, System.Type type, Func<object> creator, IndexerAccessor indexer)
+            public NativeTypeIndexerInfo(NativeTypeKind kind, Type type, Func<object> creator, IndexerAccessor indexer)
                 : base(kind, type, creator)
             {
                 Indexer = indexer;
@@ -1173,59 +1173,6 @@ namespace Noesis
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-        private static PropertyInfo[] GetPublicProperties(Type type)
-        {
-#if NETFX_CORE
-            return type.GetTypeInfo().DeclaredProperties.Where(p => p.GetMethod.IsPublic && !p.GetMethod.IsStatic).ToArray();
-#else
-            return type.GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public);
-#endif
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////
-        private static EventInfo[] GetPublicEvents(Type type)
-        {
-#if NETFX_CORE
-            return type.GetTypeInfo().DeclaredProperties.Where(p => p.GetMethod.IsPublic && !p.GetMethod.IsStatic).ToArray();
-#else
-            return type.GetEvents(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public);
-#endif
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////
-        private static PropertyInfo FindIndexer(Type type, Type paramType)
-        {
-#if NETFX_CORE
-            var props = type.GetRuntimeProperties().Where(p => p.GetMethod.IsPublic && !p.GetMethod.IsStatic);
-#else
-            var props = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
-#endif
-
-            foreach (var p in props)
-            {
-                ParameterInfo[] indexParams = p.GetIndexParameters();
-                if (indexParams.Length == 1 && indexParams[0].ParameterType.Equals(paramType))
-                {
-                    return p;
-                }
-            }
-
-            return null;
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////
-        private static PropertyInfo FindListIndexer(Type type)
-        {
-            return FindIndexer(type, typeof(int));
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////
-        private static PropertyInfo FindDictIndexer(Type type)
-        {
-            return FindIndexer(type, typeof(string));
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////
         [StructLayout(LayoutKind.Sequential)]
         private struct ExtendTypeData
         {
@@ -1271,6 +1218,21 @@ namespace Noesis
             public int readOnly;
         }
 
+        [ThreadStatic]
+        static object[] _objArgs1 = null;
+
+        [ThreadStatic]
+        static Type[] _typeArgs0 = null;
+
+        [ThreadStatic]
+        static Type[] _typeArgs1 = null;
+
+        [ThreadStatic]
+        static Type[] _typeArgs2 = null;
+
+        [ThreadStatic]
+        static Type[] _typeArgs3 = null;
+
         ////////////////////////////////////////////////////////////////////////////////////////////////
         public static IntPtr RegisterNativeType(Type type)
         {
@@ -1288,6 +1250,12 @@ namespace Noesis
 
             PropertyInfo[] props;
             NativeTypeInfo info;
+
+            if (_objArgs1 == null) _objArgs1 = new object[1];
+            if (_typeArgs0 == null) _typeArgs0 = new Type[0];
+            if (_typeArgs1 == null) _typeArgs1 = new Type[1];
+            if (_typeArgs2 == null) _typeArgs2 = new Type[2];
+            if (_typeArgs3 == null) _typeArgs3 = new Type[3];
 
             lock (_managedTypes)
             {
@@ -1351,8 +1319,8 @@ namespace Noesis
                     System.Reflection.MethodInfo extend = FindExtendMethod(type);
                     if (extend != null)
                     {
-                        object[] typeName = { TypeFullName(type) };
-                        nativeType = (IntPtr)extend.Invoke(null, typeName);
+                        _objArgs1[0] = TypeFullName(type);
+                        nativeType = (IntPtr)extend.Invoke(null, _objArgs1);
                     }
                     else
                     {
@@ -1435,13 +1403,66 @@ namespace Noesis
 
         // FullName returned by mono AOT implementation is a bit different than non-AOT implementation.
         // They must be the same because those names are stored in the serialization file
-        private static string TypeFullName(System.Type type)
+        private static string TypeFullName(Type type)
         {
             return type.FullName.Replace("Culture=,", "Culture=neutral,");
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-        private static Func<object> TypeCreator(System.Type type)
+        private static PropertyInfo[] GetPublicProperties(Type type)
+        {
+            #if NETFX_CORE
+            return type.GetTypeInfo().DeclaredProperties.Where(p => p.GetMethod.IsPublic && !p.GetMethod.IsStatic).ToArray();
+            #else
+            return type.GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public);
+            #endif
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private static EventInfo[] GetPublicEvents(Type type)
+        {
+            #if NETFX_CORE
+            return type.GetTypeInfo().DeclaredEvents.Where(e => e.AddMethod.IsPublic && !e.AddMethod.IsStatic).ToArray();
+            #else
+            return type.GetEvents(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public);
+            #endif
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        #if NETFX_CORE
+        private static bool IsIndexParameter(PropertyInfo p, Type type)
+        {
+            ParameterInfo[] pi = p.GetIndexParameters();
+            return pi.Length == 1 && pi[0].ParameterType.Equals(type);
+        }
+        #endif
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private static PropertyInfo FindListIndexer(Type type)
+        {
+            #if NETFX_CORE
+            return type.GetTypeInfo().GetDeclaredProperties("Item")
+                .Where(p => p.GetMethod.IsPublic && !p.GetMethod.IsStatic && IsIndexParameter(typeof(int)).FirstOrDefault();
+            #else
+            _typeArgs1[0] = typeof(int);
+            return type.GetProperty("Item", BindingFlags.Public | BindingFlags.Instance, null, null, _typeArgs1, null);
+            #endif
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private static PropertyInfo FindDictIndexer(Type type)
+        {
+            #if NETFX_CORE
+            return type.GetTypeInfo().GetDeclaredProperties("Item")
+                .Where(p => p.GetMethod.IsPublic && !p.GetMethod.IsStatic && IsIndexParameter(typeof(string)).FirstOrDefault();
+            #else
+            _typeArgs1[0] = typeof(string);
+            return type.GetProperty("Item", BindingFlags.Public | BindingFlags.Instance, null, null, _typeArgs1, null);
+            #endif
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private static Func<object> TypeCreator(Type type)
         {
 #if !ENABLE_IL2CPP && !UNITY_IOS
             if (!type.GetTypeInfo().IsValueType && Platform.ID != PlatformID.iPhone)
@@ -1471,7 +1492,7 @@ namespace Noesis
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-        private static NativeTypeInfo CreateNativeTypeInfo(System.Type type, IndexerAccessor indexer,
+        private static NativeTypeInfo CreateNativeTypeInfo(Type type, IndexerAccessor indexer,
             PropertyInfo[] props)
         {
             if (indexer != null)
@@ -1495,6 +1516,7 @@ namespace Noesis
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
+        #if NETFX_CORE
         private static bool ParametersMatch(MethodInfo m, Type[] types)
         {
             ParameterInfo[] parameters = m.GetParameters();
@@ -1508,16 +1530,16 @@ namespace Noesis
 
             return true;
         }
+        #endif
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
         public static MethodInfo FindMethod(Type type, string name, Type[] types)
         {
             #if NETFX_CORE
-            return type.GetRuntimeMethods()
+            return type.GetTypeInfo().GetRuntimeMethods()
                 .Where(m => m.Name == name && !m.IsStatic && ParametersMatch(m, types)).FirstOrDefault();
             #else
-            return type.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                .Where(m => m.Name == name && ParametersMatch(m, types)).FirstOrDefault();
+            return type.GetMethod(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, types, null);
             #endif
         }
 
@@ -1525,16 +1547,15 @@ namespace Noesis
         public static PropertyInfo FindProperty(Type type, string name)
         {
             #if NETFX_CORE
-            return type.GetRuntimeProperties()
+            return type.GetTypeInfo().GetRuntimeProperties()
                 .Where(p => p.Name == name && !p.GetMethod.IsStatic).FirstOrDefault;
             #else
-            return type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                .Where(p => p.Name == name).FirstOrDefault();
+            return type.GetProperty(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             #endif
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-        private static ExtendTypeData CreateNativeTypeData(System.Type type, IntPtr nativeType)
+        private static ExtendTypeData CreateNativeTypeData(Type type, IntPtr nativeType)
         {
             ExtendTypeData typeData = new ExtendTypeData();
             typeData.type = nativeType.ToInt64();
@@ -1570,10 +1591,11 @@ namespace Noesis
             // overrides
             ExtendTypeOverrides overrides = ExtendTypeOverrides.None;
 
-            MethodInfo toStringMethod = FindMethod(type, "ToString", new Type[] { });
+            MethodInfo toStringMethod = FindMethod(type, "ToString", _typeArgs0);
             if (IsOverride(toStringMethod)) overrides |= ExtendTypeOverrides.Object_ToString;
 
-            MethodInfo equalsMethod = FindMethod(type, "Equals", new Type[] { typeof(object) });
+            _typeArgs1[0] = typeof(object);
+            MethodInfo equalsMethod = FindMethod(type, "Equals", _typeArgs1);
             if (IsOverride(equalsMethod)) overrides |= ExtendTypeOverrides.Object_Equals;
 
             if (typeof(Visual).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
@@ -1581,52 +1603,60 @@ namespace Noesis
                 PropertyInfo childrenCountProp = FindProperty(type, "VisualChildrenCount");
                 if (IsOverride(childrenCountProp?.GetMethod)) overrides |= ExtendTypeOverrides.Visual_GetChildrenCount;
 
-                MethodInfo getChildMethod = FindMethod(type, "GetVisualChild", new Type[] { typeof(int) });
+                _typeArgs1[0] = typeof(int);
+                MethodInfo getChildMethod = FindMethod(type, "GetVisualChild", _typeArgs1);
                 if (IsOverride(getChildMethod)) overrides |= ExtendTypeOverrides.Visual_GetChild;
             }
 
             if (typeof(UIElement).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
             {
-                MethodInfo renderMethod = FindMethod(type, "OnRender", new Type[] { typeof(DrawingContext) });
+                _typeArgs1[0] = typeof(DrawingContext);
+                MethodInfo renderMethod = FindMethod(type, "OnRender", _typeArgs1);
                 if (IsOverride(renderMethod)) overrides |= ExtendTypeOverrides.UIElement_OnRender;
             }
 
             if (typeof(FrameworkElement).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
             {
-                MethodInfo eventMethod = FindMethod(type, "ConnectEvent", new Type[] { typeof(object), typeof(string), typeof(string) });
+                _typeArgs3[0] = typeof(object); _typeArgs3[1] = typeof(string); _typeArgs3[2] = typeof(string);
+                MethodInfo eventMethod = FindMethod(type, "ConnectEvent", _typeArgs3);
                 if (IsOverride(eventMethod)) overrides |= ExtendTypeOverrides.FrameworkElement_ConnectEvent;
 
-                MethodInfo fieldMethod = FindMethod(type, "ConnectField", new Type[] { typeof(object), typeof(string) });
+                _typeArgs2[0] = typeof(object); _typeArgs2[1] = typeof(string);
+                MethodInfo fieldMethod = FindMethod(type, "ConnectField", _typeArgs2);
                 if (IsOverride(fieldMethod)) overrides |= ExtendTypeOverrides.FrameworkElement_ConnectField;
 
-                MethodInfo measureMethod = FindMethod(type, "MeasureOverride", new Type[] { typeof(Size) });
+                _typeArgs1[0] = typeof(Size);
+                MethodInfo measureMethod = FindMethod(type, "MeasureOverride", _typeArgs1);
                 if (IsOverride(measureMethod)) overrides |= ExtendTypeOverrides.FrameworkElement_Measure;
 
-                MethodInfo arrangeMethod = FindMethod(type, "ArrangeOverride", new Type[] { typeof(Size) });
+                MethodInfo arrangeMethod = FindMethod(type, "ArrangeOverride", _typeArgs1);
                 if (IsOverride(arrangeMethod)) overrides |= ExtendTypeOverrides.FrameworkElement_Arrange;
 
-                MethodInfo templateMethod = FindMethod(type, "OnApplyTemplate", new Type[] { });
+                MethodInfo templateMethod = FindMethod(type, "OnApplyTemplate", _typeArgs0);
                 if (IsOverride(templateMethod)) overrides |= ExtendTypeOverrides.FrameworkElement_ApplyTemplate;
             }
 
             if (typeof(ItemsControl).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
             {
-                MethodInfo getContainerMethod = FindMethod(type, "GetContainerForItemOverride", new Type[] { });
+                MethodInfo getContainerMethod = FindMethod(type, "GetContainerForItemOverride", _typeArgs0);
                 if (IsOverride(getContainerMethod)) overrides |= ExtendTypeOverrides.ItemsControl_GetContainer;
 
-                MethodInfo isContainerMethod = FindMethod(type, "IsItemItsOwnContainerOverride", new Type[] { typeof(object) });
+                _typeArgs1[0] = typeof(object);
+                MethodInfo isContainerMethod = FindMethod(type, "IsItemItsOwnContainerOverride", _typeArgs1);
                 if (IsOverride(isContainerMethod)) overrides |= ExtendTypeOverrides.ItemsControl_IsContainer;
             }
 
             if (typeof(Adorner).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
             {
-                MethodInfo getTransformMethod = FindMethod(type, "GetDesiredTransform", new Type[] { typeof(Matrix4) });
+                _typeArgs1[0] = typeof(Matrix4);
+                MethodInfo getTransformMethod = FindMethod(type, "GetDesiredTransform", _typeArgs1);
                 if (IsOverride(getTransformMethod)) overrides |= ExtendTypeOverrides.Adorner_GetTransform;
             }
 
             if (typeof(Freezable).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
             {
-                MethodInfo cloneMethod = FindMethod(type, "CloneCommonCore", new Type[] { typeof(Freezable) });
+                _typeArgs1[0] = typeof(Freezable);
+                MethodInfo cloneMethod = FindMethod(type, "CloneCommonCore", _typeArgs1);
                 if (IsOverride(cloneMethod)) overrides |= ExtendTypeOverrides.Freezable_Clone;
             }
 
@@ -1634,55 +1664,64 @@ namespace Noesis
             {
                 if (typeof(Int16Animation).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
                 {
-                    MethodInfo getValueMethod = FindMethod(type, "GetCurrentValueCore", new Type[] { typeof(short), typeof(short), typeof(AnimationClock) });
+                    _typeArgs3[0] = typeof(short); _typeArgs3[1] = typeof(short); _typeArgs3[2] = typeof(AnimationClock);
+                    MethodInfo getValueMethod = FindMethod(type, "GetCurrentValueCore", _typeArgs3);
                     if (IsOverride(getValueMethod) && getValueMethod.DeclaringType != typeof(Int16Animation))
                         overrides |= ExtendTypeOverrides.Animation_GetValueCore;
                 }
                 if (typeof(Int32Animation).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
                 {
-                    MethodInfo getValueMethod = FindMethod(type, "GetCurrentValueCore", new Type[] { typeof(int), typeof(int), typeof(AnimationClock) });
+                    _typeArgs3[0] = typeof(int); _typeArgs3[1] = typeof(int); _typeArgs3[2] = typeof(AnimationClock);
+                    MethodInfo getValueMethod = FindMethod(type, "GetCurrentValueCore", _typeArgs3);
                     if (IsOverride(getValueMethod) && getValueMethod.DeclaringType != typeof(Int32Animation))
                         overrides |= ExtendTypeOverrides.Animation_GetValueCore;
                 }
                 if (typeof(Int64Animation).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
                 {
-                    MethodInfo getValueMethod = FindMethod(type, "GetCurrentValueCore", new Type[] { typeof(long), typeof(long), typeof(AnimationClock) });
+                    _typeArgs3[0] = typeof(long); _typeArgs3[1] = typeof(long); _typeArgs3[2] = typeof(AnimationClock);
+                    MethodInfo getValueMethod = FindMethod(type, "GetCurrentValueCore", _typeArgs3);
                     if (IsOverride(getValueMethod) && getValueMethod.DeclaringType != typeof(Int64Animation))
                         overrides |= ExtendTypeOverrides.Animation_GetValueCore;
                 }
                 if (typeof(DoubleAnimation).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
                 {
-                    MethodInfo getValueMethod = FindMethod(type, "GetCurrentValueCore", new Type[] { typeof(float), typeof(float), typeof(AnimationClock) });
+                    _typeArgs3[0] = typeof(float); _typeArgs3[1] = typeof(float); _typeArgs3[2] = typeof(AnimationClock);
+                    MethodInfo getValueMethod = FindMethod(type, "GetCurrentValueCore", _typeArgs3);
                     if (IsOverride(getValueMethod) && getValueMethod.DeclaringType != typeof(DoubleAnimation))
                         overrides |= ExtendTypeOverrides.Animation_GetValueCore;
                 }
                 if (typeof(ColorAnimation).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
                 {
-                    MethodInfo getValueMethod = FindMethod(type, "GetCurrentValueCore", new Type[] { typeof(Color), typeof(Color), typeof(AnimationClock) });
+                    _typeArgs3[0] = typeof(Color); _typeArgs3[1] = typeof(Color); _typeArgs3[2] = typeof(AnimationClock);
+                    MethodInfo getValueMethod = FindMethod(type, "GetCurrentValueCore", _typeArgs3);
                     if (IsOverride(getValueMethod) && getValueMethod.DeclaringType != typeof(ColorAnimation))
                         overrides |= ExtendTypeOverrides.Animation_GetValueCore;
                 }
                 if (typeof(PointAnimation).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
                 {
-                    MethodInfo getValueMethod = FindMethod(type, "GetCurrentValueCore", new Type[] { typeof(Point), typeof(Point), typeof(AnimationClock) });
+                    _typeArgs3[0] = typeof(Point); _typeArgs3[1] = typeof(Point); _typeArgs3[2] = typeof(AnimationClock);
+                    MethodInfo getValueMethod = FindMethod(type, "GetCurrentValueCore", _typeArgs3);
                     if (IsOverride(getValueMethod) && getValueMethod.DeclaringType != typeof(PointAnimation))
                         overrides |= ExtendTypeOverrides.Animation_GetValueCore;
                 }
                 if (typeof(RectAnimation).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
                 {
-                    MethodInfo getValueMethod = FindMethod(type, "GetCurrentValueCore", new Type[] { typeof(Rect), typeof(Rect), typeof(AnimationClock) });
+                    _typeArgs3[0] = typeof(Rect); _typeArgs3[1] = typeof(Rect); _typeArgs3[2] = typeof(AnimationClock);
+                    MethodInfo getValueMethod = FindMethod(type, "GetCurrentValueCore", _typeArgs3);
                     if (IsOverride(getValueMethod) && getValueMethod.DeclaringType != typeof(RectAnimation))
                         overrides |= ExtendTypeOverrides.Animation_GetValueCore;
                 }
                 if (typeof(SizeAnimation).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
                 {
-                    MethodInfo getValueMethod = FindMethod(type, "GetCurrentValueCore", new Type[] { typeof(Size), typeof(Size), typeof(AnimationClock) });
+                    _typeArgs3[0] = typeof(Size); _typeArgs3[1] = typeof(Size); _typeArgs3[2] = typeof(AnimationClock);
+                    MethodInfo getValueMethod = FindMethod(type, "GetCurrentValueCore", _typeArgs3);
                     if (IsOverride(getValueMethod) && getValueMethod.DeclaringType != typeof(SizeAnimation))
                         overrides |= ExtendTypeOverrides.Animation_GetValueCore;
                 }
                 if (typeof(ThicknessAnimation).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
                 {
-                    MethodInfo getValueMethod = FindMethod(type, "GetCurrentValueCore", new Type[] { typeof(Thickness), typeof(Thickness), typeof(AnimationClock) });
+                    _typeArgs3[0] = typeof(Thickness); _typeArgs3[1] = typeof(Thickness); _typeArgs3[2] = typeof(AnimationClock);
+                    MethodInfo getValueMethod = FindMethod(type, "GetCurrentValueCore", _typeArgs3);
                     if (IsOverride(getValueMethod) && getValueMethod.DeclaringType != typeof(ThicknessAnimation))
                         overrides |= ExtendTypeOverrides.Animation_GetValueCore;
                 }
@@ -1718,7 +1757,7 @@ namespace Noesis
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-        private static IntPtr CreateNativePropsData(System.Type type, PropertyInfo[] props,
+        private static IntPtr CreateNativePropsData(Type type, PropertyInfo[] props,
             NativeTypeInfo info, out int numProps)
         {
             EventInfo[] events = GetPublicEvents(type);
@@ -1731,11 +1770,11 @@ namespace Noesis
 
             if (propsLen > 0)
             {
-#if ENABLE_IL2CPP || UNITY_IOS
+                #if ENABLE_IL2CPP || UNITY_IOS
                 bool usePropertyInfo = true;
-#else
+                #else
                 bool usePropertyInfo = type.GetTypeInfo().IsValueType || Platform.ID == PlatformID.iPhone;
-#endif
+                #endif
 
                 NativeTypePropsInfo propsInfo = (NativeTypePropsInfo)info;
                 for (int i = 0; i < propsLen; ++i)
@@ -1785,7 +1824,7 @@ namespace Noesis
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-        private static IntPtr CreateNativeEnumsData(System.Type type, out int numEnums)
+        private static IntPtr CreateNativeEnumsData(Type type, out int numEnums)
         {
             var names = Enum.GetNames(type);
             var values = Enum.GetValues(type);
@@ -1810,13 +1849,15 @@ namespace Noesis
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-        public static IntPtr EnsureNativeType(System.Type type)
+        public static IntPtr EnsureNativeType(Type type)
         {
             return EnsureNativeType(type, true);
         }
 
-        public static IntPtr EnsureNativeType(System.Type type, bool registerDP)
+        public static IntPtr EnsureNativeType(Type type, bool registerDP)
         {
+            if (type == null) type = typeof(BaseComponent);
+
             IntPtr nativeType = TryGetNativeType(type);
             if (nativeType == IntPtr.Zero)
             {
@@ -1850,15 +1891,15 @@ namespace Noesis
 
         private static bool HasDependencyProperties(Type type)
         {
-#if NETFX_CORE
+            #if NETFX_CORE
             var fields = type.GetTypeInfo().DeclaredFields.Where(p => p.IsStatic);
             if (fields.Any())
             {
-#else
+            #else
             var fields = type.GetFields(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
             if (fields.Length > 0)
             {
-#endif
+            #endif
                 foreach (FieldInfo field in fields)
                 {
                     if (field.FieldType == typeof(DependencyProperty))
@@ -1893,12 +1934,12 @@ namespace Noesis
         private static HashSet<Type> _constructedTypes = new HashSet<Type>();
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-        private static System.Reflection.MethodInfo FindExtendMethod(System.Type type)
+        private static MethodInfo FindExtendMethod(Type type)
         {
-            System.Type baseType = type;
+            Type baseType = type;
             while (baseType != null)
             {
-                System.Reflection.MethodInfo extend = GetExtendMethod(baseType);
+                MethodInfo extend = GetExtendMethod(baseType);
                 if (extend != null)
                 {
                     return extend;
@@ -1911,13 +1952,14 @@ namespace Noesis
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-        private static System.Reflection.MethodInfo GetExtendMethod(System.Type type)
+        private static MethodInfo GetExtendMethod(Type type)
         {
-#if NETFX_CORE
-            System.Reflection.MethodInfo extend = type.GetTypeInfo().GetDeclaredMethods("Extend").Where(m => !m.IsPublic && m.IsStatic).FirstOrDefault();
-#else
-            System.Reflection.MethodInfo extend = type.GetMethod("Extend", BindingFlags.DeclaredOnly | BindingFlags.NonPublic | BindingFlags.Static);
-#endif
+            #if NETFX_CORE
+            MethodInfo extend = type.GetTypeInfo().GetDeclaredMethods("Extend")
+                .Where(m => !m.IsPublic && m.IsStatic).FirstOrDefault();
+            #else
+            MethodInfo extend = type.GetMethod("Extend", BindingFlags.DeclaredOnly | BindingFlags.NonPublic | BindingFlags.Static);
+            #endif
             if (extend != null && extend.GetParameters().Length == 1)
             {
                 return extend;
@@ -1944,6 +1986,19 @@ namespace Noesis
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
+        private static int NextPowerOf2(int x)
+        {
+            if (x < 0) return 0;
+            --x;
+            x |= x >> 1;
+            x |= x >> 2;
+            x |= x >> 4;
+            x |= x >> 8;
+            x |= x >> 16;
+            return x + 1;
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
         public static string StringFromNativeUtf8(IntPtr nativeUtf8)
         {
             if (nativeUtf8 == IntPtr.Zero)
@@ -1959,11 +2014,14 @@ namespace Noesis
             // https://github.com/dotnet/corefx/issues/9605
             int len = 0;
             while (Marshal.ReadByte(nativeUtf8, len) != 0) len++;
-            byte[] buffer = new byte[len];
-            Marshal.Copy(nativeUtf8, buffer, 0, len);
-            return System.Text.Encoding.UTF8.GetString(buffer, 0, len);
+            if (_byteBuffer == null || len > _byteBuffer.Length) _byteBuffer = new byte[NextPowerOf2(Math.Max(2048, len))];
+            Marshal.Copy(nativeUtf8, _byteBuffer, 0, len);
+            return System.Text.Encoding.UTF8.GetString(_byteBuffer, 0, len);
 #endif
         }
+
+        [ThreadStatic]
+        private static byte[] _byteBuffer = null;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
         private delegate void Callback_RegisterType(string typeName);
@@ -3180,9 +3238,10 @@ namespace Noesis
                 var stream = (System.IO.Stream)GetExtendInstance(cPtr);
                 if (stream != null)
                 {
-                    byte[] bytes = new byte[bufferSize];
-                    int readBytes = stream.Read(bytes, 0, (int)bufferSize);
-                    System.Runtime.InteropServices.Marshal.Copy(bytes, 0, buffer, (int)bufferSize);
+                    int len = (int)bufferSize;
+                    if (_byteBuffer == null || len > _byteBuffer.Length) _byteBuffer = new byte[NextPowerOf2(Math.Max(2048, len))];
+                    int readBytes = stream.Read(_byteBuffer, 0, len);
+                    System.Runtime.InteropServices.Marshal.Copy(_byteBuffer, 0, buffer, len);
                     return (uint)readBytes;
                 }
             }
@@ -5134,7 +5193,7 @@ namespace Noesis
             {
                 Type type = GetPropertyValue<Type>(GetProperty(nativeType, propertyIndex),
                     GetExtendInstance(cPtr));
-                return GetNativeType(type);
+                return type != null ? GetNativeType(type) : IntPtr.Zero;
             }
             catch (Exception e)
             {
@@ -5606,7 +5665,7 @@ namespace Noesis
         {
             try
             {
-                NativeTypeInfo info = GetNativeTypeInfo(cPtr);
+                NativeTypeInfo info = GetNativeTypeInfo(val);
                 SetPropertyValue<Type>(GetProperty(nativeType, propertyIndex),
                     GetExtendInstance(cPtr), info.Type);
             }
@@ -5664,7 +5723,7 @@ namespace Noesis
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-        public static IntPtr NewCPtr(System.Type type)
+        public static IntPtr NewCPtr(Type type)
         {
             // Ensure native type is registered
             IntPtr nativeType = EnsureNativeType(type);

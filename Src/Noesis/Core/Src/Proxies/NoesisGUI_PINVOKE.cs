@@ -3572,6 +3572,10 @@ internal class NoesisGUI_PINVOKE {
   public static extern void VisualTreeHelper_HitTest3DHelper(HandleRef jarg1, ref Point3D jarg2, ref Point3D jarg3, ref HitTest3DResult jarg4);
 
   [DllImport(Library.Name)]
+  [return: MarshalAs(UnmanagedType.U1)]
+  public static extern bool VisualTreeHelper_IntersectPlaneHelper(HandleRef jarg1, ref Point3D jarg2, ref Point3D jarg3, ref Point3D jarg4);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr VisualCollection_Create(HandleRef jarg1);
 
   [DllImport(Library.Name)]
@@ -6099,6 +6103,18 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr Control_IsFocusEngagementEnabledProperty_get();
 
   [DllImport(Library.Name)]
+  public static extern IntPtr Control_XYFocusLeftProperty_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Control_XYFocusRightProperty_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Control_XYFocusUpProperty_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Control_XYFocusDownProperty_get();
+
+  [DllImport(Library.Name)]
   public static extern IntPtr Control_MouseDoubleClickEvent_get();
 
   [DllImport(Library.Name)]
@@ -6208,6 +6224,30 @@ internal class NoesisGUI_PINVOKE {
   [DllImport(Library.Name)]
   [return: MarshalAs(UnmanagedType.U1)]
   public static extern bool Control_IsFocusEngagementEnabled_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void Control_XYFocusLeft_set(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Control_XYFocusLeft_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void Control_XYFocusRight_set(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Control_XYFocusRight_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void Control_XYFocusUp_set(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Control_XYFocusUp_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void Control_XYFocusDown_set(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Control_XYFocusDown_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern IntPtr new_ContentControl();
@@ -10606,6 +10646,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern int TextBlock_TextWrapping_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
+  public static extern IntPtr TextBlock_FormattedText_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr TextBlock_ToStringHelper(HandleRef jarg1);
 
   [DllImport(Library.Name)]
@@ -13587,6 +13630,30 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr new_RiveInputCollection();
 
   [DllImport(Library.Name)]
+  public static extern IntPtr new_RiveRun();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr RiveRun_RunNameProperty_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr RiveRun_RunTextProperty_get();
+
+  [DllImport(Library.Name)]
+  public static extern void RiveRun_RunName_set(HandleRef jarg1, [MarshalAs(UnmanagedType.LPWStr)]string jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr RiveRun_RunName_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void RiveRun_RunText_set(HandleRef jarg1, [MarshalAs(UnmanagedType.LPWStr)]string jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr RiveRun_RunText_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr new_RiveRunCollection();
+
+  [DllImport(Library.Name)]
   public static extern IntPtr new_RiveControl();
 
   [DllImport(Library.Name)]
@@ -13600,6 +13667,15 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr RiveControl_GetSourceInput(HandleRef jarg1, uint jarg2, out RiveSourceInputType jarg3);
+
+  [DllImport(Library.Name)]
+  public static extern void RiveControl_SetRunText(HandleRef jarg1, [MarshalAs(UnmanagedType.LPWStr)]string jarg2, [MarshalAs(UnmanagedType.LPWStr)]string jarg3);
+
+  [DllImport(Library.Name)]
+  public static extern uint RiveControl_GetSourceRunCount(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr RiveControl_GetSourceRunName(HandleRef jarg1, uint jarg2);
 
   [DllImport(Library.Name)]
   public static extern IntPtr RiveControl_SourceProperty_get();
@@ -13627,6 +13703,9 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr RiveControl_Inputs_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr RiveControl_Runs_get(HandleRef jarg1);
 }
 
 }

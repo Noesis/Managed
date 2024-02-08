@@ -180,6 +180,34 @@ public class Control : FrameworkElement {
     }
   }
 
+  public static DependencyProperty XYFocusLeftProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Control_XYFocusLeftProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static DependencyProperty XYFocusRightProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Control_XYFocusRightProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static DependencyProperty XYFocusUpProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Control_XYFocusUpProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static DependencyProperty XYFocusDownProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Control_XYFocusDownProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
   public static RoutedEvent MouseDoubleClickEvent {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.Control_MouseDoubleClickEvent_get();
@@ -376,6 +404,46 @@ public class Control : FrameworkElement {
       bool ret = NoesisGUI_PINVOKE.Control_IsFocusEngagementEnabled_get(swigCPtr);
       return ret;
     } 
+  }
+
+  public UIElement XYFocusLeft {
+    set {
+      NoesisGUI_PINVOKE.Control_XYFocusLeft_set(swigCPtr, UIElement.getCPtr(value));
+    } 
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Control_XYFocusLeft_get(swigCPtr);
+      return (UIElement)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public UIElement XYFocusRight {
+    set {
+      NoesisGUI_PINVOKE.Control_XYFocusRight_set(swigCPtr, UIElement.getCPtr(value));
+    } 
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Control_XYFocusRight_get(swigCPtr);
+      return (UIElement)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public UIElement XYFocusUp {
+    set {
+      NoesisGUI_PINVOKE.Control_XYFocusUp_set(swigCPtr, UIElement.getCPtr(value));
+    } 
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Control_XYFocusUp_get(swigCPtr);
+      return (UIElement)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public UIElement XYFocusDown {
+    set {
+      NoesisGUI_PINVOKE.Control_XYFocusDown_set(swigCPtr, UIElement.getCPtr(value));
+    } 
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.Control_XYFocusDown_get(swigCPtr);
+      return (UIElement)Noesis.Extend.GetProxy(cPtr, false);
+    }
   }
 
   internal new static IntPtr Extend(string typeName) {

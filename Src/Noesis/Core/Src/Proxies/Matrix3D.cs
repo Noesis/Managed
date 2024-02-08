@@ -238,7 +238,7 @@ public struct Matrix3D {
   }
 
   public bool HasInverse {
-    get { return Math.Abs(Determinant) < 0.0001f; }
+    get { return Math.Abs(Determinant) >= 0.0001f; }
   }
 
   public void Invert() {

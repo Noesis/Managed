@@ -372,6 +372,13 @@ public class TextBlock : FrameworkElement {
     } 
   }
 
+  public FormattedText FormattedText {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.TextBlock_FormattedText_get(swigCPtr);
+      return (FormattedText)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
   private string ToStringHelper() {
     IntPtr strPtr = NoesisGUI_PINVOKE.TextBlock_ToStringHelper(swigCPtr);
     string str = Noesis.Extend.StringFromNativeUtf8(strPtr);

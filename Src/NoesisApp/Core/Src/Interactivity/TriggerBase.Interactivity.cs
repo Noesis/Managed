@@ -66,6 +66,8 @@ namespace NoesisApp
         /// </summary>
         protected void InvokeActions(object parameter)
         {
+            TriggerBase thisTrigger = this;
+
             if (PreviewInvoke != null)
             {
                 PreviewInvokeEventArgs previewInvokeEventArgs = new PreviewInvokeEventArgs();
@@ -79,6 +81,7 @@ namespace NoesisApp
 
             foreach (TriggerAction triggerAction in Actions)
             {
+                if (base.AssociatedObject == null) break;
                 triggerAction.CallInvoke(parameter);
             }
         }

@@ -155,6 +155,11 @@ namespace NoesisGUIExtensions
 
             if (monitor != null)
             {
+                if (monitor.TargetObject != d)
+                {
+                    monitor = monitor.Clone(d);
+                    d.SetValue(MonitorProperty, monitor);
+                }
                 monitor.InvalidateResources((ResourceDictionary)e.NewValue);
             }
         }
@@ -181,19 +186,19 @@ namespace NoesisGUIExtensions
 
     internal class LocMonitor
     {
-        private readonly DependencyObject _targetObject;
-
         private readonly List<Tuple<DependencyProperty, string>> _monitoredDependencyProperties =
             new List<Tuple<DependencyProperty, string>>();
 
+        public DependencyObject TargetObject { get; }
+
         public LocMonitor(DependencyObject targetObject)
         {
-            _targetObject = targetObject;
+            TargetObject = targetObject;
         }
 
         public object AddDependencyProperty(DependencyProperty targetProperty, string resourceKey)
         {
-            ResourceDictionary resourceDictionary = LocExtension.GetResources(_targetObject);
+            ResourceDictionary resourceDictionary = LocExtension.GetResources(TargetObject);
 
             for (int i = 0; i < _monitoredDependencyProperties.Count; i++)
             {
@@ -215,9 +220,16 @@ namespace NoesisGUIExtensions
         {
             foreach (Tuple<DependencyProperty, string> entry in _monitoredDependencyProperties)
             {
-                _targetObject.SetValue(entry.Item1,
+                TargetObject.SetValue(entry.Item1,
                     Evaluate(entry.Item1, entry.Item2, resourceDictionary));
             }
+        }
+
+        public LocMonitor Clone(DependencyObject targetObject)
+        {
+            LocMonitor clone = new LocMonitor(targetObject);
+            clone._monitoredDependencyProperties.AddRange(_monitoredDependencyProperties);
+            return clone;
         }
 
         private static object Evaluate(DependencyProperty targetProperty, string resourceKey,

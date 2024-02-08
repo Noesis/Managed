@@ -71,15 +71,13 @@ namespace NoesisGUIExtensions
 
             this.currentTarget = this.Source;
 
-            if (this.currentTarget != null && !string.IsNullOrEmpty(this.EventName))
+            string eventName = this.EventName;
+            if (this.currentTarget != null && !string.IsNullOrEmpty(eventName))
             {
-
                 Type targetType = this.currentTarget.GetType();
-                this.currentEvent = targetType.GetEvent(this.EventName);
+                this.currentEvent = targetType.GetEvent(eventName);
                 if (this.currentEvent != null)
                 {
-
-                    MethodInfo handlerMethod = this.GetType().GetMethod("OnEvent", BindingFlags.NonPublic | BindingFlags.Instance);
                     this.currentDelegate = this.GetDelegate(this.currentEvent, this.OnMethod);
                     this.currentEvent.AddEventHandler(this.currentTarget, this.currentDelegate);
                 }
@@ -90,8 +88,7 @@ namespace NoesisGUIExtensions
         {
             if (typeof(System.EventHandler).IsAssignableFrom(eventInfo.EventHandlerType))
             {
-                MethodInfo method = this.GetType().GetMethod("OnEvent", BindingFlags.NonPublic | BindingFlags.Instance);
-                return Delegate.CreateDelegate(eventInfo.EventHandlerType, this, method);
+                return Delegate.CreateDelegate(eventInfo.EventHandlerType, this, OnEventMethod);
             }
 
             Type handlerType = eventInfo.EventHandlerType;
@@ -113,6 +110,9 @@ namespace NoesisGUIExtensions
         {
             this.InvokeActions(e);
         }
+
+        public static readonly MethodInfo OnEventMethod = typeof(DataEventTrigger).GetMethod(
+                "OnEvent", BindingFlags.Instance | BindingFlags.NonPublic);
 
         private EventInfo currentEvent;
         private Delegate currentDelegate;

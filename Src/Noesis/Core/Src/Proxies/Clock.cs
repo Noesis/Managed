@@ -84,7 +84,15 @@ public class Clock : BaseComponent {
     }
   }
 
-  internal static Dictionary<long, CompletedHandler> _Completed =
+  internal static void ResetEvents() {
+    foreach (var kv in _Completed) {
+      IntPtr cPtr = new IntPtr(kv.Key);
+      NoesisGUI_PINVOKE.UnbindEvent_Clock_Completed(_raiseCompleted, cPtr);
+    }
+    _Completed.Clear();
+  }
+
+  private static Dictionary<long, CompletedHandler> _Completed =
       new Dictionary<long, CompletedHandler>();
   #endregion
 

@@ -88,6 +88,14 @@ public class Timeline : Animatable {
       new Dictionary<long, CompletedHandler>();
   #endregion
 
+  internal static new void ResetEvents() {
+    foreach (var kv in _Completed) {
+      IntPtr cPtr = new IntPtr(kv.Key);
+      NoesisGUI_PINVOKE.UnbindEvent_Timeline_Completed(_raiseCompleted, cPtr);
+    }
+    _Completed.Clear();
+  }
+
   #endregion
 
   public static int GetDesiredFrameRate(DependencyObject timeline) {

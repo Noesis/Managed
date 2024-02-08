@@ -776,6 +776,15 @@ namespace Noesis
 
         #endregion
 
+        private static bool IsCollectionType(Type type)
+        {
+            if (typeof(System.Collections.IList).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo())) return true;
+            if (typeof(System.Collections.IDictionary).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo())) return true;
+            if (FindListIndexer(type) != null) return true;
+            if (FindDictIndexer(type) != null) return true;
+            return false;
+        }
+
         private static ExtendPropertyData AddProperty(NativeTypePropsInfo info, PropertyInfo p, bool usePropertyInfo)
         {
             AddPropertyDelegate addPropFunction;
@@ -783,8 +792,6 @@ namespace Noesis
             {
                 return addPropFunction(info, p, usePropertyInfo);
             }
-
-            IntPtr propertyType = EnsureNativeType(p.PropertyType);
 
             if (p.PropertyType.GetTypeInfo().IsEnum)
             {
@@ -803,12 +810,19 @@ namespace Noesis
                         true);
                 }
 
+                IntPtr propertyType = EnsureNativeType(p.PropertyType);
                 return CreatePropertyData(p, NativePropertyType.Enum, propertyType);
             }
             else
             {
                 AddPropertyAccessor<object>(info, p, true);
 
+                IntPtr propertyType = TryGetNativeType(p.PropertyType);
+                if (propertyType == IntPtr.Zero)
+                {
+                    propertyType = IsCollectionType(p.PropertyType) ?
+                        EnsureNativeType(p.PropertyType) : BaseComponent.GetStaticType();
+                }
                 return CreatePropertyData(p, NativePropertyType.BaseComponent, propertyType);
             }
         }
