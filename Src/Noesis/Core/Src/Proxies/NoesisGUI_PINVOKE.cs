@@ -731,6 +731,10 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr Box_Color(ref Color jarg1);
 
   [DllImport(Library.Name)]
+  [return: MarshalAs(UnmanagedType.U1)]
+  public static extern bool Color_TryParse([MarshalAs(UnmanagedType.LPWStr)]string jarg1, out Color jarg2);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr Matrix_GetStaticType();
 
   [DllImport(Library.Name)]
@@ -5781,12 +5785,6 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern float TextElement_StrokeThickness_get(HandleRef jarg1);
-
-  [DllImport(Library.Name)]
-  public static extern IntPtr new_TextElement();
-
-  [DllImport(Library.Name)]
-  public static extern IntPtr new_Inline();
 
   [DllImport(Library.Name)]
   public static extern int Inline_GetFlowDirection(HandleRef jarg1);

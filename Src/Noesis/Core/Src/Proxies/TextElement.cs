@@ -15,16 +15,15 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-public class TextElement : FrameworkElement {
-  internal new static TextElement CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
-    return new TextElement(cPtr, cMemoryOwn);
-  }
-
+public abstract class TextElement : FrameworkElement {
   internal TextElement(IntPtr cPtr, bool cMemoryOwn) : base(cPtr, cMemoryOwn) {
   }
 
   internal static HandleRef getCPtr(TextElement obj) {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
+  }
+
+  protected TextElement() {
   }
 
   public Typography Typography {
@@ -319,14 +318,6 @@ public class TextElement : FrameworkElement {
       float ret = NoesisGUI_PINVOKE.TextElement_StrokeThickness_get(swigCPtr);
       return ret;
     } 
-  }
-
-  public TextElement() {
-  }
-
-  protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    registerExtend = false;
-    return NoesisGUI_PINVOKE.new_TextElement();
   }
 
 }

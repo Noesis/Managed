@@ -21,6 +21,15 @@ namespace NoesisApp
             return (InvokeCommandAction)base.CloneCurrentValue();
         }
 
+        protected override void CloneCommonCore(Freezable source)
+        {
+            base.CloneCommonCore(source);
+
+            InvokeCommandAction action = (InvokeCommandAction)source;
+            CommandName = action.CommandName;
+            PassEventArgsToCommand = action.PassEventArgsToCommand;
+        }
+
         /// <summary>
         /// Gets or sets the name of the command this action should invoke
         /// </summary>

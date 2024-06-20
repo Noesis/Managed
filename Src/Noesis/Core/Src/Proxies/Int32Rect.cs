@@ -16,6 +16,7 @@ namespace Noesis
 {
 
 [StructLayoutAttribute(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+[System.ComponentModel.TypeConverter(typeof(Int32RectConverter))]
 public struct Int32Rect {
 
   [MarshalAs(UnmanagedType.I4)]

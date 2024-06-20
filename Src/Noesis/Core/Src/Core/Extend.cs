@@ -2576,19 +2576,10 @@ namespace Noesis
 
                     object obj = converter.Convert(val, targetType, param, CultureInfo.CurrentCulture);
 
-                    if (AreCompatibleTypes(obj, targetType))
-                    {
-                        HandleRef res = GetInstanceHandle(obj);
-                        BaseComponent.AddReference(res.Handle); // released by native bindings
-                        result = res.Handle;
-                        return true;
-                    }
-                    else
-                    {
-                        Log.Error(string.Format("{0} Convert() expects {1} and {2} is returned",
-                            converter.GetType().FullName, targetType.FullName,
-                            obj != null ? obj.GetType().FullName : "null"));
-                    }
+                    HandleRef res = GetInstanceHandle(obj);
+                    BaseComponent.AddReference(res.Handle); // released by native bindings
+                    result = res.Handle;
+                    return true;
                 }
             }
             catch (Exception e)
@@ -2622,19 +2613,10 @@ namespace Noesis
 
                     object obj = converter.ConvertBack(val, targetType, param, CultureInfo.CurrentCulture);
 
-                    if (AreCompatibleTypes(obj, targetType))
-                    {
-                        HandleRef res = GetInstanceHandle(obj);
-                        BaseComponent.AddReference(res.Handle); // released by native bindings
-                        result = res.Handle;
-                        return true;
-                    }
-                    else
-                    {
-                        Log.Error(string.Format("{0} ConvertBack() expects {1} and {2} is returned",
-                            converter.GetType().FullName, targetType.FullName,
-                            obj != null ? obj.GetType().FullName : "null"));
-                    }
+                    HandleRef res = GetInstanceHandle(obj);
+                    BaseComponent.AddReference(res.Handle); // released by native bindings
+                    result = res.Handle;
+                    return true;
                 }
             }
             catch (Exception e)
@@ -5742,11 +5724,12 @@ namespace Noesis
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-        private delegate void Callback_CreateInstance(IntPtr nativeType, IntPtr cPtr);
+        [return: MarshalAs(UnmanagedType.U1)]
+        private delegate bool Callback_CreateInstance(IntPtr nativeType, IntPtr cPtr);
         private static Callback_CreateInstance _createInstance = CreateInstance;
 
         [MonoPInvokeCallback(typeof(Callback_CreateInstance))]
-        private static void CreateInstance(IntPtr nativeType, IntPtr cPtr)
+        private static bool CreateInstance(IntPtr nativeType, IntPtr cPtr)
         {
             try
             {
@@ -5782,10 +5765,13 @@ namespace Noesis
                     BaseComponent.AddReference(cPtr);
                     RegisterInterfaces(instance);
                 }
+
+                return true;
             }
             catch (Exception e)
             {
                 Error.UnhandledException(e);
+                return false;
             }
         }
 

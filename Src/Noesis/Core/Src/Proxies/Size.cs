@@ -16,6 +16,7 @@ namespace Noesis
 {
 
 [StructLayoutAttribute(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+[System.ComponentModel.TypeConverter(typeof(SizeConverter))]
 public struct Size {
 
   [MarshalAs(UnmanagedType.R4)]

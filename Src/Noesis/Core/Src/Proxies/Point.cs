@@ -16,6 +16,7 @@ namespace Noesis
 {
 
 [StructLayoutAttribute(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+[System.ComponentModel.TypeConverter(typeof(PointConverter))]
 public struct Point {
 
   [MarshalAs(UnmanagedType.R4)]

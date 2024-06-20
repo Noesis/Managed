@@ -1,6 +1,8 @@
 ﻿using Noesis;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
 
 namespace NoesisGUIExtensions
 {
@@ -14,6 +16,8 @@ namespace NoesisGUIExtensions
     /// If used with a string or object property, and the provided resource key is not found, the
     /// LocExtension will return a string in the format "<Loc !%s>" where %s is replaced with the key.
     ///
+    /// A Converter can also be specified, with an optional ConverterParameter.
+    ///
     /// This example shows the full setup for a LocExtension. It utilizes the RichText attached
     /// property to support BBCode markup in the localized strings. The Loc.Source property references
     /// the "Language_en-gb.xaml" ResourceDictionary below.
@@ -25,8 +29,8 @@ namespace NoesisGUIExtensions
     ///      xmlns:noesis="clr-namespace:NoesisGUIExtensions"
     ///      noesis:Loc.Source="Language_en-gb.xaml">
     ///      <Image Source="{noesis:Loc Flag}"/>
-    ///      <TextBlock noesis:RichText.Text="{noesis:Loc TitleLabel}"/>
     ///      <TextBlock noesis:RichText.Text="{noesis:Loc SoundLabel}"/>
+    ///      <TextBlock noesis:RichText.Text="{noesis:Loc TitleLabel, Converter={StaticResource CaseConverter}, ConverterParameter=UpperCase}"/>
     ///    </StackPanel>
     /// 
     /// This is the contents of a "Language_en-gb.xaml" localized ResourceDictionary:
@@ -38,7 +42,7 @@ namespace NoesisGUIExtensions
     ///      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     ///      xmlns:sys="clr-namespace:System;assembly=mscorlib">
     ///      <ImageBrush x:Key="Flag" ImageSource="Flag_en-gb.png" Stretch="Fill"/>
-    ///      <sys:String x:Key="TitleLabel">[b]LOCALIZATION SAMPLE[/b]</sys:String>
+    ///      <sys:String x:Key="TitleLabel">[b]Localization Sample[/b]</sys:String>
     ///      <sys:String x:Key="SoundLabel">A [i]sound[/i] label</sys:String>
     ///    </ResourceDictionary>
     ///
@@ -47,6 +51,8 @@ namespace NoesisGUIExtensions
     public class LocExtension : MarkupExtension
     {
         private string _resourceKey;
+        private IValueConverter _converter;
+        private object _converterParameter;
 
         public LocExtension()
         {
@@ -77,6 +83,24 @@ namespace NoesisGUIExtensions
             set { _resourceKey = value; }
         }
 
+        /// <summary>
+        /// Gets or sets a converter to use when finding a resource in the active localization ResourceDictionary.
+        /// </summary>
+        public IValueConverter Converter
+        {
+            get => this._converter;
+            set => this._converter = value;
+        }
+
+        /// <summary>
+        /// Gets or sets an optional converter parameter to use when finding a resource in the active localization ResourceDictionary.
+        /// </summary>
+        public object ConverterParameter
+        {
+            get => this._converterParameter;
+            set => this._converterParameter = value;
+        }
+
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
             IProvideValueTarget valueTarget = serviceProvider as IProvideValueTarget;
@@ -96,7 +120,7 @@ namespace NoesisGUIExtensions
                 target.SetValue(MonitorProperty, monitor);
             }
 
-            return monitor.AddDependencyProperty(targetProperty, _resourceKey);
+            return monitor.AddDependencyProperty(targetProperty, _resourceKey, Converter, ConverterParameter);
         }
 
         #region Source attached property
@@ -182,76 +206,129 @@ namespace NoesisGUIExtensions
             );
 
         #endregion
-    }
 
-    internal class LocMonitor
-    {
-        private readonly List<Tuple<DependencyProperty, string>> _monitoredDependencyProperties =
-            new List<Tuple<DependencyProperty, string>>();
-
-        public DependencyObject TargetObject { get; }
-
-        public LocMonitor(DependencyObject targetObject)
+        internal class LocMonitor
         {
-            TargetObject = targetObject;
-        }
-
-        public object AddDependencyProperty(DependencyProperty targetProperty, string resourceKey)
-        {
-            ResourceDictionary resourceDictionary = LocExtension.GetResources(TargetObject);
-
-            for (int i = 0; i < _monitoredDependencyProperties.Count; i++)
+            internal class LocProperty
             {
-                if (_monitoredDependencyProperties[i].Item1 == targetProperty)
-                {
-                    _monitoredDependencyProperties[i] =
-                        new Tuple<DependencyProperty, string>(_monitoredDependencyProperties[i].Item1, resourceKey);
+                public DependencyProperty TargetProperty { get; set; }
+                public string ResourceKey { get; set; }
+                public IValueConverter Converter { get; set; }
+                public object ConverterParameter { get; set; }
 
-                    return Evaluate(targetProperty, resourceKey, resourceDictionary);
+                public LocProperty(DependencyProperty targetProperty, string resourceKey, IValueConverter converter, object converterParameter)
+                {
+                    TargetProperty = targetProperty;
+                    ResourceKey = resourceKey;
+                    Converter = converter;
+                    ConverterParameter = converterParameter;
                 }
             }
 
-            _monitoredDependencyProperties.Add(new Tuple<DependencyProperty, string>(targetProperty, resourceKey));
+            private readonly List<LocProperty> _monitoredDependencyProperties =
+                new List<LocProperty>();
 
-            return Evaluate(targetProperty, resourceKey, resourceDictionary);
-        }
+            public DependencyObject TargetObject { get; }
 
-        public void InvalidateResources(ResourceDictionary resourceDictionary)
-        {
-            foreach (Tuple<DependencyProperty, string> entry in _monitoredDependencyProperties)
+            public LocMonitor(DependencyObject targetObject)
             {
-                TargetObject.SetValue(entry.Item1,
-                    Evaluate(entry.Item1, entry.Item2, resourceDictionary));
-            }
-        }
+                TargetObject = targetObject;
 
-        public LocMonitor Clone(DependencyObject targetObject)
-        {
-            LocMonitor clone = new LocMonitor(targetObject);
-            clone._monitoredDependencyProperties.AddRange(_monitoredDependencyProperties);
-            return clone;
-        }
-
-        private static object Evaluate(DependencyProperty targetProperty, string resourceKey,
-            ResourceDictionary resourceDictionary)
-        {
-            if (resourceDictionary != null && resourceDictionary.Contains(resourceKey))
-            {
-                object resource = resourceDictionary[resourceKey];
-                if (resource != null)
+                if (!(TargetObject is FrameworkElement))
                 {
-                    return resource;
+                    Binding binding = new Binding(ResourcesProperty, new RelativeSource(RelativeSourceMode.FindAncestor, typeof(FrameworkElement), 1));
+                    BindingOperations.SetBinding(TargetObject, ResourcesProperty, binding);
+                }
+            }
+
+            public object AddDependencyProperty(DependencyProperty targetProperty, string resourceKey, IValueConverter converter, object converterParameter)
+            {
+                ResourceDictionary resourceDictionary = LocExtension.GetResources(TargetObject);
+
+                for (int i = 0; i < _monitoredDependencyProperties.Count; i++)
+                {
+                    if (_monitoredDependencyProperties[i].TargetProperty == targetProperty)
+                    {
+                        _monitoredDependencyProperties[i] =
+                            new LocProperty(_monitoredDependencyProperties[i].TargetProperty, resourceKey, converter, converterParameter);
+
+                        return Evaluate(targetProperty, resourceKey, converter, converterParameter, resourceDictionary);
+                    }
                 }
 
-                Console.WriteLine($"[NOESIS/E] Resource key '{resourceKey}' not found in Loc Resources");
+                _monitoredDependencyProperties.Add(new LocProperty(targetProperty, resourceKey, converter, converterParameter));
+
+                return Evaluate(targetProperty, resourceKey, converter, converterParameter, resourceDictionary);
             }
 
-            if (targetProperty.PropertyType == typeof(string))
+            public void InvalidateResources(ResourceDictionary resourceDictionary)
             {
-                return $"<Loc !{resourceKey}>";
+                foreach (LocProperty entry in _monitoredDependencyProperties)
+                {
+                    TargetObject.SetValue(entry.TargetProperty,
+                        Evaluate(entry.TargetProperty, entry.ResourceKey, entry.Converter, entry.ConverterParameter, resourceDictionary));
+                }
             }
 
-            return null;
+            public LocMonitor Clone(DependencyObject targetObject)
+            {
+                LocMonitor clone = new LocMonitor(targetObject);
+                clone._monitoredDependencyProperties.AddRange(_monitoredDependencyProperties);
+                return clone;
+            }
+
+            private static object DynamicConvert(Type targetType, object value)
+            {
+                Type valueType = value.GetType();
+                if (!targetType.IsAssignableFrom(valueType))
+                {
+                    TypeConverter converter = TypeDescriptor.GetConverter(targetType);
+                    if (converter.CanConvertFrom(valueType))
+                    {
+                        value = converter.ConvertFrom(value);
+                    }
+                    else
+                    {
+                        converter = TypeDescriptor.GetConverter(valueType);
+                        if (converter.CanConvertTo(targetType))
+                        {
+                            value = converter.ConvertTo(value, targetType);
+                        }
+                    }
+                }
+
+                return value;
+            }
+
+            private static object Evaluate(DependencyProperty targetProperty, string resourceKey, IValueConverter converter,
+                object converterParameter, ResourceDictionary resourceDictionary)
+            {
+                if (resourceDictionary != null && resourceDictionary.Contains(resourceKey))
+                {
+                    object resource = resourceDictionary[resourceKey];
+                    if (resource != null)
+                    {
+                        if (converter != null)
+                        {
+                            resource = converter.Convert(resource, targetProperty.PropertyType, converterParameter,
+                                CultureInfo.InvariantCulture);
+                        }
+
+                        resource = DynamicConvert(targetProperty.PropertyType, resource);
+
+                        return resource;
+                    }
+
+                    Console.WriteLine($"[NOESIS/E] Resource key '{resourceKey}' not found in Loc Resources");
+                }
+
+                if (targetProperty.PropertyType == typeof(string))
+                {
+                    return $"<Loc !{resourceKey}>";
+                }
+
+                return null;
+            }
         }
     }
 }

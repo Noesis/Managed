@@ -16,6 +16,7 @@ namespace Noesis
 {
 
 [StructLayoutAttribute(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+[System.ComponentModel.TypeConverter(typeof(CornerRadiusConverter))]
 public struct CornerRadius {
 
   [MarshalAs(UnmanagedType.R4)]

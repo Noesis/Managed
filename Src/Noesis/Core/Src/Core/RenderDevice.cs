@@ -19,12 +19,33 @@ namespace Noesis
     [StructLayout(LayoutKind.Sequential)]
     public struct DeviceCaps
     {
+        /// <summary>Offset in pixel units from top-left corner to center of pixel</summary>
         [MarshalAs(UnmanagedType.R4)]
         public float CenterPixelOffset;
+
+        /// <summary>
+        /// When this flag is enabled the device works in 'Linear' mode. All internal textures and
+        /// offscreens are created in 'sRGB' format. In this mode, the device also expects colors
+        /// (like the ones in the vertex buffer) in 'sRGB' format. It also indicates that the device
+        /// writes to the render target in linear space
+        /// </summary>
         [MarshalAs(UnmanagedType.U1)]
         public bool LinearRendering;
+
+        /// <summary>
+        /// This flag is enabled to indicate that the device supports LCD subpixel rendering. Extra
+        /// shaders and dual source blending are needed for this feature
+        /// </summary>
         [MarshalAs(UnmanagedType.U1)]
         public bool SubpixelRendering;
+
+        /// <summary>Indicates whether the device clip space depth values range from 0 to 1</summary>
+        [MarshalAs(UnmanagedType.U1)]
+        public bool DepthRangeZeroToOne;
+
+        /// <summary>Whether the device clip space Y values are inverted (increase from top (-1) to bottom (1))</summary>
+        [MarshalAs(UnmanagedType.U1)]
+        public bool ClipSpaceYInverted;
     }
 
     /// <summary>
