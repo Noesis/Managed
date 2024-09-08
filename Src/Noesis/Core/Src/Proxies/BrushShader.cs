@@ -60,15 +60,12 @@ public abstract class BrushShader : Animatable {
   }
 
 #if UNITY_5_3_OR_NEWER
-  protected NoesisShader CreateShader(int numTextures) {
+  protected NoesisShader CreateShader() {
     string name = GetType().Name.Replace("Brush", ".noesisbrush");
     NoesisShader shader = NoesisShaderProvider.instance.GetShader(name);
 
     if (shader != null) {
-      shader.brush_path = NoesisRenderer.CreatePixelShader((byte)Shader.Enum.Path_Pattern, numTextures, shader.brush_path_bytecode);
-      shader.brush_path_aa = NoesisRenderer.CreatePixelShader((byte)Shader.Enum.Path_AA_Pattern, numTextures, shader.brush_path_aa_bytecode);
-      shader.brush_sdf = NoesisRenderer.CreatePixelShader((byte)Shader.Enum.SDF_Pattern, numTextures, shader.brush_sdf_bytecode);
-      shader.brush_opacity = NoesisRenderer.CreatePixelShader((byte)Shader.Enum.Opacity_Pattern, numTextures, shader.brush_opacity_bytecode);
+      NoesisRenderer.CreatePixelShader(shader);
       return shader;
     }
 

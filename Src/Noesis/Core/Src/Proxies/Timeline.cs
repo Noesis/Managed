@@ -76,7 +76,7 @@ public class Timeline : Animatable {
         if (!_Completed.TryGetValue(ptr, out handler)) {
           throw new InvalidOperationException("Delegate not registered for Completed event");
         }
-        handler?.Invoke(Noesis.Extend.GetProxy(sender, false), new EventArgs(e, false));
+        handler?.Invoke(Noesis.Extend.GetProxy(sender, false), new TimelineEventArgs(e, false));
       }
     }
     catch (Exception exception) {
@@ -87,6 +87,14 @@ public class Timeline : Animatable {
   internal static Dictionary<long, CompletedHandler> _Completed =
       new Dictionary<long, CompletedHandler>();
   #endregion
+
+  internal static new void ResetEvents() {
+    foreach (var kv in _Completed) {
+      IntPtr cPtr = new IntPtr(kv.Key);
+      NoesisGUI_PINVOKE.UnbindEvent_Timeline_Completed(_raiseCompleted, cPtr);
+    }
+    _Completed.Clear();
+  }
 
   #endregion
 

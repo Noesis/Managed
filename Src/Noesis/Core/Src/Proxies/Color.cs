@@ -16,6 +16,7 @@ namespace Noesis
 {
 
 [StructLayoutAttribute(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+[System.ComponentModel.TypeConverter(typeof(ColorConverter))]
 public struct Color {
 
   [MarshalAs(UnmanagedType.R4)]
@@ -184,6 +185,18 @@ public struct Color {
 
   public static bool operator !=(Color l, Color r) {
     return !(l == r);
+  }
+
+  internal static Color Parse(string str) {
+    if (Color.TryParse(str, out Color color)) {
+      return color;
+    }
+    throw new ArgumentException("Cannot create Color from '" + str + "'");
+  }
+
+  private static bool TryParse(string str, out Color result) {
+    bool ret = NoesisGUI_PINVOKE.Color_TryParse(str != null ? str : string.Empty, out result);
+    return ret;
   }
 
 }

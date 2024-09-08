@@ -19,12 +19,33 @@ namespace Noesis
     [StructLayout(LayoutKind.Sequential)]
     public struct DeviceCaps
     {
+        /// <summary>Offset in pixel units from top-left corner to center of pixel</summary>
         [MarshalAs(UnmanagedType.R4)]
         public float CenterPixelOffset;
+
+        /// <summary>
+        /// When this flag is enabled the device works in 'Linear' mode. All internal textures and
+        /// offscreens are created in 'sRGB' format. In this mode, the device also expects colors
+        /// (like the ones in the vertex buffer) in 'sRGB' format. It also indicates that the device
+        /// writes to the render target in linear space
+        /// </summary>
         [MarshalAs(UnmanagedType.U1)]
         public bool LinearRendering;
+
+        /// <summary>
+        /// This flag is enabled to indicate that the device supports LCD subpixel rendering. Extra
+        /// shaders and dual source blending are needed for this feature
+        /// </summary>
         [MarshalAs(UnmanagedType.U1)]
         public bool SubpixelRendering;
+
+        /// <summary>Indicates whether the device clip space depth values range from 0 to 1</summary>
+        [MarshalAs(UnmanagedType.U1)]
+        public bool DepthRangeZeroToOne;
+
+        /// <summary>Whether the device clip space Y values are inverted (increase from top (-1) to bottom (1))</summary>
+        [MarshalAs(UnmanagedType.U1)]
+        public bool ClipSpaceYInverted;
     }
 
     /// <summary>
@@ -210,14 +231,16 @@ namespace Noesis
                     //  --------------------------------------------------------------------------------
                     //  Attr                    Interpolation       Semantic
                     //  --------------------------------------------------------------------------------
-                        Pos         = 1,    //  linear              Position (xy)
-                        Color       = 2,    //  nointerpolation     sRGB Color (rgba)
-                        Tex0        = 4,    //  linear              TexCoord0 (uv)
-                        Tex1        = 8,    //  linear              TexCoord1 (uv)
-                        Coverage    = 16,   //  linear              Coverage (alpha)
-                        Rect        = 32,   //  nointerpolation     Rect (x0, y0, x1, y1)
-                        Tile        = 64,   //  nointerpolation     Rect (x, y, width, height)
-                        ImagePos    = 128,  //  linear              Position (xy) - Scale(zw)
+                        Pos,                //  linear              Position (xy)
+                        Color,              //  nointerpolation     sRGB Color (rgba)
+                        Tex0,               //  linear              TexCoord0 (uv)
+                        Tex1,               //  linear              TexCoord1 (uv)
+                        Coverage,           //  linear              Coverage (alpha)
+                        Rect,               //  nointerpolation     Rect (x0, y0, x1, y1)
+                        Tile,               //  nointerpolation     Rect (x, y, width, height)
+                        ImagePos,           //  linear              Position (xy) - Scale(zw)
+
+                        Count
                     }
 
                     /// <summary>
@@ -284,15 +307,19 @@ namespace Noesis
             return map[(int)format];
         }
 
-        /// <summary>Table for getting the attribute bitmask corresponding to each vertex format</summary>
-        public static Shader.Vertex.Format.Attr.Enum AttributesForFormat(Shader.Vertex.Format.Enum format)
+        /// <summary>
+        /// Table for getting the attribute bitmask corresponding to each vertex format.
+        /// For example, to determine if Pos attribute is used by the format you would check:
+        ///     bitmask & (1 << Shader.Vertex.Format.Attr.Enum.Pos)
+        /// </summary>
+        public static int AttributesForFormat(Shader.Vertex.Format.Enum format)
         {
             int[] map = new int[(int)Shader.Vertex.Format.Enum.Count]
             {
                 1, 3, 5, 37, 101, 19, 21, 53, 117, 11, 13, 45, 109, 15, 43, 167
             };
 
-            return (Shader.Vertex.Format.Attr.Enum)map[(int)format];
+            return map[(int)format];
         }
 
         /// <summary>
@@ -301,7 +328,7 @@ namespace Noesis
         /// </summary>
         public static Shader.Vertex.Format.Attr.Type.Enum TypeForAttr(Shader.Vertex.Format.Attr.Enum attr)
         {
-            int[] map = new int[]
+            int[] map = new int[(int)Shader.Vertex.Format.Attr.Enum.Count]
             {
                 1, 3, 1, 1, 0, 4, 2, 2
             };
@@ -1754,7 +1781,7 @@ namespace Noesis
         private static IntPtr CreateDevice(bool sRGB, GPUAllocator allocator)
         {
             _allocator = allocator;
-            return Noesis_RenderDeviceAGC_Create(sRGB, _alloc, _free, _registerResource);
+            return Noesis_RenderDeviceAGC_Create(sRGB, _alloc, _free);
         }
 
         /// <summary>
@@ -1801,37 +1828,19 @@ namespace Noesis
             }
         }
 
-        [MonoPInvokeCallback(typeof(Callback_RegisterResource))]
-        private static void RegisterResource(IntPtr user, IntPtr ptr, uint size, uint type,
-            IntPtr labelPtr)
-        {
-            try
-            {
-                string label = Noesis.Extend.StringFromNativeUtf8(labelPtr);
-                _allocator.RegisterResource(ptr, size, type, label);
-            }
-            catch (Exception e)
-            {
-                Error.UnhandledException(e);
-            }
-        }
-
         private delegate IntPtr Callback_Alloc(IntPtr user, uint size, uint alignment);
         private delegate void Callback_Free(IntPtr user, IntPtr address);
-        private delegate void Callback_RegisterResource(IntPtr user, IntPtr ptr, uint size,
-            uint type, IntPtr label);
 
         private static Callback_Alloc _alloc = Alloc;
         private static Callback_Free _free = Free;
-        private static Callback_RegisterResource _registerResource = RegisterResource;
 
         private static GPUAllocator _allocator;
         #endregion
 
         #region Imports
         [DllImport(Library.Name)]
-        static extern IntPtr Noesis_RenderDeviceAGC_Create(bool sRGB,
-            Callback_Alloc alloc, Callback_Free free, Callback_RegisterResource registerResource);
+        static extern IntPtr Noesis_RenderDeviceAGC_Create(bool sRGB, Callback_Alloc alloc,
+            Callback_Free free);
 
         [DllImport(Library.Name)]
         static extern IntPtr Noesis_RenderDeviceAGC_WrapTexture(IntPtr nativePointer,

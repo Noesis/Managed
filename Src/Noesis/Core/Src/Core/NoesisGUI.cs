@@ -629,7 +629,7 @@ namespace Noesis
         static extern IntPtr Noesis_LoadXaml([MarshalAs(UnmanagedType.LPStr)] string filename);
 
         [DllImport(Library.Name)]
-        static extern IntPtr Noesis_ParseXaml([MarshalAs(UnmanagedType.LPStr)] string xamlText);
+        static extern IntPtr Noesis_ParseXaml([MarshalAs(UnmanagedType.LPWStr)] string xamlText);
 
         [DllImport(Library.Name)]
         static extern IntPtr Noesis_LoadXamlResource(

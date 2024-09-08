@@ -776,6 +776,15 @@ namespace Noesis
 
         #endregion
 
+        private static bool IsCollectionType(Type type)
+        {
+            if (typeof(System.Collections.IList).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo())) return true;
+            if (typeof(System.Collections.IDictionary).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo())) return true;
+            if (FindListIndexer(type) != null) return true;
+            if (FindDictIndexer(type) != null) return true;
+            return false;
+        }
+
         private static ExtendPropertyData AddProperty(NativeTypePropsInfo info, PropertyInfo p, bool usePropertyInfo)
         {
             AddPropertyDelegate addPropFunction;
@@ -784,23 +793,47 @@ namespace Noesis
                 return addPropFunction(info, p, usePropertyInfo);
             }
 
-            IntPtr propertyType = EnsureNativeType(p.PropertyType);
-
             if (p.PropertyType.GetTypeInfo().IsEnum)
             {
-                AddPropertyAccessor<ulong, object>(info, p,
-                    (v) => Convert.ToUInt64(v),
-                    (v) => Enum.ToObject(p.PropertyType, v),
-                    true);
+                if (IsSignedEnum(p.PropertyType))
+                {
+                    AddPropertyAccessor<ulong, object>(info, p,
+                        (v) => (ulong)Convert.ToInt64(v),
+                        (v) => Enum.ToObject(p.PropertyType, (long)v),
+                        true);
+                }
+                else
+                {
+                    AddPropertyAccessor<ulong, object>(info, p,
+                        (v) => Convert.ToUInt64(v),
+                        (v) => Enum.ToObject(p.PropertyType, v),
+                        true);
+                }
 
+                IntPtr propertyType = EnsureNativeType(p.PropertyType);
                 return CreatePropertyData(p, NativePropertyType.Enum, propertyType);
             }
             else
             {
                 AddPropertyAccessor<object>(info, p, true);
 
+                IntPtr propertyType = TryGetNativeType(p.PropertyType);
+                if (propertyType == IntPtr.Zero)
+                {
+                    propertyType = IsCollectionType(p.PropertyType) ?
+                        EnsureNativeType(p.PropertyType) : BaseComponent.GetStaticType();
+                }
                 return CreatePropertyData(p, NativePropertyType.BaseComponent, propertyType);
             }
+        }
+
+        private static bool IsSignedEnum(Type enumType)
+        {
+            Type underlyingType = enumType.GetTypeInfo().GetEnumUnderlyingType();
+            return underlyingType.Equals(typeof(sbyte)) ||
+                underlyingType.Equals(typeof(short)) ||
+                underlyingType.Equals(typeof(int)) ||
+                underlyingType.Equals(typeof(long));
         }
 
         private static void AddPropertyAccessor<PropertyT>(NativeTypePropsInfo info, PropertyInfo p, bool usePropertyInfo)

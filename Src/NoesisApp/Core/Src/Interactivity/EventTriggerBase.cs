@@ -1,5 +1,6 @@
 ﻿using Noesis;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace NoesisApp
@@ -11,6 +12,8 @@ namespace NoesisApp
     {
         protected EventTriggerBase(Type sourceType) : base(typeof(DependencyObject))
         {
+            if (_events == null) _events = new Dictionary<EventKey, EventInfo>();
+
             _sourceType = sourceType;
             _source = IntPtr.Zero;
             _event = null;
@@ -160,34 +163,62 @@ namespace NoesisApp
             if (source != null && !string.IsNullOrEmpty(eventName))
             {
                 Type type = source.GetType();
-                EventInfo ev = type.GetEvent(eventName);
 
-                if (ev == null)
+                EventInfo ev;
+                EventKey key = new EventKey { Type = type, Name = eventName };
+
+                if (!_events.TryGetValue(key, out ev))
                 {
-                    if (SourceObject != null)
+                    ev = type.GetEvent(eventName);
+
+                    if (ev == null)
                     {
-                        throw new ArgumentException(string.Format(
-                            "EventTrigger cannot find event '{0}' in SourceObject '{1}'",
-                            eventName, type));
+                        _events.Add(key, null);
+
+                        if (SourceObject != null)
+                        {
+                            throw new ArgumentException(string.Format(
+                                "EventTrigger cannot find event '{0}' in SourceObject '{1}'",
+                                eventName, type));
+                        }
+                    }
+                    else if (!IsValidEvent(ev))
+                    {
+                        ev = null;
+                        _events.Add(key, null);
+
+                        if (SourceObject != null)
+                        {
+                            throw new ArgumentException(string.Format(
+                                "SourceObject event '{0}' is not valid for EventTrigger",
+                                eventName));
+                        }
+                    }
+                    else
+                    {
+                        _events.Add(key, ev);
                     }
                 }
 
-                if (!IsValidEvent(ev))
-                {
-                    if (SourceObject != null)
-                    {
-                        throw new ArgumentException(string.Format(
-                            "SourceObject event '{0}' is not valid for EventTrigger",
-                            eventName));
-                    }
-                }
-                else
+                if (ev != null)
                 {
                     _event = ev;
                     _handler = Delegate.CreateDelegate(ev.EventHandlerType, this, OnEventMethod);
                     _event.AddEventHandler(source, _handler);
                 }
             }
+        }
+
+        [ThreadStatic]
+        private static Dictionary<EventKey, EventInfo> _events = null;
+
+        private struct EventKey : IEquatable<EventKey>
+        {
+            public Type Type;
+            public string Name;
+
+            public bool Equals(EventKey other) { return Type.Equals(other.Type) && Name == other.Name; }
+            public override int GetHashCode() { return Type.GetHashCode() ^ Name.GetHashCode(); }
         }
 
         private void UnregisterEvent(object source)

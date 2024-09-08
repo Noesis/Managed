@@ -141,6 +141,20 @@ public class VisualStateGroup : DependencyObject {
       new Dictionary<long, CurrentStateChangedHandler>();
   #endregion
 
+  internal static new void ResetEvents() {
+    foreach (var kv in _CurrentStateChanging) {
+      IntPtr cPtr = new IntPtr(kv.Key);
+      NoesisGUI_PINVOKE.UnbindEvent_VisualStateGroup_CurrentStateChanging(_raiseCurrentStateChanging, cPtr);
+    }
+    _CurrentStateChanging.Clear();
+
+    foreach (var kv in _CurrentStateChanged) {
+      IntPtr cPtr = new IntPtr(kv.Key);
+      NoesisGUI_PINVOKE.UnbindEvent_VisualStateGroup_CurrentStateChanged(_raiseCurrentStateChanged, cPtr);
+    }
+    _CurrentStateChanged.Clear();
+  }
+
   #endregion
 
   public VisualStateGroup() {

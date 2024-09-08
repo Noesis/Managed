@@ -140,7 +140,7 @@ namespace NoesisGUIExtensions
             const int GamepadLeft = 175;
             if (Button == (GamepadButton)((int)e.Key - GamepadLeft))
             {
-                InvokeActions(0);
+                InvokeActions(e);
             }
         }
 

@@ -14,7 +14,7 @@ using System.Windows.Shapes;
 namespace NoesisGUIExtensions
 {
     /// <summary>
-    /// Base class for custom brushes
+    /// Base class for custom brushes.
     /// </summary>
     public abstract class BrushShader : Animatable
     {
@@ -25,7 +25,7 @@ namespace NoesisGUIExtensions
     }
 
     /// <summary>
-    /// Creates an pattern consisting of a gradient with color transitions rotated around a center point.
+    /// Creates a gradient with color transitions rotated around a center point.
     /// </summary>
     [ContentProperty("GradientStops")]
     public class ConicGradientBrushShader : BrushShader
@@ -47,6 +47,7 @@ namespace NoesisGUIExtensions
             new PropertyMetadata(null));
         #endregion
     }
+    public class ConicGradientBrush : ConicGradientBrushShader { }
 
     /// <summary>
     /// Turns an image into a monochrome color.
@@ -63,6 +64,37 @@ namespace NoesisGUIExtensions
         public static readonly DependencyProperty ColorProperty = DependencyProperty.Register(
             "Color", typeof(Color), typeof(MonochromeBrushShader),
             new PropertyMetadata(Colors.White));
+        #endregion
+    }
+    public class MonochromeBrush : MonochromeBrushShader { }
+
+    /// <summary>
+    /// Interpolates between two images.
+    /// </summary>
+    public class CrossFadeBrush : BrushShader
+    {
+        #region Weight
+        public float Weight
+        {
+            get { return (float)GetValue(WeightProperty); }
+            set { SetValue(WeightProperty, value); }
+        }
+
+        public static readonly DependencyProperty WeightProperty = DependencyProperty.Register(
+            "Weight", typeof(float), typeof(CrossFadeBrush),
+            new PropertyMetadata(0.0f));
+        #endregion
+
+        #region Source
+        public ImageSource Source
+        {
+            get { return (ImageSource)GetValue(SourceProperty); }
+            set { SetValue(SourceProperty, value); }
+        }
+
+        public static readonly DependencyProperty SourceProperty = DependencyProperty.Register(
+            "Source", typeof(ImageSource), typeof(CrossFadeBrush),
+            new PropertyMetadata(null));
         #endregion
     }
 
@@ -143,6 +175,7 @@ namespace NoesisGUIExtensions
             new PropertyMetadata(new Point3D(0, 0, 0)));
         #endregion
     }
+    public class PlasmaBrush : PlasmaBrushShader { }
 
     /// <summary>
     /// Paints a PSP wavy background effect.
@@ -161,6 +194,7 @@ namespace NoesisGUIExtensions
             new PropertyMetadata(0.0));
         #endregion
     }
+    public class WavesBrush : WavesBrushShader { }
 
     /// <summary>
     /// Allows creating custom brushes based on a pixel shader by extending an ImageBrush.

@@ -841,6 +841,11 @@ public partial class FrameworkElement : UIElement {
     return (FrameworkElement)Noesis.Extend.GetProxy(cPtr, false);
   }
 
+  public static object FindTreeParent(object instance) {
+    IntPtr cPtr = NoesisGUI_PINVOKE.FrameworkElement_FindTreeParent(Noesis.Extend.GetInstanceHandle(instance));
+    return Noesis.Extend.GetProxy(cPtr, false);
+  }
+
   internal new static IntPtr Extend(string typeName) {
     return NoesisGUI_PINVOKE.Extend_FrameworkElement(Marshal.StringToHGlobalAnsi(typeName));
   }

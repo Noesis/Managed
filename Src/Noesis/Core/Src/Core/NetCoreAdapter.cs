@@ -235,7 +235,7 @@ namespace Noesis
 
         public static T PtrToStructure<T>(IntPtr ptr)
         {
-            return (T)System.Runtime.InteropServices.Marshal.PtrToStructure(ptr, typeof(T));
+            return System.Runtime.InteropServices.Marshal.PtrToStructure<T>(ptr);
         }
 
         public static IntPtr StringToHGlobalAnsi(string s)

@@ -79,6 +79,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr Extend_DependencyObject(IntPtr typeName);
 
   [DllImport(Library.Name)]
+  public static extern IntPtr Extend_DispatcherObject(IntPtr typeName);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr Extend_Freezable(IntPtr typeName);
 
   [DllImport(Library.Name)]
@@ -726,6 +729,10 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr Box_Color(ref Color jarg1);
+
+  [DllImport(Library.Name)]
+  [return: MarshalAs(UnmanagedType.U1)]
+  public static extern bool Color_TryParse([MarshalAs(UnmanagedType.LPWStr)]string jarg1, out Color jarg2);
 
   [DllImport(Library.Name)]
   public static extern IntPtr Matrix_GetStaticType();
@@ -3486,27 +3493,6 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr DynamicResourceExtension_ProvideValueHelper(HandleRef jarg1, HandleRef jarg2, HandleRef jarg3);
 
   [DllImport(Library.Name)]
-  public static extern IntPtr new_HitTestResult();
-
-  [DllImport(Library.Name)]
-  public static extern IntPtr HitTestResult_GetVisualHit(HandleRef jarg1);
-
-  [DllImport(Library.Name)]
-  public static extern void delete_HitTestResult(HandleRef jarg1);
-
-  [DllImport(Library.Name)]
-  public static extern IntPtr new_HitTest3DResult();
-
-  [DllImport(Library.Name)]
-  public static extern IntPtr HitTest3DResult_GetVisualHit(HandleRef jarg1);
-
-  [DllImport(Library.Name)]
-  public static extern IntPtr HitTest3DResult_GetWorldPos(HandleRef jarg1);
-
-  [DllImport(Library.Name)]
-  public static extern void delete_HitTest3DResult(HandleRef jarg1);
-
-  [DllImport(Library.Name)]
   [return: MarshalAs(UnmanagedType.U1)]
   public static extern bool Visual_IsAncestorOf(HandleRef jarg1, HandleRef jarg2);
 
@@ -3584,10 +3570,14 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr VisualTreeHelper_GetChildHelper(HandleRef jarg1, int jarg2);
 
   [DllImport(Library.Name)]
-  public static extern IntPtr VisualTreeHelper_HitTestHelper(HandleRef jarg1, ref Point jarg2);
+  public static extern void VisualTreeHelper_HitTestHelper(HandleRef jarg1, ref Point jarg2, ref HitTestResult jarg3);
 
   [DllImport(Library.Name)]
-  public static extern IntPtr VisualTreeHelper_HitTest3DHelper(HandleRef jarg1, ref Point3D jarg2, ref Point3D jarg3);
+  public static extern void VisualTreeHelper_HitTest3DHelper(HandleRef jarg1, ref Point3D jarg2, ref Point3D jarg3, ref HitTest3DResult jarg4);
+
+  [DllImport(Library.Name)]
+  [return: MarshalAs(UnmanagedType.U1)]
+  public static extern bool VisualTreeHelper_IntersectPlaneHelper(HandleRef jarg1, ref Point3D jarg2, ref Point3D jarg3, ref Point3D jarg4);
 
   [DllImport(Library.Name)]
   public static extern IntPtr VisualCollection_Create(HandleRef jarg1);
@@ -4273,6 +4263,10 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr Keyboard_Focus(HandleRef jarg1, HandleRef jarg2);
 
   [DllImport(Library.Name)]
+  [return: MarshalAs(UnmanagedType.U1)]
+  public static extern bool Keyboard_IsFocusable(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
   public static extern void Keyboard_ClearFocus(HandleRef jarg1);
 
   [DllImport(Library.Name)]
@@ -4306,6 +4300,46 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr Keyboard_FocusedElement_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
+  public static extern IntPtr FocusManager_GetFocusedElement(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void FocusManager_SetFocusedElement(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  [return: MarshalAs(UnmanagedType.U1)]
+  public static extern bool FocusManager_GetIsFocusScope(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void FocusManager_SetIsFocusScope(HandleRef jarg1, bool jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr FocusManager_GetFocusScope(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void FocusManager_AddGotFocusHandler(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern void FocusManager_RemoveGotFocusHandler(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern void FocusManager_AddLostFocusHandler(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern void FocusManager_RemoveLostFocusHandler(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr FocusManager_FocusedElementProperty_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr FocusManager_IsFocusScopeProperty_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr FocusManager_LostFocusEvent_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr FocusManager_GotFocusEvent_get();
+
+  [DllImport(Library.Name)]
   public static extern int TraversalRequest_FocusNavigationDirection_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
@@ -4330,6 +4364,9 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern void UIElement_ReleaseMouseCapture(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr UIElement_TranslatePoint(HandleRef jarg1, ref Point jarg2, HandleRef jarg3);
 
   [DllImport(Library.Name)]
   [return: MarshalAs(UnmanagedType.U1)]
@@ -5015,6 +5052,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr BindingExpression_ParentBinding_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
+  public static extern IntPtr BindingExpression_ResolvedSource_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
   public static extern void MultiBindingExpression_UpdateTarget(HandleRef jarg1);
 
   [DllImport(Library.Name)]
@@ -5477,6 +5517,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr FrameworkElement_FindTreeElement(HandleRef jarg1);
 
   [DllImport(Library.Name)]
+  public static extern IntPtr FrameworkElement_FindTreeParent(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr Typography_AnnotationAlternatesProperty_get();
 
   [DllImport(Library.Name)]
@@ -5742,12 +5785,6 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern float TextElement_StrokeThickness_get(HandleRef jarg1);
-
-  [DllImport(Library.Name)]
-  public static extern IntPtr new_TextElement();
-
-  [DllImport(Library.Name)]
-  public static extern IntPtr new_Inline();
 
   [DllImport(Library.Name)]
   public static extern int Inline_GetFlowDirection(HandleRef jarg1);
@@ -6064,6 +6101,18 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr Control_IsFocusEngagementEnabledProperty_get();
 
   [DllImport(Library.Name)]
+  public static extern IntPtr Control_XYFocusLeftProperty_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Control_XYFocusRightProperty_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Control_XYFocusUpProperty_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Control_XYFocusDownProperty_get();
+
+  [DllImport(Library.Name)]
   public static extern IntPtr Control_MouseDoubleClickEvent_get();
 
   [DllImport(Library.Name)]
@@ -6173,6 +6222,30 @@ internal class NoesisGUI_PINVOKE {
   [DllImport(Library.Name)]
   [return: MarshalAs(UnmanagedType.U1)]
   public static extern bool Control_IsFocusEngagementEnabled_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void Control_XYFocusLeft_set(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Control_XYFocusLeft_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void Control_XYFocusRight_set(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Control_XYFocusRight_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void Control_XYFocusUp_set(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Control_XYFocusUp_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void Control_XYFocusDown_set(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Control_XYFocusDown_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern IntPtr new_ContentControl();
@@ -10571,6 +10644,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern int TextBlock_TextWrapping_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
+  public static extern IntPtr TextBlock_FormattedText_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr TextBlock_ToStringHelper(HandleRef jarg1);
 
   [DllImport(Library.Name)]
@@ -11644,6 +11720,18 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr Box_FillBehavior(int jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr TimelineEventArgs_Target_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr new_TimelineEventArgs__SWIG_0(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr new_TimelineEventArgs__SWIG_1();
+
+  [DllImport(Library.Name)]
+  public static extern void delete_TimelineEventArgs(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern int Timeline_GetDesiredFrameRate(HandleRef jarg1);
@@ -13540,6 +13628,30 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr new_RiveInputCollection();
 
   [DllImport(Library.Name)]
+  public static extern IntPtr new_RiveRun();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr RiveRun_RunNameProperty_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr RiveRun_RunTextProperty_get();
+
+  [DllImport(Library.Name)]
+  public static extern void RiveRun_RunName_set(HandleRef jarg1, [MarshalAs(UnmanagedType.LPWStr)]string jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr RiveRun_RunName_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void RiveRun_RunText_set(HandleRef jarg1, [MarshalAs(UnmanagedType.LPWStr)]string jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr RiveRun_RunText_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr new_RiveRunCollection();
+
+  [DllImport(Library.Name)]
   public static extern IntPtr new_RiveControl();
 
   [DllImport(Library.Name)]
@@ -13553,6 +13665,15 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr RiveControl_GetSourceInput(HandleRef jarg1, uint jarg2, out RiveSourceInputType jarg3);
+
+  [DllImport(Library.Name)]
+  public static extern void RiveControl_SetRunText(HandleRef jarg1, [MarshalAs(UnmanagedType.LPWStr)]string jarg2, [MarshalAs(UnmanagedType.LPWStr)]string jarg3);
+
+  [DllImport(Library.Name)]
+  public static extern uint RiveControl_GetSourceRunCount(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr RiveControl_GetSourceRunName(HandleRef jarg1, uint jarg2);
 
   [DllImport(Library.Name)]
   public static extern IntPtr RiveControl_SourceProperty_get();
@@ -13580,6 +13701,9 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr RiveControl_Inputs_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr RiveControl_Runs_get(HandleRef jarg1);
 }
 
 }

@@ -15,46 +15,12 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-public class HitTestResult : IDisposable {
-  private HandleRef swigCPtr;
-  protected bool swigCMemOwn;
-
-  internal HitTestResult(IntPtr cPtr, bool cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = new HandleRef(this, cPtr);
-  }
-
-  internal static HandleRef getCPtr(HitTestResult obj) {
-    return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
-  }
-
-  ~HitTestResult() {
-    Dispose();
-  }
-
-  public virtual void Dispose() {
-    lock(this) {
-      if (swigCPtr.Handle != IntPtr.Zero) {
-        if (swigCMemOwn) {
-          swigCMemOwn = false;
-          NoesisGUI_PINVOKE.delete_HitTestResult(swigCPtr);
-        }
-        swigCPtr = new HandleRef(null, IntPtr.Zero);
-      }
-      GC.SuppressFinalize(this);
-    }
-  }
+[StructLayoutAttribute(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+public struct HitTestResult {
+  private IntPtr _hit;
 
   public DependencyObject VisualHit {
-    get { return GetVisualHit(); }
-  }
-
-  public HitTestResult() : this(NoesisGUI_PINVOKE.new_HitTestResult(), true) {
-  }
-
-  private DependencyObject GetVisualHit() {
-    IntPtr cPtr = NoesisGUI_PINVOKE.HitTestResult_GetVisualHit(swigCPtr);
-    return (DependencyObject)Noesis.Extend.GetProxy(cPtr, false);
+    get { return (DependencyObject)Noesis.Extend.GetProxy(_hit, false); }
   }
 
 }

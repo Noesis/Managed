@@ -119,10 +119,17 @@ namespace NoesisGUIExtensions
 
         private void OnElementUpdated(object sender, EventArgs e)
         {
-            if (_adorner != null)
+            FrameworkElement element = AssociatedObject;
+            if (_adorner != null && Source != null && element.IsVisible && element.Opacity > 0.0f)
             {
-                AdornerLayer adorners = AdornerLayer.GetAdornerLayer(AssociatedObject);
-                adorners.Update(AssociatedObject);
+                Matrix4 mtx = element.TransformToVisual(Source);
+                if (_adorner.TransformToSource != mtx)
+                {
+                    _adorner.TransformToSource = mtx;
+
+                    AdornerLayer adorners = AdornerLayer.GetAdornerLayer(element);
+                    adorners.Update(element);
+                }
             }
         }
 
@@ -155,6 +162,13 @@ namespace NoesisGUIExtensions
                 IsHitTestVisible = false;
             }
 
+            private Matrix4 _mtx = Matrix4.Identity;
+            public Matrix4 TransformToSource
+            {
+                get => _mtx;
+                set { _mtx = value; }
+            }
+
 #if UNITY_5_3_OR_NEWER
             internal
 #endif
@@ -180,19 +194,14 @@ namespace NoesisGUIExtensions
                 Size adornedSize = adornedElement.RenderSize;
                 Size finalSize = adornedSize;
 
-                VisualBrush sourceBrush = (VisualBrush)_child.Background;
-                Visual source = sourceBrush.Visual;
-                if (source != null)
-                {
-                    Matrix4 mtx = adornedElement.TransformToVisual(source);
-                    Point offset = mtx[3].XY + new Point(-1.5f, 1.5f);
-                    Rect bounds = mtx.TransformBounds(new Rect(adornedSize));
-                    finalSize.Width = bounds.Width;
-                    finalSize.Height = bounds.Height;
+                Point offset = _mtx[3].XY + new Point(0.0f, 0.0f);
+                Rect bounds = _mtx.TransformBounds(new Rect(adornedSize));
+                finalSize.Width = bounds.Width;
+                finalSize.Height = bounds.Height;
 
-                    sourceBrush.Viewbox = new Rect(offset, finalSize);
-                    _targetBrush.Viewbox = new Rect(finalSize);
-                }
+                VisualBrush sourceBrush = (VisualBrush)_child.Background;
+                sourceBrush.Viewbox = new Rect(offset, finalSize);
+                _targetBrush.Viewbox = new Rect(finalSize);
 
                 _child.Measure(finalSize);
                 return finalSize;

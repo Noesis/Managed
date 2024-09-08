@@ -33,12 +33,12 @@ namespace NoesisGUIExtensions
             DependencyProperty.RegisterAttached("CharacterSpacing", typeof(int), typeof(Text),
             new FrameworkPropertyMetadata((int)0));
 
-        public static void SetCharacterSpacing(UIElement element, int value)
+        public static void SetCharacterSpacing(DependencyObject element, int value)
         {
             element.SetValue(CharacterSpacingProperty, value);
         }
 
-        public static int GetCharacterSpacing(UIElement element)
+        public static int GetCharacterSpacing(DependencyObject element)
         {
             return (int)element.GetValue(CharacterSpacingProperty);
         }
@@ -64,12 +64,12 @@ namespace NoesisGUIExtensions
             DependencyProperty.RegisterAttached("Stroke", typeof(System.Windows.Media.Brush), typeof(Text),
             new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.Inherits));
 
-        public static void SetStroke(UIElement element, System.Windows.Media.Brush value)
+        public static void SetStroke(DependencyObject element, System.Windows.Media.Brush value)
         {
             element.SetValue(StrokeProperty, value);
         }
 
-        public static System.Windows.Media.Brush GetStroke(UIElement element)
+        public static System.Windows.Media.Brush GetStroke(DependencyObject element)
         {
             return (System.Windows.Media.Brush)element.GetValue(StrokeProperty);
         }
@@ -85,12 +85,12 @@ namespace NoesisGUIExtensions
             DependencyProperty.RegisterAttached("StrokeThickness", typeof(double), typeof(Text),
             new FrameworkPropertyMetadata(0.0, FrameworkPropertyMetadataOptions.Inherits));
 
-        public static void SetStrokeThickness(UIElement element, double value)
+        public static void SetStrokeThickness(DependencyObject element, double value)
         {
             element.SetValue(StrokeThicknessProperty, value);
         }
 
-        public static double GetStrokeThickness(UIElement element)
+        public static double GetStrokeThickness(DependencyObject element)
         {
             return (double)element.GetValue(StrokeThicknessProperty);
         }
@@ -183,12 +183,12 @@ namespace NoesisGUIExtensions
             DependencyProperty.RegisterAttached("ShowLastCharacterDuration", typeof(int), typeof(Text),
             new PropertyMetadata(0));
 
-        public static int GetShowLastCharacterDuration(DependencyObject obj)
+        public static int GetShowLastCharacterDuration(PasswordBox obj)
         {
             return (int)obj.GetValue(ShowLastCharacterDurationProperty);
         }
 
-        public static void SetShowLastCharacterDuration(DependencyObject obj, int value)
+        public static void SetShowLastCharacterDuration(PasswordBox obj, int value)
         {
             obj.SetValue(ShowLastCharacterDurationProperty, value);
         }

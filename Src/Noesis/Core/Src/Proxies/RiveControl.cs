@@ -54,6 +54,21 @@ public class RiveControl : FrameworkElement {
     return str;
   }
 
+  public void SetRunText(string name, string text) {
+    NoesisGUI_PINVOKE.RiveControl_SetRunText(swigCPtr, name != null ? name : string.Empty, text != null ? text : string.Empty);
+  }
+
+  public uint GetSourceRunCount() {
+    uint ret = NoesisGUI_PINVOKE.RiveControl_GetSourceRunCount(swigCPtr);
+    return ret;
+  }
+
+  public string GetSourceRunName(uint index) {
+    IntPtr strPtr = NoesisGUI_PINVOKE.RiveControl_GetSourceRunName(swigCPtr, index);
+    string str = Noesis.Extend.StringFromNativeUtf8(strPtr);
+    return str;
+  }
+
   public static DependencyProperty SourceProperty {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.RiveControl_SourceProperty_get();
@@ -109,6 +124,14 @@ public class RiveControl : FrameworkElement {
       IntPtr cPtr = NoesisGUI_PINVOKE.RiveControl_Inputs_get(swigCPtr);
       return (RiveInputCollection)Noesis.Extend.GetProxy(cPtr, false);
     }
+  }
+
+  public RiveRunCollection Runs {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.RiveControl_Runs_get(swigCPtr);
+      RiveRunCollection ret = (cPtr == IntPtr.Zero) ? null : new RiveRunCollection(cPtr, false);
+      return ret;
+    } 
   }
 
 }

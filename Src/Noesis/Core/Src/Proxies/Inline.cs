@@ -15,16 +15,15 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-public class Inline : TextElement {
-  internal new static Inline CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
-    return new Inline(cPtr, cMemoryOwn);
-  }
-
+public abstract class Inline : TextElement {
   internal Inline(IntPtr cPtr, bool cMemoryOwn) : base(cPtr, cMemoryOwn) {
   }
 
   internal static HandleRef getCPtr(Inline obj) {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
+  }
+
+  protected Inline() {
   }
 
   public new FlowDirection FlowDirection {
@@ -34,14 +33,6 @@ public class Inline : TextElement {
     get {
       return GetFlowDirection();
     }
-  }
-
-  public Inline() {
-  }
-
-  protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    registerExtend = false;
-    return NoesisGUI_PINVOKE.new_Inline();
   }
 
   private FlowDirection GetFlowDirection() {

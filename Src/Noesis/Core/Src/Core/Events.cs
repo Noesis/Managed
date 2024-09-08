@@ -429,20 +429,14 @@ namespace Noesis
             }
             _elements.Clear();
 
-            DependencyObject._Destroyed.Clear();
-            Clock._Completed.Clear();
-            CommandBinding._PreviewCanExecute.Clear();
-            CommandBinding._PreviewExecuted.Clear();
-            CommandBinding._CanExecute.Clear();
-            CommandBinding._Executed.Clear();
-            ItemContainerGenerator._ItemsChanged.Clear();
-            ItemContainerGenerator._StatusChanged.Clear();
-            Popup._Closed.Clear();
-            Popup._Opened.Clear();
-            Timeline._Completed.Clear();
-            VisualStateGroup._CurrentStateChanging.Clear();
-            VisualStateGroup._CurrentStateChanged.Clear();
-            View._Rendering.Clear();
+            DependencyObject.ResetEvents();
+            Clock.ResetEvents();
+            CommandBinding.ResetEvents();
+            ItemContainerGenerator.ResetEvents();
+            Popup.ResetEvents();
+            Timeline.ResetEvents();
+            VisualStateGroup.ResetEvents();
+            View.ResetEvents();
         }
 
         private static void OnElementDestroyed(IntPtr d)

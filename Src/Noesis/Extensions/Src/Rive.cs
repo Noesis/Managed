@@ -63,6 +63,10 @@ namespace NoesisGUIExtensions
         public RiveInputCollection Inputs { get; } = new RiveInputCollection();
         #endregion
 
+        #region Runs property
+        public RiveRunCollection Runs { get; } = new RiveRunCollection();
+        #endregion
+
         protected override void OnRender(DrawingContext context)
         {
             SolidColorBrush brush = Brushes.CornflowerBlue.Clone();
@@ -121,5 +125,39 @@ namespace NoesisGUIExtensions
         protected override void Invoke(object parameter)
         {
         }
+    }
+
+    public class RiveRun : Animatable
+    {
+        #region RunName property
+        public string RunName
+        {
+            get { return (string)GetValue(RunNameProperty); }
+            set { SetValue(RunNameProperty, value); }
+        }
+
+        public static readonly DependencyProperty RunNameProperty = DependencyProperty.Register(
+            "RunName", typeof(string), typeof(RiveRun), new PropertyMetadata(string.Empty));
+        #endregion
+
+        #region RunText property
+        public object RunText
+        {
+            get { return (object)GetValue(RunTextProperty); }
+            set { SetValue(RunTextProperty, value); }
+        }
+
+        public static readonly DependencyProperty RunTextProperty = DependencyProperty.Register(
+            "RunText", typeof(string), typeof(RiveRun), new PropertyMetadata(string.Empty));
+        #endregion
+
+        protected override Freezable CreateInstanceCore()
+        {
+            return new RiveRun();
+        }
+    }
+
+    public class RiveRunCollection : FreezableCollection<RiveRun>
+    {
     }
 }

@@ -11,7 +11,6 @@
 
 using System;
 using System.Runtime.InteropServices;
-using System.Collections.Generic;
 
 namespace Noesis
 {
@@ -41,43 +40,43 @@ public static class VisualTreeHelper {
 
   public static HitTestResult HitTest(Visual reference, Point point) {
     if (reference == null) throw new ArgumentNullException("reference");
-    return HitTestHelper(reference, point);
+    HitTestResult result = new HitTestResult();
+    HitTestHelper(reference, point, ref result);
+    return result;
   }
 
   public static void HitTest(Visual reference, HitTestFilterCallback filterCallback, HitTestResultCallback resultCallback, HitTestParameters hitTestParameters) {
     if (reference == null) throw new ArgumentNullException("reference");
+    if (_filter != null || _result != null) throw new InvalidOperationException("Calling HitTest recursively");
+    _filter = filterCallback; _result = resultCallback;
     PointHitTestParameters pointParams = (PointHitTestParameters)hitTestParameters;
-    HitTestCallbackInfo info = new HitTestCallbackInfo { Filter = filterCallback, Result = resultCallback };
-    int callbacksId = info.GetHashCode();
-    _hitTestCallbacks[callbacksId] = info;
-    HitTestCallbackHelper(reference, pointParams.HitPoint, callbacksId, _hitTestFilter, _hitTestResult);
-    _hitTestCallbacks.Remove(callbacksId);
+    HitTestCallbackHelper(reference, pointParams.HitPoint, _hitTestFilter, _hitTestResult);
+    _filter = null; _result = null;
   }
   
   public static HitTest3DResult HitTest3D(Visual reference, Point3D point, Vector3D direction) {
     if (reference == null) throw new ArgumentNullException("reference");
-    return HitTest3DHelper(reference, point, new Point3D(direction.X, direction.Y, direction.Z));
+    HitTest3DResult result = new HitTest3DResult();
+    HitTest3DHelper(reference, point, new Point3D(direction.X, direction.Y, direction.Z), ref result);
+    return result;
   }
 
   public static void HitTest3D(Visual reference, Point3D point, Vector3D direction, HitTestFilterCallback filterCallback, HitTest3DResultCallback resultCallback) {
     if (reference == null) throw new ArgumentNullException("reference");
-    HitTest3DCallbackInfo info = new HitTest3DCallbackInfo { Filter = filterCallback, Result = resultCallback };
-    int callbacksId = info.GetHashCode();
-    _hitTest3DCallbacks[callbacksId] = info;
-    HitTest3DCallbackHelper(reference, point, direction, callbacksId, _hitTest3DFilter, _hitTest3DResult);
-    _hitTest3DCallbacks.Remove(callbacksId);
+    if (_filter != null || _result3D != null) throw new InvalidOperationException("Calling HitTest3D recursively");
+    _filter = filterCallback; _result3D = resultCallback;
+    HitTest3DCallbackHelper(reference, point, direction, _hitTestFilter, _hitTest3DResult);
+    _filter = null; _result3D = null;
   }
 
   #region HitTest callbacks
-  private delegate HitTestFilterBehavior Callback_HitTestFilter(int callbacksId, IntPtr targetPtr);
+  private delegate HitTestFilterBehavior Callback_HitTestFilter(IntPtr targetPtr);
   private static Callback_HitTestFilter _hitTestFilter = OnHitTestFilter;
-  private static Callback_HitTestFilter _hitTest3DFilter = OnHitTest3DFilter;
 
   [MonoPInvokeCallback(typeof(Callback_HitTestFilter))]
-  private static HitTestFilterBehavior OnHitTestFilter(int callbacksId, IntPtr targetPtr) {
+  private static HitTestFilterBehavior OnHitTestFilter(IntPtr targetPtr) {
     try {
-      HitTestCallbackInfo info = _hitTestCallbacks[callbacksId];
-      return info.Filter((Visual)Extend.GetProxy(targetPtr, false));
+      return _filter((Visual)Extend.GetProxy(targetPtr, false));
     }
     catch (Exception e)
     {
@@ -86,28 +85,14 @@ public static class VisualTreeHelper {
     }
   }
 
-  [MonoPInvokeCallback(typeof(Callback_HitTestFilter))]
-  private static HitTestFilterBehavior OnHitTest3DFilter(int callbacksId, IntPtr targetPtr) {
-    try {
-      HitTest3DCallbackInfo info = _hitTest3DCallbacks[callbacksId];
-      return info.Filter((Visual)Extend.GetProxy(targetPtr, false));
-    }
-    catch (Exception e)
-    {
-      Noesis.Error.UnhandledException(e);
-      return HitTestFilterBehavior.Stop;
-    }
-  }
-
-  private delegate HitTestResultBehavior Callback_HitTestResult(int callbacksId, IntPtr hitPtr);
+  private delegate HitTestResultBehavior Callback_HitTestResult(IntPtr hitPtr);
   private static Callback_HitTestResult _hitTestResult = OnHitTestResult;
   private static Callback_HitTestResult _hitTest3DResult = OnHitTest3DResult;
 
   [MonoPInvokeCallback(typeof(Callback_HitTestResult))]
-  private static HitTestResultBehavior OnHitTestResult(int callbacksId, IntPtr hitPtr) {
+  private static HitTestResultBehavior OnHitTestResult(IntPtr hitPtr) {
     try {
-      HitTestCallbackInfo info = _hitTestCallbacks[callbacksId];
-      return info.Result(new HitTestResult(hitPtr, false));
+      return _result(Marshal.PtrToStructure<HitTestResult>(hitPtr));
     }
     catch (Exception e)
     {
@@ -117,10 +102,9 @@ public static class VisualTreeHelper {
   }
 
   [MonoPInvokeCallback(typeof(Callback_HitTestResult))]
-  private static HitTestResultBehavior OnHitTest3DResult(int callbacksId, IntPtr hitPtr) {
+  private static HitTestResultBehavior OnHitTest3DResult(IntPtr hitPtr) {
     try {
-      HitTest3DCallbackInfo info = _hitTest3DCallbacks[callbacksId];
-      return info.Result(new HitTest3DResult(hitPtr, false));
+      return _result3D(Marshal.PtrToStructure<HitTest3DResult>(hitPtr));
     }
     catch (Exception e)
     {
@@ -129,33 +113,35 @@ public static class VisualTreeHelper {
     }
   }
 
-  private struct HitTestCallbackInfo {
-    public HitTestFilterCallback Filter { get; set; }
-    public HitTestResultCallback Result { get; set; }
+  [ThreadStatic]
+  static private HitTestFilterCallback _filter = null;
+
+  [ThreadStatic]
+  static private HitTestResultCallback _result = null;
+
+  [ThreadStatic]
+  static private HitTest3DResultCallback _result3D = null;
+
+  private static void HitTestCallbackHelper(Visual reference, Point point, Callback_HitTestFilter filter, Callback_HitTestResult result) {
+    VisualTreeHelper_HitTestCallback(Visual.getCPtr(reference), ref point, filter, result);
   }
 
-  private struct HitTest3DCallbackInfo {
-    public HitTestFilterCallback Filter { get; set; }
-    public HitTest3DResultCallback Result { get; set; }
-  }
-
-  private static Dictionary<int, HitTestCallbackInfo> _hitTestCallbacks = new Dictionary<int, HitTestCallbackInfo>();
-  private static Dictionary<int, HitTest3DCallbackInfo> _hitTest3DCallbacks = new Dictionary<int, HitTest3DCallbackInfo>();
-
-  private static void HitTestCallbackHelper(Visual reference, Point point, int callbacksId, Callback_HitTestFilter filter, Callback_HitTestResult result) {
-    VisualTreeHelper_HitTestCallback(Visual.getCPtr(reference), ref point, callbacksId, filter, result);
-  }
-
-  private static void HitTest3DCallbackHelper(Visual reference, Point3D point, Vector3D direction, int callbacksId, Callback_HitTestFilter filter, Callback_HitTestResult result) {
-    VisualTreeHelper_HitTest3DCallback(Visual.getCPtr(reference), ref point, ref direction, callbacksId, filter, result);
+  private static void HitTest3DCallbackHelper(Visual reference, Point3D point, Vector3D direction, Callback_HitTestFilter filter, Callback_HitTestResult result) {
+    VisualTreeHelper_HitTest3DCallback(Visual.getCPtr(reference), ref point, ref direction, filter, result);
   }
 
   [DllImport(Library.Name)]
-  private static extern void VisualTreeHelper_HitTestCallback(HandleRef reference, ref Point point, int callbacksId, Callback_HitTestFilter filter, Callback_HitTestResult result);
+  private static extern void VisualTreeHelper_HitTestCallback(HandleRef reference, ref Point point, Callback_HitTestFilter filter, Callback_HitTestResult result);
 
   [DllImport(Library.Name)]
-  private static extern void VisualTreeHelper_HitTest3DCallback(HandleRef reference, ref Point3D point, ref Vector3D direction, int callbacksId, Callback_HitTestFilter filter, Callback_HitTestResult result);
+  private static extern void VisualTreeHelper_HitTest3DCallback(HandleRef reference, ref Point3D point, ref Vector3D direction, Callback_HitTestFilter filter, Callback_HitTestResult result);
   #endregion
+
+  public static bool IntersectPlane(Visual reference, Point3D point, Vector3D direction, out Point3D outPoint) {
+    if (reference == null) throw new ArgumentNullException("reference");
+    outPoint = new Point3D();
+    return IntersectPlaneHelper(reference, point, new Point3D(direction.X, direction.Y, direction.Z), ref outPoint);
+  }
 
   public static Rect GetContentBounds(Visual visual) {
     if (visual == null) throw new ArgumentNullException("visual");
@@ -253,13 +239,16 @@ public static class VisualTreeHelper {
     return (DependencyObject)Noesis.Extend.GetProxy(cPtr, false);
   }
 
-  private static HitTestResult HitTestHelper(Visual reference, Point point) {
-    HitTestResult ret = new HitTestResult(NoesisGUI_PINVOKE.VisualTreeHelper_HitTestHelper(Visual.getCPtr(reference), ref point), true);
-    return ret;
+  private static void HitTestHelper(Visual reference, Point point, ref HitTestResult result) {
+    NoesisGUI_PINVOKE.VisualTreeHelper_HitTestHelper(Visual.getCPtr(reference), ref point, ref result);
   }
 
-  private static HitTest3DResult HitTest3DHelper(Visual reference, Point3D point, Point3D direction) {
-    HitTest3DResult ret = new HitTest3DResult(NoesisGUI_PINVOKE.VisualTreeHelper_HitTest3DHelper(Visual.getCPtr(reference), ref point, ref direction), true);
+  private static void HitTest3DHelper(Visual reference, Point3D point, Point3D direction, ref HitTest3DResult result) {
+    NoesisGUI_PINVOKE.VisualTreeHelper_HitTest3DHelper(Visual.getCPtr(reference), ref point, ref direction, ref result);
+  }
+
+  private static bool IntersectPlaneHelper(Visual reference, Point3D point, Point3D direction, ref Point3D outPoint) {
+    bool ret = NoesisGUI_PINVOKE.VisualTreeHelper_IntersectPlaneHelper(Visual.getCPtr(reference), ref point, ref direction, ref outPoint);
     return ret;
   }
 

@@ -45,6 +45,13 @@ public class BindingExpression : BindingExpressionBase {
     }
   }
 
+  public object ResolvedSource {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.BindingExpression_ResolvedSource_get(swigCPtr);
+      return Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
 }
 
 }

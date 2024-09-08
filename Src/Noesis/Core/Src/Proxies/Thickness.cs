@@ -16,6 +16,7 @@ namespace Noesis
 {
 
 [StructLayoutAttribute(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+[System.ComponentModel.TypeConverter(typeof(ThicknessConverter))]
 public struct Thickness {
 
   [MarshalAs(UnmanagedType.R4)]

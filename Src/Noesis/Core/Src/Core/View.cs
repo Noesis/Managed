@@ -153,6 +153,17 @@ namespace Noesis
         }
 
         /// <summary>
+        /// The projection matrix set to the view is used for determining the visual impact of nodes
+        /// in the offscreen phase. The stereo matrices used for rendering in VR are slightly
+        /// different. To account for this difference, it is recommended to apply a scale using this
+        /// function. For non-VR this must be 1. For VR, we recommend a value between 2 and 3.
+        /// </summary>
+        public void SetStereoOffscreenScaleFactor(float factor)
+        {
+            Noesis_View_SetStereoOffscreenScaleFactor(CPtr, factor);
+        }
+
+        /// <summary>
         /// Indicates if touch input events are emulated by the mouse
         /// </summary>
         public void SetEmulateTouch(bool emulate)
@@ -435,7 +446,17 @@ namespace Noesis
             }
         }
 
-        internal static Dictionary<long, RenderingEventHandler> _Rendering =
+        internal static void ResetEvents()
+        {
+            foreach (var kv in _Rendering)
+            {
+                IntPtr cPtr = new IntPtr(kv.Key);
+                Noesis_View_UnbindRenderingEvent(new HandleRef(null, cPtr), _raiseRendering);
+            }
+            _Rendering.Clear();
+        }
+
+        private static Dictionary<long, RenderingEventHandler> _Rendering =
             new Dictionary<long, RenderingEventHandler>();
         #endregion
 
@@ -618,6 +639,9 @@ namespace Noesis
 
         [DllImport(Library.Name)]
         static extern void Noesis_View_SetProjectionMatrix(HandleRef view, ref Matrix4 projection);
+
+        [DllImport(Library.Name)]
+        static extern void Noesis_View_SetStereoOffscreenScaleFactor(HandleRef view, float factor);
 
         [DllImport(Library.Name)]
         static extern void Noesis_View_SetEmulateTouch(HandleRef view, bool emulate);

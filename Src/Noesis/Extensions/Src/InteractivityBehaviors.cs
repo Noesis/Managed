@@ -320,4 +320,117 @@ namespace NoesisGUIExtensions
         #endregion
     }
     #endregion
+
+    #region Line Decoration Behavior
+    /// <summary>
+    /// Renders a line decoration on the associated TextBlock.
+    ///
+    /// Usage:
+    ///
+    ///   <Grid
+    ///     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    ///     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    ///     xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+    ///     xmlns:noesis="clr-namespace:NoesisGUIExtensions;assembly=NoesisGUI.GUI.Extensions">
+    ///     <TextBlock TextWrapping="Wrap" FontSize="32" Foreground="White" Width="400"
+    ///         Text="Some long text that will be rendered with an strikethrough line">
+    ///       <b:Interaction.Behaviors>
+    ///         <noesis:LineDecorationBehavior Offset="-10" Progress="0.8">
+    ///           <noesis:LineDecorationBehavior.Pen>
+    ///             <Pen Brush="Red" Thickness="3"/>
+    ///           </noesis:LineDecorationBehavior.Pen>
+    ///         </noesis:LineDecorationBehavior>
+    ///       </b:Interaction.Behaviors>
+    ///     </TextBlock>
+    ///   </Grid>
+    /// </summary>
+    public class LineDecorationBehavior : Behavior<TextBlock>
+    {
+        #region Pen property
+        public Pen Pen
+        {
+            get { return (Pen)GetValue(PenProperty); }
+            set { SetValue(PenProperty, value); }
+        }
+
+        public static readonly DependencyProperty PenProperty = DependencyProperty.Register(
+            "Pen", typeof(Pen), typeof(LineDecorationBehavior), new PropertyMetadata(null));
+        #endregion
+
+        #region Offset property
+        public float Offset
+        {
+            get { return (float)GetValue(OffsetProperty); }
+            set { SetValue(OffsetProperty, value); }
+        }
+
+        public static readonly DependencyProperty OffsetProperty = DependencyProperty.Register(
+            "Offset", typeof(float), typeof(LineDecorationBehavior), new PropertyMetadata(0.0f));
+        #endregion
+
+        #region Progress property
+        public float Progress
+        {
+            get { return (float)GetValue(ProgressProperty); }
+            set { SetValue(ProgressProperty, value); }
+        }
+
+        public static readonly DependencyProperty ProgressProperty = DependencyProperty.Register(
+            "Progress", typeof(float), typeof(LineDecorationBehavior), new PropertyMetadata(1.0f));
+        #endregion
+
+        #region Behavior methods
+        protected override void OnAttached()
+        {
+            TextBlock target = AssociatedObject;
+            if (target != null)
+            {
+                target.Loaded += OnTargetLoaded;
+                target.Unloaded += OnTargetUnloaded;
+            }
+        }
+
+        protected override void OnDetaching()
+        {
+            TextBlock target = AssociatedObject;
+            if (target != null)
+            {
+                target.Loaded -= OnTargetLoaded;
+                target.Unloaded -= OnTargetUnloaded;
+            }
+        }
+
+        private void OnTargetLoaded(object sender, RoutedEventArgs e)
+        {
+            TextBlock target = AssociatedObject;
+            if (target != null)
+            {
+                _lineDecoration = new TextDecoration()
+                {
+                    Location = TextDecorationLocation.Baseline,
+                    PenOffsetUnit = TextDecorationUnit.Pixel
+                };
+
+                BindingOperations.SetBinding(_lineDecoration, TextDecoration.PenProperty,
+                    new Binding("Pen") { Source = this });
+                BindingOperations.SetBinding(_lineDecoration, TextDecoration.PenOffsetProperty,
+                    new Binding("Offset") { Source = this });
+
+                target.TextDecorations.Add(_lineDecoration);
+            }
+        }
+
+        private void OnTargetUnloaded(object sender, RoutedEventArgs e)
+        {
+            TextBlock target = AssociatedObject;
+            if (target != null)
+            {
+                target.TextDecorations.Remove(_lineDecoration);
+            }
+        }
+
+        private TextDecoration _lineDecoration;
+        #endregion
+    }
+    #endregion
 }
