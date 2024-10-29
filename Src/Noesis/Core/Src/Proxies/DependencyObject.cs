@@ -30,31 +30,44 @@ public partial class DependencyObject : DispatcherObject {
   protected DependencyObject() {
   }
 
+  public void SetCurrentValue(DependencyProperty dp, object value) {
+    if (dp == null) {
+      throw new ArgumentNullException("dp");
+    }
+    SetCurrentValueHelper(dp, value);
+  }
+
   public object ReadLocalValue(DependencyProperty dp) {
+    if (dp == null) {
+      throw new ArgumentNullException("dp");
+    }
     IntPtr cPtr = ReadLocalValueHelper(dp);
     return Noesis.Extend.GetProxy(cPtr, true);
   }
 
+  public void CoerceValue(DependencyProperty dp) {
+    if (dp == null) {
+      throw new ArgumentNullException("dp");
+    }
+    CoerceValueHelper(dp);
+  }
+
   public void InvalidateProperty(DependencyProperty dp) {
+    if (dp == null) {
+      throw new ArgumentNullException("dp");
+    }
     InvalidatePropertyHelper(dp);
   }
 
-  public Expression GetExpression(DependencyProperty dp) {
-    IntPtr cPtr = NoesisGUI_PINVOKE.DependencyObject_GetExpression(swigCPtr, DependencyProperty.getCPtr(dp));
-    Expression ret = (cPtr == IntPtr.Zero) ? null : new Expression(cPtr, false);
-    return ret;
-  }
-
   public void ClearValue(DependencyProperty dp) {
-    NoesisGUI_PINVOKE.DependencyObject_ClearValue(swigCPtr, DependencyProperty.getCPtr(dp));
+    if (dp == null) {
+      throw new ArgumentNullException("dp");
+    }
+    ClearValueHelper(dp);
   }
 
-  public void ClearAnimation(DependencyProperty dp) {
+  protected void ClearAnimation(DependencyProperty dp) {
     NoesisGUI_PINVOKE.DependencyObject_ClearAnimation(swigCPtr, DependencyProperty.getCPtr(dp));
-  }
-
-  public void CoerceValue(DependencyProperty dp) {
-    NoesisGUI_PINVOKE.DependencyObject_CoerceValue(swigCPtr, DependencyProperty.getCPtr(dp));
   }
 
   public bool IsSealed {
@@ -64,21 +77,29 @@ public partial class DependencyObject : DispatcherObject {
     } 
   }
 
+  private void SetCurrentValueHelper(DependencyProperty dp, object value) {
+    NoesisGUI_PINVOKE.DependencyObject_SetCurrentValueHelper(swigCPtr, DependencyProperty.getCPtr(dp), Noesis.Extend.GetInstanceHandle(value));
+  }
+
   private IntPtr ReadLocalValueHelper(DependencyProperty dp) {
     IntPtr ret = NoesisGUI_PINVOKE.DependencyObject_ReadLocalValueHelper(swigCPtr, DependencyProperty.getCPtr(dp));
     return ret;
   }
 
-  public void SetCurrentValue(DependencyProperty dp, object value) {
-    NoesisGUI_PINVOKE.DependencyObject_SetCurrentValue(swigCPtr, DependencyProperty.getCPtr(dp), Noesis.Extend.GetInstanceHandle(value));
-  }
-
-  protected internal void InitObject() {
-    NoesisGUI_PINVOKE.DependencyObject_InitObject(swigCPtr);
+  private void CoerceValueHelper(DependencyProperty dp) {
+    NoesisGUI_PINVOKE.DependencyObject_CoerceValueHelper(swigCPtr, DependencyProperty.getCPtr(dp));
   }
 
   private void InvalidatePropertyHelper(DependencyProperty dp) {
     NoesisGUI_PINVOKE.DependencyObject_InvalidatePropertyHelper(swigCPtr, DependencyProperty.getCPtr(dp));
+  }
+
+  private void ClearValueHelper(DependencyProperty dp) {
+    NoesisGUI_PINVOKE.DependencyObject_ClearValueHelper(swigCPtr, DependencyProperty.getCPtr(dp));
+  }
+
+  protected internal void InitObject() {
+    NoesisGUI_PINVOKE.DependencyObject_InitObject(swigCPtr);
   }
 
   internal new static IntPtr Extend(string typeName) {

@@ -99,6 +99,20 @@ namespace NoesisGUIExtensions
             trigger.RegisterSource();
         }
 
+        /// <summary>
+        /// Indicates if GamepadTrigger should set gamepad button event as handled when the trigger
+        /// invokes its actions
+        /// </summary>
+        public bool HandleWhenFired
+        {
+            get { return (bool)GetValue(HandleWhenFiredProperty); }
+            set { SetValue(HandleWhenFiredProperty, value); }
+        }
+
+        public static readonly DependencyProperty HandleWhenFiredProperty = DependencyProperty.Register(
+            "HandleWhenFired", typeof(bool), typeof(GamepadTrigger),
+            new PropertyMetadata(false));
+
         protected override void OnAttached()
         {
             base.OnAttached();
@@ -117,8 +131,22 @@ namespace NoesisGUIExtensions
         {
             if (Button == (GamepadButton)(e.OriginalKey - Key.GamepadLeft))
             {
-                InvokeActions(e);
+                _invoked = false;
+                PreviewInvoke += OnPreviewInvoke;
+                InvokeActions(0);
+                PreviewInvoke -= OnPreviewInvoke;
+
+                if (HandleWhenFired)
+                {
+                    e.Handled = _invoked;
+                }
             }
+        }
+
+        private bool _invoked;
+        private void OnPreviewInvoke(object sender, NoesisApp.PreviewInvokeEventArgs e)
+        {
+            _invoked = !e.Cancelling;
         }
 
         private void RegisterSource()

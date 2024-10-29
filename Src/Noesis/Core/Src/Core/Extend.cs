@@ -3375,12 +3375,12 @@ namespace Noesis
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
         private delegate IntPtr Callback_ProviderMatchFont(IntPtr cPtr, IntPtr baseUri, IntPtr familyName,
-            ref int weight, ref int stretch, ref int style, ref uint index);
+            ref int weight, ref int stretch, ref int style, ref uint index, ref IntPtr filename);
         private static Callback_ProviderMatchFont _providerMatchFont = ProviderMatchFont;
 
         [MonoPInvokeCallback(typeof(Callback_ProviderMatchFont))]
         private static IntPtr ProviderMatchFont(IntPtr cPtr, IntPtr baseUri, IntPtr familyName,
-            ref int weight, ref int stretch, ref int style, ref uint index)
+            ref int weight, ref int stretch, ref int style, ref uint index, ref IntPtr filename)
         {
             try
             {
@@ -3400,6 +3400,7 @@ namespace Noesis
                     stretch = (int)stretch_;
                     style = (int)style_;
                     index = font.faceIndex;
+                    filename = Marshal.StringToHGlobalUni(font.filename != null ? font.filename : string.Empty);
 
                     HandleRef handle = GetInstanceHandle(font.file);
                     BaseComponent.AddReference(handle.Handle); // released by C++

@@ -32,6 +32,7 @@ public class FontProvider : BaseComponent {
   }
 
   public struct FontSource {
+    public string filename;
     public Stream file;
     public uint faceIndex;
   }
@@ -45,11 +46,22 @@ public class FontProvider : BaseComponent {
     string baseUri_ = baseUri != null ? baseUri.OriginalString : string.Empty;
     int weight_ = (int)weight, stretch_ = (int)stretch, style_ = (int)style;
     uint index = 0;
-    IntPtr filePtr = MatchFontHelper(baseUri_, familyName, ref weight_, ref stretch_, ref style_, ref index);
+    IntPtr filenamePtr = IntPtr.Zero;
+
+    IntPtr filePtr = MatchFontHelper(baseUri_, familyName, ref weight_, ref stretch_, ref style_, ref index, ref filenamePtr);
+
+    string filename = Noesis.Extend.StringFromNativeUtf8(filenamePtr);
+    NoesisGUI_PINVOKE.FreeString(filenamePtr);
+
     weight = (FontWeight)weight_;
     stretch = (FontStretch)stretch_;
     style = (FontStyle)style_;
-    return new FontSource { file = (Stream)Noesis.Extend.GetProxy(filePtr, true), faceIndex = index };
+
+    return new FontSource {
+      filename = filename,
+      file = (Stream)Noesis.Extend.GetProxy(filePtr, true),
+      faceIndex = index
+    };
   }
 
   /// <summary>
@@ -107,8 +119,8 @@ public class FontProvider : BaseComponent {
     NoesisGUI_PINVOKE.FontProvider_RegisterFontHelper(swigCPtr, folder != null ? folder : string.Empty, id != null ? id : string.Empty);
   }
 
-  private IntPtr MatchFontHelper(string baseUri, string familyName, ref int weight, ref int stretch, ref int style, ref uint index) {
-    IntPtr ret = NoesisGUI_PINVOKE.FontProvider_MatchFontHelper(swigCPtr, baseUri != null ? baseUri : string.Empty, familyName != null ? familyName : string.Empty, ref weight, ref stretch, ref style, ref index);
+  private IntPtr MatchFontHelper(string baseUri, string familyName, ref int weight, ref int stretch, ref int style, ref uint index, ref IntPtr filename) {
+    IntPtr ret = NoesisGUI_PINVOKE.FontProvider_MatchFontHelper(swigCPtr, baseUri != null ? baseUri : string.Empty, familyName != null ? familyName : string.Empty, ref weight, ref stretch, ref style, ref index, ref filename);
     return ret;
   }
 

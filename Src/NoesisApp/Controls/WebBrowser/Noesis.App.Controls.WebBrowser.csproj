@@ -31,7 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CefGlue.Common" Version="91.4472.10" />
+    <PackageReference Include="Chromely.CefGlue" Version="5.0.81.2" />
   </ItemGroup>
 
   <ItemGroup>

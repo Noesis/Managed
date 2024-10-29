@@ -141,7 +141,8 @@ namespace NoesisApp
                     key = name != null ? reader.ReadLine() : null;
                 }
 
-                if (name != null && key != null)
+                if (name != null && name != "LICENSE_NAME" &&
+                    key != null && key != "LICENSE_KEY")
                 {
                     return new LicenseInfo { Name = name, Key = key };
                 }

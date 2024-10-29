@@ -382,6 +382,10 @@ namespace Noesis
         Equal_Decr,
         /// <summary>Set the stencil data to 0</summary>
         Clear,
+        /// <summary>Stencil disabled and Depth enabled</summary>
+        Disabled_ZTest,
+        /// <summary>Stencil and Depth enabled</summary>
+        Equal_Keep_ZTest
     }
 
     /// <summary>

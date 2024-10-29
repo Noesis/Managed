@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Web;
 using Xilium.CefGlue;
 using Noesis;
+using System.Text.Json;
 
 namespace NoesisApp
 {
@@ -85,9 +86,11 @@ namespace NoesisApp
             CefRuntime.Load();
         }
 
-        private static void StaticInitialize()
+        private static bool CefIsInitialized = false;
+
+        public static void StaticInitialize()
         {
-            if (!CefRuntime.IsInitialized)
+            if (!CefIsInitialized)
             {
                 // Start the secondary CEF process.
                 var cefMainArgs = new CefMainArgs(new string[] { "--enable-features=UseOzonePlatform", "--ozone-platform=headless", "--use-gl=egl" });
@@ -115,12 +118,12 @@ namespace NoesisApp
                 // Start the browser process (a child process).
                 CefRuntime.Initialize(cefMainArgs, cefSettings, cefApp, windowsSandboxInfo);
 
-                CefRuntime.RegisterSchemeHandlerFactory("https", "webbrowser.noesis.local", new NoesisSchemeHandlerFactory());
-
                 // Wait for the cache to be initialized from storage
                 var completionCallback = new NoesisCompletionCallback();
                 var cookieManager = CefCookieManager.GetGlobal(completionCallback);
                 completionCallback.WaitOnUIThread();
+
+                CefIsInitialized = true;
             }
         }
 
@@ -835,26 +838,43 @@ namespace NoesisApp
             }
             else
             {
-                var guid = System.Guid.NewGuid();
-                string url = "https://webbrowser.noesis.local/" + guid.ToString();
-                string code = $@"var xhr = new XMLHttpRequest();
-                                 xhr.open(""POST"", ""{url}"", true);
-                                 var labels = document.getElementsByTagName('label');
+                var guid = System.Guid.NewGuid().ToString();
+                string code = $@"var labels = document.getElementsByTagName('label');
                                  var label = """";
                                  for( var i = 0; i < labels.length; i++ )
                                  {{
                                    if (labels[i].htmlFor == document.activeElement.id)
-                                     label = labels[i].innerHTML;
+                                   {{
+                                        label = labels[i].innerHTML;
+                                    }}
                                  }}
-                                 xhr.send(document.activeElement.value + ""&"" + document.activeElement.type + ""&"" + btoa(unescape(encodeURIComponent(label))));";
-                var frame = browser.GetFocusedFrame();
+                                 console.log(""Label: "" + label);
+                                 var request = {{
+                                    ""id"": ""{guid}"",
+                                    ""content"": document.activeElement.value,
+                                    ""type"": document.activeElement.type,
+                                    ""label"": unescape(encodeURIComponent(label)),
+                                  }};
+                                 window.cefQuery({{
+                                    request: JSON.stringify(request),
+                                    persistent: false,
+                                    onSuccess: function(response) {{}},
+                                    inFailure: function(error, message) {{}}
+                                 }});
+                                 console.log(""XHR sent"");";
+                var frame = browser.GetMainFrame();
                 frame.ExecuteJavaScript(code, "", 0);
                 _browser._virtualKeyboardRequestedArgs.InputScope = GetInputScope(inputMode);
                 lock (WebBrowser._virtualKeyboardRequests)
                 {
-                    WebBrowser._virtualKeyboardRequests.Add(url, _browser);
+                    WebBrowser._virtualKeyboardRequests.Add(guid, _browser);
                 }
             }
+        }
+
+        protected override void OnCursorChange(CefBrowser browser, IntPtr cursorHandle, CefCursorType type, CefCursorInfo customCursorInfo)
+        {
+
         }
     }
 
@@ -1209,6 +1229,53 @@ namespace NoesisApp
         {
             return _requestHandler;
         }
+
+        internal class NoesisRequest
+        {
+            public string id {  get; set; }
+            public string content { get; set; }
+            public string type { get; set; }
+            public string label { get; set; }
+        }
+
+        protected override bool OnProcessMessageReceived(CefBrowser browser, CefFrame frame, CefProcessId sourceProcess, CefProcessMessage message)
+        {
+            if (message.Name == "cefQueryMsg")
+            {
+                var arguments = message.Arguments;
+
+                const int paramsIndex = 2;
+                var type = arguments.GetValueType(paramsIndex);
+
+                if (type == CefValueType.String)
+                {
+                    var @string = arguments.GetString(paramsIndex);
+                    NoesisRequest req = JsonSerializer.Deserialize<NoesisRequest>(@string);
+
+                    WebBrowser b = null;
+                    lock (WebBrowser._virtualKeyboardRequests)
+                    {
+                        if (WebBrowser._virtualKeyboardRequests.TryGetValue(req.id, out b))
+                        {
+                            WebBrowser._virtualKeyboardRequests.Remove(req.id);
+                        }
+                    }
+
+                    if (b != null)
+                    {
+                        if (req.type == "password")
+                        {
+                            b._virtualKeyboardRequestedArgs.InputScope = InputScope.Password;
+                        }
+
+                        var label = HttpUtility.HtmlDecode(req.label);
+                        CefRuntime.PostTask(CefThreadId.UI, new NoesisDelegateTask(() => { b.RequestVirtualKeyboard(req.content, label); }));
+                    }
+                }
+            }
+
+            return base.OnProcessMessageReceived(browser, frame, sourceProcess, message);
+        }
     }
 
     internal class NoesisDelegateTask : CefTask
@@ -1225,47 +1292,6 @@ namespace NoesisApp
         protected override void Execute()
         {
             _delegate();
-        }
-    }
-
-    internal sealed class NoesisSchemeHandlerFactory : CefSchemeHandlerFactory
-    {
-        
-        protected override CefResourceHandler Create(CefBrowser browser_, CefFrame frame, string schemeName, CefRequest request)
-        {
-            WebBrowser browser = null;
-            lock (WebBrowser._virtualKeyboardRequests)
-            {
-                if (WebBrowser._virtualKeyboardRequests.TryGetValue(request.Url, out browser))
-                {
-                    WebBrowser._virtualKeyboardRequests.Remove(request.Url);
-                }
-            }
-
-            if (browser != null)
-            {
-                string content = "";
-                string label = "";
-                CefPostData postData = request.PostData;
-                if (postData.Count > 0)
-                {
-                    CefPostDataElement[] elements = postData.GetElements();
-                    CefPostDataElement element = elements[0];
-                    byte[] bytes = element.GetBytes();
-                    string reply = System.Text.Encoding.UTF8.GetString(bytes);
-                    int lastAmpersand = reply.LastIndexOf('&');
-                    int firstAmpersand = reply.LastIndexOf('&', lastAmpersand - 1);
-                    content = reply.Substring(0, firstAmpersand);
-                    string type = reply.Substring(firstAmpersand + 1, lastAmpersand - firstAmpersand - 1);
-                    if (type == "password")
-                    {
-                        browser._virtualKeyboardRequestedArgs.InputScope = InputScope.Password;
-                    }
-                    label = HttpUtility.UrlDecode(System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(reply.Substring(lastAmpersand + 1))));
-                }
-                CefRuntime.PostTask(CefThreadId.UI, new NoesisDelegateTask(() => { browser.RequestVirtualKeyboard(content, label); }));
-            }
-            return null;
         }
     }
 

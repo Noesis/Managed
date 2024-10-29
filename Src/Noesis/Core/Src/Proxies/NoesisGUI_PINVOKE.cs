@@ -881,32 +881,29 @@ internal class NoesisGUI_PINVOKE {
   public static extern void delete_DependencyPropertyChangedEventArgs(HandleRef jarg1);
 
   [DllImport(Library.Name)]
-  public static extern IntPtr DependencyObject_GetExpression(HandleRef jarg1, HandleRef jarg2);
-
-  [DllImport(Library.Name)]
-  public static extern void DependencyObject_ClearValue(HandleRef jarg1, HandleRef jarg2);
-
-  [DllImport(Library.Name)]
   public static extern void DependencyObject_ClearAnimation(HandleRef jarg1, HandleRef jarg2);
-
-  [DllImport(Library.Name)]
-  public static extern void DependencyObject_CoerceValue(HandleRef jarg1, HandleRef jarg2);
 
   [DllImport(Library.Name)]
   [return: MarshalAs(UnmanagedType.U1)]
   public static extern bool DependencyObject_IsSealed_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
+  public static extern void DependencyObject_SetCurrentValueHelper(HandleRef jarg1, HandleRef jarg2, HandleRef jarg3);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr DependencyObject_ReadLocalValueHelper(HandleRef jarg1, HandleRef jarg2);
 
   [DllImport(Library.Name)]
-  public static extern void DependencyObject_SetCurrentValue(HandleRef jarg1, HandleRef jarg2, HandleRef jarg3);
-
-  [DllImport(Library.Name)]
-  public static extern void DependencyObject_InitObject(HandleRef jarg1);
+  public static extern void DependencyObject_CoerceValueHelper(HandleRef jarg1, HandleRef jarg2);
 
   [DllImport(Library.Name)]
   public static extern void DependencyObject_InvalidatePropertyHelper(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern void DependencyObject_ClearValueHelper(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern void DependencyObject_InitObject(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern void Freezable_Freeze(HandleRef jarg1);
@@ -1354,7 +1351,7 @@ internal class NoesisGUI_PINVOKE {
   public static extern void FontProvider_RegisterFontHelper(HandleRef jarg1, [MarshalAs(UnmanagedType.LPWStr)]string jarg2, [MarshalAs(UnmanagedType.LPWStr)]string jarg3);
 
   [DllImport(Library.Name)]
-  public static extern IntPtr FontProvider_MatchFontHelper(HandleRef jarg1, [MarshalAs(UnmanagedType.LPWStr)]string jarg2, [MarshalAs(UnmanagedType.LPWStr)]string jarg3, ref int jarg4, ref int jarg5, ref int jarg6, ref uint jarg7);
+  public static extern IntPtr FontProvider_MatchFontHelper(HandleRef jarg1, [MarshalAs(UnmanagedType.LPWStr)]string jarg2, [MarshalAs(UnmanagedType.LPWStr)]string jarg3, ref int jarg4, ref int jarg5, ref int jarg6, ref uint jarg7, ref IntPtr jarg8);
 
   [DllImport(Library.Name)]
   [return: MarshalAs(UnmanagedType.U1)]
@@ -3362,10 +3359,10 @@ internal class NoesisGUI_PINVOKE {
   public static extern void delete_StreamGeometryContext(HandleRef jarg1);
 
   [DllImport(Library.Name)]
-  public static extern IntPtr new_StreamGeometry__SWIG_0([MarshalAs(UnmanagedType.LPWStr)]string jarg1);
+  public static extern IntPtr new_StreamGeometry__SWIG_0();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr new_StreamGeometry__SWIG_1();
+  public static extern IntPtr new_StreamGeometry__SWIG_1([MarshalAs(UnmanagedType.LPWStr)]string jarg1);
 
   [DllImport(Library.Name)]
   public static extern void StreamGeometry_SetData(HandleRef jarg1, [MarshalAs(UnmanagedType.LPWStr)]string jarg2);

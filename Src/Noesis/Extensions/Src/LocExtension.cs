@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Markup;
@@ -112,26 +109,33 @@ namespace NoesisGUIExtensions
             }
 
             DependencyObject target = valueTarget.TargetObject as DependencyObject;
-            if (target == null)
+            Setter setterTarget = valueTarget.TargetObject as Setter;
+            if (target == null && setterTarget == null)
             {
                 return this;
             }
 
             DependencyProperty targetProperty = valueTarget.TargetProperty as DependencyProperty;
-            if (targetProperty == null)
+            if (target != null && targetProperty == null)
             {
                 return null;
             }
 
-            LocMonitor monitor = (LocMonitor)target.GetValue(MonitorProperty);
-
-            if (monitor == null)
+            Binding binding = new Binding
             {
-                monitor = new LocMonitor(target);
-                target.SetValue(MonitorProperty, monitor);
+                Path = new PropertyPath("(0)[(1)]", ResourcesProperty, ResourceKey),
+                RelativeSource = target is FrameworkElement ? RelativeSource.Self :
+                    new RelativeSource(RelativeSourceMode.FindAncestor, typeof(FrameworkElement), 1),
+                Converter = Converter,
+                ConverterParameter = ConverterParameter
+            };
+            
+            if (setterTarget != null)
+            {
+                return binding;
             }
 
-            return monitor.AddDependencyProperty(targetProperty, _resourceKey, Converter, ConverterParameter);
+            return binding.ProvideValue(serviceProvider);
         }
 
         #region Source attached property
@@ -150,7 +154,7 @@ namespace NoesisGUIExtensions
 
             if (source == null)
             {
-                d.SetValue(ResourcesProperty, null);
+                d.ClearValue(ResourcesProperty);
                 return;
             }
 
@@ -181,23 +185,8 @@ namespace NoesisGUIExtensions
                 "Resources",
                 typeof(ResourceDictionary),
                 typeof(LocExtension),
-                new FrameworkPropertyMetadata(null, flags: FrameworkPropertyMetadataOptions.Inherits, ResourcesChangedCallback)
+                new FrameworkPropertyMetadata(null, flags: FrameworkPropertyMetadataOptions.Inherits)
             );
-
-        private static void ResourcesChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            LocMonitor monitor = (LocMonitor)d.GetValue(MonitorProperty);
-
-            if (monitor != null)
-            {
-                if (monitor.TargetObject != d)
-                {
-                    monitor = monitor.Clone(d);
-                    d.SetValue(MonitorProperty, monitor);
-                }
-                monitor.InvalidateResources((ResourceDictionary)e.NewValue);
-            }
-        }
 
         public static ResourceDictionary GetResources(DependencyObject dependencyObject)
         {
@@ -210,144 +199,5 @@ namespace NoesisGUIExtensions
         }
 
         #endregion
-
-        #region Monitor attached property
-
-        private static readonly DependencyProperty MonitorProperty =
-            DependencyProperty.RegisterAttached(
-                ".Monitor",
-                typeof(LocMonitor),
-                typeof(LocExtension),
-                new PropertyMetadata(null)
-            );
-
-        #endregion
-    }
-
-    internal class LocMonitor
-    {
-        internal class LocProperty
-        {
-            public DependencyProperty TargetProperty { get; set; }
-            public string ResourceKey { get; set; }
-            public IValueConverter Converter { get; set; }
-            public object ConverterParameter { get; set; }
-
-            public LocProperty(DependencyProperty targetProperty, string resourceKey, IValueConverter converter, object converterParameter)
-            {
-                TargetProperty = targetProperty;
-                ResourceKey = resourceKey;
-                Converter = converter;
-                ConverterParameter = converterParameter;
-            }
-        }
-
-        private readonly List<LocProperty> _monitoredDependencyProperties =
-            new List<LocProperty>();
-
-        public DependencyObject TargetObject { get; }
-
-        public LocMonitor(DependencyObject targetObject)
-        {
-            TargetObject = targetObject;
-
-            if (!(TargetObject is FrameworkElement))
-            {
-                Binding binding = new Binding();
-                binding.Path = new PropertyPath("(0)", new object[] { LocExtension.ResourcesProperty });
-                binding.RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(FrameworkElement), 1);
-
-                BindingOperations.SetBinding(TargetObject, LocExtension.ResourcesProperty, binding);
-            }
-        }
-
-        public object AddDependencyProperty(DependencyProperty targetProperty, string resourceKey, IValueConverter converter, object converterParameter)
-        {
-            ResourceDictionary resourceDictionary = LocExtension.GetResources(TargetObject);
-
-            for (int i = 0; i < _monitoredDependencyProperties.Count; i++)
-            {
-                if (_monitoredDependencyProperties[i].TargetProperty == targetProperty)
-                {
-                    _monitoredDependencyProperties[i] =
-                        new LocProperty(_monitoredDependencyProperties[i].TargetProperty, resourceKey, converter, converterParameter);
-
-                    return Evaluate(targetProperty, resourceKey, converter, converterParameter, resourceDictionary);
-                }
-            }
-
-            _monitoredDependencyProperties.Add(new LocProperty(targetProperty, resourceKey, converter, converterParameter));
-
-            return Evaluate(targetProperty, resourceKey, converter, converterParameter, resourceDictionary);
-        }
-
-        public void InvalidateResources(ResourceDictionary resourceDictionary)
-        {
-            foreach (LocProperty entry in _monitoredDependencyProperties)
-            {
-                TargetObject.SetValue(entry.TargetProperty,
-                    Evaluate(entry.TargetProperty, entry.ResourceKey, entry.Converter, entry.ConverterParameter, resourceDictionary));
-            }
-        }
-
-        public LocMonitor Clone(DependencyObject targetObject)
-        {
-            LocMonitor clone = new LocMonitor(targetObject);
-            clone._monitoredDependencyProperties.AddRange(_monitoredDependencyProperties);
-            return clone;
-        }
-
-        private static object DynamicConvert(Type targetType, object value)
-        {
-            Type valueType = value.GetType();
-            if (!targetType.IsAssignableFrom(valueType))
-            {
-                TypeConverter converter = TypeDescriptor.GetConverter(targetType);
-                if (converter.CanConvertFrom(valueType))
-                {
-                    value = converter.ConvertFrom(value);
-                }
-                else
-                {
-                    converter = TypeDescriptor.GetConverter(valueType);
-                    if (converter.CanConvertTo(targetType))
-                    {
-                        value = converter.ConvertTo(value, targetType);
-                    }
-                }
-            }
-
-            return value;
-        }
-
-        private static object Evaluate(DependencyProperty targetProperty, string resourceKey, IValueConverter converter,
-            object converterParameter, ResourceDictionary resourceDictionary)
-        {
-            if (resourceDictionary != null && resourceDictionary.Contains(resourceKey))
-            {
-                object resource = resourceDictionary[resourceKey];
-                if (resource != null)
-                {
-                    if (converter != null)
-                    {
-                        resource = converter.Convert(resource, targetProperty.PropertyType, converterParameter,
-                            CultureInfo.InvariantCulture);
-                    }
-
-                    resource = DynamicConvert(targetProperty.PropertyType, resource);
-
-                    return resource;
-                }
-
-                Console.WriteLine($"[NOESIS/E] Resource key '{resourceKey}' not found in Loc Resources");
-            }
-
-            if (targetProperty.PropertyType == typeof(string))
-            {
-                return $"<Loc !{resourceKey}>";
-            }
-
-            return Activator.CreateInstance(targetProperty.PropertyType);
-        }
     }
 }

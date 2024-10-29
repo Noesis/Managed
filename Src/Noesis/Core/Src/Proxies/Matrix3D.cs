@@ -238,12 +238,12 @@ public struct Matrix3D {
   }
 
   public bool HasInverse {
-    get { return Math.Abs(Determinant) >= 0.0001f; }
+    get { return Math.Abs(Determinant) > float.Epsilon; }
   }
 
   public void Invert() {
     float determinant = Determinant;
-    if (Math.Abs(determinant) < 0.0001f) {
+    if (Math.Abs(determinant) <= float.Epsilon) {
       throw new InvalidOperationException("Matrix3D is not Invertible");
     }
     float m11 = (_m22 * _m33 - _m23 * _m32) / determinant;
