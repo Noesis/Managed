@@ -1,0 +1,80 @@
+diff --git a/CefGlue.Common/build/CefGlue.Common.targets b/CefGlue.Common/build/CefGlue.Common.targets
+index bd71af8..82dd3c4 100644
+--- a/CefGlue.Common/build/CefGlue.Common.targets
++++ b/CefGlue.Common/build/CefGlue.Common.targets
+@@ -50,20 +50,4 @@
+             <PublishState>Included</PublishState>
+         </None>
+     </ItemGroup>
+-
+-    <!-- Copy CEF resources from 'chromiumembeddedframework.runtime.<architecture>' dependency package
+-     to the root folder of the build output directory. It is only applicable when compiling in Windows OS. 
+-     Relies on ResolvePackageAssets MSBuild target to identify resources deployed from that specific package. -->
+-    <Target Name="ResolveCEFAssets" Condition="$([MSBuild]::IsOSPlatform('Windows')) and '$(CefGlueTargetPlatform)' != ''" AfterTargets="ResolvePackageAssets">
+-        <ItemGroup Condition="'$(CefGlueTargetPlatform)' == 'win-x64' OR '$(CefGlueTargetPlatform)' == 'win-arm64'">
+-            <CefRuntimeFiles Include="@(RuntimeTargetsCopyLocalItems->WithMetadataValue('NuGetPackageId', 'chromiumembeddedframework.runtime.$(CefGlueTargetPlatform)'))" />
+-            <None Include="@(CefRuntimeFiles)">
+-                <Visible>false</Visible>
+-                <Link>$(OutputDirectory)%(FileName)%(Extension)</Link>
+-                <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+-                <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+-                <PublishState>Included</PublishState>
+-            </None>
+-        </ItemGroup>
+-    </Target>
+ </Project>
+diff --git a/CefGlue.Packages.props b/CefGlue.Packages.props
+index 13e0e08..0c98d16 100644
+--- a/CefGlue.Packages.props
++++ b/CefGlue.Packages.props
+@@ -1,12 +1,3 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <Project>
+-    <ItemGroup Condition="'$(Platform)' == 'x64'">
+-        <PackageReference PrivateAssets="None" Include="chromiumembeddedframework.runtime.win-x64" />
+-        <PackageReference PrivateAssets="None" Include="cef.redist.osx64" />
+-    </ItemGroup>
+-    
+-    <ItemGroup Condition="'$(Platform)' == 'ARM64'">
+-        <PackageReference PrivateAssets="None" Include="chromiumembeddedframework.runtime.win-arm64" />
+-        <PackageReference PrivateAssets="None" Include="cef.redist.osx.arm64" />
+-    </ItemGroup>
+ </Project>
+\ No newline at end of file
+diff --git a/CefGlue/CefGlue.csproj b/CefGlue/CefGlue.csproj
+index 8a82e7e..2b1dfbf 100644
+--- a/CefGlue/CefGlue.csproj
++++ b/CefGlue/CefGlue.csproj
+@@ -4,14 +4,9 @@
+     <TargetFramework>$(DotnetVersion)</TargetFramework>
+     <AssemblyName>Xilium.CefGlue</AssemblyName>
+     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
++    <PackageId>Noesis.CefGlue</PackageId>
+   </PropertyGroup>
+ 
+-  <ItemGroup>
+-    <Compile Remove="Wrapper\**" />
+-    <EmbeddedResource Remove="Wrapper\**" />
+-    <None Remove="Wrapper\**" />
+-  </ItemGroup>
+-
+   <ItemGroup>
+     <Compile Remove="Interop\Base\cef_string_t.disabled.cs" />
+   </ItemGroup>
+diff --git a/Directory.Packages.props b/Directory.Packages.props
+index 4aef485..dd9c631 100644
+--- a/Directory.Packages.props
++++ b/Directory.Packages.props
+@@ -24,12 +24,6 @@
+         <PackageVersion Include="System.Text.Json" Version="6.0.1" />
+         <PackageVersion Include="System.Runtime.Loader" Version="4.3.0" />
+ 
+-        <PackageVersion Include="chromiumembeddedframework.runtime.win-x64" Version="$(CefRedistVersion)" />
+-        <PackageVersion Include="chromiumembeddedframework.runtime.win-arm64" Version="$(CefRedistVersion)" />
+-
+-        <PackageVersion Include="cef.redist.osx64" Version="$(CefRedistOSXVersion)" />
+-        <PackageVersion Include="cef.redist.osx.arm64" Version="$(CefRedistOSXVersion)" />
+-
+         <PackageVersion Include="nunit" Version="3.12.0" />
+         <PackageVersion Include="NUnit3TestAdapter" Version="3.17.0" />
+         <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />

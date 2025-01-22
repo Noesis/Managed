@@ -1,0 +1,163 @@
+diff --git a/libcef/browser/osr/host_display_client_osr.cc b/libcef/browser/osr/host_display_client_osr.cc
+index c734f6738..fd7ee5496 100644
+--- a/libcef/browser/osr/host_display_client_osr.cc
++++ b/libcef/browser/osr/host_display_client_osr.cc
+@@ -136,7 +136,9 @@ void CefHostDisplayClientOSR::CreateLayeredWindowUpdater(
+   layered_window_updater_->SetActive(active_);
+ }
+ 
+-#if BUILDFLAG(IS_LINUX)
++#if BUILDFLAG(IS_OZONE)
++#if BUILDFLAG(OZONE_PLATFORM_X11)
+ void CefHostDisplayClientOSR::DidCompleteSwapWithNewSize(
+     const gfx::Size& size) {}
+-#endif
++#endif  // BUILDFLAG(OZONE_PLATFORM_X11)
++#endif  // BUILFFLAG(IS_OZONE)
+diff --git a/libcef/browser/osr/host_display_client_osr.h b/libcef/browser/osr/host_display_client_osr.h
+index c0987f8d1..6fc07f2fd 100644
+--- a/libcef/browser/osr/host_display_client_osr.h
++++ b/libcef/browser/osr/host_display_client_osr.h
+@@ -37,9 +37,11 @@ class CefHostDisplayClientOSR : public viz::HostDisplayClient {
+       mojo::PendingReceiver<viz::mojom::LayeredWindowUpdater> receiver)
+       override;
+ 
+-#if BUILDFLAG(IS_LINUX)
++#if BUILDFLAG(IS_OZONE)
++#if BUILDFLAG(OZONE_PLATFORM_X11)
+   void DidCompleteSwapWithNewSize(const gfx::Size& size) override;
+-#endif
++#endif  // BUILDFLAG(OZONE_PLATFORM_X11)
++#endif  // BUILFFLAG(IS_OZONE)
+ 
+   CefRenderWidgetHostViewOSR* const view_;
+   std::unique_ptr<CefLayeredWindowUpdaterOSR> layered_window_updater_;
+diff --git a/tests/cefsimple/cefsimple_linux.cc b/tests/cefsimple/cefsimple_linux.cc
+index 0b3fe1c97..f4ff8ded6 100644
+--- a/tests/cefsimple/cefsimple_linux.cc
++++ b/tests/cefsimple/cefsimple_linux.cc
+@@ -37,10 +37,19 @@ int main(int argc, char* argv[]) {
+   // Provide CEF with command-line arguments.
+   CefMainArgs main_args(argc, argv);
+ 
++  // Parse command-line arguments for use in this method.
++  CefRefPtr<CefCommandLine> command_line = CefCommandLine::CreateCommandLine();
++  command_line->InitFromArgv(argc, argv);
++
++  // SimpleApp implements application-level callbacks for the browser process.
++  // It will create the first browser instance in OnContextInitialized() after
++  // CEF has initialized.
++  CefRefPtr<SimpleApp> app(new SimpleApp);
++
+   // CEF applications have multiple sub-processes (render, GPU, etc) that share
+   // the same executable. This function checks the command-line and, if this is
+   // a sub-process, executes the appropriate logic.
+-  int exit_code = CefExecuteProcess(main_args, nullptr, nullptr);
++  int exit_code = CefExecuteProcess(main_args, app, nullptr);
+   if (exit_code >= 0) {
+     // The sub-process has completed so return here.
+     return exit_code;
+@@ -53,10 +62,6 @@ int main(int argc, char* argv[]) {
+   XSetIOErrorHandler(XIOErrorHandlerImpl);
+ #endif
+ 
+-  // Parse command-line arguments for use in this method.
+-  CefRefPtr<CefCommandLine> command_line = CefCommandLine::CreateCommandLine();
+-  command_line->InitFromArgv(argc, argv);
+-
+   // Specify CEF global settings here.
+   CefSettings settings;
+ 
+@@ -72,11 +77,6 @@ int main(int argc, char* argv[]) {
+   settings.no_sandbox = true;
+ #endif
+ 
+-  // SimpleApp implements application-level callbacks for the browser process.
+-  // It will create the first browser instance in OnContextInitialized() after
+-  // CEF has initialized.
+-  CefRefPtr<SimpleApp> app(new SimpleApp);
+-
+   // Initialize the CEF browser process. May return false if initialization
+   // fails or if early exit is desired (for example, due to process singleton
+   // relaunch behavior).
+diff --git a/tests/cefsimple/simple_app.cc b/tests/cefsimple/simple_app.cc
+index 72556cf5a..38da67334 100644
+--- a/tests/cefsimple/simple_app.cc
++++ b/tests/cefsimple/simple_app.cc
+@@ -134,3 +134,28 @@ CefRefPtr<CefClient> SimpleApp::GetDefaultClient() {
+   // Called when a new browser window is created via the Chrome runtime UI.
+   return SimpleHandler::GetInstance();
+ }
++
++void SimpleApp::OnWebKitInitialized() {
++  CefMessageRouterConfig config;
++  message_router_ = CefMessageRouterRendererSide::Create(config);
++}
++
++void SimpleApp::OnContextCreated(CefRefPtr<CefBrowser> browser,
++                                 CefRefPtr<CefFrame> frame,
++                                 CefRefPtr<CefV8Context> context) {
++  message_router_->OnContextCreated(browser, frame, context);
++}
++
++void SimpleApp::OnContextReleased(CefRefPtr<CefBrowser> browser,
++                                  CefRefPtr<CefFrame> frame,
++                                  CefRefPtr<CefV8Context> context) {
++  message_router_->OnContextReleased(browser, frame, context);
++}
++
++bool SimpleApp::OnProcessMessageReceived(CefRefPtr<CefBrowser> browser,
++                                         CefRefPtr<CefFrame> frame,
++                                         CefProcessId source_process,
++                                         CefRefPtr<CefProcessMessage> message) {
++  return message_router_->OnProcessMessageReceived(browser, frame,
++                                                    source_process, message);
++}
+diff --git a/tests/cefsimple/simple_app.h b/tests/cefsimple/simple_app.h
+index 81afd54b2..92bfcf3d6 100644
+--- a/tests/cefsimple/simple_app.h
++++ b/tests/cefsimple/simple_app.h
+@@ -6,9 +6,10 @@
+ #define CEF_TESTS_CEFSIMPLE_SIMPLE_APP_H_
+ 
+ #include "include/cef_app.h"
++#include "include/wrapper/cef_message_router.h"
+ 
+ // Implement application-level callbacks for the browser process.
+-class SimpleApp : public CefApp, public CefBrowserProcessHandler {
++class SimpleApp : public CefApp, public CefBrowserProcessHandler, public CefRenderProcessHandler {
+  public:
+   SimpleApp();
+ 
+@@ -17,11 +18,31 @@ class SimpleApp : public CefApp, public CefBrowserProcessHandler {
+     return this;
+   }
+ 
++  CefRefPtr<CefRenderProcessHandler> GetRenderProcessHandler() override {
++    return this;
++  }
++
+   // CefBrowserProcessHandler methods:
+   void OnContextInitialized() override;
+   CefRefPtr<CefClient> GetDefaultClient() override;
+ 
++  // CefRenderProcessHandler methods.
++  void OnWebKitInitialized() override;
++  void OnContextCreated(CefRefPtr<CefBrowser> browser,
++                        CefRefPtr<CefFrame> frame,
++                        CefRefPtr<CefV8Context> context) override;
++  void OnContextReleased(CefRefPtr<CefBrowser> browser,
++                         CefRefPtr<CefFrame> frame,
++                         CefRefPtr<CefV8Context> context) override;
++  bool OnProcessMessageReceived(CefRefPtr<CefBrowser> browser,
++                                CefRefPtr<CefFrame> frame,
++                                CefProcessId source_process,
++                                CefRefPtr<CefProcessMessage> message) override;
++
+  private:
++
++  CefRefPtr<CefMessageRouterRendererSide> message_router_;
++
+   // Include the default reference counting implementation.
+   IMPLEMENT_REFCOUNTING(SimpleApp);
+ };

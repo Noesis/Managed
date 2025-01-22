@@ -86,11 +86,9 @@ namespace NoesisApp
             CefRuntime.Load();
         }
 
-        private static bool CefIsInitialized = false;
-
-        public static void StaticInitialize()
+        private static void StaticInitialize()
         {
-            if (!CefIsInitialized)
+            if (!CefRuntime.IsInitialized)
             {
                 // Start the secondary CEF process.
                 var cefMainArgs = new CefMainArgs(new string[] { "--enable-features=UseOzonePlatform", "--ozone-platform=headless", "--use-gl=egl" });
@@ -107,7 +105,7 @@ namespace NoesisApp
                 var executablePath = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
                 var cefSettings = new CefSettings
                 {
-                    BrowserSubprocessPath = System.IO.Path.Combine(executablePath, "cefsimple"),
+                    BrowserSubprocessPath = System.IO.Path.Combine(executablePath, CefRuntime.Platform == CefRuntimePlatform.Linux ? "cefsimple" : "cefclient"),
                     WindowlessRenderingEnabled = true,
                     MultiThreadedMessageLoop = false,
                     NoSandbox = true,
@@ -122,8 +120,6 @@ namespace NoesisApp
                 var completionCallback = new NoesisCompletionCallback();
                 var cookieManager = CefCookieManager.GetGlobal(completionCallback);
                 completionCallback.WaitOnUIThread();
-
-                CefIsInitialized = true;
             }
         }
 
@@ -844,25 +840,21 @@ namespace NoesisApp
                                  for( var i = 0; i < labels.length; i++ )
                                  {{
                                    if (labels[i].htmlFor == document.activeElement.id)
-                                   {{
-                                        label = labels[i].innerHTML;
-                                    }}
+                                     label = labels[i].innerHTML;
                                  }}
-                                 console.log(""Label: "" + label);
                                  var request = {{
-                                    ""id"": ""{guid}"",
-                                    ""content"": document.activeElement.value,
-                                    ""type"": document.activeElement.type,
-                                    ""label"": unescape(encodeURIComponent(label)),
-                                  }};
+                                    guid: ""{guid}"",
+                                    label: label,
+                                    type: document.activeElement.type,
+                                    value: document.activeElement.value
+                                 }};
                                  window.cefQuery({{
                                     request: JSON.stringify(request),
                                     persistent: false,
                                     onSuccess: function(response) {{}},
-                                    inFailure: function(error, message) {{}}
-                                 }});
-                                 console.log(""XHR sent"");";
-                var frame = browser.GetMainFrame();
+                                    onFailure: function(error_code, error_message) {{}}
+                                 }});";
+                var frame = browser.GetFocusedFrame();
                 frame.ExecuteJavaScript(code, "", 0);
                 _browser._virtualKeyboardRequestedArgs.InputScope = GetInputScope(inputMode);
                 lock (WebBrowser._virtualKeyboardRequests)
@@ -871,11 +863,6 @@ namespace NoesisApp
                 }
             }
         }
-
-        protected override void OnCursorChange(CefBrowser browser, IntPtr cursorHandle, CefCursorType type, CefCursorInfo customCursorInfo)
-        {
-
-        }
     }
 
     internal sealed class NoesisCefApp : CefApp
@@ -883,7 +870,7 @@ namespace NoesisApp
         protected override void OnBeforeCommandLineProcessing(string processType, CefCommandLine commandLine)
         {
         }
-    }
+        }
 
     internal sealed class NoesisLifeSpanHandler : CefLifeSpanHandler
     {
@@ -1097,7 +1084,7 @@ namespace NoesisApp
                 var c = new System.Net.Cookie(cookie.Name, cookie.Value, cookie.Path, cookie.Domain);
                 c.Secure = cookie.Secure;
                 c.HttpOnly = cookie.HttpOnly;
-                c.Expires = cookie.Expires.HasValue ? cookie.Expires.Value : DateTime.MaxValue;
+                c.Expires = new DateTime(cookie.Expires.HasValue ? cookie.Expires.Value.Ticks : DateTime.MaxValue.Ticks);
                 c.Expired = c.Expires < DateTime.Now;
                 _webResponse._cookies.Add(c);
                 delete = false;
@@ -1230,51 +1217,42 @@ namespace NoesisApp
             return _requestHandler;
         }
 
-        internal class NoesisRequest
+        protected override bool OnProcessMessageReceived(CefBrowser browser,
+                                CefFrame frame,
+                                CefProcessId source_process,
+                                CefProcessMessage message)
         {
-            public string id {  get; set; }
-            public string content { get; set; }
-            public string type { get; set; }
-            public string label { get; set; }
-        }
-
-        protected override bool OnProcessMessageReceived(CefBrowser browser, CefFrame frame, CefProcessId sourceProcess, CefProcessMessage message)
-        {
-            if (message.Name == "cefQueryMsg")
+            if (message.Name == "cefQueryMsg" && message.Arguments.Count > 2 && message.Arguments.GetValueType(2) == CefValueType.String)
             {
-                var arguments = message.Arguments;
-
-                const int paramsIndex = 2;
-                var type = arguments.GetValueType(paramsIndex);
-
-                if (type == CefValueType.String)
+                var text = message.Arguments.GetString(2);
+                if (text != null)
                 {
-                    var @string = arguments.GetString(paramsIndex);
-                    NoesisRequest req = JsonSerializer.Deserialize<NoesisRequest>(@string);
-
-                    WebBrowser b = null;
+                    var request = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(text);
+                    var guid = request["guid"].GetString();
+                    WebBrowser browser_ = null;
                     lock (WebBrowser._virtualKeyboardRequests)
                     {
-                        if (WebBrowser._virtualKeyboardRequests.TryGetValue(req.id, out b))
+                        if (WebBrowser._virtualKeyboardRequests.TryGetValue(guid, out browser_))
                         {
-                            WebBrowser._virtualKeyboardRequests.Remove(req.id);
+                            WebBrowser._virtualKeyboardRequests.Remove(guid);
                         }
                     }
 
-                    if (b != null)
+                    if (browser_ != null)
                     {
-                        if (req.type == "password")
+                        var label = HttpUtility.HtmlDecode(request["label"].GetString());
+                        var type = request["type"].GetString();
+                        var value = request["value"].GetString();
+                        if (type == "password")
                         {
-                            b._virtualKeyboardRequestedArgs.InputScope = InputScope.Password;
+                            browser_._virtualKeyboardRequestedArgs.InputScope = InputScope.Password;
                         }
-
-                        var label = HttpUtility.HtmlDecode(req.label);
-                        CefRuntime.PostTask(CefThreadId.UI, new NoesisDelegateTask(() => { b.RequestVirtualKeyboard(req.content, label); }));
+                        CefRuntime.PostTask(CefThreadId.UI, new NoesisDelegateTask(() => { browser_.RequestVirtualKeyboard(value, label); }));
                     }
+                    return true;
                 }
             }
-
-            return base.OnProcessMessageReceived(browser, frame, sourceProcess, message);
+            return false;
         }
     }
 
