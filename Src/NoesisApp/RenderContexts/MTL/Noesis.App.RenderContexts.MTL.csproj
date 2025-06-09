@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>xamarinios10;xamarinmac20</TargetFrameworks>
+    <TargetFrameworks>xamarinios10;xamarinmac20;net8.0-ios;net8.0-macos</TargetFrameworks>
     <Version>3.0.0</Version>
     <Authors>Noesis Technologies</Authors>
     <Description>NoesisGUI Apple Metal Render Context</Description>

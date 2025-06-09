@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using Android.App;
 using Android.Runtime;
 using Android.Views;
+using Android.OS;
 
 namespace NoesisApp
 {
@@ -42,6 +43,24 @@ namespace NoesisApp
             RequestWindowFeature(WindowFeatures.NoTitle);
             Window.SetFlags(WindowManagerFlags.Fullscreen, WindowManagerFlags.Fullscreen);
 
+#if NET8_0_OR_GREATER
+            if (OperatingSystem.IsAndroidVersionAtLeast(30))
+            {
+                #pragma warning disable CA1416
+                Window.SetDecorFitsSystemWindows(false);
+                IWindowInsetsController controller = Window.InsetsController;
+                if (controller != null)
+                {
+                    controller.Hide(WindowInsets.Type.SystemBars());
+                    controller.SystemBarsBehavior = (int)WindowInsetsControllerBehavior.ShowTransientBarsBySwipe;
+                }
+                #pragma warning restore CA1416
+            }
+            else
+            {
+                Window.SetFlags(WindowManagerFlags.Fullscreen, WindowManagerFlags.Fullscreen);
+            }
+#else
             View decorView = Window.DecorView;
             var uiOptions = (int)decorView.SystemUiVisibility;
             var newUiOptions = (int)uiOptions;
@@ -52,6 +71,7 @@ namespace NoesisApp
             newUiOptions |= (int)SystemUiFlags.ImmersiveSticky;
 
             decorView.SystemUiVisibility = (StatusBarVisibility)newUiOptions;
+#endif
         }
 
         public override bool OnKeyDown([GeneratedEnum] Keycode keyCode, KeyEvent e)

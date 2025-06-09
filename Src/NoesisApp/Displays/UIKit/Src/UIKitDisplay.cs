@@ -27,7 +27,7 @@ namespace NoesisApp
             foreach (UITouch touch in touches)
             {
                 CGPoint p = touch.LocationInView(null);
-                Display.OnTouchDown((int)(p.X * s), (int)(p.Y * s), (ulong)touch.Handle);
+                Display.OnTouchDown((int)(p.X * s), (int)(p.Y * s), (ulong)((IntPtr)touch.Handle).ToInt64());
             }
         }
 
@@ -37,7 +37,7 @@ namespace NoesisApp
             foreach (UITouch touch in touches)
             {
                 CGPoint p = touch.LocationInView(null);
-                Display.OnTouchMove((int)(p.X * s), (int)(p.Y * s), (ulong)touch.Handle);
+                Display.OnTouchMove((int)(p.X * s), (int)(p.Y * s), (ulong)((IntPtr)touch.Handle).ToInt64());
             }
         }
 
@@ -47,7 +47,7 @@ namespace NoesisApp
             foreach (UITouch touch in touches)
             {
                 CGPoint p = touch.LocationInView(null);
-                Display.OnTouchUp((int)(p.X * s), (int)(p.Y * s), (ulong)touch.Handle);
+                Display.OnTouchUp((int)(p.X * s), (int)(p.Y * s), (ulong)((IntPtr)touch.Handle).ToInt64());
             }
         }
 

@@ -88,6 +88,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr Extend_Adorner(IntPtr typeName);
 
   [DllImport(Library.Name)]
+  public static extern IntPtr Extend_AdornerDecorator(IntPtr typeName);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr Extend_Animatable(IntPtr typeName);
 
   [DllImport(Library.Name)]
@@ -2659,9 +2662,6 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr new_CompositeTransform3D();
-
-  [DllImport(Library.Name)]
-  public static extern IntPtr CompositeTransform3D_ConstructTransform3DMatrix(float jarg1, float jarg2, float jarg3, float jarg4, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, float jarg10, float jarg11, float jarg12);
 
   [DllImport(Library.Name)]
   public static extern IntPtr CompositeTransform3D_CenterXProperty_get();
@@ -5511,6 +5511,21 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr FrameworkElement_Resources_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
+  public static extern uint FrameworkElement_GetVisualChildrenCountHelper(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr FrameworkElement_GetVisualChildHelper(HandleRef jarg1, uint jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern void FrameworkElement_MeasureOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
+
+  [DllImport(Library.Name)]
+  public static extern void FrameworkElement_ArrangeOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
+
+  [DllImport(Library.Name)]
+  public static extern void FrameworkElement_SetResourceReferenceHelper(HandleRef jarg1, HandleRef jarg2, [MarshalAs(UnmanagedType.LPWStr)]string jarg3);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr FrameworkElement_FindTreeElement(HandleRef jarg1);
 
   [DllImport(Library.Name)]
@@ -6340,6 +6355,15 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr Panel_Children_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
+  public static extern uint Panel_GetVisualChildrenCountHelper(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Panel_GetVisualChildHelper(HandleRef jarg1, uint jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern void Panel_OnRenderHelper(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr new_ItemCollection(HandleRef jarg1);
 
   [DllImport(Library.Name)]
@@ -6605,6 +6629,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr ItemsControl_Items_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
+  public static extern void ItemsControl_MeasureOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
+
+  [DllImport(Library.Name)]
   public static extern int ItemsControl_Get_AlternationIndex(HandleRef jarg1);
 
   [DllImport(Library.Name)]
@@ -6720,6 +6747,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern void Adorner_SetAdornedElement(HandleRef jarg1, HandleRef jarg2);
 
   [DllImport(Library.Name)]
+  public static extern void Adorner_MeasureOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr new_AdornerLayer();
 
   [DllImport(Library.Name)]
@@ -6744,7 +6774,19 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr new_AdornerDecorator__SWIG_1();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr AdornerDecorator_GetAdornerLayer(HandleRef jarg1);
+  public static extern IntPtr AdornerDecorator_AdornerLayer_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern uint AdornerDecorator_GetVisualChildrenCountHelper(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr AdornerDecorator_GetVisualChildHelper(HandleRef jarg1, uint jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern void AdornerDecorator_MeasureOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
+
+  [DllImport(Library.Name)]
+  public static extern void AdornerDecorator_ArrangeOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
 
   [DllImport(Library.Name)]
   public static extern IntPtr ApplicationCommands_CancelPrint_get();
@@ -7402,6 +7444,15 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr Border_Padding_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
+  public static extern void Border_OnRenderHelper(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern void Border_MeasureOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
+
+  [DllImport(Library.Name)]
+  public static extern void Border_ArrangeOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr new_BulletDecorator();
 
   [DllImport(Library.Name)]
@@ -7418,6 +7469,21 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr BulletDecorator_Bullet_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern uint BulletDecorator_GetVisualChildrenCountHelper(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr BulletDecorator_GetVisualChildHelper(HandleRef jarg1, uint jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern void BulletDecorator_OnRenderHelper(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern void BulletDecorator_MeasureOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
+
+  [DllImport(Library.Name)]
+  public static extern void BulletDecorator_ArrangeOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
 
   [DllImport(Library.Name)]
   public static extern IntPtr new_Button();
@@ -7487,6 +7553,12 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr Canvas_TopProperty_get();
+
+  [DllImport(Library.Name)]
+  public static extern void Canvas_MeasureOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
+
+  [DllImport(Library.Name)]
+  public static extern void Canvas_ArrangeOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
 
   [DllImport(Library.Name)]
   public static extern IntPtr new_CheckBox();
@@ -7707,6 +7779,9 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr ComboBox_Placeholder_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void ComboBox_MeasureOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
 
   [DllImport(Library.Name)]
   public static extern void CanExecuteRoutedEventArgs_CanExecute_set(HandleRef jarg1, bool jarg2);
@@ -8058,6 +8133,12 @@ internal class NoesisGUI_PINVOKE {
   [DllImport(Library.Name)]
   [return: MarshalAs(UnmanagedType.U1)]
   public static extern bool DockPanel_LastChildFill_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void DockPanel_MeasureOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
+
+  [DllImport(Library.Name)]
+  public static extern void DockPanel_ArrangeOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
 
   [DllImport(Library.Name)]
   public static extern IntPtr Shape_FillProperty_get();
@@ -8570,6 +8651,12 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr Grid_RowDefinitions_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
+  public static extern void Grid_MeasureOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
+
+  [DllImport(Library.Name)]
+  public static extern void Grid_ArrangeOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr new_UniformGrid();
 
   [DllImport(Library.Name)]
@@ -8598,6 +8685,12 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern int UniformGrid_Rows_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void UniformGrid_MeasureOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
+
+  [DllImport(Library.Name)]
+  public static extern void UniformGrid_ArrangeOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
 
   [DllImport(Library.Name)]
   public static extern IntPtr new_GroupBox();
@@ -8677,6 +8770,15 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern int Image_StretchDirection_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void Image_OnRenderHelper(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern void Image_MeasureOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
+
+  [DllImport(Library.Name)]
+  public static extern void Image_ArrangeOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
 
   [DllImport(Library.Name)]
   [return: MarshalAs(UnmanagedType.U1)]
@@ -9285,6 +9387,12 @@ internal class NoesisGUI_PINVOKE {
   public static extern float Popup_VerticalOffset_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
+  public static extern void Popup_MeasureOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
+
+  [DllImport(Library.Name)]
+  public static extern void Popup_ArrangeOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr RangeBase_LargeChangeProperty_get();
 
   [DllImport(Library.Name)]
@@ -9469,9 +9577,6 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr new_ScrollContentPresenter();
 
   [DllImport(Library.Name)]
-  public static extern IntPtr ScrollContentPresenter_GetAdornerLayer(HandleRef jarg1);
-
-  [DllImport(Library.Name)]
   public static extern void ScrollContentPresenter_LineLeft(HandleRef jarg1);
 
   [DllImport(Library.Name)]
@@ -9530,6 +9635,9 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr ScrollContentPresenter_CanContentScrollProperty_get();
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr ScrollContentPresenter_AdornerLayer_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern void ScrollContentPresenter_CanContentScroll_set(HandleRef jarg1, bool jarg2);
@@ -9851,6 +9959,12 @@ internal class NoesisGUI_PINVOKE {
   public static extern float ScrollViewer_ViewportHeight_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
+  public static extern void ScrollViewer_MeasureOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
+
+  [DllImport(Library.Name)]
+  public static extern void ScrollViewer_ArrangeOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr new_Separator();
 
   [DllImport(Library.Name)]
@@ -10115,6 +10229,12 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr StackPanel_ScrollOwner_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
+  public static extern void StackPanel_MeasureOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
+
+  [DllImport(Library.Name)]
+  public static extern void StackPanel_ArrangeOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr VirtualizationCacheLength_GetStaticType();
 
   [DllImport(Library.Name)]
@@ -10311,6 +10431,12 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr VirtualizingStackPanel_ScrollOwner_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
+  public static extern void VirtualizingStackPanel_MeasureOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
+
+  [DllImport(Library.Name)]
+  public static extern void VirtualizingStackPanel_ArrangeOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr new_StatusBar();
 
   [DllImport(Library.Name)]
@@ -10368,6 +10494,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern int TabControl_TabStripPlacement_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
+  public static extern void TabControl_MeasureOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr new_TabItem();
 
   [DllImport(Library.Name)]
@@ -10388,6 +10517,12 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr new_TabPanel();
+
+  [DllImport(Library.Name)]
+  public static extern void TabPanel_MeasureOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
+
+  [DllImport(Library.Name)]
+  public static extern void TabPanel_ArrangeOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
 
   [DllImport(Library.Name)]
   public static extern IntPtr new_RadioButton();
@@ -10644,6 +10779,21 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr TextBlock_FormattedText_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
+  public static extern uint TextBlock_GetVisualChildrenCountHelper(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr TextBlock_GetVisualChildHelper(HandleRef jarg1, uint jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern void TextBlock_OnRenderHelper(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern void TextBlock_MeasureOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
+
+  [DllImport(Library.Name)]
+  public static extern void TextBlock_ArrangeOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr TextBlock_ToStringHelper(HandleRef jarg1);
 
   [DllImport(Library.Name)]
@@ -10774,6 +10924,9 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern IntPtr TextBox_Placeholder_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void TextBox_MeasureOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
 
   [DllImport(Library.Name)]
   [return: MarshalAs(UnmanagedType.U1)]
@@ -11003,6 +11156,12 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr TickBar_Ticks_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
+  public static extern void TickBar_OnRenderHelper(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern void TickBar_MeasureOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr new_ToolBar();
 
   [DllImport(Library.Name)]
@@ -11099,7 +11258,25 @@ internal class NoesisGUI_PINVOKE {
   public static extern float ToolBarOverflowPanel_WrapWidth_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
+  public static extern void ToolBarOverflowPanel_MeasureOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
+
+  [DllImport(Library.Name)]
+  public static extern void ToolBarOverflowPanel_ArrangeOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr new_ToolBarPanel();
+
+  [DllImport(Library.Name)]
+  public static extern uint ToolBarPanel_GetVisualChildrenCountHelper(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr ToolBarPanel_GetVisualChildHelper(HandleRef jarg1, uint jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern void ToolBarPanel_MeasureOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
+
+  [DllImport(Library.Name)]
+  public static extern void ToolBarPanel_ArrangeOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
 
   [DllImport(Library.Name)]
   public static extern IntPtr new_ToolBarTray();
@@ -11468,6 +11645,18 @@ internal class NoesisGUI_PINVOKE {
   public static extern float Track_ViewportSize_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
+  public static extern uint Track_GetVisualChildrenCountHelper(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Track_GetVisualChildHelper(HandleRef jarg1, uint jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern void Track_MeasureOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
+
+  [DllImport(Library.Name)]
+  public static extern void Track_ArrangeOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr new_TreeView();
 
   [DllImport(Library.Name)]
@@ -11555,6 +11744,18 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr Viewbox_Child_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
+  public static extern uint Viewbox_GetVisualChildrenCountHelper(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr Viewbox_GetVisualChildHelper(HandleRef jarg1, uint jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern void Viewbox_MeasureOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
+
+  [DllImport(Library.Name)]
+  public static extern void Viewbox_ArrangeOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr new_VisualBrush();
 
   [DllImport(Library.Name)]
@@ -11595,6 +11796,12 @@ internal class NoesisGUI_PINVOKE {
 
   [DllImport(Library.Name)]
   public static extern int WrapPanel_Orientation_get(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern void WrapPanel_MeasureOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
+
+  [DllImport(Library.Name)]
+  public static extern void WrapPanel_ArrangeOverrideHelper(HandleRef jarg1, ref Size jarg2, ref Size jarg3);
 
   [DllImport(Library.Name)]
   public static extern int Unbox_HandoffBehavior(IntPtr jarg1);
@@ -13604,10 +13811,22 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr new_RiveInput();
 
   [DllImport(Library.Name)]
+  public static extern void RiveInput_InputPathProperty_set(HandleRef jarg1);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr RiveInput_InputPathProperty_get();
+
+  [DllImport(Library.Name)]
   public static extern IntPtr RiveInput_InputNameProperty_get();
 
   [DllImport(Library.Name)]
   public static extern IntPtr RiveInput_InputValueProperty_get();
+
+  [DllImport(Library.Name)]
+  public static extern void RiveInput_InputPath_set(HandleRef jarg1, [MarshalAs(UnmanagedType.LPWStr)]string jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr RiveInput_InputPath_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern void RiveInput_InputName_set(HandleRef jarg1, [MarshalAs(UnmanagedType.LPWStr)]string jarg2);
@@ -13652,7 +13871,7 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr new_RiveControl();
 
   [DllImport(Library.Name)]
-  public static extern void RiveControl_SetInputValue(HandleRef jarg1, [MarshalAs(UnmanagedType.LPWStr)]string jarg2, HandleRef jarg3);
+  public static extern void RiveControl_SetInputValue(HandleRef jarg1, [MarshalAs(UnmanagedType.LPWStr)]string jarg2, [MarshalAs(UnmanagedType.LPWStr)]string jarg3, HandleRef jarg4);
 
   [DllImport(Library.Name)]
   public static extern void RiveControl_FireInputTrigger(HandleRef jarg1, [MarshalAs(UnmanagedType.LPWStr)]string jarg2);

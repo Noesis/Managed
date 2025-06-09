@@ -12,6 +12,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -157,6 +158,19 @@ public class Popup : FrameworkElement {
 
   #endregion
 
+  protected override Size MeasureOverride(Size availableSize) {
+    Size desiredSize = Size.Empty;
+    MeasureOverrideHelper(availableSize, ref desiredSize);
+    return desiredSize;
+  }
+
+  protected override Size ArrangeOverride(Size finalSize) {
+    Size renderSize = Size.Empty;
+    ArrangeOverrideHelper(finalSize, ref renderSize);
+    return renderSize;
+  }
+
+  [DynamicDependency("Extend")]
   public Popup() {
   }
 
@@ -362,6 +376,14 @@ public class Popup : FrameworkElement {
       float ret = NoesisGUI_PINVOKE.Popup_VerticalOffset_get(swigCPtr);
       return ret;
     } 
+  }
+
+  private void MeasureOverrideHelper(Size availableSize, ref Size desiredSize) {
+    NoesisGUI_PINVOKE.Popup_MeasureOverrideHelper(swigCPtr, ref availableSize, ref desiredSize);
+  }
+
+  private void ArrangeOverrideHelper(Size finalSize, ref Size renderSize) {
+    NoesisGUI_PINVOKE.Popup_ArrangeOverrideHelper(swigCPtr, ref finalSize, ref renderSize);
   }
 
   internal new static IntPtr Extend(string typeName) {

@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-public class Rectangle : Shape {
+public sealed class Rectangle : Shape {
   internal new static Rectangle CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
     return new Rectangle(cPtr, cMemoryOwn);
   }
@@ -27,7 +27,7 @@ public class Rectangle : Shape {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
-  internal protected override Geometry DefiningGeometry {
+  protected override Geometry DefiningGeometry {
     get { return new RectangleGeometry(); }
   }
 

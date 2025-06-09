@@ -11,6 +11,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -27,6 +28,7 @@ public class Decorator : FrameworkElement {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
+  [DynamicDependency("Extend")]
   public Decorator(bool logicalChild) : this(NoesisGUI_PINVOKE.new_Decorator__SWIG_0(logicalChild), true) {
   }
 

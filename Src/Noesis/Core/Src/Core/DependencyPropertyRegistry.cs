@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Reflection;
 using System.Globalization;
 using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -63,6 +64,7 @@ namespace Noesis
             }
         }
 
+        [UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Tested working if the type is registered.")]
         private static void RestoreDependencyPropertyOverrides(Type forType)
         {
             List<MetadataEntry> metadatas;

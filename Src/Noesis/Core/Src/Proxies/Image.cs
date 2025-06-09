@@ -11,6 +11,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -27,6 +28,23 @@ public class Image : FrameworkElement {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
+  protected override void OnRender(DrawingContext context) {
+    OnRenderHelper(context);
+  }
+
+  protected override Size MeasureOverride(Size availableSize) {
+    Size desiredSize = Size.Empty;
+    MeasureOverrideHelper(availableSize, ref desiredSize);
+    return desiredSize;
+  }
+
+  protected override Size ArrangeOverride(Size finalSize) {
+    Size renderSize = Size.Empty;
+    ArrangeOverrideHelper(finalSize, ref renderSize);
+    return renderSize;
+  }
+
+  [DynamicDependency("Extend")]
   public Image() {
   }
 
@@ -89,6 +107,18 @@ public class Image : FrameworkElement {
       StretchDirection ret = (StretchDirection)NoesisGUI_PINVOKE.Image_StretchDirection_get(swigCPtr);
       return ret;
     } 
+  }
+
+  private void OnRenderHelper(DrawingContext context) {
+    NoesisGUI_PINVOKE.Image_OnRenderHelper(swigCPtr, DrawingContext.getCPtr(context));
+  }
+
+  private void MeasureOverrideHelper(Size availableSize, ref Size desiredSize) {
+    NoesisGUI_PINVOKE.Image_MeasureOverrideHelper(swigCPtr, ref availableSize, ref desiredSize);
+  }
+
+  private void ArrangeOverrideHelper(Size finalSize, ref Size renderSize) {
+    NoesisGUI_PINVOKE.Image_ArrangeOverrideHelper(swigCPtr, ref finalSize, ref renderSize);
   }
 
   internal new static IntPtr Extend(string typeName) {

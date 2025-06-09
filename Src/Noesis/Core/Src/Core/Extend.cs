@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Input;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -760,6 +761,7 @@ namespace Noesis
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(AdornerDecorator), AdornerDecorator.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Animatable), Animatable.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ArcSegment), ArcSegment.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(NativeValueConverter), NativeValueConverter.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(BindingBase), null));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(BindingExpressionBase), BindingExpressionBase.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(BindingExpression), BindingExpression.CreateProxy));
@@ -1305,12 +1307,14 @@ namespace Noesis
                 else
                 #endif
                 if (typeof(Noesis.IScrollInfo).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()) &&
-                    typeof(Noesis.VirtualizingPanel).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
+                    typeof(Noesis.VirtualizingPanel).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()) &&
+                    !typeof(Noesis.VirtualizingStackPanel).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
                 {
                     nativeType = Noesis.ExtendVirtualScrollInfo.Extend(TypeFullName(type));
                 }
                 else if (typeof(Noesis.IScrollInfo).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()) &&
-                    typeof(Noesis.Panel).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
+                    typeof(Noesis.Panel).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()) &&
+                    !typeof(Noesis.StackPanel).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
                 {
                     nativeType = Noesis.ExtendScrollInfo.Extend(TypeFullName(type));
                 }
@@ -1409,6 +1413,7 @@ namespace Noesis
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
+        [UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Tested working if the type is registered.")]
         private static PropertyInfo[] GetPublicProperties(Type type)
         {
             #if NETFX_CORE
@@ -1419,6 +1424,7 @@ namespace Noesis
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
+        [UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Tested working if the type is registered.")]
         private static EventInfo[] GetPublicEvents(Type type)
         {
             #if NETFX_CORE
@@ -1438,6 +1444,7 @@ namespace Noesis
         #endif
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
+        [UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Tested working if the type is registered.")]
         private static PropertyInfo FindListIndexer(Type type)
         {
             #if NETFX_CORE
@@ -1450,6 +1457,7 @@ namespace Noesis
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
+        [UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Tested working if the type is registered.")]
         private static PropertyInfo FindDictIndexer(Type type)
         {
             #if NETFX_CORE
@@ -1462,9 +1470,31 @@ namespace Noesis
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
+        [UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "Tested working if the type is registered.")]
+        [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Tested working if the type is registered.")]
         private static Func<object> TypeCreator(Type type)
         {
-#if !ENABLE_IL2CPP && !UNITY_IOS
+#if NET8_0_OR_GREATER
+            if (!type.GetTypeInfo().IsValueType && System.Runtime.CompilerServices.RuntimeFeature.IsDynamicCodeCompiled)
+            {
+                #if NETFX_CORE
+                var ctor = type.GetTypeInfo().DeclaredConstructors.Where(c =>
+                    c.GetParameters().Count() == 0 && c.IsStatic == false).FirstOrDefault();
+                #else
+                var ctor = type.GetTypeInfo().GetConstructor(Type.EmptyTypes);
+                #endif
+
+                if (ctor != null && !type.GetTypeInfo().IsAbstract)
+                {
+                    return System.Linq.Expressions.Expression.Lambda<Func<object>>(
+                        System.Linq.Expressions.Expression.New(ctor)).Compile();
+                }
+                else
+                {
+                    return null;
+                }
+            }
+#elif !ENABLE_IL2CPP && !UNITY_IOS
             if (!type.GetTypeInfo().IsValueType && Platform.ID != PlatformID.iPhone)
             {
                 #if NETFX_CORE
@@ -1487,7 +1517,17 @@ namespace Noesis
             else
 #endif
             {
-                return () => Activator.CreateInstance(type);
+                return () =>
+                {
+                    try
+                    {
+                        return Activator.CreateInstance(type);
+                    }
+                    catch (System.MissingMethodException e)
+                    {
+                        throw new Exception($"{e.Message} Has it been registered using Noesis.GUI.RegisterType?", e);
+                    }
+                };
             }
         }
 
@@ -1510,9 +1550,10 @@ namespace Noesis
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-        private static bool IsOverride(MethodInfo m)
+        private static bool IsOverride(MethodInfo m, params Type[] skipTypes)
         {
-            return m != null && m.GetBaseDefinition().DeclaringType != m.DeclaringType;
+            return m != null && m.GetBaseDefinition().DeclaringType != m.DeclaringType &&
+                !skipTypes.Contains(m.DeclaringType);
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1533,6 +1574,7 @@ namespace Noesis
         #endif
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
+        [UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Tested working if the type is registered.")]
         public static MethodInfo FindMethod(Type type, string name, Type[] types)
         {
             #if NETFX_CORE
@@ -1544,6 +1586,7 @@ namespace Noesis
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
+        [UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Tested working if the type is registered.")]
         public static PropertyInfo FindProperty(Type type, string name)
         {
             #if NETFX_CORE
@@ -1592,27 +1635,38 @@ namespace Noesis
             ExtendTypeOverrides overrides = ExtendTypeOverrides.None;
 
             MethodInfo toStringMethod = FindMethod(type, "ToString", _typeArgs0);
-            if (IsOverride(toStringMethod)) overrides |= ExtendTypeOverrides.Object_ToString;
+            if (IsOverride(toStringMethod, typeof(ContentControl), typeof(TextBlock)))
+                overrides |= ExtendTypeOverrides.Object_ToString;
 
             _typeArgs1[0] = typeof(object);
             MethodInfo equalsMethod = FindMethod(type, "Equals", _typeArgs1);
-            if (IsOverride(equalsMethod)) overrides |= ExtendTypeOverrides.Object_Equals;
+            if (IsOverride(equalsMethod, typeof(BaseComponent)))
+                overrides |= ExtendTypeOverrides.Object_Equals;
 
             if (typeof(Visual).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
             {
                 PropertyInfo childrenCountProp = FindProperty(type, "VisualChildrenCount");
-                if (IsOverride(childrenCountProp?.GetMethod)) overrides |= ExtendTypeOverrides.Visual_GetChildrenCount;
+                if (IsOverride(childrenCountProp?.GetMethod,
+                    typeof(AdornerDecorator), typeof(BulletDecorator), typeof(FrameworkElement),
+                    typeof(Panel), typeof(TextBlock), typeof(ToolBarPanel), typeof(Track), typeof(Viewbox)))
+                    overrides |= ExtendTypeOverrides.Visual_GetChildrenCount;
 
                 _typeArgs1[0] = typeof(int);
                 MethodInfo getChildMethod = FindMethod(type, "GetVisualChild", _typeArgs1);
-                if (IsOverride(getChildMethod)) overrides |= ExtendTypeOverrides.Visual_GetChild;
+                if (IsOverride(getChildMethod,
+                    typeof(AdornerDecorator), typeof(BulletDecorator), typeof(FrameworkElement),
+                    typeof(Panel), typeof(TextBlock), typeof(ToolBarPanel), typeof(Track), typeof(Viewbox)))
+                    overrides |= ExtendTypeOverrides.Visual_GetChild;
             }
 
             if (typeof(UIElement).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
             {
                 _typeArgs1[0] = typeof(DrawingContext);
                 MethodInfo renderMethod = FindMethod(type, "OnRender", _typeArgs1);
-                if (IsOverride(renderMethod)) overrides |= ExtendTypeOverrides.UIElement_OnRender;
+                if (IsOverride(renderMethod,
+                    typeof(Border), typeof(BulletDecorator), typeof(Image),
+                    typeof(Panel), typeof(TextBlock), typeof(TickBar)))
+                    overrides |= ExtendTypeOverrides.UIElement_OnRender;
             }
 
             if (typeof(FrameworkElement).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
@@ -1627,10 +1681,23 @@ namespace Noesis
 
                 _typeArgs1[0] = typeof(Size);
                 MethodInfo measureMethod = FindMethod(type, "MeasureOverride", _typeArgs1);
-                if (IsOverride(measureMethod)) overrides |= ExtendTypeOverrides.FrameworkElement_Measure;
+                if (IsOverride(measureMethod,
+                    typeof(Adorner), typeof(AdornerDecorator), typeof(Border), typeof(BulletDecorator),
+                    typeof(Canvas), typeof(ComboBox), typeof(DockPanel), typeof(Grid), typeof(Image),
+                    typeof(ItemsControl), typeof(Popup), typeof(ScrollViewer), typeof(StackPanel),
+                    typeof(TabControl), typeof(TabPanel), typeof(TextBlock), typeof(TickBar),
+                    typeof(ToolBarOverflowPanel), typeof(ToolBarPanel), typeof(Track), typeof(UniformGrid),
+                    typeof(Viewbox), typeof(VirtualizingStackPanel), typeof(WrapPanel)))
+                    overrides |= ExtendTypeOverrides.FrameworkElement_Measure;
 
                 MethodInfo arrangeMethod = FindMethod(type, "ArrangeOverride", _typeArgs1);
-                if (IsOverride(arrangeMethod)) overrides |= ExtendTypeOverrides.FrameworkElement_Arrange;
+                if (IsOverride(arrangeMethod,
+                    typeof(AdornerDecorator), typeof(Border), typeof(BulletDecorator),
+                    typeof(Canvas), typeof(DockPanel), typeof(Grid), typeof(Image), typeof(Popup),
+                    typeof(ScrollViewer), typeof(StackPanel), typeof(TabPanel), typeof(TextBlock),
+                    typeof(ToolBarOverflowPanel), typeof(ToolBarPanel), typeof(Track), typeof(UniformGrid),
+                    typeof(Viewbox), typeof(VirtualizingStackPanel), typeof(WrapPanel)))
+                    overrides |= ExtendTypeOverrides.FrameworkElement_Arrange;
 
                 MethodInfo templateMethod = FindMethod(type, "OnApplyTemplate", _typeArgs0);
                 if (IsOverride(templateMethod)) overrides |= ExtendTypeOverrides.FrameworkElement_ApplyTemplate;
@@ -1639,11 +1706,19 @@ namespace Noesis
             if (typeof(ItemsControl).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
             {
                 MethodInfo getContainerMethod = FindMethod(type, "GetContainerForItemOverride", _typeArgs0);
-                if (IsOverride(getContainerMethod)) overrides |= ExtendTypeOverrides.ItemsControl_GetContainer;
+                if (IsOverride(getContainerMethod,
+                    typeof(ComboBox), typeof(ContextMenu), typeof(ListBox), typeof(ListView),
+                    typeof(MenuBase), typeof(MenuItem), typeof(StatusBar), typeof(TabControl),
+                    typeof(TreeView), typeof(TreeViewItem)))
+                    overrides |= ExtendTypeOverrides.ItemsControl_GetContainer;
 
                 _typeArgs1[0] = typeof(object);
                 MethodInfo isContainerMethod = FindMethod(type, "IsItemItsOwnContainerOverride", _typeArgs1);
-                if (IsOverride(isContainerMethod)) overrides |= ExtendTypeOverrides.ItemsControl_IsContainer;
+                if (IsOverride(isContainerMethod,
+                    typeof(ComboBox), typeof(ContextMenu), typeof(ListBox), typeof(ListView),
+                    typeof(MenuBase), typeof(MenuItem), typeof(StatusBar), typeof(TabControl),
+                    typeof(TreeView), typeof(TreeViewItem)))
+                    overrides |= ExtendTypeOverrides.ItemsControl_IsContainer;
             }
 
             if (typeof(Adorner).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
@@ -1743,6 +1818,7 @@ namespace Noesis
             return p.GetCustomAttribute<System.ComponentModel.TypeConverterAttribute>() != null;
         }
 
+        [UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Tested working if the type is registered.")]
         private static bool IsDependencyProperty(Type type, PropertyInfo prop)
         {
             string name = prop.Name + "Property";
@@ -1770,7 +1846,9 @@ namespace Noesis
 
             if (propsLen > 0)
             {
-                #if ENABLE_IL2CPP || UNITY_IOS
+                #if NET8_0_OR_GREATER
+                bool usePropertyInfo = type.GetTypeInfo().IsValueType || !System.Runtime.CompilerServices.RuntimeFeature.IsDynamicCodeCompiled;
+                #elif ENABLE_IL2CPP || UNITY_IOS
                 bool usePropertyInfo = true;
                 #else
                 bool usePropertyInfo = type.GetTypeInfo().IsValueType || Platform.ID == PlatformID.iPhone;
@@ -1827,7 +1905,12 @@ namespace Noesis
         private static IntPtr CreateNativeEnumsData(Type type, out int numEnums)
         {
             var names = Enum.GetNames(type);
+
+#if NET8_0_OR_GREATER
+            var values = Enum.GetValuesAsUnderlyingType(type);
+#else
             var values = Enum.GetValues(type);
+#endif
 
             numEnums = values.Length;
 
@@ -1889,6 +1972,7 @@ namespace Noesis
             }
         }
 
+        [UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Tested working if the type is registered.")]
         private static bool HasDependencyProperties(Type type)
         {
             #if NETFX_CORE
@@ -1912,6 +1996,7 @@ namespace Noesis
             return false;
         }
 
+        [UnconditionalSuppressMessage("Trimming", "IL2059", Justification = "Tested working if the type is registered.")]
         private static void RunClassConstructor(Type type)
         {
             // Ensure that static constructor is executed, so dependency properties are correctly
@@ -1952,6 +2037,7 @@ namespace Noesis
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
+        [UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Tested working if the type is registered.")]
         private static MethodInfo GetExtendMethod(Type type)
         {
             #if NETFX_CORE
@@ -2059,6 +2145,8 @@ namespace Noesis
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
+        [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Tested working if the type is registered.")]
+        [UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "Tested working if the type is registered.")]
         public static Type FindType(string name)
         {
             // First, look for in the currently executing assembly and in Mscorlib.dll
@@ -2138,24 +2226,18 @@ namespace Noesis
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-        private delegate int Callback_VisualChildrenCount(IntPtr cPtr,
-            Visual.ChildrenCountBaseCallback callback);
+        private delegate int Callback_VisualChildrenCount(IntPtr cPtr);
         private static Callback_VisualChildrenCount _visualChildrenCount = VisualChildrenCount;
 
         [MonoPInvokeCallback(typeof(Callback_VisualChildrenCount))]
-        private static int VisualChildrenCount(IntPtr cPtr,
-            Visual.ChildrenCountBaseCallback callback)
+        private static int VisualChildrenCount(IntPtr cPtr)
         {
             try
             {
                 Visual visual = (Visual)GetExtendInstance(cPtr);
                 if (visual != null)
                 {
-                    visual.ChildrenCountBase = callback;
-                    int count = visual.VisualChildrenCount;
-                    visual.ChildrenCountBase = null;
-
-                    return count;
+                    return visual.InternalVisualChildrenCount;
                 }
             }
             catch (Exception e)
@@ -2167,25 +2249,18 @@ namespace Noesis
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-        private delegate IntPtr Callback_VisualGetChild(IntPtr cPtr, int index,
-            Visual.ChildrenCountBaseCallback countCallback, Visual.GetChildBaseCallback childCallback);
+        private delegate IntPtr Callback_VisualGetChild(IntPtr cPtr, int index);
         private static Callback_VisualGetChild _visualGetChild  = VisualGetChild;
 
         [MonoPInvokeCallback(typeof(Callback_VisualGetChild))]
-        private static IntPtr VisualGetChild(IntPtr cPtr, int index,
-            Visual.ChildrenCountBaseCallback countCallback, Visual.GetChildBaseCallback childCallback)
+        private static IntPtr VisualGetChild(IntPtr cPtr, int index)
         {
             try
             {
                 Visual visual = (Visual)GetExtendInstance(cPtr);
                 if (visual != null)
                 {
-                    visual.ChildrenCountBase = countCallback;
-                    visual.GetChildBase = childCallback;
-                    Visual child = visual.GetVisualChild(index);
-                    visual.GetChildBase = null;
-                    visual.ChildrenCountBase = null;
-
+                    Visual child = visual.InternalGetVisualChild(index);
                     HandleRef childPtr = GetInstanceHandle(child);
                     BaseComponent.AddReference(childPtr.Handle); // released by native bindings
                     return childPtr.Handle;
@@ -2200,22 +2275,19 @@ namespace Noesis
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-        private delegate void Callback_UIElementRender(IntPtr cPtr, IntPtr contextType, IntPtr context,
-            UIElement.RenderBaseCallback callback);
+        private delegate void Callback_UIElementRender(IntPtr cPtr, IntPtr contextType, IntPtr context);
         private static Callback_UIElementRender _uiElementRender = UIElementRender;
 
         [MonoPInvokeCallback(typeof(Callback_UIElementRender))]
-        private static void UIElementRender(IntPtr cPtr, IntPtr contextType, IntPtr context,
-            UIElement.RenderBaseCallback callback)
+        private static void UIElementRender(IntPtr cPtr, IntPtr contextType, IntPtr contextPtr)
         {
             try
             {
                 UIElement element = (UIElement)GetExtendInstance(cPtr);
                 if (element != null)
                 {
-                    element.OnRenderBase = callback;
-                    element.OnRender((DrawingContext)GetProxy(contextType, context, false));
-                    element.OnRenderBase = null;
+                    DrawingContext context = (DrawingContext)GetProxy(contextType, contextPtr, false);
+                    element.InternalOnRender(context);
                 }
             }
             catch (Exception e)
@@ -2276,22 +2348,18 @@ namespace Noesis
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
         private delegate void Callback_FrameworkElementMeasure(IntPtr cPtr,
-            ref Size availableSize, ref Size desiredSize, FrameworkElement.LayoutBaseCallback callback);
+            ref Size availableSize, ref Size desiredSize);
         private static Callback_FrameworkElementMeasure _frameworkElementMeasure = FrameworkElementMeasure;
 
         [MonoPInvokeCallback(typeof(Callback_FrameworkElementMeasure))]
-        private static void FrameworkElementMeasure(IntPtr cPtr,
-            ref Size availableSize, ref Size desiredSize, FrameworkElement.LayoutBaseCallback callback)
+        private static void FrameworkElementMeasure(IntPtr cPtr, ref Size availableSize, ref Size desiredSize)
         {
             try
             {
                 FrameworkElement element = (FrameworkElement)GetExtendInstance(cPtr);
                 if (element != null)
                 {
-                    element.MeasureBase = callback;
-                    desiredSize = element.MeasureOverride(availableSize);
-                    element.MeasureBase = null;
-
+                    desiredSize = element.InternalMeasureOverride(availableSize);
                     if (desiredSize.IsEmpty) desiredSize = new Size(0, 0);
                 }
             }
@@ -2303,22 +2371,18 @@ namespace Noesis
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
         private delegate void Callback_FrameworkElementArrange(IntPtr cPtr,
-            ref Size finalSize, ref Size renderSize, FrameworkElement.LayoutBaseCallback callback);
+            ref Size finalSize, ref Size renderSize);
         private static Callback_FrameworkElementArrange _frameworkElementArrange = FrameworkElementArrange;
 
         [MonoPInvokeCallback(typeof(Callback_FrameworkElementArrange))]
-        private static void FrameworkElementArrange(IntPtr cPtr,
-            ref Size finalSize, ref Size renderSize, FrameworkElement.LayoutBaseCallback callback)
+        private static void FrameworkElementArrange(IntPtr cPtr, ref Size finalSize, ref Size renderSize)
         {
             try
             {
                 FrameworkElement element = (FrameworkElement)GetExtendInstance(cPtr);
                 if (element != null)
                 {
-                    element.ArrangeBase = callback;
-                    renderSize = element.ArrangeOverride(finalSize);
-                    element.ArrangeBase = callback;
-
+                    renderSize = element.InternalArrangeOverride(finalSize);
                     if (renderSize.IsEmpty) renderSize = new Size(0, 0);
                 }
             }
@@ -2350,23 +2414,18 @@ namespace Noesis
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-        private delegate IntPtr Callback_ItemsControlGetContainer(IntPtr cPtr,
-            ItemsControl.GetContainerForItemBaseCallback callback);
+        private delegate IntPtr Callback_ItemsControlGetContainer(IntPtr cPtr);
         private static Callback_ItemsControlGetContainer _itemsControlGetContainer = ItemsControlGetContainer;
 
         [MonoPInvokeCallback(typeof(Callback_ItemsControlGetContainer))]
-        private static IntPtr ItemsControlGetContainer(IntPtr cPtr,
-            ItemsControl.GetContainerForItemBaseCallback callback)
+        private static IntPtr ItemsControlGetContainer(IntPtr cPtr)
         {
             try
             {
                 ItemsControl itemsControl = (ItemsControl)GetExtendInstance(cPtr);
                 if (itemsControl != null)
                 {
-                    itemsControl.GetContainerForItemBase = callback;
-                    DependencyObject container = itemsControl.GetContainerForItemOverride();
-                    itemsControl.GetContainerForItemBase = null;
-
+                    DependencyObject container = itemsControl.InternalGetContainerForItemOverride();
                     HandleRef containerPtr = GetInstanceHandle(container);
                     BaseComponent.AddReference(containerPtr.Handle); // released by native bindings
                     return containerPtr.Handle;
@@ -2381,24 +2440,18 @@ namespace Noesis
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-        private delegate bool Callback_ItemsControlIsContainer(IntPtr cPtr, IntPtr itemTypePtr,
-            IntPtr itemPtr, ItemsControl.IsItemItsOwnContainerBaseCallback callback);
+        private delegate bool Callback_ItemsControlIsContainer(IntPtr cPtr, IntPtr itemTypePtr, IntPtr itemPtr);
         private static Callback_ItemsControlIsContainer _itemsControlIsContainer = ItemsControlIsContainer;
 
         [MonoPInvokeCallback(typeof(Callback_ItemsControlIsContainer))]
-        private static bool ItemsControlIsContainer(IntPtr cPtr, IntPtr itemTypePtr, IntPtr itemPtr,
-            ItemsControl.IsItemItsOwnContainerBaseCallback callback)
+        private static bool ItemsControlIsContainer(IntPtr cPtr, IntPtr itemTypePtr, IntPtr itemPtr)
         {
             try
             {
                 ItemsControl itemsControl = (ItemsControl)GetExtendInstance(cPtr);
                 if (itemsControl != null)
                 {
-                    itemsControl.IsItemItsOwnContainerBase = callback;
-                    bool isContainer = itemsControl.IsItemItsOwnContainerOverride(GetProxy(itemTypePtr, itemPtr, false));
-                    itemsControl.IsItemItsOwnContainerBase = null;
-
-                    return isContainer;
+                    return itemsControl.InternalIsItemItsOwnContainerOverride(GetProxy(itemTypePtr, itemPtr, false));
                 }
             }
             catch (Exception e)
@@ -2465,7 +2518,7 @@ namespace Noesis
             try
             {
                 var shape = (Shape)GetExtendInstance(cPtr);
-                Geometry geometry = shape.DefiningGeometry;
+                Geometry geometry = shape.InternalDefiningGeometry;
                 HandleRef geometryPtr = GetInstanceHandle(geometry);
                 return geometryPtr.Handle;
             }

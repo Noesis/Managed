@@ -1283,7 +1283,7 @@ namespace Noesis
             {
                 throw new ArgumentNullException("texture");
             }
-            if (data == null)
+            if (data == IntPtr.Zero)
             {
                 throw new ArgumentNullException("data");
             }

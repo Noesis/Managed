@@ -11,6 +11,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -27,7 +28,16 @@ public class MenuBase : ItemsControl {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
+  [DynamicDependency("Extend")]
   protected MenuBase() {
+  }
+
+  protected override DependencyObject GetContainerForItemOverride() {
+    return new MenuItem();
+  }
+
+  protected override bool IsItemItsOwnContainerOverride(object item) {
+    return item is MenuItem;
   }
 
   internal new static IntPtr Extend(string typeName) {

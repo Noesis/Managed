@@ -167,9 +167,6 @@ namespace NoesisGUIExtensions
                 public float y;
             };
 
-#if UNITY_5_3_OR_NEWER
-            internal
-#endif
             protected override void OnRender(DrawingContext context)
             {
                 // Check if we are going to render anything

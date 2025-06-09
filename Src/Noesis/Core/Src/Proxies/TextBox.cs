@@ -11,6 +11,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -27,10 +28,17 @@ public class TextBox : TextBoxBase {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
+  protected override Size MeasureOverride(Size availableSize) {
+    Size desiredSize = Size.Empty;
+    MeasureOverrideHelper(availableSize, ref desiredSize);
+    return desiredSize;
+  }
+
   public Typography Typography {
     get { return new Typography(this); }
   }
 
+  [DynamicDependency("Extend")]
   public TextBox() {
   }
 
@@ -271,6 +279,10 @@ public class TextBox : TextBoxBase {
       string str = Noesis.Extend.StringFromNativeUtf8(strPtr);
       return str;
     }
+  }
+
+  private void MeasureOverrideHelper(Size availableSize, ref Size desiredSize) {
+    NoesisGUI_PINVOKE.TextBox_MeasureOverrideHelper(swigCPtr, ref availableSize, ref desiredSize);
   }
 
   internal new static IntPtr Extend(string typeName) {

@@ -204,6 +204,7 @@ namespace Noesis
     using System.Reflection;
     using System.Runtime;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
 
     public static class ExtensionMethods
     {
@@ -228,12 +229,7 @@ namespace Noesis
 
     public static class Marshal
     {
-        public static void StructureToPtr(object structure, IntPtr ptr, bool fDeleteOld)
-        {
-            System.Runtime.InteropServices.Marshal.StructureToPtr(structure, ptr, fDeleteOld);
-        }
-
-        public static T PtrToStructure<T>(IntPtr ptr)
+        public static T PtrToStructure<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] T>(IntPtr ptr)
         {
             return System.Runtime.InteropServices.Marshal.PtrToStructure<T>(ptr);
         }
@@ -255,7 +251,7 @@ namespace Noesis
 
         public static int SizeOf<T>()
         {
-            return System.Runtime.InteropServices.Marshal.SizeOf(typeof(T));
+            return System.Runtime.InteropServices.Marshal.SizeOf<T>();
         }
 
         public static IntPtr AllocHGlobal(int numBytes)
@@ -298,9 +294,9 @@ namespace Noesis
             System.Runtime.InteropServices.Marshal.WriteIntPtr(ptr, ofs, val);
         }
 
-        public static Delegate GetDelegateForFunctionPointer(IntPtr ptr, Type t)
+        public static TDelegate GetDelegateForFunctionPointer<TDelegate>(IntPtr ptr)
         {
-            return System.Runtime.InteropServices.Marshal.GetDelegateForFunctionPointer(ptr, t);
+            return System.Runtime.InteropServices.Marshal.GetDelegateForFunctionPointer<TDelegate>(ptr);
         }
 
         public static int GetLastWin32Error()

@@ -12,6 +12,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Windows.Input;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -28,6 +29,7 @@ public class ButtonBase : ContentControl {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
+  [DynamicDependency("Extend")]
   protected ButtonBase() {
   }
 

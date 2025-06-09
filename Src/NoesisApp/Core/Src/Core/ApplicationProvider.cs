@@ -22,12 +22,20 @@ namespace NoesisApp
             // Register current assemblies
             foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
-                string name = assembly.GetName().Name;
+                string name = "";
+                bool addAssembly = false;
 
-                if (!assembly.IsDynamic &&
-                    name != "Noesis.App.Theme" &&
-                    name != "mscorlib" && name != "netstandard" && name != "System" &&
-                    !name.StartsWith("System.") && !name.StartsWith("Microsoft."))
+                try
+                {
+                    name = assembly.GetName().Name;
+                    addAssembly = !assembly.IsDynamic &&
+                        name != "Noesis.App.Theme" &&
+                        name != "mscorlib" && name != "netstandard" && name != "System" &&
+                        !name.StartsWith("System.") && !name.StartsWith("Microsoft.");
+                }
+                catch (Exception) { }
+
+                if (addAssembly)
                 {
                     AddAssembly(assembly, name);
                 }

@@ -11,6 +11,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -27,6 +28,32 @@ public class TextBlock : FrameworkElement {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
+  protected override int VisualChildrenCount {
+    get {
+      return (int)GetVisualChildrenCountHelper();
+    }
+  }
+
+  protected override Visual GetVisualChild(int index) {
+    return GetVisualChildHelper((uint)index);
+  }
+
+  protected override void OnRender(DrawingContext context) {
+    OnRenderHelper(context);
+  }
+
+  protected override Size MeasureOverride(Size availableSize) {
+    Size desiredSize = Size.Empty;
+    MeasureOverrideHelper(availableSize, ref desiredSize);
+    return desiredSize;
+  }
+
+  protected override Size ArrangeOverride(Size finalSize) {
+    Size renderSize = Size.Empty;
+    ArrangeOverrideHelper(finalSize, ref renderSize);
+    return renderSize;
+  }
+
   public Typography Typography {
     get { return new Typography(this); }
   }
@@ -35,6 +62,7 @@ public class TextBlock : FrameworkElement {
     return ToStringHelper();
   }
 
+  [DynamicDependency("Extend")]
   public TextBlock() {
   }
 
@@ -377,6 +405,28 @@ public class TextBlock : FrameworkElement {
       IntPtr cPtr = NoesisGUI_PINVOKE.TextBlock_FormattedText_get(swigCPtr);
       return (FormattedText)Noesis.Extend.GetProxy(cPtr, false);
     }
+  }
+
+  private uint GetVisualChildrenCountHelper() {
+    uint ret = NoesisGUI_PINVOKE.TextBlock_GetVisualChildrenCountHelper(swigCPtr);
+    return ret;
+  }
+
+  private Visual GetVisualChildHelper(uint index) {
+    IntPtr cPtr = NoesisGUI_PINVOKE.TextBlock_GetVisualChildHelper(swigCPtr, index);
+    return (Visual)Noesis.Extend.GetProxy(cPtr, false);
+  }
+
+  private void OnRenderHelper(DrawingContext context) {
+    NoesisGUI_PINVOKE.TextBlock_OnRenderHelper(swigCPtr, DrawingContext.getCPtr(context));
+  }
+
+  private void MeasureOverrideHelper(Size availableSize, ref Size desiredSize) {
+    NoesisGUI_PINVOKE.TextBlock_MeasureOverrideHelper(swigCPtr, ref availableSize, ref desiredSize);
+  }
+
+  private void ArrangeOverrideHelper(Size finalSize, ref Size renderSize) {
+    NoesisGUI_PINVOKE.TextBlock_ArrangeOverrideHelper(swigCPtr, ref finalSize, ref renderSize);
   }
 
   private string ToStringHelper() {

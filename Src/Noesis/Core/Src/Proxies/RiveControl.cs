@@ -35,8 +35,8 @@ public class RiveControl : FrameworkElement {
     return NoesisGUI_PINVOKE.new_RiveControl();
   }
 
-  public void SetInputValue(string name, object value) {
-    NoesisGUI_PINVOKE.RiveControl_SetInputValue(swigCPtr, name != null ? name : string.Empty, Noesis.Extend.GetInstanceHandle(value));
+  public void SetInputValue(string path, string name, object value) {
+    NoesisGUI_PINVOKE.RiveControl_SetInputValue(swigCPtr, path != null ? path : string.Empty, name != null ? name : string.Empty, Noesis.Extend.GetInstanceHandle(value));
   }
 
   public void FireInputTrigger(string name) {

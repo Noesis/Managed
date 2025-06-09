@@ -1,6 +1,7 @@
 ﻿using Noesis;
 using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 namespace NoesisApp
@@ -106,6 +107,8 @@ namespace NoesisApp
             DataBindingHelper.EnsureBindingValue(this, ValueProperty);
         }
 
+        [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Tested working if the type is registered.")]
+        [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Tested working if the type is registered.")]
         private bool UpdateSourceType()
         {
             object binding = Binding;

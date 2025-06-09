@@ -11,6 +11,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -133,6 +134,7 @@ public class PointAnimation : PointAnimationBase {
     }
   }
 
+  [DynamicDependency("Extend")]
   public PointAnimation() {
   }
 

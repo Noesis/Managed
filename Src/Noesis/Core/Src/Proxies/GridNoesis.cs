@@ -11,6 +11,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -27,6 +28,19 @@ public class Grid : Panel {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
+  protected override Size MeasureOverride(Size availableSize) {
+    Size desiredSize = Size.Empty;
+    MeasureOverrideHelper(availableSize, ref desiredSize);
+    return desiredSize;
+  }
+
+  protected override Size ArrangeOverride(Size finalSize) {
+    Size renderSize = Size.Empty;
+    ArrangeOverrideHelper(finalSize, ref renderSize);
+    return renderSize;
+  }
+
+  [DynamicDependency("Extend")]
   public Grid() {
   }
 
@@ -162,6 +176,14 @@ public class Grid : Panel {
       IntPtr cPtr = NoesisGUI_PINVOKE.Grid_RowDefinitions_get(swigCPtr);
       return (RowDefinitionCollection)Noesis.Extend.GetProxy(cPtr, false);
     }
+  }
+
+  private void MeasureOverrideHelper(Size availableSize, ref Size desiredSize) {
+    NoesisGUI_PINVOKE.Grid_MeasureOverrideHelper(swigCPtr, ref availableSize, ref desiredSize);
+  }
+
+  private void ArrangeOverrideHelper(Size finalSize, ref Size renderSize) {
+    NoesisGUI_PINVOKE.Grid_ArrangeOverrideHelper(swigCPtr, ref finalSize, ref renderSize);
   }
 
   internal new static IntPtr Extend(string typeName) {

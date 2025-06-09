@@ -169,25 +169,16 @@ namespace NoesisGUIExtensions
                 set { _mtx = value; }
             }
 
-#if UNITY_5_3_OR_NEWER
-            internal
-#endif
             protected override int VisualChildrenCount
             {
                 get => 1;
             }
 
-#if UNITY_5_3_OR_NEWER
-            internal
-#endif
             protected override Visual GetVisualChild(int index)
             {
                 return _child;
             }
 
-#if UNITY_5_3_OR_NEWER
-            internal
-#endif
             protected override Size MeasureOverride(Size constraint)
             {
                 UIElement adornedElement = AdornedElement;
@@ -207,9 +198,6 @@ namespace NoesisGUIExtensions
                 return finalSize;
             }
 
-#if UNITY_5_3_OR_NEWER
-            internal
-#endif
             protected override Size ArrangeOverride(Size finalSize)
             {
                 finalSize = DesiredSize;

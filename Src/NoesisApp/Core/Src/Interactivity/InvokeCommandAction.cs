@@ -1,5 +1,6 @@
 ﻿using Noesis;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
 using System.Windows.Input;
@@ -161,6 +162,7 @@ namespace NoesisApp
             }
         }
 
+        [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Tested working if the type is registered.")]
         private ICommand ResolveCommand()
         {
             ICommand command = Command;
@@ -189,6 +191,7 @@ namespace NoesisApp
             return null;
         }
 
+        [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Tested working if the type is registered.")]
         private object ResolvePath(string path, object parameter)
         {
             object commandParameter;

@@ -27,6 +27,18 @@ public class UniformGrid : Panel {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
+  protected override Size MeasureOverride(Size availableSize) {
+    Size desiredSize = Size.Empty;
+    MeasureOverrideHelper(availableSize, ref desiredSize);
+    return desiredSize;
+  }
+
+  protected override Size ArrangeOverride(Size finalSize) {
+    Size renderSize = Size.Empty;
+    ArrangeOverrideHelper(finalSize, ref renderSize);
+    return renderSize;
+  }
+
   public UniformGrid() {
   }
 
@@ -84,6 +96,14 @@ public class UniformGrid : Panel {
       int ret = NoesisGUI_PINVOKE.UniformGrid_Rows_get(swigCPtr);
       return ret;
     }
+  }
+
+  private void MeasureOverrideHelper(Size availableSize, ref Size desiredSize) {
+    NoesisGUI_PINVOKE.UniformGrid_MeasureOverrideHelper(swigCPtr, ref availableSize, ref desiredSize);
+  }
+
+  private void ArrangeOverrideHelper(Size finalSize, ref Size renderSize) {
+    NoesisGUI_PINVOKE.UniformGrid_ArrangeOverrideHelper(swigCPtr, ref finalSize, ref renderSize);
   }
 
 }

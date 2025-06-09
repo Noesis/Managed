@@ -11,6 +11,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -27,12 +28,19 @@ public class Adorner : FrameworkElement {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
+  [DynamicDependency("Extend")]
   public Adorner(UIElement adornedElement) {
     SetAdornedElement(adornedElement);
   }
 
   public virtual Matrix4 GetDesiredTransform(Matrix4 transform) {
     return transform;
+  }
+
+  protected override Size MeasureOverride(Size availableSize) {
+    Size desiredSize = Size.Empty;
+    MeasureOverrideHelper(availableSize, ref desiredSize);
+    return desiredSize;
   }
 
   public UIElement AdornedElement {
@@ -54,6 +62,10 @@ public class Adorner : FrameworkElement {
 
   private void SetAdornedElement(UIElement adornedElement) {
     NoesisGUI_PINVOKE.Adorner_SetAdornedElement(swigCPtr, UIElement.getCPtr(adornedElement));
+  }
+
+  private void MeasureOverrideHelper(Size availableSize, ref Size desiredSize) {
+    NoesisGUI_PINVOKE.Adorner_MeasureOverrideHelper(swigCPtr, ref availableSize, ref desiredSize);
   }
 
   internal new static IntPtr Extend(string typeName) {

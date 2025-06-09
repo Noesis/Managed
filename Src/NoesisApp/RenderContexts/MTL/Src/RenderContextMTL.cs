@@ -148,7 +148,9 @@ namespace NoesisApp
                 descriptor.PixelFormat = _layer.PixelFormat;
                 descriptor.Width = (uint)width;
                 descriptor.Height = (uint)height;
+                #pragma warning disable CA1422
                 descriptor.SampleCount = _samples;
+                #pragma warning restore CA1422
                 IMTLTexture colorAA = _dev.CreateTexture(descriptor);
                 _descriptor.ColorAttachments[0].Texture = colorAA;
             }
@@ -157,7 +159,9 @@ namespace NoesisApp
             descriptor.PixelFormat = MTLPixelFormat.Stencil8;
             descriptor.Width = (uint)width;
             descriptor.Height = (uint)height;
+            #pragma warning disable CA1422
             descriptor.SampleCount = _samples;
+            #pragma warning restore CA1422
 
             IMTLTexture stencil = _dev.CreateTexture(descriptor);
             _descriptor.StencilAttachment.Texture = stencil;

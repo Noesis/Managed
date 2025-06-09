@@ -48,7 +48,7 @@ public class EventArgs : IDisposable {
   internal static void InvokeHandler(Delegate handler, IntPtr sender, IntPtr args) {
     EventHandler handler_ = (EventHandler)handler;
     if (handler_ != null) {
-      handler_(Extend.GetProxy(sender, false), new EventArgs(args, false));
+      handler_(Extend.GetProxy(sender, false), EventArgs.Empty);
     }
   }
 

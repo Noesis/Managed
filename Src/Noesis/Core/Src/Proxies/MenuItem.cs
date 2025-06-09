@@ -12,6 +12,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Windows.Input;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -84,6 +85,15 @@ public class MenuItem : HeaderedItemsControl {
     }
   }
 
+  protected override DependencyObject GetContainerForItemOverride() {
+    return new MenuItem();
+  }
+
+  protected override bool IsItemItsOwnContainerOverride(object item) {
+    return item is MenuItem || item is Separator;
+  }
+
+  [DynamicDependency("Extend")]
   public MenuItem() {
   }
 

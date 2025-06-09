@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Reflection;
 using System.Globalization;
 using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -146,7 +147,7 @@ namespace Noesis
 
         #region Accessors using dynamic code
 
-#if !ENABLE_IL2CPP && !UNITY_IOS
+#if (!ENABLE_IL2CPP && !UNITY_IOS) || NET8_0_OR_GREATER
 
         public class PropertyAccessorRW<PropertyT>: PropertyAccessorT<PropertyT>
         {
@@ -199,6 +200,8 @@ namespace Noesis
 
         #region Getter/Setter delegate creation
 
+        [UnconditionalSuppressMessage("Trimming", "IL2060", Justification = "Tested working if the type is registered.")]
+        [UnconditionalSuppressMessage("AOT", "IL3050", Justification = "Tested working if the type is registered.")]
         private static Func<object, ReturnT> CreateGetter<ReturnT>(Type type, MethodInfo method)
         {
             // Now supply the type arguments
@@ -232,6 +235,8 @@ namespace Noesis
             BindingFlags.DeclaredOnly | BindingFlags.Static | BindingFlags.NonPublic);
 #endif
 
+        [UnconditionalSuppressMessage("Trimming", "IL2060", Justification = "Tested working if the type is registered.")]
+        [UnconditionalSuppressMessage("AOT", "IL3050", Justification = "Tested working if the type is registered.")]
         private static Action<object, ValueT> CreateSetter<ValueT>(Type type, MethodInfo method)
         {
             // Now supply the type arguments
@@ -267,7 +272,7 @@ namespace Noesis
 
         #endregion
 
-#endif // !ENABLE_IL2CPP && !UNITY_IOS
+#endif // (!ENABLE_IL2CPP && !UNITY_IOS) || NET8_0_OR_GREATER
 
         #endregion
 
@@ -339,7 +344,7 @@ namespace Noesis
 
         #region Indexer accessors using dynamic code
 
-#if !ENABLE_IL2CPP && !UNITY_IOS
+#if (!ENABLE_IL2CPP && !UNITY_IOS) || NET8_0_OR_GREATER
 
         public class IndexerAccessorRW<IndexT>: IndexerAccessorT<IndexT>
         {
@@ -380,6 +385,8 @@ namespace Noesis
 
         #region Getter/Setter delegate creation
 
+        [UnconditionalSuppressMessage("Trimming", "IL2060", Justification = "Tested working if the type is registered.")]
+        [UnconditionalSuppressMessage("AOT", "IL3050", Justification = "Tested working if the type is registered.")]
         private static Func<object, IndexT, object> CreateIndexerGetter<IndexT>(Type type, MethodInfo method)
         {
             // Now supply the type arguments
@@ -414,6 +421,8 @@ namespace Noesis
             BindingFlags.DeclaredOnly | BindingFlags.Static | BindingFlags.NonPublic);
 #endif
 
+        [UnconditionalSuppressMessage("Trimming", "IL2060", Justification = "Tested working if the type is registered.")]
+        [UnconditionalSuppressMessage("AOT", "IL3050", Justification = "Tested working if the type is registered.")]
         private static Action<object, IndexT, object> CreateIndexerSetter<IndexT>(Type type, MethodInfo method)
         {
             // Now supply the type arguments
@@ -458,7 +467,7 @@ namespace Noesis
 
         #endregion
 
-#endif
+#endif // (!ENABLE_IL2CPP && !UNITY_IOS) || NET8_0_OR_GREATER
 
         #endregion
 
@@ -838,7 +847,7 @@ namespace Noesis
 
         private static void AddPropertyAccessor<PropertyT>(NativeTypePropsInfo info, PropertyInfo p, bool usePropertyInfo)
         {
-#if !ENABLE_IL2CPP && !UNITY_IOS
+#if (!ENABLE_IL2CPP && !UNITY_IOS) || NET8_0_OR_GREATER
             if (!usePropertyInfo)
             {
                 AddPropertyAccessor(info, p,
@@ -856,7 +865,7 @@ namespace Noesis
 
         private static void AddPropertyAccessorNullable<PropertyT>(NativeTypePropsInfo info, PropertyInfo p, bool usePropertyInfo)
         {
-#if !ENABLE_IL2CPP && !UNITY_IOS
+#if (!ENABLE_IL2CPP && !UNITY_IOS) || NET8_0_OR_GREATER
             if (!usePropertyInfo)
             {
                 AddPropertyAccessor(info, p,
@@ -875,7 +884,7 @@ namespace Noesis
         private static void AddPropertyAccessor<PropertyT, SourceT>(NativeTypePropsInfo info, PropertyInfo p,
             Func<SourceT, PropertyT> castTo, Func<PropertyT, SourceT> castFrom, bool usePropertyInfo)
         {
-#if !ENABLE_IL2CPP && !UNITY_IOS
+#if (!ENABLE_IL2CPP && !UNITY_IOS) || NET8_0_OR_GREATER
             if (!usePropertyInfo)
             {
                 AddPropertyAccessor(info, p,
@@ -894,7 +903,7 @@ namespace Noesis
         private static void AddPropertyAccessorNullable<PropertyT, SourceT>(NativeTypePropsInfo info, PropertyInfo p,
             Func<SourceT, PropertyT> castTo, Func<PropertyT, SourceT> castFrom, bool usePropertyInfo)
         {
-#if !ENABLE_IL2CPP && !UNITY_IOS
+#if (!ENABLE_IL2CPP && !UNITY_IOS) || NET8_0_OR_GREATER
             if (!usePropertyInfo)
             {
                 AddPropertyAccessor(info, p,
@@ -927,7 +936,7 @@ namespace Noesis
         {
             if (p.GetSetMethod() != null)
             {
-#if !ENABLE_IL2CPP && !UNITY_IOS
+#if (!ENABLE_IL2CPP && !UNITY_IOS) || NET8_0_OR_GREATER
                 if (!p.DeclaringType.GetTypeInfo().IsValueType)
                 {
                     return new IndexerAccessorRW<IndexT>(p);
@@ -940,7 +949,7 @@ namespace Noesis
             }
             else
             {
-#if !ENABLE_IL2CPP && !UNITY_IOS
+#if (!ENABLE_IL2CPP && !UNITY_IOS) || NET8_0_OR_GREATER
                 if (!p.DeclaringType.GetTypeInfo().IsValueType)
                 {
                     return new IndexerAccessorRO<IndexT>(p);

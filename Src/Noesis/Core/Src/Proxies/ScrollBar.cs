@@ -11,6 +11,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -39,6 +40,7 @@ public class ScrollBar : RangeBase {
 
   #endregion
 
+  [DynamicDependency("Extend")]
   public ScrollBar() {
   }
 

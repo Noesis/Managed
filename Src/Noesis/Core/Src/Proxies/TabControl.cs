@@ -11,6 +11,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -27,6 +28,21 @@ public class TabControl : Selector {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
+  protected override Size MeasureOverride(Size availableSize) {
+    Size desiredSize = Size.Empty;
+    MeasureOverrideHelper(availableSize, ref desiredSize);
+    return desiredSize;
+  }
+
+  protected override DependencyObject GetContainerForItemOverride() {
+    return new TabItem();
+  }
+
+  protected override bool IsItemItsOwnContainerOverride(object item) {
+    return item is TabItem;
+  }
+
+  [DynamicDependency("Extend")]
   public TabControl() {
   }
 
@@ -131,6 +147,10 @@ public class TabControl : Selector {
       Dock ret = (Dock)NoesisGUI_PINVOKE.TabControl_TabStripPlacement_get(swigCPtr);
       return ret;
     } 
+  }
+
+  private void MeasureOverrideHelper(Size availableSize, ref Size desiredSize) {
+    NoesisGUI_PINVOKE.TabControl_MeasureOverrideHelper(swigCPtr, ref availableSize, ref desiredSize);
   }
 
   internal new static IntPtr Extend(string typeName) {

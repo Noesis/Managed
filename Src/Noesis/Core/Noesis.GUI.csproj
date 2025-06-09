@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;xamarinios10</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;xamarinios10;net8.0;net8.0-ios</TargetFrameworks>
     <Version>3.0.0</Version>
     <Authors>Noesis Technologies</Authors>
     <Description>NoesisGUI core library for engine integrations</Description>
@@ -18,11 +18,15 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageOutputPath>$(SolutionDir)NuGet\</PackageOutputPath>
   </PropertyGroup>
-    
+
   <!-- iOS Targets and References -->
   <PropertyGroup Condition="'$(TargetFramework)' == 'xamarinios10'">
     <TargetFrameworkIdentifier>Xamarin.iOS</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v1.0</TargetFrameworkVersion>
+    <DefineConstants>UNITY_IOS</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0-ios'">
+    <TargetFrameworkVersion>v17.0</TargetFrameworkVersion>
     <DefineConstants>UNITY_IOS</DefineConstants>
   </PropertyGroup>
 

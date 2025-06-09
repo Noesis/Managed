@@ -11,6 +11,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -66,6 +67,15 @@ public class TreeViewItem : HeaderedItemsControl {
 
   #endregion
 
+  protected override DependencyObject GetContainerForItemOverride() {
+    return new TreeViewItem();
+  }
+
+  protected override bool IsItemItsOwnContainerOverride(object item) {
+    return item is TreeViewItem;
+  }
+
+  [DynamicDependency("Extend")]
   public TreeViewItem() {
   }
 

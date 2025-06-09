@@ -11,6 +11,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -129,6 +130,7 @@ public partial class FrameworkElement : UIElement {
 
   #endregion
 
+  [DynamicDependency("Extend")]
   public FrameworkElement() {
   }
 
@@ -834,6 +836,28 @@ public partial class FrameworkElement : UIElement {
       IntPtr cPtr = NoesisGUI_PINVOKE.FrameworkElement_Resources_get(swigCPtr);
       return (ResourceDictionary)Noesis.Extend.GetProxy(cPtr, false);
     }
+  }
+
+  private uint GetVisualChildrenCountHelper() {
+    uint ret = NoesisGUI_PINVOKE.FrameworkElement_GetVisualChildrenCountHelper(swigCPtr);
+    return ret;
+  }
+
+  private Visual GetVisualChildHelper(uint index) {
+    IntPtr cPtr = NoesisGUI_PINVOKE.FrameworkElement_GetVisualChildHelper(swigCPtr, index);
+    return (Visual)Noesis.Extend.GetProxy(cPtr, false);
+  }
+
+  private void MeasureOverrideHelper(Size availableSize, ref Size desiredSize) {
+    NoesisGUI_PINVOKE.FrameworkElement_MeasureOverrideHelper(swigCPtr, ref availableSize, ref desiredSize);
+  }
+
+  private void ArrangeOverrideHelper(Size finalSize, ref Size renderSize) {
+    NoesisGUI_PINVOKE.FrameworkElement_ArrangeOverrideHelper(swigCPtr, ref finalSize, ref renderSize);
+  }
+
+  private void SetResourceReferenceHelper(DependencyProperty dp, string name) {
+    NoesisGUI_PINVOKE.FrameworkElement_SetResourceReferenceHelper(swigCPtr, DependencyProperty.getCPtr(dp), name != null ? name : string.Empty);
   }
 
   public static FrameworkElement FindTreeElement(object instance) {

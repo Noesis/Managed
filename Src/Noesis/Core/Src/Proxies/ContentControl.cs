@@ -11,6 +11,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -31,6 +32,7 @@ public class ContentControl : Control {
     return ToStringHelper();
   }
 
+  [DynamicDependency("Extend")]
   public ContentControl() {
   }
 

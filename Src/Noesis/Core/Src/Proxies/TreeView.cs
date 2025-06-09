@@ -11,6 +11,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -27,6 +28,14 @@ public class TreeView : ItemsControl {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
+  protected override DependencyObject GetContainerForItemOverride() {
+    return new TreeViewItem();
+  }
+
+  protected override bool IsItemItsOwnContainerOverride(object item) {
+    return item is TreeViewItem;
+  }
+
   #region Events
 
   public event RoutedPropertyChangedEventHandler<object> SelectedItemChanged {
@@ -39,6 +48,7 @@ public class TreeView : ItemsControl {
   }
   #endregion
 
+  [DynamicDependency("Extend")]
   public TreeView() {
   }
 

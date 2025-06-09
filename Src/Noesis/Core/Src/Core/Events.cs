@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
@@ -276,23 +277,24 @@ namespace Noesis
         #endregion
 
         #region CLR Events
-        public static void AddHandler(UIElement element, string eventId, Delegate handler)
+        public static void AddHandler(UIElement element, string eventName, Delegate handler)
         {
             if (element == null)
             {
                 throw new ArgumentNullException("element");
             }
-            if (string.IsNullOrEmpty(eventId))
+            if (string.IsNullOrEmpty(eventName))
             {
-                throw new ArgumentNullException("eventId");
+                throw new ArgumentNullException("eventName");
             }
             if (handler == null)
             {
                 throw new ArgumentNullException("handler");
             }
+            uint eventId = EventManager.GetEventId(eventName);
             if (!EventManager.IsLegalHandler(eventId, handler))
             {
-                throw new ArgumentException("Illegal Handler type for " + eventId + " event");
+                throw new ArgumentException("Illegal Handler type for " + eventName + " event");
             }
 
             EventHandlerStore events;
@@ -305,26 +307,24 @@ namespace Noesis
                 element.Destroyed += OnElementDestroyed;
             }
 
-            long eventKey = eventId.GetHashCode();
-
             Delegate eventHandler;
-            if (!events._binds.TryGetValue(eventKey, out eventHandler))
+            if (!events._binds.TryGetValue((long)eventId, out eventHandler))
             {
-                events._binds.Add(eventKey, null);
+                events._binds.Add((long)eventId, null);
                 Noesis_Event_Bind(_raiseEvent, events._element, eventId);
             }
 
             eventHandler = Delegate.Combine(eventHandler, handler);
-            events._binds[eventKey] = eventHandler;
+            events._binds[(long)eventId] = eventHandler;
         }
 
-        public static void RemoveHandler(UIElement element, string eventId, Delegate handler)
+        public static void RemoveHandler(UIElement element, string eventName, Delegate handler)
         {
             if (element == null)
             {
                 throw new ArgumentNullException("element");
             }
-            if (string.IsNullOrEmpty(eventId))
+            if (string.IsNullOrEmpty(eventName))
             {
                 throw new ArgumentNullException("eventId");
             }
@@ -332,9 +332,10 @@ namespace Noesis
             {
                 throw new ArgumentNullException("handler");
             }
+            uint eventId = EventManager.GetEventId(eventName);
             if (!EventManager.IsLegalHandler(eventId, handler))
             {
-                throw new ArgumentException("Illegal Handler type for " + eventId + " event");
+                throw new ArgumentException("Illegal Handler type for " + eventName + " event");
             }
 
             EventHandlerStore events;
@@ -345,10 +346,8 @@ namespace Noesis
                 return;
             }
 
-            long eventKey = eventId.GetHashCode();
-
             Delegate eventHandler;
-            if (!events._binds.TryGetValue(eventKey, out eventHandler))
+            if (!events._binds.TryGetValue((long)eventId, out eventHandler))
             {
                 return;
             }
@@ -358,7 +357,7 @@ namespace Noesis
             if (eventHandler == null)
             {
                 Noesis_Event_Unbind(_raiseEvent, events._element, eventId);
-                events._binds.Remove(eventKey);
+                events._binds.Remove((long)eventId);
 
                 if (events._binds.Count == 0)
                 {
@@ -370,11 +369,11 @@ namespace Noesis
 
         #region CLR Event callback
         internal delegate void RaiseEventCallback(IntPtr cPtrType, IntPtr cPtr,
-            string eventId, IntPtr sender, IntPtr e);
+            uint eventId, IntPtr sender, IntPtr e);
         private static RaiseEventCallback _raiseEvent = RaiseEvent;
 
         [MonoPInvokeCallback(typeof(RaiseEventCallback))]
-        private static void RaiseEvent(IntPtr cPtrType, IntPtr cPtr, string eventId,
+        private static void RaiseEvent(IntPtr cPtrType, IntPtr cPtr, uint eventId,
             IntPtr sender, IntPtr e)
         {
             try
@@ -388,18 +387,16 @@ namespace Noesis
                         return;
                     }
 
-                    long eventKey = eventId.GetHashCode();
-
                     // check if we are called to unbind the event
                     if (sender == IntPtr.Zero && e == IntPtr.Zero)
                     {
-                        events._binds.Remove(eventKey);
+                        events._binds.Remove((long)eventId);
                         return;
                     }
 
                     // invoke handler
                     Delegate eventHandler;
-                    if (!events._binds.TryGetValue(eventKey, out eventHandler))
+                    if (!events._binds.TryGetValue((long)eventId, out eventHandler))
                     {
                         return;
                     }
@@ -467,11 +464,11 @@ namespace Noesis
 
         [DllImport(Library.Name)]
         private static extern void Noesis_Event_Bind(RaiseEventCallback callback,
-            IntPtr element, [MarshalAs(UnmanagedType.LPWStr)]string eventId);
+            IntPtr element, uint eventId);
 
         [DllImport(Library.Name)]
         private static extern void Noesis_Event_Unbind(RaiseEventCallback callback,
-            IntPtr element, [MarshalAs(UnmanagedType.LPWStr)]string eventId);
+            IntPtr element, uint eventId);
         #endregion
     }
 
@@ -622,9 +619,20 @@ namespace Noesis
         #endregion
 
         #region CLR Events
-        internal static bool IsLegalHandler(string eventId, Delegate handler)
+        internal static uint GetEventId(string name)
         {
-            if (string.IsNullOrEmpty(eventId))
+            return Noesis_EventManager_GetEventId(name);
+        }
+
+        internal static string GetEventName(uint id)
+        {
+            IntPtr name = Noesis_EventManager_GetEventName(id);
+            return Extend.StringFromNativeUtf8(name);
+        }
+
+        internal static bool IsLegalHandler(uint eventId, Delegate handler)
+        {
+            if (eventId == 0)
             {
                 throw new ArgumentNullException("eventId");
             }
@@ -634,21 +642,23 @@ namespace Noesis
             }
 
             HandlerInfo info;
-            if (!_handlerTypes.TryGetValue(Key(eventId), out info))
+            if (!_handlerTypes.TryGetValue((long)eventId, out info))
             {
-                throw new InvalidOperationException("Event " + eventId + " not registered");
+                throw new InvalidOperationException(
+                    "Event " + GetEventName(eventId) + " not registered");
             }
 
             return info.Type == handler.GetType();
         }
 
-        internal static void InvokeHandler(string eventId, Delegate handler,
+        internal static void InvokeHandler(uint eventId, Delegate handler,
             IntPtr sender, IntPtr args)
         {
             HandlerInfo info;
-            if (!_handlerTypes.TryGetValue(Key(eventId), out info))
+            if (!_handlerTypes.TryGetValue((long)eventId, out info))
             {
-                throw new InvalidOperationException("Event " + eventId + " not registered");
+                throw new InvalidOperationException(
+                    "Event " + GetEventName(eventId) + " not registered");
             }
 
             info.Invoker(handler, sender, args);
@@ -843,6 +853,8 @@ namespace Noesis
             return routedEvent;
         }
 
+        [UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Tested working if the type is registered.")]
+        [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Tested working if the type is registered.")]
         private static InvokeHandlerDelegate GetInvoker(Type handlerType)
         {
             MethodInfo handlerInvoke = handlerType.GetMethod("Invoke");
@@ -879,10 +891,11 @@ namespace Noesis
             });
         }
 
-        private static void RegisterCLREvent(string eventId,
+        private static void RegisterCLREvent(string eventName,
             Type handlerType, InvokeHandlerDelegate invoker)
         {
-            _handlerTypes.Add(Key(eventId), new HandlerInfo
+            uint eventId = GetEventId(eventName);
+            _handlerTypes.Add((long)eventId, new HandlerInfo
             {
                 Type = handlerType, Invoker = invoker
             });
@@ -898,15 +911,17 @@ namespace Noesis
             return routedEvent.ToInt64();
         }
 
-        private static long Key(string eventId)
-        {
-            return eventId.GetHashCode();
-        }
-
         private static Dictionary<long, HandlerInfo> _handlerTypes;
         #endregion
 
         #region Imports
+        [DllImport(Library.Name)]
+        private static extern uint Noesis_EventManager_GetEventId(
+            [MarshalAs(UnmanagedType.LPWStr)] string name);
+
+        [DllImport(Library.Name)]
+        private static extern IntPtr Noesis_EventManager_GetEventName(uint id);
+
         [DllImport(Library.Name)]
         private static extern IntPtr Noesis_EventManager_RegisterRoutedEvent(
             [MarshalAs(UnmanagedType.LPWStr)]string name, int routingStrategy, IntPtr ownerType);

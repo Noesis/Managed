@@ -11,6 +11,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -128,6 +129,7 @@ public class Int32Animation : Int32AnimationBase {
     return ret;
   }
 
+  [DynamicDependency("Extend")]
   public Int32Animation() {
   }
 

@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-public class Path : Shape {
+public sealed class Path : Shape {
   internal new static Path CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
     return new Path(cPtr, cMemoryOwn);
   }
@@ -27,7 +27,7 @@ public class Path : Shape {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
-  internal protected override Geometry DefiningGeometry {
+  protected override Geometry DefiningGeometry {
     get { return Data; }
   }
 

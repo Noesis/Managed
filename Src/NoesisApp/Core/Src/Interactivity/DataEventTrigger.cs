@@ -7,6 +7,7 @@ using Noesis;
 using NoesisApp;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -58,6 +59,7 @@ namespace NoesisGUIExtensions
             ((DataEventTrigger)sender).UpdateHandler();
         }
 
+        [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Tested working if the type is registered.")]
         private void UpdateHandler()
         {
             if (this.currentEvent != null)
@@ -84,6 +86,8 @@ namespace NoesisGUIExtensions
             }
         }
 
+        [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Tested working if the type is registered.")]
+        [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Tested working if the type is registered.")]
         private Delegate GetDelegate(EventInfo eventInfo, Action action)
         {
             if (typeof(System.EventHandler).IsAssignableFrom(eventInfo.EventHandlerType))

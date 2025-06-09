@@ -11,6 +11,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -27,6 +28,29 @@ public class ToolBarPanel : StackPanel {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
+  protected override int VisualChildrenCount {
+    get {
+      return (int)GetVisualChildrenCountHelper();
+    }
+  }
+
+  protected override Visual GetVisualChild(int index) {
+    return GetVisualChildHelper((uint)index);
+  }
+
+  protected override Size MeasureOverride(Size availableSize) {
+    Size desiredSize = Size.Empty;
+    MeasureOverrideHelper(availableSize, ref desiredSize);
+    return desiredSize;
+  }
+
+  protected override Size ArrangeOverride(Size finalSize) {
+    Size renderSize = Size.Empty;
+    ArrangeOverrideHelper(finalSize, ref renderSize);
+    return renderSize;
+  }
+
+  [DynamicDependency("Extend")]
   public ToolBarPanel() {
   }
 
@@ -38,6 +62,24 @@ public class ToolBarPanel : StackPanel {
     else {
       return base.CreateExtendCPtr(type, out registerExtend);
     }
+  }
+
+  private uint GetVisualChildrenCountHelper() {
+    uint ret = NoesisGUI_PINVOKE.ToolBarPanel_GetVisualChildrenCountHelper(swigCPtr);
+    return ret;
+  }
+
+  private Visual GetVisualChildHelper(uint index) {
+    IntPtr cPtr = NoesisGUI_PINVOKE.ToolBarPanel_GetVisualChildHelper(swigCPtr, index);
+    return (Visual)Noesis.Extend.GetProxy(cPtr, false);
+  }
+
+  private void MeasureOverrideHelper(Size availableSize, ref Size desiredSize) {
+    NoesisGUI_PINVOKE.ToolBarPanel_MeasureOverrideHelper(swigCPtr, ref availableSize, ref desiredSize);
+  }
+
+  private void ArrangeOverrideHelper(Size finalSize, ref Size renderSize) {
+    NoesisGUI_PINVOKE.ToolBarPanel_ArrangeOverrideHelper(swigCPtr, ref finalSize, ref renderSize);
   }
 
   internal new static IntPtr Extend(string typeName) {

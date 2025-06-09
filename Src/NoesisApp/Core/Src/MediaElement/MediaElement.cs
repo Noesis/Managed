@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace NoesisApp
 {
@@ -69,6 +70,7 @@ namespace NoesisApp
     /// </summary>
     public class MediaElement : Noesis.Decorator
     {
+        [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(ExceptionRoutedEventArgs))]
         public MediaElement()
         {
             Noesis.Image image = new Noesis.Image();
@@ -77,8 +79,22 @@ namespace NoesisApp
             image.SetBinding(Noesis.Image.StretchDirectionProperty, new Noesis.Binding(StretchDirectionProperty, source));
             Child = image;
 
-            Loaded += OnLoadStateChanged;
-            Unloaded += OnLoadStateChanged;
+            Loaded += OnLoaded;
+            Unloaded += OnUnloaded;
+
+            Destroyed += (s) =>
+            {
+                MediaElement element = (MediaElement)GetProxy(s);
+                if (element != null)
+                {
+                    Noesis.FrameworkElement content = (Noesis.FrameworkElement)GetProxy(element._content);
+                    if (content != null)
+                    {
+                        content.Unloaded -= element.OnViewDestroyed;
+                        element._content = IntPtr.Zero;
+                    }
+                }
+            };
         }
 
         /// <summary>
@@ -617,9 +633,28 @@ namespace NoesisApp
             }
         }
 
-        private void OnLoadStateChanged(object sender, Noesis.RoutedEventArgs e)
+        private void OnLoaded(object sender, Noesis.RoutedEventArgs e)
+        {
+            Noesis.FrameworkElement content = View.Content;
+            content.Unloaded -= OnViewDestroyed;
+            content.Unloaded += OnViewDestroyed;
+            _content = GetPtr(content);
+
+            UpdateState(_state, false);
+        }
+
+        private void OnUnloaded(object sender, Noesis.RoutedEventArgs e)
         {
             UpdateState(_state, false);
+        }
+
+        private void OnViewDestroyed(object sender, Noesis.RoutedEventArgs e)
+        {
+            Noesis.FrameworkElement content = (Noesis.FrameworkElement)sender;
+            content.Unloaded -= OnViewDestroyed;
+            _content = IntPtr.Zero;
+
+            DestroyMediaPlayer();
         }
 
         private void OnBufferingStarted()
@@ -659,6 +694,7 @@ namespace NoesisApp
 
         private static CreateMediaPlayerCallback _createMediaPlayerCallback;
         private static object _createMediaPlayerUser;
+        private IntPtr _content = IntPtr.Zero;
         private MediaPlayer _player;
         private MediaState _state = MediaState.Close;
 

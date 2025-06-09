@@ -102,7 +102,7 @@ namespace NoesisApp
                 }
 
                 // Settings for all of CEF (e.g. process management and control).
-                var executablePath = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+                var executablePath = AppContext.BaseDirectory;
                 var cefSettings = new CefSettings
                 {
                     BrowserSubprocessPath = System.IO.Path.Combine(executablePath, CefRuntime.Platform == CefRuntimePlatform.Linux ? "cefsimple" : "cefclient"),
@@ -123,9 +123,18 @@ namespace NoesisApp
             }
         }
 
+        private void StaticShutdown(object sender, System.EventArgs e)
+        {
+            Browser?.GetHost().CloseBrowser(true);
+
+            CefRuntime.Shutdown();
+        }
+
         public WebBrowser()
         {
             StaticInitialize();
+
+            AppDomain.CurrentDomain.ProcessExit += this.StaticShutdown;
 
             KeyboardNavigation.SetDirectionalNavigation(this, KeyboardNavigationMode.None);
             KeyboardNavigation.SetTabNavigation(this, KeyboardNavigationMode.None);
@@ -195,10 +204,6 @@ namespace NoesisApp
             {
                 view.Rendering -= OnRendering;
             }
-
-            //Browser?.GetHost().CloseBrowser(true);
-
-            //CefRuntime.Shutdown();
         }
 
         #region Properties

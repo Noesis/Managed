@@ -9,7 +9,7 @@ namespace System.Diagnostics.CodeAnalysis
     /// This allows tools to understand which methods are unsafe to call when compiling ahead of time.
     /// </remarks>
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Constructor | AttributeTargets.Class, Inherited = false)]
-    internal sealed class RequiresDynamicCodeAttribute : Attribute
+    public sealed class RequiresDynamicCodeAttribute : Attribute
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="RequiresDynamicCodeAttribute"/> class
@@ -46,7 +46,7 @@ namespace System.Diagnostics.CodeAnalysis
     /// code from an application.
     /// </remarks>
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Constructor | AttributeTargets.Class, Inherited = false)]
-    internal sealed class RequiresUnreferencedCodeAttribute : Attribute
+    public sealed class RequiresUnreferencedCodeAttribute : Attribute
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="RequiresUnreferencedCodeAttribute"/> class
@@ -82,7 +82,7 @@ namespace System.Diagnostics.CodeAnalysis
     /// <see cref="ConditionalAttribute"/>. So it is always preserved in the compiled assembly.
     /// </remarks>
     [AttributeUsage(AttributeTargets.All, Inherited = false, AllowMultiple = true)]
-    internal sealed class UnconditionalSuppressMessageAttribute : Attribute
+    public sealed class UnconditionalSuppressMessageAttribute : Attribute
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="UnconditionalSuppressMessageAttribute"/>
@@ -162,7 +162,7 @@ namespace System.Diagnostics.CodeAnalysis
     [AttributeUsage(
         AttributeTargets.Constructor | AttributeTargets.Field | AttributeTargets.Method,
         AllowMultiple = true, Inherited = false)]
-    internal sealed class DynamicDependencyAttribute : Attribute
+    public sealed class DynamicDependencyAttribute : Attribute
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DynamicDependencyAttribute"/> class
@@ -304,7 +304,7 @@ namespace System.Diagnostics.CodeAnalysis
             AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.Method |
             AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Struct,
             Inherited = false)]
-    internal sealed class DynamicallyAccessedMembersAttribute : Attribute
+    public sealed class DynamicallyAccessedMembersAttribute : Attribute
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DynamicallyAccessedMembersAttribute"/> class
@@ -330,7 +330,7 @@ namespace System.Diagnostics.CodeAnalysis
     /// bitwise combination of its member values.
     /// </summary>
     [Flags]
-    internal enum DynamicallyAccessedMemberTypes
+    public enum DynamicallyAccessedMemberTypes
     {
         /// <summary>
         /// Specifies no members.

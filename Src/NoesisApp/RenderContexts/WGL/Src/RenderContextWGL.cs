@@ -230,7 +230,7 @@ namespace NoesisApp
         {
             IntPtr addr = wglGetProcAddress(name);
             if (addr == IntPtr.Zero) return null;
-            return (TDelegate)(object)System.Runtime.InteropServices.Marshal.GetDelegateForFunctionPointer(addr, typeof(TDelegate));
+            return (TDelegate)(object)System.Runtime.InteropServices.Marshal.GetDelegateForFunctionPointer<TDelegate>(addr);
         }
 
         private const int GL_TRUE = 1;
