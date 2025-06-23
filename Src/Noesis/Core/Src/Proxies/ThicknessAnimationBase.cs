@@ -11,6 +11,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -23,6 +24,7 @@ public abstract class ThicknessAnimationBase : AnimationTimeline {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
+  [DynamicDependency("Extend")]
   protected ThicknessAnimationBase() {
   }
 

@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-public class Line : Shape {
+public sealed class Line : Shape {
   internal new static Line CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
     return new Line(cPtr, cMemoryOwn);
   }
@@ -27,7 +27,7 @@ public class Line : Shape {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
-  internal protected override Geometry DefiningGeometry {
+  protected override Geometry DefiningGeometry {
     get { return new LineGeometry(); }
   }
 

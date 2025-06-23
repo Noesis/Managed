@@ -54,6 +54,7 @@ public class DependencyPropertyChangedEventArgs : IDisposable {
 
   public object NewValue {
     get {
+      if (swigCPtr.Handle == IntPtr.Zero) return null;
       IntPtr cPtr = GetNewValueHelper();
       return GetValueHelper(Noesis.Extend.GetProxy(cPtr, true));
     }
@@ -61,6 +62,7 @@ public class DependencyPropertyChangedEventArgs : IDisposable {
 
   public object OldValue {
     get {
+      if (swigCPtr.Handle == IntPtr.Zero) return null;
       IntPtr cPtr = GetOldValueHelper();
       return GetValueHelper(Noesis.Extend.GetProxy(cPtr, true));
     }
@@ -68,6 +70,7 @@ public class DependencyPropertyChangedEventArgs : IDisposable {
 
   public Noesis.DependencyProperty Property {
     get {
+      if (swigCPtr.Handle == IntPtr.Zero) return null;
       return GetPropertyHelper();
     }
   }

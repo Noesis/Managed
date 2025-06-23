@@ -33,7 +33,7 @@ namespace NoesisApp
 
             _window = new WindowClass(frame, style, NSBackingStore.Buffered, false);
             _window.AppKitDisplay = this;
-            _window.ReleasedWhenClosed = false;
+            _window.ReleaseWhenClosed(false);
             _window.BackgroundColor = NSColor.Black;
             _window.IsOpaque = true;
             _window.AcceptsMouseMovedEvents = true;

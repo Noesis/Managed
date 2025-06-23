@@ -11,6 +11,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -27,6 +28,33 @@ public class BulletDecorator : Decorator {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
+  protected override int VisualChildrenCount {
+    get {
+      return (int)GetVisualChildrenCountHelper();
+    }
+  }
+
+  protected override Visual GetVisualChild(int index) {
+    return GetVisualChildHelper((uint)index);
+  }
+
+  protected override void OnRender(DrawingContext context) {
+    OnRenderHelper(context);
+  }
+
+  protected override Size MeasureOverride(Size availableSize) {
+    Size desiredSize = Size.Empty;
+    MeasureOverrideHelper(availableSize, ref desiredSize);
+    return desiredSize;
+  }
+
+  protected override Size ArrangeOverride(Size finalSize) {
+    Size renderSize = Size.Empty;
+    ArrangeOverrideHelper(finalSize, ref renderSize);
+    return renderSize;
+  }
+
+  [DynamicDependency("Extend")]
   public BulletDecorator() {
   }
 
@@ -65,6 +93,28 @@ public class BulletDecorator : Decorator {
       IntPtr cPtr = NoesisGUI_PINVOKE.BulletDecorator_Bullet_get(swigCPtr);
       return (UIElement)Noesis.Extend.GetProxy(cPtr, false);
     }
+  }
+
+  private uint GetVisualChildrenCountHelper() {
+    uint ret = NoesisGUI_PINVOKE.BulletDecorator_GetVisualChildrenCountHelper(swigCPtr);
+    return ret;
+  }
+
+  private Visual GetVisualChildHelper(uint index) {
+    IntPtr cPtr = NoesisGUI_PINVOKE.BulletDecorator_GetVisualChildHelper(swigCPtr, index);
+    return (Visual)Noesis.Extend.GetProxy(cPtr, false);
+  }
+
+  private void OnRenderHelper(DrawingContext context) {
+    NoesisGUI_PINVOKE.BulletDecorator_OnRenderHelper(swigCPtr, DrawingContext.getCPtr(context));
+  }
+
+  private void MeasureOverrideHelper(Size availableSize, ref Size desiredSize) {
+    NoesisGUI_PINVOKE.BulletDecorator_MeasureOverrideHelper(swigCPtr, ref availableSize, ref desiredSize);
+  }
+
+  private void ArrangeOverrideHelper(Size finalSize, ref Size renderSize) {
+    NoesisGUI_PINVOKE.BulletDecorator_ArrangeOverrideHelper(swigCPtr, ref finalSize, ref renderSize);
   }
 
   internal new static IntPtr Extend(string typeName) {

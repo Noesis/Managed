@@ -212,12 +212,12 @@ public struct Matrix {
   }
 
   public bool HasInverse {
-    get { return Math.Abs(Determinant) >= 0.0001f; }
+    get { return Math.Abs(Determinant) > float.Epsilon; }
   }
 
   public void Invert() {
     float determinant = Determinant;
-    if (Math.Abs(determinant) < 0.0001f) {
+    if (Math.Abs(determinant) <= float.Epsilon) {
       throw new InvalidOperationException("Matrix is not Invertible");
     }
     float invdet = 1.0f / determinant;

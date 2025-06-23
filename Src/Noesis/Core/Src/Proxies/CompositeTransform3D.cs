@@ -35,16 +35,6 @@ public class CompositeTransform3D : Transform3D {
     return NoesisGUI_PINVOKE.new_CompositeTransform3D();
   }
 
-  public static Matrix3D ConstructTransform3DMatrix(float centerX, float centerY, float centerZ, float rotX, float rotY, float rotZ, float scaleX, float scaleY, float scaleZ, float transX, float transY, float transZ) {
-    IntPtr ret = NoesisGUI_PINVOKE.CompositeTransform3D_ConstructTransform3DMatrix(centerX, centerY, centerZ, rotX, rotY, rotZ, scaleX, scaleY, scaleZ, transX, transY, transZ);
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Matrix3D>(ret);
-    }
-    else {
-      return Matrix3D.Identity;
-    }
-  }
-
   public static DependencyProperty CenterXProperty {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.CompositeTransform3D_CenterXProperty_get();

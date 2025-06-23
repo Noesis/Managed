@@ -11,6 +11,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -47,6 +48,7 @@ public class MultiBinding : BindingBase {
     }
   }
 
+  [DynamicDependency("Extend")]
   public MultiBinding() {
   }
 

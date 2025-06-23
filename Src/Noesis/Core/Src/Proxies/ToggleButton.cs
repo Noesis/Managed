@@ -11,6 +11,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -57,6 +58,7 @@ public class ToggleButton : ButtonBase {
 
   #endregion
 
+  [DynamicDependency("Extend")]
   public ToggleButton() {
   }
 

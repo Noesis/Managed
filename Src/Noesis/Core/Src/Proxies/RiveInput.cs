@@ -35,6 +35,16 @@ public class RiveInput : Animatable {
     return NoesisGUI_PINVOKE.new_RiveInput();
   }
 
+  public static DependencyProperty InputPathProperty {
+    set {
+      NoesisGUI_PINVOKE.RiveInput_InputPathProperty_set(DependencyProperty.getCPtr(value));
+    } 
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.RiveInput_InputPathProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
   public static DependencyProperty InputNameProperty {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.RiveInput_InputNameProperty_get();
@@ -46,6 +56,17 @@ public class RiveInput : Animatable {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.RiveInput_InputValueProperty_get();
       return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public string InputPath {
+    set {
+      NoesisGUI_PINVOKE.RiveInput_InputPath_set(swigCPtr, value != null ? value : string.Empty);
+    }
+    get {
+      IntPtr strPtr = NoesisGUI_PINVOKE.RiveInput_InputPath_get(swigCPtr);
+      string str = Noesis.Extend.StringFromNativeUtf8(strPtr);
+      return str;
     }
   }
 

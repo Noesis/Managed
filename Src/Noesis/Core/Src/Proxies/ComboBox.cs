@@ -11,6 +11,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -27,6 +28,21 @@ public class ComboBox : Selector {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
+  protected override Size MeasureOverride(Size availableSize) {
+    Size desiredSize = Size.Empty;
+    MeasureOverrideHelper(availableSize, ref desiredSize);
+    return desiredSize;
+  }
+
+  protected override DependencyObject GetContainerForItemOverride() {
+    return new ComboBoxItem();
+  }
+
+  protected override bool IsItemItsOwnContainerOverride(object item) {
+    return item is ComboBoxItem;
+  }
+
+  [DynamicDependency("Extend")]
   public ComboBox() {
   }
 
@@ -191,6 +207,10 @@ public class ComboBox : Selector {
       string str = Noesis.Extend.StringFromNativeUtf8(strPtr);
       return str;
     }
+  }
+
+  private void MeasureOverrideHelper(Size availableSize, ref Size desiredSize) {
+    NoesisGUI_PINVOKE.ComboBox_MeasureOverrideHelper(swigCPtr, ref availableSize, ref desiredSize);
   }
 
   internal new static IntPtr Extend(string typeName) {

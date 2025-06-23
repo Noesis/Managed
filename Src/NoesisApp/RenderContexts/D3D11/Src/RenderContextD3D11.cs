@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 using Noesis;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
@@ -29,6 +30,9 @@ namespace NoesisApp
         private bool _vsync;
         private ImageCapture _imageCapture;
 
+        [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(SharpDX.Direct3D11.Device1))]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(SharpDX.DXGI.Device2))]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(Factory2))]
         public override void Init(IntPtr display, IntPtr window, uint samples, bool vsync, bool sRGB)
         {
             _display = display;
@@ -107,6 +111,7 @@ namespace NoesisApp
             _device.DisableScissorRect();
         }
 
+        [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(Texture2D))]
         public override ImageCapture CaptureRenderTarget(RenderTarget surface)
         {
             IntPtr texNativePtr = RenderDeviceD3D11.GetTextureNativePointer(surface.Texture);
@@ -160,6 +165,7 @@ namespace NoesisApp
             _swapChain.Present(_vsync ? 1 : 0, PresentFlags.None);
         }
 
+        [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(Texture2D))]
         public override void Resize()
         {
             _dev.ImmediateContext.OutputMerger.SetRenderTargets(null, (RenderTargetView)null);

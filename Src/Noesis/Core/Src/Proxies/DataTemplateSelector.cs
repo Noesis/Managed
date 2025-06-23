@@ -11,6 +11,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -31,6 +32,7 @@ public class DataTemplateSelector : BaseComponent {
     return null;
   }
 
+  [DynamicDependency("Extend")]
   public DataTemplateSelector() {
   }
 

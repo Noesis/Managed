@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -374,6 +375,11 @@ namespace Noesis
         public static void UnregisterNativeTypes()
         {
             Extend.UnregisterNativeTypes();
+        }
+
+        public static void RegisterType([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type type)
+        {
+            type.GetMembers();
         }
 
         #region Software Keyboard

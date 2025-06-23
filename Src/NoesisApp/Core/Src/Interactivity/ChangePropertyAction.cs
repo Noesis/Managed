@@ -1,6 +1,7 @@
 ﻿using Noesis;
 using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
 
@@ -116,6 +117,9 @@ namespace NoesisApp
             }
         }
 
+        [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Tested working if the type is registered.")]
+        [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Tested working if the type is registered.")]
+        [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Tested working if the type is registered.")]
         private bool UpdateProperty()
         {
             Type oldType = _property != null ? _property.PropertyType : null;

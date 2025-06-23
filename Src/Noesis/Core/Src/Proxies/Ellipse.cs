@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 namespace Noesis
 {
 
-public class Ellipse : Shape {
+public sealed class Ellipse : Shape {
   internal new static Ellipse CreateProxy(IntPtr cPtr, bool cMemoryOwn) {
     return new Ellipse(cPtr, cMemoryOwn);
   }
@@ -27,7 +27,7 @@ public class Ellipse : Shape {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
-  internal protected override Geometry DefiningGeometry {
+  protected override Geometry DefiningGeometry {
     get { return new EllipseGeometry(); }
   }
 

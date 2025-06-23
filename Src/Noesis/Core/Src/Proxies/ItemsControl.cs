@@ -12,6 +12,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -26,6 +27,12 @@ public class ItemsControl : Control {
 
   internal static HandleRef getCPtr(ItemsControl obj) {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
+  }
+
+  protected override Size MeasureOverride(Size availableSize) {
+    Size desiredSize = Size.Empty;
+    MeasureOverrideHelper(availableSize, ref desiredSize);
+    return desiredSize;
   }
 
   public static int GetAlternationIndex(DependencyObject element) {
@@ -46,22 +53,21 @@ public class ItemsControl : Control {
     }
   }
 
-  internal protected virtual DependencyObject GetContainerForItemOverride() {
-    return GetContainerForItemBase != null ? (DependencyObject)Noesis.Extend.GetProxy(GetContainerForItemBase(swigCPtr), true) : null;
+  protected virtual DependencyObject GetContainerForItemOverride() {
+    return new ContentPresenter();
+  }
+  internal DependencyObject InternalGetContainerForItemOverride() {
+    return GetContainerForItemOverride();
   }
 
-  internal protected virtual bool IsItemItsOwnContainerOverride(object item) {
-    return IsItemItsOwnContainerBase != null ? IsItemItsOwnContainerBase(swigCPtr, Noesis.Extend.GetInstanceHandle(item)) : false;
+  protected virtual bool IsItemItsOwnContainerOverride(object item) {
+    return item is UIElement;
+  }
+  internal bool InternalIsItemItsOwnContainerOverride(object item) {
+    return IsItemItsOwnContainerOverride(item);
   }
 
-  [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-  internal delegate IntPtr GetContainerForItemBaseCallback(HandleRef cPtr);
-  internal GetContainerForItemBaseCallback GetContainerForItemBase = null;
-
-  [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-  internal delegate bool IsItemItsOwnContainerBaseCallback(HandleRef cPtr, HandleRef item);
-  internal IsItemItsOwnContainerBaseCallback IsItemItsOwnContainerBase = null;
-
+  [DynamicDependency("Extend")]
   public ItemsControl() {
   }
 
@@ -239,6 +245,10 @@ public class ItemsControl : Control {
       IntPtr cPtr = NoesisGUI_PINVOKE.ItemsControl_Items_get(swigCPtr);
       return (ItemCollection)Noesis.Extend.GetProxy(cPtr, false);
     }
+  }
+
+  private void MeasureOverrideHelper(Size availableSize, ref Size desiredSize) {
+    NoesisGUI_PINVOKE.ItemsControl_MeasureOverrideHelper(swigCPtr, ref availableSize, ref desiredSize);
   }
 
   private static int Get_AlternationIndex(DependencyObject element) {

@@ -11,6 +11,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -58,6 +59,7 @@ public class Binding : BindingBase {
     }
   }
 
+  [DynamicDependency("Extend")]
   public Binding() {
   }
 

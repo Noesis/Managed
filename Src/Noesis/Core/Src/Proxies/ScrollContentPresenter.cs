@@ -35,11 +35,6 @@ public class ScrollContentPresenter : ContentPresenter, Noesis.IScrollInfo {
     return NoesisGUI_PINVOKE.new_ScrollContentPresenter();
   }
 
-  public AdornerLayer GetAdornerLayer() {
-    IntPtr cPtr = NoesisGUI_PINVOKE.ScrollContentPresenter_GetAdornerLayer(swigCPtr);
-    return (AdornerLayer)Noesis.Extend.GetProxy(cPtr, false);
-  }
-
   public void LineLeft() {
     NoesisGUI_PINVOKE.ScrollContentPresenter_LineLeft(swigCPtr);
   }
@@ -126,6 +121,13 @@ public class ScrollContentPresenter : ContentPresenter, Noesis.IScrollInfo {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.ScrollContentPresenter_CanContentScrollProperty_get();
       return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public AdornerLayer AdornerLayer {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.ScrollContentPresenter_AdornerLayer_get(swigCPtr);
+      return (AdornerLayer)Noesis.Extend.GetProxy(cPtr, false);
     }
   }
 

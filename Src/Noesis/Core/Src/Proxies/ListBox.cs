@@ -12,6 +12,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -34,6 +35,15 @@ public class ListBox : Selector {
     }
   }
 
+  protected override DependencyObject GetContainerForItemOverride() {
+    return new ListBoxItem();
+  }
+
+  protected override bool IsItemItsOwnContainerOverride(object item) {
+    return item is ListBoxItem;
+  }
+
+  [DynamicDependency("Extend")]
   public ListBox() {
   }
 

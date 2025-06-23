@@ -14,7 +14,9 @@ namespace NoesisApp
 
         ~RenderContextNSGL()
         {
+            #pragma warning disable CA1422
             NSOpenGLContext.ClearCurrentContext();
+            #pragma warning restore CA1422
         }
 
         public override RenderDevice Device
@@ -33,6 +35,7 @@ namespace NoesisApp
             _display = display;
             _window = window;
 
+            #pragma warning disable CA1422
             NSOpenGLPixelFormatAttribute[] attrs =
             {
                 NSOpenGLPixelFormatAttribute.OpenGLProfile, (NSOpenGLPixelFormatAttribute)NSOpenGLProfile.Version3_2Core,
@@ -63,6 +66,7 @@ namespace NoesisApp
 
             _context.View = view;
             _context.MakeCurrentContext();
+            #pragma warning restore CA1422
 
             _device = new RenderDeviceGL();
         }
@@ -71,7 +75,9 @@ namespace NoesisApp
 
         public override void BeginRender()
         {
+            #pragma warning disable CA1422
             _context.MakeCurrentContext();
+            #pragma warning restore CA1422
         }
 
         public override void EndRender()
@@ -141,12 +147,16 @@ namespace NoesisApp
 
         public override void Swap()
         {
+            #pragma warning disable CA1422
             _context.FlushBuffer();
+            #pragma warning restore CA1422
         }
 
         public override void Resize()
         {
+            #pragma warning disable CA1422
             _context.Update();
+            #pragma warning restore CA1422
         }
 
         private const uint GL_FRAMEBUFFER = 0x8D40;

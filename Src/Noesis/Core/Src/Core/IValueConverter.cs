@@ -22,4 +22,24 @@ namespace Noesis
         /// <param name="culture">The culture to use in the converter.</param>
         object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture);
     }
+
+    internal class NativeValueConverter: BaseComponent, IValueConverter
+    {
+        internal NativeValueConverter(IntPtr cPtr, bool cMemoryOwn) : base(cPtr, cMemoryOwn) { }
+
+        internal new static NativeValueConverter CreateProxy(IntPtr cPtr, bool cMemoryOwn)
+        {
+            return new NativeValueConverter(cPtr, cMemoryOwn);
+        }
+
+        object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+
+        object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
 }

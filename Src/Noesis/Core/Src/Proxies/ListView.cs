@@ -11,6 +11,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -27,6 +28,15 @@ public class ListView : ListBox {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
+  protected override DependencyObject GetContainerForItemOverride() {
+    return new ListViewItem();
+  }
+
+  protected override bool IsItemItsOwnContainerOverride(object item) {
+    return item is ListViewItem;
+  }
+
+  [DynamicDependency("Extend")]
   public ListView() {
   }
 

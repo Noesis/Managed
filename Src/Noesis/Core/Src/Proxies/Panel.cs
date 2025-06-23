@@ -11,6 +11,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -27,7 +28,22 @@ public class Panel : FrameworkElement {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
+  [DynamicDependency("Extend")]
   protected Panel() {
+  }
+
+  protected override int VisualChildrenCount {
+    get {
+      return (int)GetVisualChildrenCountHelper();
+    }
+  }
+
+  protected override Visual GetVisualChild(int index) {
+    return GetVisualChildHelper((uint)index);
+  }
+
+  protected override void OnRender(DrawingContext context) {
+    OnRenderHelper(context);
   }
 
   public static int GetZIndex(DependencyObject element) {
@@ -91,6 +107,20 @@ public class Panel : FrameworkElement {
       IntPtr cPtr = NoesisGUI_PINVOKE.Panel_Children_get(swigCPtr);
       return (UIElementCollection)Noesis.Extend.GetProxy(cPtr, false);
     }
+  }
+
+  private uint GetVisualChildrenCountHelper() {
+    uint ret = NoesisGUI_PINVOKE.Panel_GetVisualChildrenCountHelper(swigCPtr);
+    return ret;
+  }
+
+  private Visual GetVisualChildHelper(uint index) {
+    IntPtr cPtr = NoesisGUI_PINVOKE.Panel_GetVisualChildHelper(swigCPtr, index);
+    return (Visual)Noesis.Extend.GetProxy(cPtr, false);
+  }
+
+  private void OnRenderHelper(DrawingContext context) {
+    NoesisGUI_PINVOKE.Panel_OnRenderHelper(swigCPtr, DrawingContext.getCPtr(context));
   }
 
   internal new static IntPtr Extend(string typeName) {

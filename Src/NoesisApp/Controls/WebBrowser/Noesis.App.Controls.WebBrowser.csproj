@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>1.0.6</Version>
+    <TargetFramework>net8.0</TargetFramework>
+    <Version>1.0.12</Version>
     <Authors>Noesis Technologies</Authors>
     <Description>Hosts and navigates between HTML documents</Description>
     <Copyright>Copyright (c) 2013 Noesis Technologies S.L.</Copyright>
@@ -16,10 +16,18 @@
     <RootNamespace>NoesisApp</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageOutputPath>$(SolutionDir)NuGet\</PackageOutputPath>
-    <AssemblyVersion>1.0.6.0</AssemblyVersion>
-    <FileVersion>1.0.6.0</FileVersion>
+    <AssemblyVersion>1.0.12.15093</AssemblyVersion>
+    <FileVersion>1.0.12.15093</FileVersion>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <Content Include="$(SolutionDir)LICENSE.txt" PackagePath="" Pack="true" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="$(SolutionDir)Icon-256.png" Pack="true" PackagePath="\" />
   </ItemGroup>
@@ -31,7 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CefGlue.Common" Version="91.4472.10" />
+    <PackageReference Include="Noesis.CefGlue" Version="120.6099.2" />
   </ItemGroup>
 
   <ItemGroup>

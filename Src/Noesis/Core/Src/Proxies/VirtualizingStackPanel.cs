@@ -27,6 +27,18 @@ public class VirtualizingStackPanel : VirtualizingPanel, Noesis.IScrollInfo {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
+  protected override Size MeasureOverride(Size availableSize) {
+    Size desiredSize = Size.Empty;
+    MeasureOverrideHelper(availableSize, ref desiredSize);
+    return desiredSize;
+  }
+
+  protected override Size ArrangeOverride(Size finalSize) {
+    Size renderSize = Size.Empty;
+    ArrangeOverrideHelper(finalSize, ref renderSize);
+    return renderSize;
+  }
+
   public VirtualizingStackPanel() {
   }
 
@@ -204,6 +216,14 @@ public class VirtualizingStackPanel : VirtualizingPanel, Noesis.IScrollInfo {
       IntPtr cPtr = NoesisGUI_PINVOKE.VirtualizingStackPanel_ScrollOwner_get(swigCPtr);
       return (ScrollViewer)Noesis.Extend.GetProxy(cPtr, false);
     }
+  }
+
+  private void MeasureOverrideHelper(Size availableSize, ref Size desiredSize) {
+    NoesisGUI_PINVOKE.VirtualizingStackPanel_MeasureOverrideHelper(swigCPtr, ref availableSize, ref desiredSize);
+  }
+
+  private void ArrangeOverrideHelper(Size finalSize, ref Size renderSize) {
+    NoesisGUI_PINVOKE.VirtualizingStackPanel_ArrangeOverrideHelper(swigCPtr, ref finalSize, ref renderSize);
   }
 
 }

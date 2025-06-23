@@ -2,9 +2,9 @@
 
   <PropertyGroup>
     <TargetFrameworks>net45;netcoreapp3.1;net5.0-windows</TargetFrameworks>
-    <Version>3.0.30</Version>
-    <AssemblyVersion>3.0.30.13778</AssemblyVersion>
-    <FileVersion>3.0.30.13778</FileVersion>
+    <Version>3.0.31</Version>
+    <AssemblyVersion>3.0.31.14615</AssemblyVersion>
+    <FileVersion>3.0.31.14615</FileVersion>
     <Authors>Noesis Technologies</Authors>
     <Description>Extends Blend with new attached properties and types that expose features included in NoesisGUI.</Description>
     <Copyright>Copyright (c) 2013 Noesis Technologies S.L.</Copyright>

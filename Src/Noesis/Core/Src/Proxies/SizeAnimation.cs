@@ -11,6 +11,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -133,6 +134,7 @@ public class SizeAnimation : SizeAnimationBase {
     }
   }
 
+  [DynamicDependency("Extend")]
   public SizeAnimation() {
   }
 

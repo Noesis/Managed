@@ -11,6 +11,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -27,6 +28,23 @@ public class Border : Decorator {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
+  protected override void OnRender(DrawingContext context) {
+    OnRenderHelper(context);
+  }
+
+  protected override Size MeasureOverride(Size availableSize) {
+    Size desiredSize = Size.Empty;
+    MeasureOverrideHelper(availableSize, ref desiredSize);
+    return desiredSize;
+  }
+
+  protected override Size ArrangeOverride(Size finalSize) {
+    Size renderSize = Size.Empty;
+    ArrangeOverrideHelper(finalSize, ref renderSize);
+    return renderSize;
+  }
+
+  [DynamicDependency("Extend")]
   public Border(bool logicalChild) : this(NoesisGUI_PINVOKE.new_Border__SWIG_0(logicalChild), true) {
   }
 
@@ -147,6 +165,18 @@ public class Border : Decorator {
       }
     }
 
+  }
+
+  private void OnRenderHelper(DrawingContext context) {
+    NoesisGUI_PINVOKE.Border_OnRenderHelper(swigCPtr, DrawingContext.getCPtr(context));
+  }
+
+  private void MeasureOverrideHelper(Size availableSize, ref Size desiredSize) {
+    NoesisGUI_PINVOKE.Border_MeasureOverrideHelper(swigCPtr, ref availableSize, ref desiredSize);
+  }
+
+  private void ArrangeOverrideHelper(Size finalSize, ref Size renderSize) {
+    NoesisGUI_PINVOKE.Border_ArrangeOverrideHelper(swigCPtr, ref finalSize, ref renderSize);
   }
 
   internal new static IntPtr Extend(string typeName) {

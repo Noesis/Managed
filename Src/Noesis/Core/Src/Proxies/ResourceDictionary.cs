@@ -13,6 +13,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -90,7 +91,7 @@ public class ResourceDictionary : BaseDictionary, IDictionary {
   }
 
   #region Key validation
-  private string GetValidKey(object key) {
+  internal static string GetValidKey(object key) {
     if (key is string) {
       return (string)key;
     }
@@ -286,6 +287,7 @@ public class ResourceDictionary : BaseDictionary, IDictionary {
     }
   }
 
+  [DynamicDependency("Extend")]
   public ResourceDictionary() {
   }
 

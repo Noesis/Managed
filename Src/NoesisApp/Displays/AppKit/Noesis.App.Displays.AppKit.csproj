@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>xamarinmac20</TargetFramework>
-    <TargetFrameworkIdentifier>Xamarin.Mac</TargetFrameworkIdentifier>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
-    <LanguageTargets Condition="'$(OS)' != 'Unix'">$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets</LanguageTargets>
+    <TargetFrameworks>xamarinmac20;net8.0-macos</TargetFrameworks>
+    <TargetFrameworkIdentifier Condition="'$(TargetFramework)' == 'xamarinmac20'">Xamarin.Mac</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion Condition="'$(TargetFramework)' == 'xamarinmac20'">v2.0</TargetFrameworkVersion>
+    <LanguageTargets Condition="'$(OS)' != 'Unix' And '$(TargetFramework)' == 'xamarinmac20'">$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets</LanguageTargets>
     <Version>3.0.0</Version>
     <Authors>Noesis Technologies</Authors>
     <Description>NoesisGUI macOS Display</Description>
@@ -12,7 +12,7 @@
     <PackageProjectUrl>https://www.noesisengine.com</PackageProjectUrl>
     <PackageIconUrl>https://www.noesisengine.com/images/logos/Icon-256.png</PackageIconUrl>
     <PackageIcon>Icon-256.png</PackageIcon>
-    <RepositoryUrl>https://github.com/Noesis//Managed/tree/master/Src/NoesisApp/Displays/AppKit</RepositoryUrl>
+    <RepositoryUrl>https://github.com/Noesis/Managed/tree/master/Src/NoesisApp/Displays/AppKit</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>NoesisGUI XAML GUI C# macOS Xamarin</PackageTags>
     <PackageReleaseNotes>https://www.noesisengine.com/docs/Gui.Core.Changelog.html</PackageReleaseNotes>
@@ -22,9 +22,9 @@
     <OutputPath Condition="'$(OS)' == 'Unix'">bin/$(Configuration)/$(TargetFramework)</OutputPath>
   </PropertyGroup>
 
-  <Import Condition="'$(OS)' == 'Unix'" Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
+  <Import Condition="'$(OS)' == 'Unix' And '$(TargetFramework)' == 'xamarinmac20'" Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'xamarinmac20'">
     <Reference Include="netstandard" />
     <Reference Include="System" />
     <Reference Include="System.Xml" />

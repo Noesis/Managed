@@ -11,6 +11,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -48,6 +49,7 @@ public class ListBoxItem : ContentControl {
 
   #endregion
 
+  [DynamicDependency("Extend")]
   public ListBoxItem() {
   }
 

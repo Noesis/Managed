@@ -11,6 +11,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -27,6 +28,17 @@ public class TickBar : FrameworkElement {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
+  protected override void OnRender(DrawingContext context) {
+    OnRenderHelper(context);
+  }
+
+  protected override Size MeasureOverride(Size availableSize) {
+    Size desiredSize = Size.Empty;
+    MeasureOverrideHelper(availableSize, ref desiredSize);
+    return desiredSize;
+  }
+
+  [DynamicDependency("Extend")]
   public TickBar() {
   }
 
@@ -226,6 +238,14 @@ public class TickBar : FrameworkElement {
       string str = Noesis.Extend.StringFromNativeUtf8(strPtr);
       return str;
     }
+  }
+
+  private void OnRenderHelper(DrawingContext context) {
+    NoesisGUI_PINVOKE.TickBar_OnRenderHelper(swigCPtr, DrawingContext.getCPtr(context));
+  }
+
+  private void MeasureOverrideHelper(Size availableSize, ref Size desiredSize) {
+    NoesisGUI_PINVOKE.TickBar_MeasureOverrideHelper(swigCPtr, ref availableSize, ref desiredSize);
   }
 
   internal new static IntPtr Extend(string typeName) {

@@ -33,6 +33,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Noesis.App.csproj">
+      <SetTargetFramework>TargetFramework=netstandard2.0</SetTargetFramework>
       <PrivateAssets>contentfiles;analyzers</PrivateAssets>
     </ProjectReference>
   </ItemGroup>

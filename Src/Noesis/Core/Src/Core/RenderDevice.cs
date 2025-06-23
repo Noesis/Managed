@@ -384,6 +384,10 @@ namespace Noesis
         Equal_Decr,
         /// <summary>Set the stencil data to 0</summary>
         Clear,
+        /// <summary>Stencil disabled and Depth enabled</summary>
+        Disabled_ZTest,
+        /// <summary>Stencil and Depth enabled</summary>
+        Equal_Keep_ZTest
     }
 
     /// <summary>
@@ -484,6 +488,10 @@ namespace Noesis
         public readonly Shader Shader;
         public readonly RenderState RenderState;
         public readonly byte StencilRef;
+
+        /// <summary>Single Pass Stereo renders both left and right eye images at the same time</summary>
+        [MarshalAs(UnmanagedType.U1)]
+        public readonly bool SinglePassStereo;
 
         /// <summary>Draw parameters</summary>
         public readonly uint VertexOffset;
@@ -1119,7 +1127,7 @@ namespace Noesis
 
         #region Imports
         [DllImport(Library.Name)]
-        static extern uint Noesis_RenderDevice_SetCallbacks(
+        static extern void Noesis_RenderDevice_SetCallbacks(
             Callback_GetCaps getCaps,
             Callback_CreateRenderTarget createRenderTarget,
             Callback_CloneRenderTarget cloneRenderTarget,
@@ -1214,7 +1222,8 @@ namespace Noesis
                 throw new ArgumentNullException("surface");
             }
 
-            IntPtr cPtr = Noesis_RenderDevice_CloneRenderTarget(swigCPtr, BaseComponent.getCPtr(surface));
+            IntPtr cPtr = Noesis_RenderDevice_CloneRenderTarget(swigCPtr, label,
+                BaseComponent.getCPtr(surface));
 
             return new NativeRenderTarget(cPtr, true);
         }
@@ -1276,7 +1285,7 @@ namespace Noesis
             {
                 throw new ArgumentNullException("texture");
             }
-            if (data == null)
+            if (data == IntPtr.Zero)
             {
                 throw new ArgumentNullException("data");
             }
@@ -1363,10 +1372,12 @@ namespace Noesis
 
         [DllImport(Library.Name)]
         static extern IntPtr Noesis_RenderDevice_CreateRenderTarget(HandleRef device,
-            [MarshalAs(UnmanagedType.LPWStr)]string label, uint width, uint height, uint sampleCount, bool needsStencil);
+            [MarshalAs(UnmanagedType.LPWStr)]string label, uint width, uint height,
+            uint sampleCount, bool needsStencil);
 
         [DllImport(Library.Name)]
-        static extern IntPtr Noesis_RenderDevice_CloneRenderTarget(HandleRef device, HandleRef surface);
+        static extern IntPtr Noesis_RenderDevice_CloneRenderTarget(HandleRef device,
+            [MarshalAs(UnmanagedType.LPWStr)] string label, HandleRef surface);
 
         [DllImport(Library.Name)]
         static extern void Noesis_RenderDevice_SetRenderTarget(HandleRef device, HandleRef surface);
@@ -1562,7 +1573,7 @@ namespace Noesis
         /// </summary>
         public void SetCommandList(IntPtr commands, long fenceValue)
         {
-            Noesis_RenderDeviceD3D12_SetCommandList(swigCPtr, commands, fenceValue);
+            Noesis_RenderDeviceD3D12_SetCommandList(swigCPtr, commands, (ulong)fenceValue);
         }
 
         #region Imports
@@ -1580,7 +1591,7 @@ namespace Noesis
 
         [DllImport(Library.Name)]
         static extern void Noesis_RenderDeviceD3D12_SetCommandList(HandleRef device, IntPtr commands,
-            long fenceValue);
+            ulong fenceValue);
     }
 
     /// <summary>
@@ -1754,7 +1765,7 @@ namespace Noesis
             int width, int height, int numMipMaps, bool isInverted, bool hasAlpha);
 
         [DllImport(Library.Name)]
-        static extern IntPtr Noesis_RenderDeviceGNM_SetContext(HandleRef device, IntPtr context);
+        static extern void Noesis_RenderDeviceGNM_SetContext(HandleRef device, IntPtr context);
         #endregion
     }
 
@@ -1847,7 +1858,7 @@ namespace Noesis
             int width, int height, int numMipMaps, bool isInverted, bool hasAlpha);
 
         [DllImport(Library.Name)]
-        static extern IntPtr Noesis_RenderDeviceAGC_SetCommandBuffer(HandleRef device,
+        static extern void Noesis_RenderDeviceAGC_SetCommandBuffer(HandleRef device,
             IntPtr drawCommandBuffer);
         #endregion
     }

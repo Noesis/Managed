@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>xamarinios10</TargetFramework>
-    <TargetFrameworkIdentifier>Xamarin.iOS</TargetFrameworkIdentifier>
-    <TargetFrameworkVersion>v1.0</TargetFrameworkVersion>
-    <LanguageTargets Condition="'$(OS)' != 'Unix'">$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets</LanguageTargets>
+    <TargetFrameworks>xamarinios10;net8.0-ios</TargetFrameworks>
+    <TargetFrameworkIdentifier Condition="'$(TargetFramework)' == 'xamarinios10'">Xamarin.iOS</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion Condition="'$(TargetFramework)' == 'xamarinios10'">v1.0</TargetFrameworkVersion>
+    <LanguageTargets Condition="'$(OS)' != 'Unix' And '$(TargetFramework)' == 'xamarinios10'">$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets</LanguageTargets>
     <Version>3.0.0</Version>
     <Authors>Noesis Technologies</Authors>
     <Description>NoesisGUI iOS Display</Description>
@@ -22,9 +22,9 @@
     <OutputPath Condition="'$(OS)' == 'Unix'">bin/$(Configuration)/$(TargetFramework)</OutputPath>
   </PropertyGroup>
 
-  <Import Condition="'$(OS)' == 'Unix'" Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
+  <Import Condition="'$(OS)' == 'Unix' And '$(TargetFramework)' == 'xamarinios10'" Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'xamarinios10'">
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />

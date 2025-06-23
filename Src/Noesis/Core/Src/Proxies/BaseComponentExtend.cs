@@ -1,10 +1,12 @@
 using System;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
     public partial class BaseComponent
     {
+        [DynamicDependency("Extend")]
         protected BaseComponent()
         {
             Type type = this.GetType();

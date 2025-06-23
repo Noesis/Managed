@@ -11,6 +11,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -751,13 +752,12 @@ public class UIElement : Visual {
   #endregion
 
   #region OnRender
-  internal protected virtual void OnRender(DrawingContext context) {
-    OnRenderBase?.Invoke(swigCPtr, BaseComponent.getCPtr(context));
+  protected virtual void OnRender(DrawingContext context) {
   }
 
-  [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-  internal delegate void RenderBaseCallback(HandleRef cPtr, HandleRef context);
-  internal RenderBaseCallback OnRenderBase = null;
+  internal void InternalOnRender(DrawingContext context) {
+    OnRender(context);
+  }
   #endregion
 
   /// <summary>
@@ -774,6 +774,7 @@ public class UIElement : Visual {
     return ReleaseTouchCapture(touchDevice.Id);
   }
 
+  [DynamicDependency("Extend")]
   public UIElement() {
   }
 

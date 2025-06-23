@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -160,6 +161,7 @@ namespace Noesis
             }
         }
 
+        [UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "Tested working if the type is registered.")]
         private static object GenerateDefaultValue(Type type)
         {
             if (type == typeof(string))

@@ -11,6 +11,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -27,6 +28,7 @@ public class Visual : DependencyObject {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
+  [DynamicDependency("Extend")]
   protected Visual() {
   }
 
@@ -43,23 +45,19 @@ public class Visual : DependencyObject {
     }
   }
 
-  internal protected virtual int VisualChildrenCount {
+  protected virtual int VisualChildrenCount => 0;
+  internal int InternalVisualChildrenCount {
     get {
-      return ChildrenCountBase != null ? ChildrenCountBase(swigCPtr) : 0;
+      return VisualChildrenCount;
     }
   }
 
-  internal protected virtual Visual GetVisualChild(int index) {
-    return GetChildBase != null ? (Visual)Noesis.Extend.GetProxy(GetChildBase(swigCPtr, index), false) : null;
+  protected virtual Visual GetVisualChild(int index) {
+    throw new ArgumentOutOfRangeException("index", index, "Visual does not have children");
   }
-
-  [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-  internal delegate int ChildrenCountBaseCallback(HandleRef cPtr);
-  internal ChildrenCountBaseCallback ChildrenCountBase = null;
-
-  [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-  internal delegate IntPtr GetChildBaseCallback(HandleRef cPtr, int index);
-  internal GetChildBaseCallback GetChildBase = null;
+  internal Visual InternalGetVisualChild(int index) {
+    return GetVisualChild(index);
+  }
 
   public bool IsAncestorOf(Visual visual) {
     if (visual == null) throw new ArgumentNullException("visual");

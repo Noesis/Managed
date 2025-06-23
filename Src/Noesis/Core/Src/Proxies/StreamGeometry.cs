@@ -32,15 +32,15 @@ public class StreamGeometry : Geometry {
     return ToStringHelper();
   }
 
-  public StreamGeometry(string data) : this(NoesisGUI_PINVOKE.new_StreamGeometry__SWIG_0(data != null ? data : string.Empty), true) {
-  }
-
   public StreamGeometry() {
   }
 
   protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
     registerExtend = false;
-    return NoesisGUI_PINVOKE.new_StreamGeometry__SWIG_1();
+    return NoesisGUI_PINVOKE.new_StreamGeometry__SWIG_0();
+  }
+
+  public StreamGeometry(string data) : this(NoesisGUI_PINVOKE.new_StreamGeometry__SWIG_1(data != null ? data : string.Empty), true) {
   }
 
   public void SetData(string data) {

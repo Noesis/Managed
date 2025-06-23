@@ -11,6 +11,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
@@ -23,10 +24,12 @@ public abstract class Shape : FrameworkElement {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
+  [DynamicDependency("Extend")]
   protected Shape() {
   }
 
-  internal protected abstract Geometry DefiningGeometry { get; }
+  protected abstract Geometry DefiningGeometry { get; }
+  internal Geometry InternalDefiningGeometry { get { return DefiningGeometry; } }
 
   public static DependencyProperty FillProperty {
     get {

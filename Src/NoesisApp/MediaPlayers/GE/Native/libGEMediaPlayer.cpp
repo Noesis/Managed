@@ -67,9 +67,9 @@ GLuint mBlankProgram;
 GLuint mVertexBuffer;
 GLuint mIndexBuffer;
 GLint mYuyvSamplerLocation;
-PFNEGLCREATEIMAGEKHRPROC eglCreateImageKHR;
-PFNEGLDESTROYIMAGEKHRPROC eglDestroyImageKHR;
-PFNGLEGLIMAGETARGETTEXTURE2DOESPROC glEGLImageTargetTexture2DOES;
+PFNEGLCREATEIMAGEKHRPROC CreateImageKHR = 0;
+PFNEGLDESTROYIMAGEKHRPROC DestroyImageKHR = 0;
+PFNGLEGLIMAGETARGETTEXTURE2DOESPROC EGLImageTargetTexture2DOES = 0;
 
 typedef unsigned int (*ReadStream)(const void* streamPtr, void* buffer, unsigned int size);
 typedef unsigned int (*SeekStream)(const void* streamPtr, unsigned int offset);
@@ -157,8 +157,11 @@ void* VideoThreadFunc(void* state)
 
 extern "C" void InitMediaPlayer()
 {
-    if (glEGLImageTargetTexture2DOES == 0)
+    static bool IsInitialized = false;
+    if (IsInitialized == false)
     {
+        IsInitialized = true;
+
         mVertexShader = glCreateShader(GL_VERTEX_SHADER);
         glShaderSource(mVertexShader, 1, &VertexShaderSource, nullptr);
         glCompileShader(mVertexShader);
@@ -200,9 +203,9 @@ extern "C" void InitMediaPlayer()
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIndexBuffer);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-        eglCreateImageKHR = (PFNEGLCREATEIMAGEKHRPROC)eglGetProcAddress("eglCreateImageKHR");
-        eglDestroyImageKHR = (PFNEGLDESTROYIMAGEKHRPROC)eglGetProcAddress("eglDestroyImageKHR");
-        glEGLImageTargetTexture2DOES = (PFNGLEGLIMAGETARGETTEXTURE2DOESPROC)eglGetProcAddress("glEGLImageTargetTexture2DOES");
+        CreateImageKHR = (PFNEGLCREATEIMAGEKHRPROC)eglGetProcAddress("eglCreateImageKHR");
+        DestroyImageKHR = (PFNEGLDESTROYIMAGEKHRPROC)eglGetProcAddress("eglDestroyImageKHR");
+        EGLImageTargetTexture2DOES = (PFNGLEGLIMAGETARGETTEXTURE2DOESPROC)eglGetProcAddress("glEGLImageTargetTexture2DOES");
     }
 }
 
@@ -568,17 +571,17 @@ extern "C" void RenderFrame(void* state)
         EGL_NONE
     };
 
-    EGLImageKHR image = eglCreateImageKHR (display, EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, NULL, attribs);
-    glEGLImageTargetTexture2DOES(GL_TEXTURE_EXTERNAL_OES, image);
-    // eglDestroyImageKHR(display, image);
+    EGLImageKHR image = CreateImageKHR (display, EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, NULL, attribs);
+    EGLImageTargetTexture2DOES(GL_TEXTURE_EXTERNAL_OES, image);
+    // DestroyImageKHR(display, image);
 
     glUniform1i(mYuyvSamplerLocation, 0);
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0);
     // glFinish();
     // printf("frametime %lu\n", st->time);
-    glEGLImageTargetTexture2DOES(GL_TEXTURE_EXTERNAL_OES, EGL_NO_IMAGE_KHR);
-    eglDestroyImageKHR(display, image);
+    EGLImageTargetTexture2DOES(GL_TEXTURE_EXTERNAL_OES, EGL_NO_IMAGE_KHR);
+    DestroyImageKHR(display, image);
     close(st->fd);
     st->fd = -1;
     // st->fd = 0;

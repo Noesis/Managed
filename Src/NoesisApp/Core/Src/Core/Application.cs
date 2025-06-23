@@ -1,9 +1,11 @@
 ﻿using System;
 using Noesis;
 using NoesisApp;
+using NoesisGUIExtensions;
 using System.Threading;
 using System.IO;
 using System.Reflection;
+using System.Diagnostics.CodeAnalysis;
 
 namespace NoesisApp
 {
@@ -141,7 +143,8 @@ namespace NoesisApp
                     key = name != null ? reader.ReadLine() : null;
                 }
 
-                if (name != null && key != null)
+                if (name != null && name != "LICENSE_NAME" &&
+                    key != null && key != "LICENSE_KEY")
                 {
                     return new LicenseInfo { Name = name, Key = key };
                 }
@@ -195,6 +198,8 @@ namespace NoesisApp
 
         private void Start()
         {
+            RegisterTypes();
+
             // Create application display
             Display = CreateDisplay();
 
@@ -465,6 +470,69 @@ namespace NoesisApp
         protected virtual FontProvider CreateFontProvider()
         {
             return null;
+        }
+
+        /// <summary>
+        ///  Register your component types for use with Native AOT
+        /// </summary>
+        [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Tested working if the type is registered.")]
+        [UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Tested working if the type is registered.")]
+        [UnconditionalSuppressMessage("AOT", "IL3050", Justification = "Tested working if the type is registered.")]
+        protected virtual void RegisterTypes()
+        {
+            // Core types
+            Noesis.GUI.RegisterType(typeof(Application));
+            Noesis.GUI.RegisterType(typeof(Window));
+
+            // InteractivityTypes
+            Noesis.GUI.RegisterType(typeof(Interaction));
+            Noesis.GUI.RegisterType(typeof(StyleInteraction));
+            Noesis.GUI.RegisterType(typeof(BehaviorCollection));
+            Noesis.GUI.RegisterType(typeof(TriggerCollection));
+            Noesis.GUI.RegisterType(typeof(StyleBehaviorCollection));
+            Noesis.GUI.RegisterType(typeof(StyleTriggerCollection));
+            Noesis.GUI.RegisterType(typeof(EventTrigger));
+            Noesis.GUI.RegisterType(typeof(PropertyChangedTrigger));
+            Noesis.GUI.RegisterType(typeof(DataTrigger));
+            Noesis.GUI.RegisterType(typeof(DataEventTrigger));
+            Noesis.GUI.RegisterType(typeof(KeyTrigger));
+            Noesis.GUI.RegisterType(typeof(GamepadTrigger));
+            Noesis.GUI.RegisterType(typeof(StoryboardCompletedTrigger));
+            Noesis.GUI.RegisterType(typeof(TimerTrigger));
+            Noesis.GUI.RegisterType(typeof(LoadContentAction));
+            Noesis.GUI.RegisterType(typeof(MouseDragElementBehavior));
+            Noesis.GUI.RegisterType(typeof(TranslateZoomRotateBehavior));
+            Noesis.GUI.RegisterType(typeof(ConditionBehavior));
+            Noesis.GUI.RegisterType(typeof(ConditionalExpression));
+            Noesis.GUI.RegisterType(typeof(ComparisonCondition));
+            Noesis.GUI.RegisterType(typeof(GoToStateAction));
+            Noesis.GUI.RegisterType(typeof(InvokeCommandAction));
+            Noesis.GUI.RegisterType(typeof(ChangePropertyAction));
+            Noesis.GUI.RegisterType(typeof(ControlStoryboardAction));
+            Noesis.GUI.RegisterType(typeof(RemoveElementAction));
+            Noesis.GUI.RegisterType(typeof(LaunchUriOrFileAction));
+            Noesis.GUI.RegisterType(typeof(PlaySoundAction));
+            Noesis.GUI.RegisterType(typeof(PlayMediaAction));
+            Noesis.GUI.RegisterType(typeof(PauseMediaAction));
+            Noesis.GUI.RegisterType(typeof(RewindMediaAction));
+            Noesis.GUI.RegisterType(typeof(StopMediaAction));
+            Noesis.GUI.RegisterType(typeof(SetFocusAction));
+            Noesis.GUI.RegisterType(typeof(MoveFocusAction));
+            Noesis.GUI.RegisterType(typeof(SelectAction));
+            Noesis.GUI.RegisterType(typeof(SelectAllAction));
+            Noesis.GUI.RegisterType(typeof(CollectionFilterBehavior));
+            Noesis.GUI.RegisterType(typeof(CollectionSortBehavior));
+            Noesis.GUI.RegisterType(typeof(BackgroundEffectBehavior));
+            Noesis.GUI.RegisterType(typeof(LineDecorationBehavior));
+            Noesis.GUI.RegisterType(typeof(TriggerAction));
+            Noesis.GUI.RegisterType(typeof(TriggerActionCollection));
+
+            // Localization types
+            Noesis.GUI.RegisterType(typeof(LocExtension));
+            Noesis.GUI.RegisterType(typeof(RichText));
+
+            // MediaElement types
+            Noesis.GUI.RegisterType(typeof(MediaElement));
         }
 
         protected virtual string[] GetFontFallbacks()

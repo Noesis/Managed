@@ -1,6 +1,7 @@
 ﻿using Noesis;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace NoesisApp
@@ -158,6 +159,7 @@ namespace NoesisApp
             }
         }
 
+        [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Tested working if the type is registered.")]
         private void RegisterEvent(object source, string eventName)
         {
             if (source != null && !string.IsNullOrEmpty(eventName))
@@ -236,6 +238,7 @@ namespace NoesisApp
             OnEvent(eventArgs);
         }
 
+        [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Tested working if the type is registered.")]
         private static bool IsValidEvent(EventInfo eventInfo)
         {
             Type eventHandlerType = eventInfo.EventHandlerType;

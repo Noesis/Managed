@@ -13,7 +13,7 @@ namespace Noesis
         {
             if (dp == null)
             {
-                throw new Exception("Can't get value, DependencyProperty is null");
+                throw new ArgumentNullException("dp");
             }
 
             Type dpType = dp.PropertyType;
@@ -41,7 +41,7 @@ namespace Noesis
         {
             if (dp == null)
             {
-                throw new Exception("Can't set value, DependencyProperty is null");
+                throw new ArgumentNullException("dp");
             }
 
             Type dpType = dp.PropertyType;

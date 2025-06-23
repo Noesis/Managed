@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Diagnostics.CodeAnalysis;
 using Noesis;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D12;
@@ -120,6 +121,8 @@ namespace NoesisApp
             _queue = _dev.CreateCommandQueue(desc);
         }
 
+        [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(Factory5))]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(SharpDX.DXGI.SwapChain3))]
         private void CreateSwapChain(IntPtr window, bool vsync)
         {
             using (SharpDX.DXGI.Factory4 factory = new Factory4())
@@ -234,6 +237,7 @@ namespace NoesisApp
             }
         }
 
+        [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(SharpDX.Direct3D12.Resource))]
         void CreateBuffers()
         {
             SharpDX.Direct3D12.CpuDescriptorHandle rtv = _heapRTV.CPUDescriptorHandleForHeapStart;

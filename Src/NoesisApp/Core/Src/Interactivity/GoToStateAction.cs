@@ -49,21 +49,22 @@ namespace NoesisApp
 
         protected override void Invoke(object parameter)
         {
-            if (AssociatedObject != null && _stateTarget != null)
+            FrameworkElement stateTarget = GetProxy(_stateTarget) as FrameworkElement;
+            if (AssociatedObject != null && stateTarget != null)
             {
                 string stateName = StateName;
                 bool useTransitions = UseTransitions;
 
                 if (!string.IsNullOrEmpty(stateName))
                 {
-                    Control control = _stateTarget as Control;
+                    Control control = stateTarget as Control;
                     if (control != null)
                     {
                         VisualStateManager.GoToState(control, stateName, useTransitions);
                     }
                     else
                     {
-                        VisualStateManager.GoToElementState(_stateTarget, stateName, useTransitions);
+                        VisualStateManager.GoToElementState(stateTarget, stateName, useTransitions);
                     }
                 }
             }
@@ -73,11 +74,11 @@ namespace NoesisApp
         {
             if (TargetObject == null && string.IsNullOrEmpty(TargetName))
             {
-                _stateTarget = FindStateGroup(AssociatedObject as FrameworkElement);
+                _stateTarget = GetPtr(FindStateGroup(AssociatedObject as FrameworkElement));
             }
             else
             {
-                _stateTarget = Target;
+                _stateTarget = GetPtr(Target);
             }
         }
 
@@ -147,6 +148,6 @@ namespace NoesisApp
             return true;
         }
 
-        FrameworkElement _stateTarget;
+        IntPtr _stateTarget;
     }
 }
