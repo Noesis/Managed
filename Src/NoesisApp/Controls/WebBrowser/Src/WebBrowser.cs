@@ -91,7 +91,7 @@ namespace NoesisApp
             if (!CefRuntime.IsInitialized)
             {
                 // Start the secondary CEF process.
-                var cefMainArgs = new CefMainArgs(new string[] { "--enable-features=UseOzonePlatform", "--ozone-platform=headless", "--use-gl=egl" });
+                var cefMainArgs = new CefMainArgs(new string[] { "--enable-features=UseOzonePlatform", "--ozone-platform=headless" });
                 var cefApp = new NoesisCefApp();
                 var windowsSandboxInfo = IntPtr.Zero;
 

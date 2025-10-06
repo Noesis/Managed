@@ -40,6 +40,9 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr Extend_ExtendMultiConverter(IntPtr typeName);
 
   [DllImport(Library.Name)]
+  public static extern IntPtr Extend_ExtendSimpleMultiConverter(IntPtr typeName);
+
+  [DllImport(Library.Name)]
   public static extern IntPtr Extend_ExtendList(IntPtr typeName);
 
   [DllImport(Library.Name)]

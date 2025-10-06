@@ -42,13 +42,7 @@ namespace NoesisApp
 
         public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(
             "Value", typeof(object), typeof(DataTrigger),
-            new PropertyMetadata(null, OnValueChanged));
-
-        static void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            DataTrigger trigger = (DataTrigger)d;
-            trigger.Evaluate(e);
-        }
+            new PropertyMetadata(null, OnTriggerChanged));
 
         /// <summary>
         /// Gets or sets the type of comparison to be performed between the specified values
@@ -61,50 +55,47 @@ namespace NoesisApp
 
         public static readonly DependencyProperty ComparisonProperty = DependencyProperty.Register(
             "Comparison", typeof(ComparisonConditionType), typeof(DataTrigger),
-            new PropertyMetadata(ComparisonConditionType.Equal, OnComparisonChanged));
+            new PropertyMetadata(ComparisonConditionType.Equal, OnTriggerChanged));
 
-        static void OnComparisonChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        static void OnTriggerChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             DataTrigger trigger = (DataTrigger)d;
-            trigger.Evaluate(e);
+            trigger.EvaluateBindingChange(e);
         }
 
         protected override void OnAttached()
         {
-            base.OnAttached();
+            // Bypass PropertyChangedTrigger.OnAttached because we are going to Evaluate always
+            Actions.Attach(AssociatedObject);
 
-            EvaluateBindingChange(null);
+            Evaluate(null);
         }
 
         protected override void EvaluateBindingChange(object args)
         {
-            Evaluate(args);
+            if (AssociatedObject != null)
+            {
+                DataBindingHelper.EnsureBindingValue(this, BindingProperty);
+                DataBindingHelper.EnsureBindingValue(this, ComparisonProperty);
+                DataBindingHelper.EnsureBindingValue(this, ValueProperty);
+
+                Evaluate(args);
+            }
         }
 
         private void Evaluate(object args)
         {
-            if (AssociatedObject != null)
+            bool sourceChanged = UpdateSourceType();
+            bool valueChanged = UpdateTriggerValue();
+            bool comparisonChanged = UpdateComparison();
+
+            if (sourceChanged || valueChanged || comparisonChanged)
             {
-                EnsureBindingValues();
-
-                bool sourceChanged = UpdateSourceType();
-                bool valueChanged = UpdateTriggerValue();
-                bool comparisonChanged = UpdateComparison();
-
-                if (sourceChanged || valueChanged || comparisonChanged)
+                if (ComparisonLogic.Evaluate(_binding, _comparison, _value))
                 {
-                    if (Compare())
-                    {
-                        InvokeActions(args);
-                    }
+                    InvokeActions(args);
                 }
             }
-        }
-        private void EnsureBindingValues()
-        {
-            DataBindingHelper.EnsureBindingValue(this, BindingProperty);
-            DataBindingHelper.EnsureBindingValue(this, ComparisonProperty);
-            DataBindingHelper.EnsureBindingValue(this, ValueProperty);
         }
 
         [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Tested working if the type is registered.")]
@@ -166,12 +157,6 @@ namespace NoesisApp
             }
 
             return false;
-        }
-
-        private bool Compare()
-        {
-            return AssociatedObject != null &&
-                ComparisonLogic.Evaluate(_binding, _comparison, _value);
         }
 
         private Type _sourceType;

@@ -21,38 +21,20 @@ namespace Noesis
         public static void Init()
         {
             Noesis_EnableExtend(true);
-
             Initialized = true;
-
             RegisterNativeTypes();
-
-#if UNITY_EDITOR
-            AppDomain.CurrentDomain.DomainUnload += OnDomainUnload;
-#endif
         }
-
-#if UNITY_EDITOR
-        private static void OnDomainUnload(object sender, System.EventArgs e)
-        {
-            Shutdown();
-        }
-#endif
 
         public static void Shutdown()
         {
             if (Initialized)
             {
-#if UNITY_EDITOR
-                AppDomain.CurrentDomain.DomainUnload -= OnDomainUnload;
-#endif
-
                 try
                 {
                     Initialized = false;
 
+                    EventManager.Clear();
                     EventHandlerStore.Clear();
-
-                    Noesis.GUI.SetApplicationResources(null);
 
                     var pendingReleases = new List<KeyValuePair<long, WeakReference>>();
 
@@ -77,7 +59,11 @@ namespace Noesis
                         object instance = kv.Value.Target;
                         if (instance != null)
                         {
-                            BaseComponent.ForceRelease(instance, new IntPtr(kv.Key));
+                            // Release the object only if it wasn't already manually Disposed
+                            if (!(instance is BaseComponent bc && bc.IsDisposed))
+                            {
+                                BaseComponent.ForceRelease(instance, new IntPtr(kv.Key));
+                            }
                         }
                     }
 
@@ -681,9 +667,9 @@ namespace Noesis
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<KeyTime>)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<System.TimeSpan>)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<VirtualizationCacheLength>)));
-            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Boxed<Matrix>)));
-            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Boxed<Matrix3D>)));
-            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Boxed<Matrix4>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Matrix>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Matrix3D>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Matrix4>)));
 
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Enum>)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<AlignmentX>)));
@@ -1188,6 +1174,8 @@ namespace Noesis
             public long contentProperty;
             [MarshalAs(UnmanagedType.U4)]
             public int overrides;
+            [MarshalAs(UnmanagedType.U4)]
+            public int flags;
         }
 
         [Flags]
@@ -1209,6 +1197,14 @@ namespace Noesis
             Adorner_GetTransform            = 4096,
             Freezable_Clone                 = 8192,
             Animation_GetValueCore          = 16384
+        }
+
+        [Flags]
+        private enum ExtendTypeFlags
+        {
+            None = 0,
+            IsAbstract = 1,
+            IsGeneric = 2
         }
 
         private struct ExtendPropertyData
@@ -1342,7 +1338,14 @@ namespace Noesis
                 }
                 else if (typeof(Noesis.IValueConverter).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
                 {
-                    nativeType = Noesis.ExtendConverter.Extend(TypeFullName(type));
+                    if (typeof(Noesis.IMultiValueConverter).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
+                    {
+                        nativeType = Noesis.ExtendSimpleMultiConverter.Extend(TypeFullName(type));
+                    }
+                    else
+                    {
+                        nativeType = Noesis.ExtendConverter.Extend(TypeFullName(type));
+                    }
                 }
                 else if (typeof(Noesis.IMultiValueConverter).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
                 {
@@ -1803,6 +1806,10 @@ namespace Noesis
             }
 
             typeData.overrides = (int)overrides;
+
+            typeData.flags = 0;
+            if (type.IsAbstract) typeData.flags |= (int)ExtendTypeFlags.IsAbstract;
+            if (type.IsGenericType) typeData.flags |= (int)ExtendTypeFlags.IsGeneric;
 
             return typeData;
         }

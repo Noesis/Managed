@@ -116,15 +116,24 @@ namespace Noesis
         /// </summary>
         public static void Shutdown()
         {
+            Shutdown(true);
+        }
+
+        public static void Shutdown(bool native)
+        {
             Noesis_SetPlayAudioCallback(null);
             Noesis_SetOpenUrlCallback(null);
             Noesis_SetCursorCallback(null);
             Noesis_SetSoftwareKeyboardCallback(null);
             Noesis_SetLoadAssemblyCallback(null);
+            Noesis_SetApplicationResources(new HandleRef(null, IntPtr.Zero));
 
             Extend.Shutdown();
 
-            Noesis_Shutdown();
+            if (native)
+            {
+                Noesis_Shutdown();
+            }
 
             Extend.UnregisterCallbacks();
 
@@ -377,6 +386,10 @@ namespace Noesis
             Extend.UnregisterNativeTypes();
         }
 
+        /// <summary>
+        /// This method forces the linker to generate the reflection for the specified type,
+        /// allowing it to use reflection on this type in AOT builds
+        /// </summary>
         public static void RegisterType([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type type)
         {
             type.GetMembers();
@@ -610,8 +623,7 @@ namespace Noesis
         static extern IntPtr Noesis_GetApplicationResources();
 
         [DllImport(Library.Name)]
-        static extern void Noesis_SetSoftwareKeyboardCallback(
-            NoesisSoftwareKeyboardCallback callback);
+        static extern void Noesis_SetSoftwareKeyboardCallback(NoesisSoftwareKeyboardCallback callback);
 
         [DllImport(Library.Name)]
         static extern void Noesis_SetCursorCallback(NoesisUpdateCursorCallback callback);

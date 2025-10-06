@@ -55,7 +55,19 @@ namespace NoesisApp
 
                 associatedObject.Destroyed += OnAssociatedObjectDestroyed;
                 _associatedObject = GetPtr(associatedObject);
-                _view = GetPtr(View.Find(this));
+
+                View view = View.Find(this);
+                FrameworkElement root = view?.Content;
+                if (root != null)
+                {
+                    WeakReference weak = new WeakReference(this);
+                    root.Unloaded += (s, e) =>
+                    {
+                        ((AttachableObject)weak.Target)?.Detach();
+                    };
+                }
+
+                _view = GetPtr(view);
 
                 InitObject();
 

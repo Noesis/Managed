@@ -18,14 +18,14 @@ namespace NoesisGUIExtensions
             "Source", typeof(Uri), typeof(LoadContentAction),
             new Noesis.PropertyMetadata(null));
 
-        public new SetFocusAction Clone()
+        public new LoadContentAction Clone()
         {
-            return (SetFocusAction)base.Clone();
+            return (LoadContentAction)base.Clone();
         }
 
-        public new SetFocusAction CloneCurrentValue()
+        public new LoadContentAction CloneCurrentValue()
         {
-            return (SetFocusAction)base.CloneCurrentValue();
+            return (LoadContentAction)base.CloneCurrentValue();
         }
 
         protected override void Invoke(object parameter)

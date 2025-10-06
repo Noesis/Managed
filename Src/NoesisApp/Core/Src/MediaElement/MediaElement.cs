@@ -542,11 +542,14 @@ namespace NoesisApp
 
             if (_state != stateRequested || stateRequested == MediaState.Stop || sourceChanged)
             {
+                MediaState currentState = _state;
+                _state = stateRequested;
+
                 bool opened = false;
                 if (stateRequested != MediaState.Close && stateRequested != MediaState.Manual)
                 {
                     Uri source = Source;
-                    if ((_state == MediaState.Close || sourceChanged) && source.OriginalString.Length > 0)
+                    if ((currentState == MediaState.Close || sourceChanged) && source.OriginalString.Length > 0)
                     {
                         DestroyMediaPlayer();
                         CreateMediaPlayer(source);
@@ -554,10 +557,8 @@ namespace NoesisApp
                     }
                 }
 
-                if (_state != MediaState.Close || opened)
+                if (currentState != MediaState.Close || opened)
                 {
-                    _state = stateRequested;
-
                     switch (_state)
                     {
                         case MediaState.Manual:

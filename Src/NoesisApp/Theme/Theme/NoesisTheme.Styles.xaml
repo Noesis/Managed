@@ -806,9 +806,15 @@
       <Setter.Value>
         <ControlTemplate TargetType="Thumb">
           <Grid Background="Transparent">
-            <Border x:Name="Thumb" Background="{DynamicResource Brush.Thumb.Normal}"/>
+            <Border x:Name="Thumb" Background="{DynamicResource Brush.Thumb.Normal}" Margin="5" CornerRadius="3"/>
           </Grid>
           <ControlTemplate.Triggers>
+            <Trigger Property="Tag" Value="H">
+              <Setter Property="Margin" Value="0,5" TargetName="Thumb"/>
+            </Trigger>
+            <Trigger Property="Tag" Value="V">
+              <Setter Property="Margin" Value="5,0" TargetName="Thumb"/>
+            </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
               <Setter Property="Background" Value="{DynamicResource Brush.Thumb.Over}" TargetName="Thumb"/>
             </Trigger>
@@ -836,16 +842,19 @@
       <Setter.Value>
         <ControlTemplate TargetType="RepeatButton">
           <Border x:Name="Border" Background="Transparent">
-            <Path x:Name="Arrow" Data="{TemplateBinding Content}" Stroke="{DynamicResource Brush.Glyph.Normal}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Path x:Name="Arrow" Data="{TemplateBinding Content}" Stroke="{DynamicResource Brush.Glyph.Normal}" StrokeThickness="1.5" HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5"/>
           </Border>
           <ControlTemplate.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-              <Setter Property="Background" Value="{DynamicResource Brush.Background.Normal}" TargetName="Border"/>
               <Setter Property="Stroke" Value="{DynamicResource Brush.Glyph.Over}" TargetName="Arrow"/>
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
-              <Setter Property="Background" Value="{DynamicResource Brush.Thumb.Pressed}" TargetName="Border"/>
-              <Setter Property="Stroke" Value="{DynamicResource Brush.Glyph.Pressed}" TargetName="Arrow"/>
+              <Setter Property="Stroke" Value="{DynamicResource Brush.Glyph.Over}" TargetName="Arrow"/>
+              <Setter Property="RenderTransform" TargetName="Arrow">
+                <Setter.Value>
+                  <ScaleTransform ScaleX="0.9" ScaleY="0.9"/>
+                </Setter.Value>
+              </Setter>
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
               <Setter Property="Stroke" Value="{DynamicResource Brush.Glyph.Disabled}" TargetName="Arrow"/>
@@ -883,7 +892,7 @@
         <DoubleAnimation Storyboard.TargetName="Background" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.15" AccelerationRatio="0.75" DecelerationRatio="0.25"/>
         <DoubleAnimation Storyboard.TargetName="LineLeftButton" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.15" AccelerationRatio="0.75" DecelerationRatio="0.25"/>
         <DoubleAnimation Storyboard.TargetName="LineRightButton" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.15" AccelerationRatio="0.75" DecelerationRatio="0.25"/>
-        <DoubleAnimation Storyboard.TargetName="Thumb" Storyboard.TargetProperty="RenderTransform.ScaleY" To="0.2" Duration="0:0:0.15" DecelerationRatio="0.5"/>
+        <DoubleAnimation Storyboard.TargetName="Thumb" Storyboard.TargetProperty="RenderTransform.ScaleY" To="0.5" Duration="0:0:0.15" DecelerationRatio="0.5"/>
       </Storyboard>
     </ControlTemplate.Resources>
     <Grid x:Name="TemplateRoot" Background="Transparent">
@@ -903,9 +912,9 @@
           <RepeatButton x:Name="IncreaseButton" Command="ScrollBar.PageRightCommand" Style="{StaticResource Style.ScrollBar.PageButton}"/>
         </Track.IncreaseRepeatButton>
         <Track.Thumb>
-          <Thumb x:Name="Thumb" Style="{StaticResource Style.ScrollBar.Thumb}" RenderTransformOrigin="0,0.8">
+          <Thumb x:Name="Thumb" Style="{StaticResource Style.ScrollBar.Thumb}" Tag="H"  RenderTransformOrigin="0,0.8">
             <Thumb.RenderTransform>
-              <ScaleTransform ScaleY="0.2"/>
+              <ScaleTransform ScaleY="0.5"/>
             </Thumb.RenderTransform>
           </Thumb>
         </Track.Thumb>
@@ -936,7 +945,7 @@
         <DoubleAnimation Storyboard.TargetName="Background" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.15" AccelerationRatio="0.75" DecelerationRatio="0.25"/>
         <DoubleAnimation Storyboard.TargetName="LineUpButton" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.15" AccelerationRatio="0.75" DecelerationRatio="0.25"/>
         <DoubleAnimation Storyboard.TargetName="LineDownButton" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.15" AccelerationRatio="0.75" DecelerationRatio="0.25"/>
-        <DoubleAnimation Storyboard.TargetName="Thumb" Storyboard.TargetProperty="RenderTransform.ScaleX" To="0.2" Duration="0:0:0.15" DecelerationRatio="0.5"/>
+        <DoubleAnimation Storyboard.TargetName="Thumb" Storyboard.TargetProperty="RenderTransform.ScaleX" To="0.5" Duration="0:0:0.15" DecelerationRatio="0.5"/>
       </Storyboard>
     </ControlTemplate.Resources>
     <Grid x:Name="TemplateRoot" Background="Transparent">
@@ -956,9 +965,9 @@
           <RepeatButton x:Name="IncreaseButton" Command="ScrollBar.PageDownCommand" Style="{StaticResource Style.ScrollBar.PageButton}"/>
         </Track.IncreaseRepeatButton>
         <Track.Thumb>
-          <Thumb x:Name="Thumb" Style="{StaticResource Style.ScrollBar.Thumb}" RenderTransformOrigin="0.8,0">
+          <Thumb x:Name="Thumb" Style="{StaticResource Style.ScrollBar.Thumb}" Tag="V" RenderTransformOrigin="0.8,0">
             <Thumb.RenderTransform>
-              <ScaleTransform ScaleX="0.2"/>
+              <ScaleTransform ScaleX="0.5"/>
             </Thumb.RenderTransform>
           </Thumb>
         </Track.Thumb>

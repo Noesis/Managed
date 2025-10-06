@@ -11,6 +11,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.IO;
 
 namespace Noesis
 {
@@ -20,6 +21,9 @@ public static class XamlReader {
     return Noesis.GUI.ParseXaml(xamlText);
   }
 
+  public static object Load(Stream stream) {
+    return Noesis.GUI.LoadXaml(stream, "<memory>");
+  }
 }
 
 }

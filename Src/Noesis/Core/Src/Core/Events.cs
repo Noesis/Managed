@@ -474,6 +474,16 @@ namespace Noesis
 
     public static class EventManager
     {
+        internal static void Clear()
+        {
+            foreach (var ch in _classHandlers)
+            {
+                Noesis_EventManager_UnregisterClassHandler(Extend.GetNativeType(ch.ClassType), ch.RoutedEvent);
+            }
+
+            _classHandlers.Clear();
+        }
+
         /// <summary>Registers a new routed event. </summary>
         /// <returns>The identifier for the newly registered routed event. This identifier object can now be stored as a static field in a class and then used as a parameter for methods that attach handlers to the event. The routed event identifier is also used for other event system APIs.</returns>
         /// <param name="name">The name of the routed event. The name must be unique within the owner type and cannot be null or an empty string.</param>
@@ -528,11 +538,10 @@ namespace Noesis
                 throw new ArgumentException("Illegal Handler type for " + routedEvent.Name + " event");
             }
 
-            ClassHandlerInfo c = AddClassHandler(routedEventPtr, handler);
+            ClassHandlerInfo c = AddClassHandler(classType, routedEventPtr, handler);
 
             Noesis_EventManager_RegisterClassHandler(Extend.GetNativeType(classType),
-                BaseComponent.getCPtr(routedEvent).Handle, handledEventsToo,
-                Extend.GetInstanceHandle(c).Handle, _classHandler);
+                routedEventPtr, handledEventsToo, Extend.GetInstanceHandle(c).Handle, _classHandler);
         }
 
         #region Routed Events
@@ -597,9 +606,11 @@ namespace Noesis
             }
         }
 
-        private static ClassHandlerInfo AddClassHandler(IntPtr routedEventPtr, Delegate handler)
+        private static ClassHandlerInfo AddClassHandler(Type classType, IntPtr routedEventPtr,
+            Delegate handler)
         {
             ClassHandlerInfo c = new ClassHandlerInfo();
+            c.ClassType = classType;
             c.RoutedEvent = routedEventPtr;
             c.Handler = handler;
 
@@ -610,6 +621,7 @@ namespace Noesis
 
         private class ClassHandlerInfo
         {
+            public Type ClassType;
             public IntPtr RoutedEvent;
             public Delegate Handler;
         }
@@ -929,6 +941,10 @@ namespace Noesis
         [DllImport(Library.Name)]
         private static extern void Noesis_EventManager_RegisterClassHandler(IntPtr classType,
             IntPtr routedEvent, bool handledEventsToo, IntPtr info, ClassHandlerCallback callback);
+
+        [DllImport(Library.Name)]
+        private static extern void Noesis_EventManager_UnregisterClassHandler(IntPtr classType,
+            IntPtr routedEvent);
         #endregion
     }
 }

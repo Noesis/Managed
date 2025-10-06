@@ -56,8 +56,11 @@ namespace Noesis
 
         public void Dispose()
         {
-            ForceRelease(this, swigCPtr.Handle);
-            GC.SuppressFinalize(this);
+            if (!IsDisposed)
+            {
+                ForceRelease(this, swigCPtr.Handle);
+                GC.SuppressFinalize(this);
+            }
         }
 
         internal static void ForceRelease(object instance, IntPtr cPtr)
