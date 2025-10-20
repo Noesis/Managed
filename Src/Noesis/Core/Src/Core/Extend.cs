@@ -1203,8 +1203,7 @@ namespace Noesis
         private enum ExtendTypeFlags
         {
             None = 0,
-            IsAbstract = 1,
-            IsGeneric = 2
+            IsAbstract = 1
         }
 
         private struct ExtendPropertyData
@@ -1809,7 +1808,6 @@ namespace Noesis
 
             typeData.flags = 0;
             if (type.IsAbstract) typeData.flags |= (int)ExtendTypeFlags.IsAbstract;
-            if (type.IsGenericType) typeData.flags |= (int)ExtendTypeFlags.IsGeneric;
 
             return typeData;
         }
