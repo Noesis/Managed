@@ -190,6 +190,68 @@ namespace NoesisGUIExtensions
     }
 
     /// <summary>
+    /// Type of event that triggers the enhanced action
+    /// </summary>
+    [Flags]
+    public enum TriggerEvent
+    {
+        None = 0,
+        Triggered = 1,
+        Started = 2,
+        Ongoing = 4,
+        Canceled = 8,
+        Completed = 16
+    }
+
+    /// <summary>
+    /// Interactivity trigger that listens to an Unreal's Enhanved Input Action
+    /// 
+    /// Usage:
+    /// 
+    ///     <Grid 
+    ///       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    ///       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    ///       xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+    ///       xmlns:noesis="clr-namespace:NoesisGUIExtensions">
+    ///         <b:Interaction.Triggers>
+    ///           <noesis:EnhancedInputActionTrigger Action="/InputActions/Fire" TriggerEvent="Triggered">
+    ///             <b:ChangePropertyAction TargetName="rect" PropertyName="Fill" Value="Red"/>
+    ///           </noesis:EnhancedInputActionTrigger>
+    ///         </b:Interaction.Triggers>
+    ///         <Rectangle x:Name="rect" Fill="Transparent"/>
+    ///     </Grid>
+    /// 
+    /// </summary>
+    public class EnhancedInputActionTrigger : TriggerBase<UIElement>
+    {
+        /// <summary>
+        /// Gets or sets Unreal's input action name
+        /// </summary>
+        public Uri Action
+        {
+            get { return (Uri)GetValue(ActionProperty); }
+            set { SetValue(ActionProperty, value); }
+        }
+
+        public static readonly DependencyProperty ActionProperty = DependencyProperty.Register(
+            "Action", typeof(Uri), typeof(EnhancedInputActionTrigger), new PropertyMetadata(null));
+
+
+        /// <summary>
+        /// Gets or sets trigger event type
+        /// </summary>
+        public TriggerEvent TriggerEvent
+        {
+            get { return (TriggerEvent)GetValue(TriggerEventProperty); }
+            set { SetValue(TriggerEventProperty, value); }
+        }
+
+        public static readonly DependencyProperty TriggerEventProperty = DependencyProperty.Register(
+            "TriggerEvent", typeof(TriggerEvent), typeof(EnhancedInputActionTrigger),
+            new PropertyMetadata(TriggerEvent.Triggered));
+    }
+
+    /// <summary>
     /// Image source that captures backbuffer of the Unreal 3D scene
     /// 
     /// Usage:

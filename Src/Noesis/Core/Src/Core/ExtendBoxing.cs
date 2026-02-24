@@ -50,6 +50,7 @@ namespace Noesis
             boxFunctions[typeof(Noesis.Matrix)] = (val) => NoesisGUI_.Box_Matrix((Noesis.Matrix)val);
             boxFunctions[typeof(Noesis.Matrix3D)] = (val) => NoesisGUI_.Box_Matrix3D((Noesis.Matrix3D)val);
             boxFunctions[typeof(Noesis.Matrix4)] = (val) => NoesisGUI_.Box_Matrix4((Noesis.Matrix4)val);
+            boxFunctions[typeof(System.Uri)] = (val) => NoesisGUI_.Box_Uri((System.Uri)val);
             boxFunctions[typeof(Noesis.AlignmentX)] = (val) => NoesisGUI_.Box_AlignmentX((Noesis.AlignmentX)val);
             boxFunctions[typeof(Noesis.AlignmentY)] = (val) => NoesisGUI_.Box_AlignmentY((Noesis.AlignmentY)val);
             boxFunctions[typeof(Noesis.AutoToolTipPlacement)] = (val) => NoesisGUI_.Box_AutoToolTipPlacement((Noesis.AutoToolTipPlacement)val);
@@ -177,6 +178,7 @@ namespace Noesis
             unboxFunctions[typeof(Boxed<Noesis.Matrix>)] = (cPtr) => NoesisGUI_.Unbox_Matrix(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.Matrix3D>)] = (cPtr) => NoesisGUI_.Unbox_Matrix3D(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.Matrix4>)] = (cPtr) => NoesisGUI_.Unbox_Matrix4(cPtr);
+            unboxFunctions[typeof(Boxed<System.Uri>)] = (cPtr) => NoesisGUI_.Unbox_Uri(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.AlignmentX>)] = (cPtr) => NoesisGUI_.Unbox_AlignmentX(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.AlignmentY>)] = (cPtr) => NoesisGUI_.Unbox_AlignmentY(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.AutoToolTipPlacement>)] = (cPtr) => NoesisGUI_.Unbox_AutoToolTipPlacement(cPtr);

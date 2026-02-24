@@ -1,10 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>xamarinmac20;net8.0-macos</TargetFrameworks>
+    <TargetFrameworks>xamarinmac20;net9.0-macos15.0</TargetFrameworks>
     <TargetFrameworkIdentifier Condition="'$(TargetFramework)' == 'xamarinmac20'">Xamarin.Mac</TargetFrameworkIdentifier>
     <TargetFrameworkVersion Condition="'$(TargetFramework)' == 'xamarinmac20'">v2.0</TargetFrameworkVersion>
     <LanguageTargets Condition="'$(OS)' != 'Unix' And '$(TargetFramework)' == 'xamarinmac20'">$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets</LanguageTargets>
+    <CheckEolWorkloads>false</CheckEolWorkloads>
     <Version>3.0.0</Version>
     <Authors>Noesis Technologies</Authors>
     <Description>NoesisGUI macOS Display</Description>

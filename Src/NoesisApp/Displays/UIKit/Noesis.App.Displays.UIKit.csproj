@@ -1,10 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>xamarinios10;net8.0-ios</TargetFrameworks>
+    <TargetFrameworks>xamarinios10;net9.0-ios18.0</TargetFrameworks>
     <TargetFrameworkIdentifier Condition="'$(TargetFramework)' == 'xamarinios10'">Xamarin.iOS</TargetFrameworkIdentifier>
     <TargetFrameworkVersion Condition="'$(TargetFramework)' == 'xamarinios10'">v1.0</TargetFrameworkVersion>
     <LanguageTargets Condition="'$(OS)' != 'Unix' And '$(TargetFramework)' == 'xamarinios10'">$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets</LanguageTargets>
+    <CheckEolWorkloads>false</CheckEolWorkloads>
     <Version>3.0.0</Version>
     <Authors>Noesis Technologies</Authors>
     <Description>NoesisGUI iOS Display</Description>

@@ -24,6 +24,7 @@ public static class XamlReader {
   public static object Load(Stream stream) {
     return Noesis.GUI.LoadXaml(stream, "<memory>");
   }
+
 }
 
 }

@@ -564,6 +564,7 @@ namespace Noesis
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Matrix)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Matrix3D)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Matrix4)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Uri)));
 
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(bool?)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(float?)));
@@ -665,11 +666,12 @@ namespace Noesis
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<GridLength>)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Duration>)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<KeyTime>)));
-            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<System.TimeSpan>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<TimeSpan>)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<VirtualizationCacheLength>)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Matrix>)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Matrix3D>)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Matrix4>)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Uri>)));
 
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Enum>)));
             AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<AlignmentX>)));

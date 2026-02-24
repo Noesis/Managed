@@ -35,6 +35,13 @@ public class RiveRun : Animatable {
     return NoesisGUI_PINVOKE.new_RiveRun();
   }
 
+  public static DependencyProperty RunPathProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.RiveRun_RunPathProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
   public static DependencyProperty RunNameProperty {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.RiveRun_RunNameProperty_get();
@@ -46,6 +53,17 @@ public class RiveRun : Animatable {
     get {
       IntPtr cPtr = NoesisGUI_PINVOKE.RiveRun_RunTextProperty_get();
       return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public string RunPath {
+    set {
+      NoesisGUI_PINVOKE.RiveRun_RunPath_set(swigCPtr, value != null ? value : string.Empty);
+    }
+    get {
+      IntPtr strPtr = NoesisGUI_PINVOKE.RiveRun_RunPath_get(swigCPtr);
+      string str = Noesis.Extend.StringFromNativeUtf8(strPtr);
+      return str;
     }
   }
 

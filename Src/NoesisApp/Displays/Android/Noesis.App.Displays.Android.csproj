@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>monoandroid81;net8.0-android</TargetFrameworks>
+    <TargetFrameworks>monoandroid81;net9.0-android35.0</TargetFrameworks>
     <TargetFrameworkIdentifier Condition="'$(TargetFramework)' == 'monoandroid81'">MonoAndroid</TargetFrameworkIdentifier>
     <TargetFrameworkVersion Condition="'$(TargetFramework)' == 'monoandroid81'">v8.1</TargetFrameworkVersion>
     <LanguageTargets Condition="'$(OS)' != 'Unix' And '$(TargetFramework)' == 'monoandroid81'">$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets</LanguageTargets>

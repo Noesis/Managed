@@ -696,12 +696,12 @@ namespace NoesisApp
 
         protected virtual uint GlyphCacheWidth
         {
-            get { return 1024; }
+            get { return 2048; }
         }
 
         protected virtual uint GlyphCacheHeight
         {
-            get { return 1024; }
+            get { return 2048; }
         }
         #endregion
 

@@ -44,17 +44,14 @@ namespace NoesisApp
             Window.SetFlags(WindowManagerFlags.Fullscreen, WindowManagerFlags.Fullscreen);
 
 #if NET8_0_OR_GREATER
-            if (OperatingSystem.IsAndroidVersionAtLeast(30))
+            if (OperatingSystem.IsAndroidVersionAtLeast(35))
             {
-                #pragma warning disable CA1416
-                Window.SetDecorFitsSystemWindows(false);
                 IWindowInsetsController controller = Window.InsetsController;
                 if (controller != null)
                 {
                     controller.Hide(WindowInsets.Type.SystemBars());
                     controller.SystemBarsBehavior = (int)WindowInsetsControllerBehavior.ShowTransientBarsBySwipe;
                 }
-                #pragma warning restore CA1416
             }
             else
             {

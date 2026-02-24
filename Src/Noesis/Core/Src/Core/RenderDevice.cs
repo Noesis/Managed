@@ -579,7 +579,7 @@ namespace Noesis
         }
 
         /// <summary>
-        /// Width of texture used to cache glyphs. Default is 1024.
+        /// Width of texture used to cache glyphs. Default is 2048.
         /// </summary>
         public uint GlyphCacheWidth
         {
@@ -588,7 +588,7 @@ namespace Noesis
         }
 
         /// <summary>
-        /// Height of texture used to cache glyphs. Default is 1024.
+        /// Height of texture used to cache glyphs. Default is 2048.
         /// </summary>
         public uint GlyphCacheHeight
         {

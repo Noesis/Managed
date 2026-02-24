@@ -39,8 +39,8 @@ public class RiveControl : FrameworkElement {
     NoesisGUI_PINVOKE.RiveControl_SetInputValue(swigCPtr, path != null ? path : string.Empty, name != null ? name : string.Empty, Noesis.Extend.GetInstanceHandle(value));
   }
 
-  public void FireInputTrigger(string name) {
-    NoesisGUI_PINVOKE.RiveControl_FireInputTrigger(swigCPtr, name != null ? name : string.Empty);
+  public void FireInputTrigger(string path, string name) {
+    NoesisGUI_PINVOKE.RiveControl_FireInputTrigger(swigCPtr, path != null ? path : string.Empty, name != null ? name : string.Empty);
   }
 
   public uint GetSourceInputCount() {
@@ -54,8 +54,8 @@ public class RiveControl : FrameworkElement {
     return str;
   }
 
-  public void SetRunText(string name, string text) {
-    NoesisGUI_PINVOKE.RiveControl_SetRunText(swigCPtr, name != null ? name : string.Empty, text != null ? text : string.Empty);
+  public void SetRunText(string path, string name, string text) {
+    NoesisGUI_PINVOKE.RiveControl_SetRunText(swigCPtr, path != null ? path : string.Empty, name != null ? name : string.Empty, text != null ? text : string.Empty);
   }
 
   public uint GetSourceRunCount() {

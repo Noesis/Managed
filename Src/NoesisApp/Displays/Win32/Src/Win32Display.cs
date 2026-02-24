@@ -634,7 +634,15 @@ namespace NoesisApp
                         int index = LoWord(wParam);
                         if (index <= 0xff && _keys[index] != Noesis.Key.None)
                         {
-                            KeyDown?.Invoke(this, _keys[index]);
+                            Noesis.Key key = _keys[index];
+                            KeyDown?.Invoke(this, key);
+
+                            // Don't let Windows process the Alt key, because it will try to open the window
+                            // system command menu, which steals the focus and changes the cursor
+                            if (key == Noesis.Key.LeftAlt || key == Noesis.Key.RightAlt || key == Noesis.Key.F10)
+                            {
+                                return true;
+                            }
                         }
                     }
                     return false;

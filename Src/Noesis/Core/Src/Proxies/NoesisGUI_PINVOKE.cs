@@ -13850,10 +13850,19 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr new_RiveRun();
 
   [DllImport(Library.Name)]
+  public static extern IntPtr RiveRun_RunPathProperty_get();
+
+  [DllImport(Library.Name)]
   public static extern IntPtr RiveRun_RunNameProperty_get();
 
   [DllImport(Library.Name)]
   public static extern IntPtr RiveRun_RunTextProperty_get();
+
+  [DllImport(Library.Name)]
+  public static extern void RiveRun_RunPath_set(HandleRef jarg1, [MarshalAs(UnmanagedType.LPWStr)]string jarg2);
+
+  [DllImport(Library.Name)]
+  public static extern IntPtr RiveRun_RunPath_get(HandleRef jarg1);
 
   [DllImport(Library.Name)]
   public static extern void RiveRun_RunName_set(HandleRef jarg1, [MarshalAs(UnmanagedType.LPWStr)]string jarg2);
@@ -13877,7 +13886,7 @@ internal class NoesisGUI_PINVOKE {
   public static extern void RiveControl_SetInputValue(HandleRef jarg1, [MarshalAs(UnmanagedType.LPWStr)]string jarg2, [MarshalAs(UnmanagedType.LPWStr)]string jarg3, HandleRef jarg4);
 
   [DllImport(Library.Name)]
-  public static extern void RiveControl_FireInputTrigger(HandleRef jarg1, [MarshalAs(UnmanagedType.LPWStr)]string jarg2);
+  public static extern void RiveControl_FireInputTrigger(HandleRef jarg1, [MarshalAs(UnmanagedType.LPWStr)]string jarg2, [MarshalAs(UnmanagedType.LPWStr)]string jarg3);
 
   [DllImport(Library.Name)]
   public static extern uint RiveControl_GetSourceInputCount(HandleRef jarg1);
@@ -13886,7 +13895,7 @@ internal class NoesisGUI_PINVOKE {
   public static extern IntPtr RiveControl_GetSourceInput(HandleRef jarg1, uint jarg2, out RiveSourceInputType jarg3);
 
   [DllImport(Library.Name)]
-  public static extern void RiveControl_SetRunText(HandleRef jarg1, [MarshalAs(UnmanagedType.LPWStr)]string jarg2, [MarshalAs(UnmanagedType.LPWStr)]string jarg3);
+  public static extern void RiveControl_SetRunText(HandleRef jarg1, [MarshalAs(UnmanagedType.LPWStr)]string jarg2, [MarshalAs(UnmanagedType.LPWStr)]string jarg3, [MarshalAs(UnmanagedType.LPWStr)]string jarg4);
 
   [DllImport(Library.Name)]
   public static extern uint RiveControl_GetSourceRunCount(HandleRef jarg1);
