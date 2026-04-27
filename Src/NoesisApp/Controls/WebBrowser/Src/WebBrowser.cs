@@ -1227,36 +1227,40 @@ namespace NoesisApp
                                 CefProcessId source_process,
                                 CefProcessMessage message)
         {
-            if (message.Name == "cefQueryMsg" && message.Arguments.Count > 2 && message.Arguments.GetValueType(2) == CefValueType.String)
+            try
             {
-                var text = message.Arguments.GetString(2);
-                if (text != null)
+                if (message.Name == "cefQueryMsg" && message.Arguments.Count > 2 && message.Arguments.GetValueType(2) == CefValueType.String)
                 {
-                    var request = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(text);
-                    var guid = request["guid"].GetString();
-                    WebBrowser browser_ = null;
-                    lock (WebBrowser._virtualKeyboardRequests)
+                    var text = message.Arguments.GetString(2);
+                    if (text != null)
                     {
-                        if (WebBrowser._virtualKeyboardRequests.TryGetValue(guid, out browser_))
+                        var request = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(text);
+                        var guid = request["guid"].GetString();
+                        WebBrowser browser_ = null;
+                        lock (WebBrowser._virtualKeyboardRequests)
                         {
-                            WebBrowser._virtualKeyboardRequests.Remove(guid);
+                            if (WebBrowser._virtualKeyboardRequests.TryGetValue(guid, out browser_))
+                            {
+                                WebBrowser._virtualKeyboardRequests.Remove(guid);
+                            }
                         }
-                    }
 
-                    if (browser_ != null)
-                    {
-                        var label = HttpUtility.HtmlDecode(request["label"].GetString());
-                        var type = request["type"].GetString();
-                        var value = request["value"].GetString();
-                        if (type == "password")
+                        if (browser_ != null)
                         {
-                            browser_._virtualKeyboardRequestedArgs.InputScope = InputScope.Password;
+                            var label = HttpUtility.HtmlDecode(request["label"].GetString());
+                            var type = request["type"].GetString();
+                            var value = request["value"].GetString();
+                            if (type == "password")
+                            {
+                                browser_._virtualKeyboardRequestedArgs.InputScope = InputScope.Password;
+                            }
+                            CefRuntime.PostTask(CefThreadId.UI, new NoesisDelegateTask(() => { browser_.RequestVirtualKeyboard(value, label); }));
                         }
-                        CefRuntime.PostTask(CefThreadId.UI, new NoesisDelegateTask(() => { browser_.RequestVirtualKeyboard(value, label); }));
+                        return true;
                     }
-                    return true;
                 }
             }
+            catch (Exception) { }
             return false;
         }
     }
