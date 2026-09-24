@@ -70,8 +70,24 @@ namespace Noesis
         {
         }
 
+        protected virtual void OnPreApplyTemplate()
+        {
+        }
+        internal void InternalOnPreApplyTemplate()
+        {
+            OnPreApplyTemplate();
+        }
+
         public virtual void OnApplyTemplate()
         {
+        }
+
+        protected virtual void OnPostApplyTemplate()
+        {
+        }
+        internal void InternalOnPostApplyTemplate()
+        {
+            OnPostApplyTemplate();
         }
 
         #region FindResource implementation

@@ -4,18 +4,8 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
-namespace NoesisApp
+namespace Noesis.Interactivity
 {
-    public enum ComparisonConditionType
-    {
-        Equal,
-        NotEqual,
-        LessThan,
-        LessThanOrEqual,
-        GreaterThan,
-        GreaterThanOrEqual
-    }
-
     /// <summary>
     /// Represents a trigger that performs actions when the bound data meets a specified condition.
     /// </summary>
@@ -66,8 +56,6 @@ namespace NoesisApp
         protected override void OnAttached()
         {
             // Bypass PropertyChangedTrigger.OnAttached because we are going to Evaluate always
-            Actions.Attach(AssociatedObject);
-
             Evaluate(null);
         }
 
@@ -91,7 +79,7 @@ namespace NoesisApp
 
             if (sourceChanged || valueChanged || comparisonChanged)
             {
-                if (ComparisonLogic.Evaluate(_binding, _comparison, _value))
+                if (Compare(_binding, _comparison, _value))
                 {
                     InvokeActions(args);
                 }
@@ -154,6 +142,41 @@ namespace NoesisApp
             {
                 _comparison = comparison;
                 return true;
+            }
+
+            return false;
+        }
+
+        private bool Compare(object left, ComparisonConditionType comparison, object right)
+        {
+            if (comparison == ComparisonConditionType.Equal)
+            {
+                return object.Equals(left, right);
+            }
+            else if (comparison == ComparisonConditionType.NotEqual)
+            {
+                return !object.Equals(left, right);
+            }
+            else
+            {
+                IComparable leftComparable = left as IComparable;
+                IComparable rightComparable = right as IComparable;
+                if (leftComparable == null || rightComparable == null)
+                {
+                    return false;
+                }
+
+                switch (comparison)
+                {
+                    case ComparisonConditionType.LessThan:
+                        return leftComparable.CompareTo(rightComparable) < 0;
+                    case ComparisonConditionType.LessThanOrEqual:
+                        return leftComparable.CompareTo(rightComparable) <= 0;
+                    case ComparisonConditionType.GreaterThan:
+                        return leftComparable.CompareTo(rightComparable) > 0;
+                    case ComparisonConditionType.GreaterThanOrEqual:
+                        return leftComparable.CompareTo(rightComparable) >= 0;
+                }
             }
 
             return false;

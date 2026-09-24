@@ -1,5 +1,5 @@
 ﻿using Noesis;
-using NoesisApp;
+using Noesis.Interactivity;
 using System.Collections.Generic;
 
 namespace NoesisGUIExtensions

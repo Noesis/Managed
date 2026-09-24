@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
-namespace NoesisApp
+namespace Noesis.Interactivity
 {
     /// <summary>
     /// Represents a trigger that can listen to an object other than its AssociatedObject.

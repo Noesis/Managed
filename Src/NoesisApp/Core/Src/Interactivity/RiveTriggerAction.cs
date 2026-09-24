@@ -1,11 +1,13 @@
-﻿using System;
+﻿using Noesis;
+using Noesis.Interactivity;
+using System;
 
 namespace NoesisGUIExtensions
 {
     /// <summary>
     /// An action that will fire a trigger in a RiveControl.
     /// </summary>
-    public class RiveTriggerAction : NoesisApp.TargetedTriggerAction<Noesis.RiveControl>
+    public class RiveTriggerAction : TargetedTriggerAction<RiveControl>
     {
         /// <summary>
         /// Gets or sets the path to the nested artboard/component
@@ -29,9 +31,9 @@ namespace NoesisGUIExtensions
             set { SetValue(TriggerNameProperty, value); }
         }
 
-        public static readonly Noesis.DependencyProperty TriggerNameProperty = Noesis.DependencyProperty.Register(
+        public static readonly DependencyProperty TriggerNameProperty = DependencyProperty.Register(
             "TriggerName", typeof(string), typeof(RiveTriggerAction),
-            new Noesis.PropertyMetadata(string.Empty));
+            new PropertyMetadata(string.Empty));
 
         public new RiveTriggerAction Clone()
         {
@@ -45,7 +47,7 @@ namespace NoesisGUIExtensions
 
         protected override void Invoke(object parameter)
         {
-            Noesis.RiveControl rive = Target;
+            RiveControl rive = Target;
             if (rive != null)
             {
                 rive.FireInputTrigger(TriggerPath, TriggerName);

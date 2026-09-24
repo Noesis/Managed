@@ -1,6 +1,6 @@
 ﻿using Noesis;
 
-namespace NoesisApp
+namespace Noesis.Interactivity
 {
     internal static class DataBindingHelper
     {

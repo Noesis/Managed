@@ -10,6 +10,14 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Noesis
 {
+    public class Native
+    {
+        public static void EnsureType(Type type)
+        {
+            Extend.EnsureNativeType(type);
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Manages Noesis Extensibility
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -104,7 +112,11 @@ namespace Noesis
                 _frameworkElementConnectField,
                 _frameworkElementMeasure,
                 _frameworkElementArrange,
+                _frameworkElementPreApplyTemplate,
                 _frameworkElementApplyTemplate,
+                _frameworkElementPostApplyTemplate,
+
+                _presenterContentChanged,
 
                 _itemsControlGetContainer,
                 _itemsControlIsContainer,
@@ -191,6 +203,11 @@ namespace Noesis
 
                 _markupExtensionProvideValue,
 
+                _attachableObjectAttach,
+                _attachableObjectDetach,
+                _triggerActionInvoke,
+                _targetedTriggerActionTargetChanged,
+
                 _animationTimelineGetType,
                 _animationTimelineGetValue,
                 _booleanAnimationGetValue,
@@ -270,7 +287,8 @@ namespace Noesis
                 null, null,
                 null, null,
                 null,
-                null, null, null, null, null,
+                null, null, null, null, null, null, null,
+                null,
                 null, null,
                 null,
                 null,
@@ -286,6 +304,7 @@ namespace Noesis
                 null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
                 null,
+                null, null, null, null,
                 null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
@@ -1129,6 +1148,22 @@ namespace Noesis
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ListView), ListView.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(ListViewItem), ListViewItem.CreateProxy));
 
+
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Interactivity.Behavior), Interactivity.Behavior.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Interactivity.TriggerBase), Interactivity.TriggerBase.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Interactivity.TriggerAction), Interactivity.TriggerAction.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Interactivity.TargetedTriggerAction), Interactivity.TargetedTriggerAction.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Interactivity.BehaviorCollection), Interactivity.BehaviorCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Interactivity.TriggerCollection), Interactivity.TriggerCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Interactivity.TriggerActionCollection), Interactivity.TriggerActionCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Interactivity.ConditionBehavior), Interactivity.ConditionBehavior.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Interactivity.ConditionalExpression), Interactivity.ConditionalExpression.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Interactivity.ComparisonCondition), Interactivity.ComparisonCondition.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(Interactivity.ConditionCollection), Interactivity.ConditionCollection.CreateProxy));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Basic, typeof(Interactivity.ComparisonConditionType)));
+            AddNativeType(types[i++], new NativeTypeInfo(NativeTypeKind.Boxed, typeof(Boxed<Interactivity.ComparisonConditionType>)));
+
+
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(RiveInput), RiveInput.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(RiveInputCollection), RiveInputCollection.CreateProxy));
             AddNativeType(types[i++], new NativeTypeComponentInfo(NativeTypeKind.Component, typeof(RiveControl), RiveControl.CreateProxy));
@@ -1183,22 +1218,25 @@ namespace Noesis
         [Flags]
         private enum ExtendTypeOverrides
         {
-            None                            = 0,
-            Object_ToString                 = 1,
-            Object_Equals                   = 2,
-            Visual_GetChildrenCount         = 4,
-            Visual_GetChild                 = 8,
-            UIElement_OnRender              = 16,
-            FrameworkElement_ConnectEvent   = 32,
-            FrameworkElement_ConnectField   = 64,
-            FrameworkElement_Measure        = 128,
-            FrameworkElement_Arrange        = 256,
-            FrameworkElement_ApplyTemplate  = 512,
-            ItemsControl_GetContainer       = 1024,
-            ItemsControl_IsContainer        = 2048,
-            Adorner_GetTransform            = 4096,
-            Freezable_Clone                 = 8192,
-            Animation_GetValueCore          = 16384
+            None                                = 0,
+            Object_ToString                     = 1,
+            Object_Equals                       = 2,
+            Visual_GetChildrenCount             = 4,
+            Visual_GetChild                     = 8,
+            UIElement_OnRender                  = 16,
+            FrameworkElement_ConnectEvent       = 32,
+            FrameworkElement_ConnectField       = 64,
+            FrameworkElement_Measure            = 128,
+            FrameworkElement_Arrange            = 256,
+            FrameworkElement_PreApplyTemplate   = 512,
+            FrameworkElement_ApplyTemplate      = 1024,
+            FrameworkElement_PostApplyTemplate  = 2048,
+            ContentPresenter_ContentChanged     = 4096,
+            ItemsControl_GetContainer           = 8192,
+            ItemsControl_IsContainer            = 16384,
+            Adorner_GetTransform                = 32768,
+            Freezable_Clone                     = 65536,
+            Animation_GetValueCore              = 131072
         }
 
         [Flags]
@@ -1405,6 +1443,11 @@ namespace Noesis
             {
                 RegisterDependencyProperties(type);
             }
+
+            // Add Studio attributes
+            #if UNITY_EDITOR
+            AddStudioAttributes(type, nativeType, props);
+            #endif
 
             return nativeType;
         }
@@ -1703,8 +1746,25 @@ namespace Noesis
                     typeof(Viewbox), typeof(VirtualizingStackPanel), typeof(WrapPanel)))
                     overrides |= ExtendTypeOverrides.FrameworkElement_Arrange;
 
+                MethodInfo preTemplateMethod = FindMethod(type, "OnPreApplyTemplate", _typeArgs0);
+                if (IsOverride(preTemplateMethod,
+                    typeof(Control), typeof(ContentPresenter)))
+                    overrides |= ExtendTypeOverrides.FrameworkElement_PreApplyTemplate;
+
                 MethodInfo templateMethod = FindMethod(type, "OnApplyTemplate", _typeArgs0);
                 if (IsOverride(templateMethod)) overrides |= ExtendTypeOverrides.FrameworkElement_ApplyTemplate;
+
+                MethodInfo postTemplateMethod = FindMethod(type, "OnPostApplyTemplate", _typeArgs0);
+                if (IsOverride(postTemplateMethod,
+                    typeof(Control)))
+                    overrides |= ExtendTypeOverrides.FrameworkElement_PostApplyTemplate;
+            }
+
+            if (typeof(ContentPresenter).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
+            {
+                _typeArgs2[0] = typeof(object); _typeArgs2[1] = typeof(object);
+                MethodInfo contentMethod = FindMethod(type, "OnContentChanged", _typeArgs2);
+                if (IsOverride(contentMethod)) overrides |= ExtendTypeOverrides.ContentPresenter_ContentChanged;
             }
 
             if (typeof(ItemsControl).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
@@ -1866,7 +1926,11 @@ namespace Noesis
                 {
                     var p = props[i];
                     if (p.GetGetMethod() != null && !p.PropertyType.IsPointer && !p.PropertyType.IsByRef &&
-                        (HasTypeConverter(p) || (!IsIndexerProperty(p) && !IsDependencyProperty(type, p))))
+                        (HasTypeConverter(p) ||
+                #if UNITY_EDITOR
+                         HasStudioAttribute(p) ||
+                #endif
+                        (!IsIndexerProperty(p) && !IsDependencyProperty(type, p))))
                     {
                         ExtendPropertyData propData = AddProperty(propsInfo, p, usePropertyInfo);
 
@@ -1937,6 +2001,240 @@ namespace Noesis
 
             return enumsData;
         }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        #if UNITY_EDITOR
+
+        [DllImport(Library.Name, EntryPoint = "Noesis_AddMeta_Type")]
+        private static extern void AddMetaType(IntPtr type, IntPtr meta);
+
+        [DllImport(Library.Name, EntryPoint = "Noesis_AddMeta_Prop")]
+        private static extern void AddMetaProp(IntPtr type, [MarshalAs(UnmanagedType.LPStr)] string prop, IntPtr meta);
+
+        [DllImport(Library.Name, EntryPoint = "Noesis_StudioEditor_Create")]
+        private static extern IntPtr Create_StudioEditor([MarshalAs(UnmanagedType.LPStr)] string editor);
+
+        [DllImport(Library.Name, EntryPoint = "Noesis_StudioName_Create")]
+        private static extern IntPtr Create_StudioName([MarshalAs(UnmanagedType.LPStr)] string name);
+
+        [DllImport(Library.Name, EntryPoint = "Noesis_StudioDesc_Create")]
+        private static extern IntPtr Create_StudioDesc([MarshalAs(UnmanagedType.LPStr)] string desc);
+
+        [DllImport(Library.Name, EntryPoint = "Noesis_StudioHelpUri_Create")]
+        private static extern IntPtr Create_StudioHelpUri([MarshalAs(UnmanagedType.LPStr)] string uri);
+
+        [DllImport(Library.Name, EntryPoint = "Noesis_StudioIcon_Create")]
+        private static extern IntPtr Create_StudioIcon([MarshalAs(UnmanagedType.LPStr)] string uri, int ch);
+
+        [DllImport(Library.Name, EntryPoint = "Noesis_StudioMin_Create")]
+        private static extern IntPtr Create_StudioMin(float min);
+
+        [DllImport(Library.Name, EntryPoint = "Noesis_StudioRange_Create")]
+        private static extern IntPtr Create_StudioRange(float min, float max);
+
+        [DllImport(Library.Name, EntryPoint = "Noesis_StudioStep_Create")]
+        private static extern IntPtr Create_StudioStep(float step);
+
+        [DllImport(Library.Name, EntryPoint = "Noesis_StudioOrder_Create")]
+        private static extern IntPtr Create_StudioOrder(int order,
+            [MarshalAs(UnmanagedType.U1)] bool primary,
+            [MarshalAs(UnmanagedType.LPStr)] string category);
+
+        [DllImport(Library.Name, EntryPoint = "Noesis_StudioFloatPresets_Create")]
+        private static extern IntPtr Create_StudioFloatPresets(int count,
+            [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPStr)] string[] names,
+            [MarshalAs(UnmanagedType.LPArray)] float[] values);
+
+        [DllImport(Library.Name, EntryPoint = "Noesis_StudioAttach_Create")]
+        private static extern IntPtr Create_StudioAttach(
+            [MarshalAs(UnmanagedType.LPStr)] string name,
+            [MarshalAs(UnmanagedType.U1)] bool readOnly,
+            int toCount, [MarshalAs(UnmanagedType.LPArray)] IntPtr[] toTypes,
+            int onCount, [MarshalAs(UnmanagedType.LPArray)] IntPtr[] onTypes,
+            int metaCount, [MarshalAs(UnmanagedType.LPArray)] IntPtr[] metadatas);
+
+        [DllImport(Library.Name, EntryPoint = "Noesis_StudioInit_Create")]
+        private static extern IntPtr Create_StudioInit(NativeStudioInitCallback callback);
+
+        [DllImport(Library.Name, EntryPoint = "Noesis_StudioUri_Create")]
+        private static extern IntPtr Create_StudioUri(StudioUriAttribute.UriType type);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate void NativeStudioInitCallback(IntPtr instance);
+
+        private static List<Delegate> _aliveInitDelegates = new List<Delegate>();
+
+        private static bool HasStudioAttribute(PropertyInfo p)
+        {
+            return p.IsDefined(typeof(StudioBaseAttribute), false);
+        }
+
+        private static IntPtr[] GetNativeTypes(Type[] types)
+        {
+            if (types == null || types.Length == 0) 
+            {
+                return new IntPtr[0];
+            }
+
+            IntPtr[] ptrs = new IntPtr[types.Length];
+            for (int i = 0; i < types.Length; i++)
+            {
+                ptrs[i] = EnsureNativeType(types[i]); 
+            }
+
+            return ptrs;
+        }
+
+        private static IntPtr CreateStudioMeta(Attribute attribute, Type targetType)
+        {
+            if (attribute is StudioEditorAttribute editor)
+            {
+                return Create_StudioEditor(editor.Editor);
+            }
+
+            if (attribute is StudioNameAttribute name)
+            {
+                return Create_StudioName(name.Name);
+            }
+
+            if (attribute is StudioDescAttribute desc)
+            {
+                return Create_StudioDesc(desc.Description);
+            }
+
+            if (attribute is StudioHelpUriAttribute help)
+            {
+                return Create_StudioHelpUri(help.HelpUri);
+            }
+
+            if (attribute is StudioIconAttribute icon)
+            {
+                return Create_StudioIcon(icon.Font, icon.Char);
+            }
+
+            if (attribute is StudioMinAttribute min)
+            {
+                return Create_StudioMin(min.Min);
+            }
+
+            if (attribute is StudioRangeAttribute range)
+            {
+                return Create_StudioRange(range.Min, range.Max);
+            }
+
+            if (attribute is StudioStepAttribute step)
+            {
+                return Create_StudioStep(step.Step);
+            }
+
+            if (attribute is StudioOrderAttribute order)
+            {
+                return Create_StudioOrder(order.Order, order.Primary, order.Category);
+            }
+
+            if (attribute is StudioFloatPresetsAttribute presets)
+            {
+                return Create_StudioFloatPresets(presets.Names.Length, presets.Names, presets.Values);
+            }
+
+            if (attribute is StudioInitAttribute init)
+            {
+                MethodInfo method = targetType.GetMethod(init.MethodName, BindingFlags.Static |
+                    BindingFlags.Public | BindingFlags.NonPublic);
+
+                if (method == null)
+                {
+                    throw new Exception($"StudioInit method '{init.MethodName}' not found on {targetType.Name}");
+                }
+
+                NativeStudioInitCallback nativeCallback = (instancePtr) =>
+                {
+                    var instance = (Noesis.BaseComponent)Noesis.Extend.GetProxy(instancePtr, false);
+                    if (instance != null)
+                    {
+                        method.Invoke(null, new object[] { instance });
+                    }
+                };
+
+                _aliveInitDelegates.Add(nativeCallback);
+                return Create_StudioInit(nativeCallback);
+            }
+
+            if (attribute is StudioUriAttribute uri)
+            {
+                return Create_StudioUri(uri.Type);
+            }
+
+            return IntPtr.Zero;
+        }
+
+        private static void AddStudioAttributes(Type type, IntPtr nativeType, PropertyInfo[] props)
+        {
+            // Add attributes for the type
+            foreach (Attribute attribute in type.GetTypeInfo().GetCustomAttributes(false))
+            {
+                IntPtr meta = CreateStudioMeta(attribute, type);
+                if (meta != IntPtr.Zero) AddMetaType(nativeType, meta);
+            }
+
+            // Add attributes for the properties
+            foreach (PropertyInfo p in props)
+            {
+                foreach (Attribute attribute in p.GetCustomAttributes(false))
+                {
+                    IntPtr meta = CreateStudioMeta(attribute, type);
+                    if (meta != IntPtr.Zero) AddMetaProp(nativeType, p.Name, meta);
+                }
+            }
+
+            // Add attributes for Attached Properties (from static methods)
+            foreach (MethodInfo method in type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static))
+            {
+                var toAttr = method.GetCustomAttribute<StudioAttachToAttribute>();
+                var onAttr = method.GetCustomAttribute<StudioAttachOnAttribute>();
+                var readOnlyAttr = method.GetCustomAttribute<StudioAttachReadOnlyAttribute>();
+
+                if (toAttr != null || onAttr != null || readOnlyAttr != null)
+                {
+                    // Infer name ("GetExit" => "Exit")
+                    string name = method.Name;
+                    if (name.StartsWith("Get"))
+                    {
+                        name = name.Substring(3);
+                    }
+
+                    // Extract types
+                    IntPtr[] toTypes = toAttr != null ? GetNativeTypes(toAttr.Types) : new IntPtr[0];
+                    IntPtr[] onTypes = onAttr != null ? GetNativeTypes(onAttr.Types) : new IntPtr[0];
+                    bool readOnly = readOnlyAttr != null;
+
+                    // Gather nested metas (every other Studio attribute on this method)
+                    List<IntPtr> nestedMetas = new List<IntPtr>();
+                    foreach (Attribute attribute in method.GetCustomAttributes(false))
+                    {
+                        if (attribute is StudioAttachToAttribute || 
+                            attribute is StudioAttachOnAttribute || 
+                            attribute is StudioAttachReadOnlyAttribute)
+                        {
+                            continue; // Skip the builder attributes
+                        }
+
+                        IntPtr meta = CreateStudioMeta(attribute, type);
+                        if (meta != IntPtr.Zero) nestedMetas.Add(meta);
+                    }
+
+                    IntPtr attachMeta = Create_StudioAttach(
+                        name,
+                        readOnly,
+                        toTypes.Length, toTypes,
+                        onTypes.Length, onTypes,
+                        nestedMetas.Count, nestedMetas.ToArray());
+
+                    if (attachMeta != IntPtr.Zero) AddMetaType(nativeType, attachMeta);
+                }
+            }
+        }
+        #endif
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
         public static IntPtr EnsureNativeType(Type type)
@@ -2400,6 +2698,27 @@ namespace Noesis
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void Callback_FrameworkElementPreApplyTemplate(IntPtr cPtr);
+        private static Callback_FrameworkElementPreApplyTemplate _frameworkElementPreApplyTemplate = FrameworkElementPreApplyTemplate;
+
+        [MonoPInvokeCallback(typeof(Callback_FrameworkElementPreApplyTemplate))]
+        private static void FrameworkElementPreApplyTemplate(IntPtr cPtr)
+        {
+            try
+            {
+                FrameworkElement element = (FrameworkElement)GetExtendInstance(cPtr);
+                if (element != null)
+                {
+                    element.InternalOnPreApplyTemplate();
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
         private delegate void Callback_FrameworkElementApplyTemplate(IntPtr cPtr);
         private static Callback_FrameworkElementApplyTemplate _frameworkElementApplyTemplate = FrameworkElementApplyTemplate;
 
@@ -2412,6 +2731,54 @@ namespace Noesis
                 if (element != null)
                 {
                     element.OnApplyTemplate();
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void Callback_FrameworkElementPostApplyTemplate(IntPtr cPtr);
+        private static Callback_FrameworkElementPostApplyTemplate _frameworkElementPostApplyTemplate = FrameworkElementPostApplyTemplate;
+
+        [MonoPInvokeCallback(typeof(Callback_FrameworkElementPostApplyTemplate))]
+        private static void FrameworkElementPostApplyTemplate(IntPtr cPtr)
+        {
+            try
+            {
+                FrameworkElement element = (FrameworkElement)GetExtendInstance(cPtr);
+                if (element != null)
+                {
+                    element.InternalOnPostApplyTemplate();
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void Callback_PresenterContentChanged(IntPtr cPtr,
+            IntPtr oldContentTypePtr, IntPtr oldContentPtr,
+            IntPtr newContentTypePtr, IntPtr newContentPtr);
+        private static Callback_PresenterContentChanged _presenterContentChanged = PresenterContentChanged;
+
+        [MonoPInvokeCallback(typeof(Callback_PresenterContentChanged))]
+        private static void PresenterContentChanged(IntPtr cPtr,
+            IntPtr oldContentTypePtr, IntPtr oldContentPtr,
+            IntPtr newContentTypePtr, IntPtr newContentPtr)
+        {
+            try
+            {
+                ContentPresenter presenter = (ContentPresenter)GetExtendInstance(cPtr);
+                if (presenter != null)
+                {
+                    object oldContent = GetProxy(oldContentTypePtr, oldContentPtr, false);
+                    object newContent = GetProxy(newContentTypePtr, newContentPtr, false);
+                    presenter.InternalOnContentChanged(oldContent, newContent);
                 }
             }
             catch (Exception e)
@@ -4190,6 +4557,82 @@ namespace Noesis
             {
                 Error.UnhandledException(e);
                 return IntPtr.Zero;
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void Callback_AttachableObjectAttach(IntPtr cPtr);
+        private static Callback_AttachableObjectAttach _attachableObjectAttach = AttachableObjectAttach;
+
+        [MonoPInvokeCallback(typeof(Callback_AttachableObjectAttach))]
+        private static void AttachableObjectAttach(IntPtr cPtr)
+        {
+            try
+            {
+                var attachable = (Interactivity.AttachableObject)GetExtendInstance(cPtr);
+                attachable?.InternalOnAttached();
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void Callback_AttachableObjectDetach(IntPtr cPtr);
+        private static Callback_AttachableObjectDetach _attachableObjectDetach = AttachableObjectDetach;
+
+        [MonoPInvokeCallback(typeof(Callback_AttachableObjectDetach))]
+        private static void AttachableObjectDetach(IntPtr cPtr)
+        {
+            try
+            {
+                var attachable = (Interactivity.AttachableObject)GetExtendInstance(cPtr);
+                attachable?.InternalOnDetaching();
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void Callback_TriggerActionInvoke(IntPtr cPtr, IntPtr paramTypePtr, IntPtr paramPtr);
+        private static Callback_TriggerActionInvoke _triggerActionInvoke = TriggerActionInvoke;
+
+        [MonoPInvokeCallback(typeof(Callback_TriggerActionInvoke))]
+        private static void TriggerActionInvoke(IntPtr cPtr, IntPtr paramTypePtr, IntPtr paramPtr)
+        {
+            try
+            {
+                var action = (Interactivity.TriggerAction)GetExtendInstance(cPtr);
+                action?.InternalInvoke(GetProxy(paramTypePtr, paramPtr, false));
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        private delegate void Callback_TargetedTriggerActionTargetChanged(IntPtr cPtr,
+            IntPtr oldTargetTypePtr, IntPtr oldTargetPtr, IntPtr newTargetTypePtr, IntPtr newTargetPtr);
+        private static Callback_TargetedTriggerActionTargetChanged _targetedTriggerActionTargetChanged = TargetedTriggerActionTargetChanged;
+
+        [MonoPInvokeCallback(typeof(Callback_TargetedTriggerActionTargetChanged))]
+        private static void TargetedTriggerActionTargetChanged(IntPtr cPtr,
+            IntPtr oldTargetTypePtr, IntPtr oldTargetPtr, IntPtr newTargetTypePtr, IntPtr newTargetPtr)
+        {
+            try
+            {
+                var action = (Interactivity.TargetedTriggerAction)GetExtendInstance(cPtr);
+                var oldTarget = GetProxy(oldTargetTypePtr, oldTargetPtr, false);
+                var newTarget = GetProxy(newTargetTypePtr, newTargetPtr, false);
+                action?.InternalOnTargetChangedImpl(oldTarget, newTarget);
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
             }
         }
 

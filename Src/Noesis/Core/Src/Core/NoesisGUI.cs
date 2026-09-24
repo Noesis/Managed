@@ -28,6 +28,10 @@ namespace Noesis
     /// <summary> Called everytime an assembly is requested by xaml loading</summary>
     public delegate void LoadAssemblyCallback(string assembly);
 
+    /// <summary>Called when using the clipboard for reading or writing</summary>
+    public delegate string GetClipboardTextCallback();
+    public delegate void SetClipboardTextCallback(string text);
+
     public static class GUI
     {
         /// <summary>
@@ -121,6 +125,7 @@ namespace Noesis
 
         public static void Shutdown(bool native)
         {
+            Noesis_SetClipboardCallbacks(null, null);
             Noesis_SetPlayAudioCallback(null);
             Noesis_SetOpenUrlCallback(null);
             Noesis_SetCursorCallback(null);
@@ -276,6 +281,20 @@ namespace Noesis
         }
 
         /// <summary>
+        /// Callbacks for handling clipboard operations
+        /// </summary>
+        public static void SetClipboardCallbacks(GetClipboardTextCallback getCallback,
+            SetClipboardTextCallback setCallback)
+        {
+            _getClipboardTextCallback = getCallback;
+            _setClipboardTextCallback = setCallback;
+
+            Noesis_SetClipboardCallbacks(
+                getCallback != null ? _getTextCallback : null,
+                setCallback != null ? _setTextCallback : null);
+        }
+
+        /// <summary>
         /// Finds dependencies to other XAMLS and resources (fonts, textures, sounds...).
         /// </summary>
         /// <param name="xaml">Stream with xaml content.</param>
@@ -387,6 +406,17 @@ namespace Noesis
         }
 
         /// <summary>
+        /// Forces a synchronous garbage collection to identify unreferenced C# proxies 
+        /// and release their underlying Noesis C++ instances.
+        /// </summary>
+        public static void ReleaseUnusedProxies()
+        {
+            System.GC.Collect();
+            System.GC.WaitForPendingFinalizers();
+            Noesis.Extend.Update();
+        }
+
+        /// <summary>
         /// This method forces the linker to generate the reflection for the specified type,
         /// allowing it to use reflection on this type in AOT builds
         /// </summary>
@@ -478,6 +508,50 @@ namespace Noesis
                 {
                     string uriStr = Extend.StringFromNativeUtf8(sound);
                     _playAudioCallback(new Uri(uriStr, UriKind.RelativeOrAbsolute), volume);
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+        }
+        #endregion
+
+        #region Clipboard
+        private static GetClipboardTextCallback _getClipboardTextCallback;
+        private static SetClipboardTextCallback _setClipboardTextCallback;
+
+        private delegate IntPtr NoesisGetTextCallback();
+        private static NoesisGetTextCallback _getTextCallback = GetClipboardText;
+        [MonoPInvokeCallback(typeof(NoesisGetTextCallback))]
+        private static IntPtr GetClipboardText()
+        {
+            try
+            {
+                if (_initialized)
+                {
+                    string text = _getClipboardTextCallback?.Invoke();
+                    return Marshal.StringToHGlobalUni(text != null ? text : string.Empty);
+                }
+            }
+            catch (Exception e)
+            {
+                Error.UnhandledException(e);
+            }
+            return IntPtr.Zero;
+        }
+
+        private delegate void NoesisSetTextCallback(IntPtr text);
+        private static NoesisSetTextCallback _setTextCallback = SetClipboardText;
+        [MonoPInvokeCallback(typeof(NoesisSetTextCallback))]
+        private static void SetClipboardText(IntPtr text)
+        {
+            try
+            {
+                if (_initialized)
+                {
+                    string text_ = Extend.StringFromNativeUtf8(text);
+                    _setClipboardTextCallback?.Invoke(text_);
                 }
             }
             catch (Exception e)
@@ -633,6 +707,10 @@ namespace Noesis
 
         [DllImport(Library.Name)]
         static extern void Noesis_SetPlayAudioCallback(NoesisPlayAudioCallback callback);
+
+        [DllImport(Library.Name)]
+        static extern void Noesis_SetClipboardCallbacks(NoesisGetTextCallback getCallback,
+            NoesisSetTextCallback setCallback);
 
         [DllImport(Library.Name)]
         static extern void Noesis_GetXamlDependencies(HandleRef stream,

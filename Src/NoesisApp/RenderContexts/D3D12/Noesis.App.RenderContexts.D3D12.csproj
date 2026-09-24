@@ -24,14 +24,16 @@
     </ProjectReference>
     <PackageReference Include="SharpDX.Direct3D12" Version="4.2.0" />
   </ItemGroup>
-
+<!--
   <PropertyGroup>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
   </PropertyGroup>
-
   <ItemGroup>
     <Content Include="$(SolutionDir)LICENSE.txt" PackagePath="" Pack="true" />
+  </ItemGroup>
+-->
+  <ItemGroup>
     <Content Include="$(SolutionDir)THIRD_PARTY.txt" PackagePath="" Pack="true" />
   </ItemGroup>
 

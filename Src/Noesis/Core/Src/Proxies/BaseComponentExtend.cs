@@ -102,6 +102,11 @@ namespace Noesis
             return Noesis.Extend.GetProxy(ptr, false);
         }
 
+        public static object GetProxy(IntPtr ptr, bool ownMemory)
+        {
+            return Noesis.Extend.GetProxy(ptr, ownMemory);
+        }
+
         public bool IsDisposed
         {
             get { return swigCPtr.Handle == IntPtr.Zero; }
@@ -119,8 +124,16 @@ namespace Noesis
             {
                 if ((object)b != null)
                 {
-                    // will be true if both proxies point to the same native pointer
-                    return a.swigCPtr.Handle == b.swigCPtr.Handle;
+                    if (a.swigCPtr.Handle == b.swigCPtr.Handle)
+                    {
+                        // will be true if both proxies point to the same native pointer
+                        return true;
+                    }
+                    else
+                    {
+                        // last check, we do the comparison using the native Equals
+                        return EqualsHelper(a.swigCPtr.Handle, b.swigCPtr.Handle);
+                    }
                 }
                 else
                 {

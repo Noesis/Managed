@@ -1,4 +1,5 @@
 ﻿using Noesis;
+using Noesis.Interactivity;
 using System;
 using System.Collections;
 using System.Collections.ObjectModel;
@@ -12,7 +13,7 @@ namespace NoesisGUIExtensions
     /// <summary>
     /// A behavior that filter a collection depending on the supplied Predicate object.
     /// </summary>
-    public class CollectionFilterBehavior : NoesisApp.Behavior<Noesis.FrameworkElement>
+    public class CollectionFilterBehavior : Behavior<FrameworkElement>
     {
         public CollectionFilterBehavior()
         {

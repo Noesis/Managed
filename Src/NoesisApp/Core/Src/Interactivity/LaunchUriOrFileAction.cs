@@ -1,7 +1,7 @@
 ﻿using Noesis;
 using System;
 
-namespace NoesisApp
+namespace Noesis.Interactivity
 {
     /// <summary>
     /// An action that will launch a process to open a file or uri.

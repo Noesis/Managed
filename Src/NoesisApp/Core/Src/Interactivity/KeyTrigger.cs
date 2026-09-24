@@ -1,7 +1,7 @@
 ﻿using Noesis;
 using System;
 
-namespace NoesisApp
+namespace Noesis.Interactivity
 {
     public enum KeyTriggerFiredOn
     {

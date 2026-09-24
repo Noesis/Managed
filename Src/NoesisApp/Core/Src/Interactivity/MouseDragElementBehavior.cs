@@ -1,7 +1,7 @@
 ﻿using Noesis;
 using System;
 
-namespace NoesisApp
+namespace Noesis.Interactivity
 {
     public delegate void MouseEventHandler(object sender, MouseEventArgs e);
 

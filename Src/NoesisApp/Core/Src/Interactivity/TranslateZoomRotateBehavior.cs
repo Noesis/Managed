@@ -1,7 +1,7 @@
 ﻿using Noesis;
 using System;
 
-namespace NoesisApp
+namespace Noesis.Interactivity
 {
     /// <summary>
     /// Moves the attached element in response to mouse drag and touch gestures on the element.

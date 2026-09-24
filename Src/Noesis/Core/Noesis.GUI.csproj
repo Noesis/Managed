@@ -42,15 +42,15 @@
     <Content Include="runtimes\**" PackagePath="runtimes" Pack="true" />
     <Content Include="lib\**" PackagePath="lib" Pack="true" />
   </ItemGroup>
-
+<!--
   <PropertyGroup>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
   </PropertyGroup>
-
   <ItemGroup>
     <Content Include="$(SolutionDir)LICENSE.txt" PackagePath="" Pack="true" />
   </ItemGroup>
+-->
   <ItemGroup>
     <Content Include="$(SolutionDir)THIRD_PARTY.txt" PackagePath="" Pack="true" />
   </ItemGroup>

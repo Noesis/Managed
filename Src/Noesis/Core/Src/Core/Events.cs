@@ -34,6 +34,8 @@ namespace Noesis
     public delegate void GiveFeedbackEventHandler(object sender, GiveFeedbackEventArgs args);
     public delegate void DragEventHandler(object sender, DragEventArgs args);
 
+    public delegate void TextChangedEventHandler(object sender, TextChangedEventArgs args);
+
     public delegate void ScrollEventHandler(object sender, ScrollEventArgs args);
     public delegate void ScrollChangedEventHandler(object sender, ScrollChangedEventArgs args);
 
@@ -427,6 +429,7 @@ namespace Noesis
             _elements.Clear();
 
             DependencyObject.ResetEvents();
+            Freezable.ResetEvents();
             Clock.ResetEvents();
             CommandBinding.ResetEvents();
             ItemContainerGenerator.ResetEvents();
@@ -434,6 +437,7 @@ namespace Noesis
             Timeline.ResetEvents();
             VisualStateGroup.ResetEvents();
             View.ResetEvents();
+            Interactivity.TriggerBase.ResetEvents();
         }
 
         private static void OnElementDestroyed(IntPtr d)
@@ -835,7 +839,7 @@ namespace Noesis
 
             // TextBoxBase
             RegisterRoutedEvent(TextBoxBase.SelectionChangedEvent, typeof(RoutedEventHandler), RoutedEventArgs.InvokeHandler);
-            RegisterRoutedEvent(TextBoxBase.TextChangedEvent, typeof(RoutedEventHandler), RoutedEventArgs.InvokeHandler);
+            RegisterRoutedEvent(TextBoxBase.TextChangedEvent, typeof(TextChangedEventHandler), TextChangedEventArgs.InvokeHandler);
 
             // PasswordBox
             RegisterRoutedEvent(PasswordBox.PasswordChangedEvent, typeof(RoutedEventHandler), RoutedEventArgs.InvokeHandler);

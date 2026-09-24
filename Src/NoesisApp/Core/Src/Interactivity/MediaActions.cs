@@ -1,15 +1,17 @@
-﻿using System;
+﻿using NoesisApp;
+using Noesis.Interactivity;
+using System;
 
 namespace NoesisGUIExtensions
 {
     /// <summary>
     /// Play a media element.
     /// </summary>
-    public class PlayMediaAction : NoesisApp.TargetedTriggerAction<NoesisApp.MediaElement>
+    public class PlayMediaAction : TargetedTriggerAction<MediaElement>
     {
         protected override void Invoke(object o)
         {
-            NoesisApp.MediaElement element = Target;
+            MediaElement element = Target;
             if (element != null)
             {
                 element.Play();
@@ -20,11 +22,11 @@ namespace NoesisGUIExtensions
     /// <summary>
     /// Pause a media element.
     /// </summary>
-    public class PauseMediaAction : NoesisApp.TargetedTriggerAction<NoesisApp.MediaElement>
+    public class PauseMediaAction : TargetedTriggerAction<MediaElement>
     {
         protected override void Invoke(object o)
         {
-            NoesisApp.MediaElement element = Target;
+            MediaElement element = Target;
             if (element != null)
             {
                 element.Pause();
@@ -35,11 +37,11 @@ namespace NoesisGUIExtensions
     /// <summary>
     /// Seeks a media element to position 0.
     /// </summary>
-    public class RewindMediaAction : NoesisApp.TargetedTriggerAction<NoesisApp.MediaElement>
+    public class RewindMediaAction : TargetedTriggerAction<MediaElement>
     {
         protected override void Invoke(object o)
         {
-            NoesisApp.MediaElement element = Target;
+            MediaElement element = Target;
             if (element != null)
             {
                 element.Position = TimeSpan.Zero;
@@ -50,11 +52,11 @@ namespace NoesisGUIExtensions
     /// <summary>
     /// Stops a media element.
     /// </summary>
-    public class StopMediaAction : NoesisApp.TargetedTriggerAction<NoesisApp.MediaElement>
+    public class StopMediaAction : TargetedTriggerAction<MediaElement>
     {
         protected override void Invoke(object o)
         {
-            NoesisApp.MediaElement element = Target;
+            MediaElement element = Target;
             if (element != null)
             {
                 element.Stop();

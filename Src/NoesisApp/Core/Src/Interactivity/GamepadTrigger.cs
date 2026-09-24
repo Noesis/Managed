@@ -1,4 +1,5 @@
 ﻿using Noesis;
+using Noesis.Interactivity;
 using System;
 
 namespace NoesisGUIExtensions
@@ -32,7 +33,7 @@ namespace NoesisGUIExtensions
     /// <summary>
     /// A Trigger that is triggered by a specified gamepad button.
     /// </summary>
-    public class GamepadTrigger : NoesisApp.TriggerBase<UIElement>
+    public class GamepadTrigger : TriggerBase<UIElement>
     {
         public new GamepadTrigger Clone()
         {
@@ -144,7 +145,7 @@ namespace NoesisGUIExtensions
         }
 
         private bool _invoked;
-        private void OnPreviewInvoke(object sender, NoesisApp.PreviewInvokeEventArgs e)
+        private void OnPreviewInvoke(object sender, PreviewInvokeEventArgs e)
         {
             _invoked = !e.Cancelling;
         }

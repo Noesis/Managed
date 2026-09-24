@@ -1,6 +1,6 @@
 ﻿using Noesis;
 
-namespace NoesisApp
+namespace Noesis.Interactivity
 {
     /// <summary>
     /// A trigger that listens for the completion of a Storyboard.
@@ -36,9 +36,11 @@ namespace NoesisApp
             base.OnAttached();
 
             Storyboard storyboard = Storyboard;
-            DependencyObject associatedObject = AssociatedObject;
-            FrameworkElement target = StoryboardAction.FindStoryboardTarget(storyboard, associatedObject);
-            _target = GetPtr(target);
+            if (storyboard != null)
+            {
+                storyboard.Completed += OnStoryboardCompleted;
+                _target = GetPtr(StoryboardAction.FindStoryboardTarget(storyboard, AssociatedObject));
+            }
         }
 
         protected override void OnDetaching()
@@ -47,7 +49,6 @@ namespace NoesisApp
             if (storyboard != null)
             {
                 storyboard.Completed -= OnStoryboardCompleted;
-
                 _target = System.IntPtr.Zero;
             }
 
@@ -56,22 +57,22 @@ namespace NoesisApp
 
         protected override void OnStoryboardChanged(DependencyPropertyChangedEventArgs e)
         {
-            Storyboard oldStoryboard = (Storyboard)e.OldValue;
-            Storyboard newStoryboard = (Storyboard)e.NewValue;
-
-            if (oldStoryboard != null)
+            DependencyObject associatedObject = AssociatedObject;
+            if (associatedObject != null)
             {
-                oldStoryboard.Completed -= OnStoryboardCompleted;
+                Storyboard oldStoryboard = (Storyboard)e.OldValue;
+                if (oldStoryboard != null)
+                {
+                    oldStoryboard.Completed -= OnStoryboardCompleted;
+                    _target = System.IntPtr.Zero;
+                }
 
-                _target = System.IntPtr.Zero;
-            }
-            if (newStoryboard != null)
-            {
-                newStoryboard.Completed += OnStoryboardCompleted;
-
-                DependencyObject associatedObject = AssociatedObject;
-                FrameworkElement target = StoryboardAction.FindStoryboardTarget(newStoryboard, associatedObject);
-                _target = GetPtr(target);
+                Storyboard newStoryboard = (Storyboard)e.NewValue;
+                if (newStoryboard != null)
+                {
+                    newStoryboard.Completed += OnStoryboardCompleted;
+                    _target = GetPtr(StoryboardAction.FindStoryboardTarget(newStoryboard, associatedObject));
+                }
             }
         }
 

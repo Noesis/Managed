@@ -1,7 +1,7 @@
 ﻿using Noesis;
 using System;
 
-namespace NoesisApp
+namespace Noesis.Interactivity
 {
     /// <summary>
     /// An action that will remove the targeted element from the tree when invoked.

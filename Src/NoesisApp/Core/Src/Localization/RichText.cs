@@ -396,9 +396,9 @@ namespace NoesisGUIExtensions
             int current = begin;
             for (; current < input.Length; current++)
             {
-                if (input[current] == '\\')
+                if (input[current] == '\\' && current + 1 < input.Length)
                 {
-                    if (current - 1 > begin)
+                    if (current > begin)
                     {
                         stringBuilder.Append(input.Substring(begin, current - begin));
                     }
@@ -445,7 +445,7 @@ namespace NoesisGUIExtensions
 
             for (; current < input.Length - 1; current++)
             {
-                if (input[current] == '\\')
+                if (input[current] == '\\' && current + 1 < input.Length - 1)
                 {
                     stringBuilder.Append(input.Substring(begin, current - begin));
                     ++current;
@@ -455,7 +455,7 @@ namespace NoesisGUIExtensions
                 {
                     if (singleQuotes && input[current] == '\'' || !singleQuotes && input[current] == '"')
                     {
-                        if (current - 1 > begin)
+                        if (current > begin)
                         {
                             stringBuilder.Append(input.Substring(begin, current - begin));
                         }

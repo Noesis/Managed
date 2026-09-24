@@ -2,7 +2,7 @@
 using System;
 using System.Reflection;
 
-namespace NoesisApp
+namespace Noesis.Interactivity
 {
     /// <summary>
     /// An abstract trigger class that provides the ability to target a Storyboard.

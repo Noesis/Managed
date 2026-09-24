@@ -8,6 +8,11 @@ namespace NoesisApp
 {
     public class GEMediaPlayer : MediaPlayer
     {
+        public static MediaPlayer Create(MediaElement owner, Uri uri, object user)
+        {
+            return new GEMediaPlayer(owner, uri);
+        }
+
         static GEMediaPlayer()
         {
             InitMediaPlayer();
@@ -19,7 +24,9 @@ namespace NoesisApp
             if (_stream != null)
             {
                 _state = CreateState();
-            
+
+                _renderer = new Renderer(_state);
+
                 _streamHandle = GCHandle.Alloc(_stream);
                 StreamReadDelegate readFn = new StreamReadDelegate(StreamRead);
                 _readFnHandle = GCHandle.Alloc(readFn);
@@ -34,9 +41,9 @@ namespace NoesisApp
                 _mediaFailedFnHandle = GCHandle.Alloc(mediaFailedFn);
 
                 long streamSize = _stream.Length;
-                OpenMedia(_state, GCHandle.ToIntPtr(_streamHandle), uri.GetPath(), streamSize, readFn, seekFn, mediaOpenedFn, mediaEndedFn, mediaFailedFn);
+                OpenMedia(_state, GCHandle.ToIntPtr(_streamHandle), uri.GetPath(), streamSize,
+                    readFn, seekFn, mediaOpenedFn, mediaEndedFn, mediaFailedFn);
             }
-            owner.View.Rendering += OnRendering;
         }
 
         ~GEMediaPlayer()
@@ -48,6 +55,8 @@ namespace NoesisApp
         {
             if (_stream != null)
             {
+                _renderer = null;
+
                 DestroyState(_state);
 
                 _streamHandle.Free();
@@ -154,74 +163,66 @@ namespace NoesisApp
             if (_stream != null) Stop(_state);
         }
 
+        public override void Update()
+        {
+            if (_stream != null) Update(_state);
+        }
+
         public override ImageSource TextureSource
         {
             get { return _textureSource; }
         }
 
-        public static MediaPlayer Create(MediaElement owner, Uri uri, object user)
+        private class Renderer : DynamicTextureSource.Renderer
         {
-            return new GEMediaPlayer(owner, uri);
-        }
-
-        private static Texture TextureRender(RenderDevice device, object user)
-        {
-            GEMediaPlayer mediaPlayer = user as GEMediaPlayer;
-            return mediaPlayer.GetTexture(device);
-        }
-
-        private Texture GetTexture(RenderDevice device)
-        {
-            if (_textureSource == null)
-                return null;
-
-            uint width = Width;
-            uint height = Height;
-            if (_renderTarget == null/* ||
-                _renderTarget.Texture.Width != width ||
-                _renderTarget.Texture.Height != height*/)
+            public Renderer(IntPtr state)
             {
-                _renderTarget = device.CreateRenderTarget("MediaPlayer", width, height, 1, false);
+                _state = state;
             }
 
-            if (_stream != null)
+            public override void Init(RenderDevice device)
             {
-                if (HasNewFrame(_state))
+                _device = device;
+            }
+
+            public override Texture Render(uint width, uint height)
+            {
+                if (_renderTarget == null ||
+                    _renderTarget.Texture.Width != width ||
+                    _renderTarget.Texture.Height != height)
                 {
-                    Tile tile = new Tile();
-                    tile.X = 0;
-                    tile.Y = 0;
-                    tile.Width = width;
-                    tile.Height = height;
-                    Tile[] tiles = new Tile[] { tile };
-
-                    device.SetRenderTarget(_renderTarget);
-
-                    RenderFrame(_state);
-
-                    device.ResolveRenderTarget(_renderTarget, tiles);
+                    _renderTarget = _device.CreateRenderTarget("MediaPlayer", width, height, 1, false);
                 }
+
+                if (_state != IntPtr.Zero)
+                {
+                    if (HasNewFrame(_state))
+                    {
+                        Tile tile = new Tile() { X = 0, Y = 0, Width = width, Height = height };
+                        Tile[] tiles = { tile };
+
+                        _device.SetRenderTarget(_renderTarget);
+
+                        RenderFrame(_state);
+
+                        _device.ResolveRenderTarget(_renderTarget, tiles);
+                    }
+                }
+
+                return _renderTarget.Texture;
             }
 
-            return _renderTarget.Texture;
+            public override void Shutdown()
+            {
+                _device = null;
+            }
+
+            private IntPtr _state;
+            private RenderDevice _device;
+            private RenderTarget _renderTarget;
         }
 
-        private void OnRendering(object sender, Noesis.EventArgs e)
-        {
-            if (_stream != null) Update(_state);
-        }
-
-        private IntPtr _state;
-        private DynamicTextureSource _textureSource;
-        private RenderTarget _renderTarget;
-        private Stream _stream;
-        private GCHandle _streamHandle;
-        private GCHandle _readFnHandle;
-        private GCHandle _seekFnHandle;
-        private GCHandle _mediaOpenedFnHandle;
-        private GCHandle _mediaEndedFnHandle;
-        private GCHandle _mediaFailedFnHandle;
-
+        #region Event delegates
         private delegate uint StreamReadDelegate(IntPtr streamPtr, IntPtr buffer, uint size);
 
         private static uint StreamRead(IntPtr streamPtr, IntPtr buffer, uint size)
@@ -269,7 +270,7 @@ namespace NoesisApp
 
         private void OnMediaOpened()
         {
-            _textureSource = new DynamicTextureSource(Width, Height, TextureRender, this);
+            _textureSource = new DynamicTextureSource(Width, Height, _renderer);
             RaiseMediaOpened();
         }
 
@@ -286,7 +287,22 @@ namespace NoesisApp
         {
             RaiseMediaFailed(new Exception("UpdateMedia failed"));
         }
+        #endregion
 
+        #region Private members
+        private IntPtr _state;
+        private Renderer _renderer;
+        private DynamicTextureSource _textureSource;
+        private Stream _stream;
+        private GCHandle _streamHandle;
+        private GCHandle _readFnHandle;
+        private GCHandle _seekFnHandle;
+        private GCHandle _mediaOpenedFnHandle;
+        private GCHandle _mediaEndedFnHandle;
+        private GCHandle _mediaFailedFnHandle;
+        #endregion
+
+        #region Imports
         [DllImport("MediaPlayer")]
         private static extern void InitMediaPlayer();
 
@@ -380,5 +396,6 @@ namespace NoesisApp
 
         [DllImport("MediaPlayer")]
         private static extern bool Update(IntPtr state);
+        #endregion
     }
 }

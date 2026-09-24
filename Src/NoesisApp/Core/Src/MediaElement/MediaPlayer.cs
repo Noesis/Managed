@@ -134,10 +134,14 @@ namespace NoesisApp
         public virtual void Close() { }
 
         /// <summary>
+        /// Called once per frame to update playback, audio, and video state
+        /// </summary>
+        public abstract void Update();
+
+        /// <summary>
         /// Gets the texture source for rendering the video
         /// </summary>
         public abstract Noesis.ImageSource TextureSource { get; }
-
 
         #region Events
         /// Occurs when buffering has started.

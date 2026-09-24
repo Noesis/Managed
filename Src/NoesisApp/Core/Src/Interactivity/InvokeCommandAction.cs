@@ -5,7 +5,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Windows.Input;
 
-namespace NoesisApp
+namespace Noesis.Interactivity
 {
     /// <summary>
     /// Executes a specified ICommand when invoked.

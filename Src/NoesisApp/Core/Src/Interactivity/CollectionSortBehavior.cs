@@ -1,4 +1,5 @@
 ﻿using Noesis;
+using Noesis.Interactivity;
 using System;
 using System.Collections;
 using System.Collections.ObjectModel;
@@ -11,7 +12,7 @@ namespace NoesisGUIExtensions
     /// <summary>
     /// A behavior that sorts a collection depending on the supplied Comparer object.
     /// </summary>
-    public class CollectionSortBehavior : NoesisApp.Behavior<Noesis.FrameworkElement>
+    public class CollectionSortBehavior : Behavior<FrameworkElement>
     {
         public CollectionSortBehavior()
         {

@@ -2,7 +2,7 @@
 using System;
 using System.Reflection;
 
-namespace NoesisApp
+namespace Noesis.Interactivity
 {
     /// <summary>
     /// Represents a trigger that performs actions when the bound data have changed.

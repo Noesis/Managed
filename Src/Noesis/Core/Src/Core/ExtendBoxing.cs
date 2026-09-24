@@ -109,6 +109,7 @@ namespace Noesis
             boxFunctions[typeof(Noesis.VirtualizationMode)] = (val) => NoesisGUI_.Box_VirtualizationMode((Noesis.VirtualizationMode)val);
             boxFunctions[typeof(Noesis.VirtualizationCacheLengthUnit)] = (val) => NoesisGUI_.Box_VirtualizationCacheLengthUnit((Noesis.VirtualizationCacheLengthUnit)val);
             boxFunctions[typeof(Noesis.PPAAMode)] = (val) => NoesisGUI_.Box_PPAAMode((Noesis.PPAAMode)val);
+            boxFunctions[typeof(Noesis.Interactivity.ComparisonConditionType)] = (val) => NoesisGUI_.Box_ComparisonConditionType((Noesis.Interactivity.ComparisonConditionType)val);
 
             return boxFunctions;
         }
@@ -237,6 +238,7 @@ namespace Noesis
             unboxFunctions[typeof(Boxed<Noesis.VirtualizationMode>)] = (cPtr) => NoesisGUI_.Unbox_VirtualizationMode(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.VirtualizationCacheLengthUnit>)] = (cPtr) => NoesisGUI_.Unbox_VirtualizationCacheLengthUnit(cPtr);
             unboxFunctions[typeof(Boxed<Noesis.PPAAMode>)] = (cPtr) => NoesisGUI_.Unbox_PPAAMode(cPtr);
+            unboxFunctions[typeof(Boxed<Noesis.Interactivity.ComparisonConditionType>)] = (cPtr) => NoesisGUI_.Unbox_ComparisonConditionType(cPtr);
 
             return unboxFunctions;
         }

@@ -1,11 +1,13 @@
-﻿using System;
+﻿using Noesis;
+using Noesis.Interactivity;
+using System;
 
 namespace NoesisGUIExtensions
 {
     /// <summary>
     /// An action that will select all the text on the text control.
     /// </summary>
-    public class SelectAllAction : NoesisApp.TriggerAction<Noesis.Control>
+    public class SelectAllAction : TriggerAction<Control>
     {
         public new SelectAllAction Clone()
         {
@@ -19,16 +21,16 @@ namespace NoesisGUIExtensions
 
         protected override void Invoke(object parameter)
         {
-            Noesis.Control control = AssociatedObject;
+            Control control = AssociatedObject;
 
-            Noesis.TextBox textBox = control as Noesis.TextBox;
+            TextBox textBox = control as TextBox;
             if (textBox != null)
             {
                 textBox.SelectAll();
                 return;
             }
 
-            Noesis.PasswordBox passwordBox = control as Noesis.PasswordBox;
+            PasswordBox passwordBox = control as PasswordBox;
             if (passwordBox != null)
             {
                 passwordBox.SelectAll();

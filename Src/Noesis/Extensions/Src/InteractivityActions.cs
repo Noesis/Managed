@@ -8,7 +8,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Media.Animation;
 using Microsoft.Xaml.Behaviors;
+using Microsoft.Xaml.Behaviors.Media;
 
 namespace NoesisGUIExtensions
 {
@@ -112,40 +114,33 @@ namespace NoesisGUIExtensions
         }
     }
 
-    public class LoadContentAction : TargetedTriggerAction<ContentControl>
+    public class SeekStoryboardAction : StoryboardAction
     {
-        public Uri Source
+        public TimeSpan Offset
         {
-            get { return (Uri)GetValue(SourceProperty); }
-            set { SetValue(SourceProperty, value); }
+            get { return (TimeSpan)GetValue(OffsetProperty); }
+            set { SetValue(OffsetProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for Source.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty SourceProperty = DependencyProperty.Register(
-            "Source", typeof(Uri), typeof(LoadContentAction),
-            new PropertyMetadata(null));
+        public static readonly DependencyProperty OffsetProperty = DependencyProperty.Register(
+            "Offset", typeof(TimeSpan), typeof(SeekStoryboardAction),
+            new PropertyMetadata(TimeSpan.Zero));
 
-        public new SetFocusAction Clone()
+        public TimeSeekOrigin Origin
         {
-            return (SetFocusAction)base.Clone();
+            get { return (TimeSeekOrigin)GetValue(OriginProperty); }
+            set { SetValue(OriginProperty, value); }
         }
 
-        public new SetFocusAction CloneCurrentValue()
-        {
-            return (SetFocusAction)base.CloneCurrentValue();
-        }
+        public static readonly DependencyProperty OriginProperty = DependencyProperty.Register(
+            "Origin", typeof(TimeSeekOrigin), typeof(SeekStoryboardAction),
+            new PropertyMetadata(TimeSeekOrigin.BeginTime));
 
-        protected override void Invoke(object parameter)
+        protected override void Invoke(object o)
         {
-            ContentControl control = Target;
-            if (control != null)
+            if (this.AssociatedObject != null && this.Storyboard != null)
             {
-                Uri source = Source;
-                if (source != null && !string.IsNullOrEmpty(source.OriginalString))
-                {
-                    object content = Application.LoadComponent(source);
-                    control.Content = content;
-                }
+                this.Storyboard.Seek(Offset, Origin);
             }
         }
     }

@@ -31,21 +31,23 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
-
+<!--
   <PropertyGroup>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
   </PropertyGroup>
-
   <ItemGroup>
     <Content Include="$(SolutionDir)LICENSE.txt" PackagePath="" Pack="true" />
+  </ItemGroup>
+-->
+  <ItemGroup>
     <Content Include="$(SolutionDir)THIRD_PARTY.txt" PackagePath="" Pack="true" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <None Include="$(SolutionDir)Icon-256.png" Pack="true" PackagePath="\" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <PackageReference Include="System.Memory" Version="4.5.5" />
   </ItemGroup>

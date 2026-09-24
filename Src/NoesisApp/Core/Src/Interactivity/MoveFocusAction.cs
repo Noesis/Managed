@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Noesis;
+using Noesis.Interactivity;
+using System;
 
 namespace NoesisGUIExtensions
 {
@@ -13,7 +15,7 @@ namespace NoesisGUIExtensions
     /// <summary>
     /// An action that will try to move the focus to the control positioned in the specified direction.
     /// </summary>
-    public class MoveFocusAction : NoesisApp.TriggerAction<Noesis.UIElement>
+    public class MoveFocusAction : TriggerAction<UIElement>
     {
         /// <summary>
         /// Direction to look for the next control to get focus.
@@ -24,9 +26,9 @@ namespace NoesisGUIExtensions
             set { SetValue(DirectionProperty, value); }
         }
 
-        public static readonly Noesis.DependencyProperty DirectionProperty = Noesis.DependencyProperty.Register(
+        public static readonly DependencyProperty DirectionProperty = DependencyProperty.Register(
             "Direction", typeof(FocusDirection), typeof(MoveFocusAction),
-            new Noesis.PropertyMetadata(FocusDirection.Left));
+            new PropertyMetadata(FocusDirection.Left));
 
         /// <summary>
         /// A value indicating if control should be engaged when getting the focus. Default is true.
@@ -37,22 +39,22 @@ namespace NoesisGUIExtensions
             set { SetValue(EngageProperty, value); }
         }
 
-        public static readonly Noesis.DependencyProperty EngageProperty = Noesis.DependencyProperty.Register(
+        public static readonly DependencyProperty EngageProperty = DependencyProperty.Register(
             "Engage", typeof(bool), typeof(MoveFocusAction),
-            new Noesis.PropertyMetadata(true));
+            new PropertyMetadata(true));
 
         protected override void Invoke(object parameter)
         {
-            Noesis.UIElement element = AssociatedObject;
+            UIElement element = AssociatedObject;
             if (element != null)
             {
-                Noesis.Keyboard keyboard = element.Keyboard;
+                Keyboard keyboard = element.Keyboard;
                 if (keyboard != null)
                 {
-                    Noesis.UIElement source = keyboard.FocusedElement ?? element;
+                    UIElement source = keyboard.FocusedElement ?? element;
 
-                    int direction = (int)Noesis.FocusNavigationDirection.Left + (int)Direction;
-                    Noesis.UIElement target = (Noesis.UIElement)source.PredictFocus((Noesis.FocusNavigationDirection)direction);
+                    int direction = (int)FocusNavigationDirection.Left + (int)Direction;
+                    UIElement target = (UIElement)source.PredictFocus((FocusNavigationDirection)direction);
 
                     if (target != null)
                     {

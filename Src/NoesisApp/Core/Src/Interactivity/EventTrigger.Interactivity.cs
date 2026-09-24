@@ -1,7 +1,7 @@
 ﻿using Noesis;
 using System;
 
-namespace NoesisApp
+namespace Noesis.Interactivity
 {
     /// <summary>
     /// A trigger that listens for a specified event on its source and fires when that event is fired.

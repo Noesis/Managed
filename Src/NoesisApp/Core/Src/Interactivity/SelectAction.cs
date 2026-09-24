@@ -1,11 +1,13 @@
-﻿using System;
+﻿using Noesis;
+using Noesis.Interactivity;
+using System;
 
 namespace NoesisGUIExtensions
 {
     /// <summary>
     /// An action that wiil set Selector.IsSelected property to true on the asssociated object.
     /// </summary>
-    public class SelectAction : NoesisApp.TriggerAction<Noesis.Control>
+    public class SelectAction : TriggerAction<Control>
     {
         public new SelectAction Clone()
         {
@@ -19,10 +21,10 @@ namespace NoesisGUIExtensions
 
         protected override void Invoke(object parameter)
         {
-            Noesis.Control control = AssociatedObject;
+            Control control = AssociatedObject;
             if (control != null)
             {
-                Noesis.Selector.SetIsSelected(control, true);
+                Selector.SetIsSelected(control, true);
             }
         }
     }

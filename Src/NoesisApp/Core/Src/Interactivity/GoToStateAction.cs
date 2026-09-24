@@ -1,7 +1,7 @@
 ﻿using Noesis;
 using System;
 
-namespace NoesisApp
+namespace Noesis.Interactivity
 {
     /// <summary>
     /// An action that will transition a FrameworkElement to a specified VisualState when invoked.

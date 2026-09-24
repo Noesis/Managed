@@ -1,11 +1,13 @@
-﻿using System;
+﻿using Noesis;
+using Noesis.Interactivity;
+using System;
 
 namespace NoesisGUIExtensions
 {
     /// <summary>
     /// An action that will try to focus the associated element.
     /// </summary>
-    public class SetFocusAction : NoesisApp.TargetedTriggerAction<Noesis.UIElement>
+    public class SetFocusAction : TargetedTriggerAction<UIElement>
     {
         /// <summary>
         /// Indicates if control should be engaged or not when getting the focus.
@@ -17,9 +19,9 @@ namespace NoesisGUIExtensions
             set { SetValue(EngageProperty, value); }
         }
 
-        public static readonly Noesis.DependencyProperty EngageProperty = Noesis.DependencyProperty.Register(
+        public static readonly DependencyProperty EngageProperty = DependencyProperty.Register(
             "Engage", typeof(bool), typeof(SetFocusAction),
-            new Noesis.PropertyMetadata(true));
+            new PropertyMetadata(true));
 
         public new SetFocusAction Clone()
         {
@@ -33,7 +35,7 @@ namespace NoesisGUIExtensions
 
         protected override void Invoke(object parameter)
         {
-            Noesis.UIElement element = Target;
+            UIElement element = Target;
             if (element != null)
             {
                 element.Focus(Engage);

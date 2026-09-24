@@ -1,6 +1,6 @@
 ﻿using System;
 using Noesis;
-using NoesisApp;
+using Noesis.Interactivity;
 using NoesisGUIExtensions;
 using System.Threading;
 using System.IO;
@@ -528,47 +528,50 @@ namespace NoesisApp
             GUI.RegisterType(typeof(Window));
 
             // Interactivity types
-            GUI.RegisterType(typeof(Interaction));
-            GUI.RegisterType(typeof(StyleInteraction));
-            GUI.RegisterType(typeof(BehaviorCollection));
-            GUI.RegisterType(typeof(TriggerCollection));
-            GUI.RegisterType(typeof(StyleBehaviorCollection));
-            GUI.RegisterType(typeof(StyleTriggerCollection));
-            GUI.RegisterType(typeof(EventTrigger));
-            GUI.RegisterType(typeof(PropertyChangedTrigger));
-            GUI.RegisterType(typeof(DataTrigger));
-            GUI.RegisterType(typeof(DataEventTrigger));
-            GUI.RegisterType(typeof(KeyTrigger));
-            GUI.RegisterType(typeof(GamepadTrigger));
-            GUI.RegisterType(typeof(StoryboardCompletedTrigger));
-            GUI.RegisterType(typeof(TimerTrigger));
-            GUI.RegisterType(typeof(LoadContentAction));
-            GUI.RegisterType(typeof(MouseDragElementBehavior));
-            GUI.RegisterType(typeof(TranslateZoomRotateBehavior));
-            GUI.RegisterType(typeof(ConditionBehavior));
-            GUI.RegisterType(typeof(ConditionalExpression));
-            GUI.RegisterType(typeof(ComparisonCondition));
-            GUI.RegisterType(typeof(GoToStateAction));
-            GUI.RegisterType(typeof(InvokeCommandAction));
-            GUI.RegisterType(typeof(ChangePropertyAction));
-            GUI.RegisterType(typeof(ControlStoryboardAction));
-            GUI.RegisterType(typeof(RemoveElementAction));
-            GUI.RegisterType(typeof(LaunchUriOrFileAction));
-            GUI.RegisterType(typeof(PlaySoundAction));
-            GUI.RegisterType(typeof(PlayMediaAction));
-            GUI.RegisterType(typeof(PauseMediaAction));
-            GUI.RegisterType(typeof(RewindMediaAction));
-            GUI.RegisterType(typeof(StopMediaAction));
-            GUI.RegisterType(typeof(SetFocusAction));
-            GUI.RegisterType(typeof(MoveFocusAction));
-            GUI.RegisterType(typeof(SelectAction));
-            GUI.RegisterType(typeof(SelectAllAction));
+            GUI.RegisterType(typeof(Noesis.Interactivity.Behavior));
+            GUI.RegisterType(typeof(Noesis.Interactivity.TriggerBase));
+            GUI.RegisterType(typeof(Noesis.Interactivity.TriggerAction));
+            GUI.RegisterType(typeof(Noesis.Interactivity.TargetedTriggerAction));
+            GUI.RegisterType(typeof(Noesis.Interactivity.BehaviorCollection));
+            GUI.RegisterType(typeof(Noesis.Interactivity.TriggerCollection));
+            GUI.RegisterType(typeof(Noesis.Interactivity.TriggerActionCollection));
+            GUI.RegisterType(typeof(Noesis.Interactivity.ConditionBehavior));
+            GUI.RegisterType(typeof(Noesis.Interactivity.ConditionalExpression));
+            GUI.RegisterType(typeof(Noesis.Interactivity.ComparisonCondition));
+
+            GUI.RegisterType(typeof(AnimatedGifBehavior));
+            GUI.RegisterType(typeof(BackgroundEffectBehavior));
             GUI.RegisterType(typeof(CollectionFilterBehavior));
             GUI.RegisterType(typeof(CollectionSortBehavior));
-            GUI.RegisterType(typeof(BackgroundEffectBehavior));
             GUI.RegisterType(typeof(LineDecorationBehavior));
-            GUI.RegisterType(typeof(TriggerAction));
-            GUI.RegisterType(typeof(TriggerActionCollection));
+            GUI.RegisterType(typeof(MouseDragElementBehavior));
+            GUI.RegisterType(typeof(TranslateZoomRotateBehavior));
+
+            GUI.RegisterType(typeof(DataEventTrigger));
+            GUI.RegisterType(typeof(Noesis.Interactivity.DataTrigger));
+            GUI.RegisterType(typeof(Noesis.Interactivity.EventTrigger));
+            GUI.RegisterType(typeof(GamepadTrigger));
+            GUI.RegisterType(typeof(KeyTrigger));
+            GUI.RegisterType(typeof(PropertyChangedTrigger));
+            GUI.RegisterType(typeof(StoryboardCompletedTrigger));
+            GUI.RegisterType(typeof(TimerTrigger));
+
+            GUI.RegisterType(typeof(ChangePropertyAction));
+            GUI.RegisterType(typeof(ControlStoryboardAction));
+            GUI.RegisterType(typeof(GoToStateAction));
+            GUI.RegisterType(typeof(InvokeCommandAction));
+            GUI.RegisterType(typeof(LaunchUriOrFileAction));
+            GUI.RegisterType(typeof(MoveFocusAction));
+            GUI.RegisterType(typeof(PauseMediaAction));
+            GUI.RegisterType(typeof(PlayMediaAction));
+            GUI.RegisterType(typeof(PlaySoundAction));
+            GUI.RegisterType(typeof(RemoveElementAction));
+            GUI.RegisterType(typeof(RewindMediaAction));
+            GUI.RegisterType(typeof(RiveTriggerAction));
+            GUI.RegisterType(typeof(SelectAction));
+            GUI.RegisterType(typeof(SelectAllAction));
+            GUI.RegisterType(typeof(SetFocusAction));
+            GUI.RegisterType(typeof(StopMediaAction));
 
             // Localization types
             GUI.RegisterType(typeof(LocExtension));

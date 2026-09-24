@@ -1,7 +1,7 @@
 ﻿using Noesis;
 using System;
 
-namespace NoesisApp
+namespace Noesis.Interactivity
 {
     public enum ControlStoryboardOption
     {
@@ -34,11 +34,18 @@ namespace NoesisApp
 
             ControlStoryboardAction action = (ControlStoryboardAction)source;
             Storyboard storyboard = action.Storyboard;
-            if (storyboard != null &&
-                FrameworkElement.FindTreeParent(storyboard) is ResourceDictionary)
+            if (storyboard != null)
             {
-                // use original Storyboard resource, not a clone
-                Storyboard = storyboard;
+                if (FrameworkElement.FindTreeParent(storyboard) is ResourceDictionary dict)
+                {
+                    // When the Storyboard is defined in a global dictionary, or is part of some template
+                    // resources and the storyboard can be frozen, we want to use original Storyboard
+                    // resource, not a clone
+                    if (!(FrameworkElement.FindTreeParent(dict) is FrameworkTemplate) || storyboard.IsFrozen)
+                    {
+                        Storyboard = storyboard;
+                    }
+                }
             }
         }
 

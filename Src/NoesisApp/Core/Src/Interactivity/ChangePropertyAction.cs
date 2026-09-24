@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
 
-namespace NoesisApp
+namespace Noesis.Interactivity
 {
     /// <summary>
     /// An action that will change a property to a specified value when invoked.

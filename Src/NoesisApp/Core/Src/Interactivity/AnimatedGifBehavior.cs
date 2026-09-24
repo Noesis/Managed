@@ -2,6 +2,7 @@ using NoesisApp;
 using System;
 using System.Runtime.InteropServices;
 using Noesis;
+using Noesis.Interactivity;
 
 namespace NoesisGUIExtensions
 {

@@ -68,6 +68,10 @@ namespace NoesisApp
     ///
     /// http://msdn.microsoft.com/en-us/library/system.windows.controls.mediaelement.aspx
     /// </summary>
+    [Noesis.StudioOrder(2000, "Media")]
+    [Noesis.StudioDesc("Renders video")]
+    [Noesis.StudioHelpUri("https://www.noesisengine.com/docs/App.MediaElement._MediaElement.html")]
+    [Noesis.StudioIcon("Packages/com.noesis.noesisgui/Editor/#Media-Icons", 0xE900)]
     public class MediaElement : Noesis.Decorator
     {
         [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(ExceptionRoutedEventArgs))]
@@ -93,6 +97,11 @@ namespace NoesisApp
                         content.Unloaded -= element.OnViewDestroyed;
                         element._content = IntPtr.Zero;
                     }
+
+                    if (element._view != IntPtr.Zero)
+                    {
+                        element.DestroyMediaPlayer();
+                    }
                 }
             };
         }
@@ -109,6 +118,8 @@ namespace NoesisApp
         #region Properties
 
         #region Source
+        [Noesis.StudioOrder(0)]
+        [Noesis.StudioUri(Noesis.StudioUriAttribute.UriType.Media)]
         public Uri Source
         {
             get { return (Uri)GetValue(SourceProperty); }
@@ -123,6 +134,7 @@ namespace NoesisApp
         #endregion
 
         #region LoadedBehavior
+        [Noesis.StudioOrder(8, false)]
         public MediaState LoadedBehavior
         {
             get { return (MediaState)GetValue(LoadedBehaviorProperty); }
@@ -141,6 +153,7 @@ namespace NoesisApp
         #endregion
 
         #region UnloadedBehavior
+        [Noesis.StudioOrder(9, false)]
         public MediaState UnloadedBehavior
         {
             get { return (MediaState)GetValue(UnloadedBehaviorProperty); }
@@ -153,6 +166,7 @@ namespace NoesisApp
         #endregion
 
         #region Stretch
+        [Noesis.StudioOrder(1)]
         /// <summary>
         /// Gets or sets a value that describes how a MediaElement fills the destination rectangle.
         /// The default is Stretch.Uniform.
@@ -170,6 +184,7 @@ namespace NoesisApp
         #endregion
 
         #region StretchDirection
+        [Noesis.StudioOrder(2, false)]
         /// <summary>
         /// Gets or sets a value that determines the restrictions on scaling that are applied to this
         /// media element. The default is StretchDirection.Both.
@@ -187,6 +202,8 @@ namespace NoesisApp
         #endregion
 
         #region Balance
+        [Noesis.StudioOrder(5, false)]
+        [Noesis.StudioRange(-1.0f, 1.0f)]
         public float Balance
         {
             get { return (float)GetValue(BalanceProperty); }
@@ -208,6 +225,8 @@ namespace NoesisApp
         #endregion
 
         #region Volume
+        [Noesis.StudioOrder(3)]
+        [Noesis.StudioRange(0.0f, 1.0f)]
         public float Volume
         {
             get { return (float)GetValue(VolumeProperty); }
@@ -229,6 +248,7 @@ namespace NoesisApp
         #endregion
 
         #region IsMuted
+        [Noesis.StudioOrder(6, false)]
         public bool IsMuted
         {
             get { return (bool)GetValue(IsMutedProperty); }
@@ -279,6 +299,7 @@ namespace NoesisApp
         #endregion
 
         #region ScrubbingEnabled
+        [Noesis.StudioOrder(7, false)]
         public bool ScrubbingEnabled
         {
             get { return (bool)GetValue(ScrubbingEnabledProperty); }
@@ -330,6 +351,7 @@ namespace NoesisApp
         #endregion
 
         #region Position
+        [Noesis.StudioOrder(-1)]
         /// <summary>
         /// Gets or sets the current position of the media (seek operations).
         /// </summary>
@@ -358,6 +380,8 @@ namespace NoesisApp
         #endregion
 
         #region SpeedRatio
+        [Noesis.StudioOrder(4, false)]
+        [Noesis.StudioMin(0.0f)]
         /// <summary>
         /// Gets or sets the ratio of speed that media is played at.
         /// Represented by a value between 0 and the largest double value. The default is 1.0.
@@ -567,10 +591,7 @@ namespace NoesisApp
                         }
                         case MediaState.Play:
                         {
-                            if (_player != null)
-                            {
-                                _player.Play();
-                            }
+                            _player?.Play();
                             break;
                         }
                         case MediaState.Close:
@@ -580,24 +601,23 @@ namespace NoesisApp
                         }
                         case MediaState.Pause:
                         {
-                            if (_player != null)
-                            {
-                                _player.Pause();
-                            }
+                            _player?.Pause();
                             break;
                         }
                         case MediaState.Stop:
                         {
-                            if (_player != null)
-                            {
-                                _player.Stop();
-                            }
+                            _player?.Stop();
                             break;
                         }
                         default: break;
                     }
                 }
             }
+        }
+
+        private void OnRendering(object sender, Noesis.EventArgs e)
+        {
+            _player.Update();
         }
 
         private void CreateMediaPlayer(Uri source)
@@ -613,6 +633,13 @@ namespace NoesisApp
                     _player.MediaOpened += OnMediaOpened;
                     _player.MediaEnded += OnMediaEnded;
                     _player.MediaFailed += OnMediaFailed;
+
+                    Noesis.View view = View;
+                    if (view != null)
+                    {
+                        view.Rendering += OnRendering;
+                        _view = GetPtr(view);
+                    }
                 }
             }
         }
@@ -629,6 +656,13 @@ namespace NoesisApp
 
                 _player.Close();
                 _player = null;
+
+                Noesis.View view = (Noesis.View)GetProxy(_view);
+                if (view != null)
+                {
+                    view.Rendering -= OnRendering;
+                    _view = IntPtr.Zero;
+                }
 
                 ((Noesis.Image)Child).Source = null;
             }
@@ -695,6 +729,7 @@ namespace NoesisApp
 
         private static CreateMediaPlayerCallback _createMediaPlayerCallback;
         private static object _createMediaPlayerUser;
+        private IntPtr _view = IntPtr.Zero;
         private IntPtr _content = IntPtr.Zero;
         private MediaPlayer _player;
         private MediaState _state = MediaState.Close;

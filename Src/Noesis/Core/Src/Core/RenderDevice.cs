@@ -1465,6 +1465,113 @@ namespace Noesis
     }
 
     /// <summary>
+    /// Creates a Vulkan RenderDevice.
+    /// </summary>
+    public class RenderDeviceVK : NativeRenderDevice
+    {
+        [StructLayout(LayoutKind.Sequential)]
+        public struct InstanceInfo
+        {
+            public IntPtr Instance;
+            public IntPtr PhysicalDevice;
+            public IntPtr Device;
+            public IntPtr PipelineCache;
+            public uint QueueFamilyIndex;
+            public IntPtr GetInstanceProcAddr;
+            [MarshalAs(UnmanagedType.U1)]
+            public bool StereoSupport;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct RecordingInfo
+        {
+            public IntPtr CommandBuffer;
+            public ulong FrameNumber;
+            public ulong SafeFrameNumber;
+        }
+
+        public RenderDeviceVK(ref InstanceInfo info) : this(ref info, false)
+        {
+        }
+
+        public RenderDeviceVK(ref InstanceInfo info, bool sRGB) :
+            base(Noesis_RenderDeviceVK_Create(sRGB, ref info), true)
+        {
+        }
+
+        /// <summary>
+        /// Creates a Texture wrapper for the specified Vulkan texture native handle.
+        /// </summary>
+        public static Texture WrapTexture(object texture, IntPtr image,
+            uint width, uint height, uint numMipMaps, int format, int layout, bool isInverted, bool hasAlpha)
+        {
+            return WrapTexture(texture, Noesis_RenderDeviceVK_WrapTexture(image,
+                width, height, numMipMaps, format, layout, isInverted, hasAlpha));
+        }
+
+        /// <summary>
+        /// Updates the layout of a wrapped Vulkan texture.
+        /// </summary>
+        public static void UpdateLayout(Texture texture, int layout)
+        {
+            Noesis_RenderDeviceVK_UpdateLayout(BaseComponent.getCPtr(texture), layout);
+        }
+
+        public void SetCommandBuffer(ref RecordingInfo info)
+        {
+            Noesis_RenderDeviceVK_SetCommandBuffer(swigCPtr, ref info);
+        }
+
+        public void SetRenderPass(IntPtr renderPass, uint sampleCount)
+        {
+            Noesis_RenderDeviceVK_SetRenderPass(swigCPtr, renderPass, sampleCount);
+        }
+
+        public void WarmUpRenderPass(IntPtr renderPass, uint sampleCount)
+        {
+            Noesis_RenderDeviceVK_WarmUpRenderPass(swigCPtr, renderPass, sampleCount);
+        }
+
+        public IntPtr CreatePixelShader(string label, byte shader, IntPtr spirv, uint size)
+        {
+            return Noesis_RenderDeviceVK_CreatePixelShader(swigCPtr, label, shader, spirv, size);
+        }
+
+        public void ClearPixelShaders()
+        {
+            Noesis_RenderDeviceVK_ClearPixelShaders(swigCPtr);
+        }
+
+        #region Imports
+        [DllImport(Library.Name)]
+        private static extern IntPtr Noesis_RenderDeviceVK_Create(bool sRGB, ref InstanceInfo info);
+
+        [DllImport(Library.Name)]
+        private static extern IntPtr Noesis_RenderDeviceVK_WrapTexture(IntPtr image,
+            uint width, uint height, uint numMipMaps, int format, int layout, bool isInverted, bool hasAlpha);
+
+        [DllImport(Library.Name)]
+        private static extern void Noesis_RenderDeviceVK_UpdateLayout(HandleRef texture, int layout);
+
+        [DllImport(Library.Name)]
+        private static extern void Noesis_RenderDeviceVK_SetCommandBuffer(HandleRef device, ref RecordingInfo info);
+
+        [DllImport(Library.Name)]
+        private static extern void Noesis_RenderDeviceVK_SetRenderPass(HandleRef device, IntPtr renderPass, uint sampleCount);
+
+        [DllImport(Library.Name)]
+        private static extern void Noesis_RenderDeviceVK_WarmUpRenderPass(HandleRef device, IntPtr renderPass, uint sampleCount);
+
+        [DllImport(Library.Name)]
+        private static extern IntPtr Noesis_RenderDeviceVK_CreatePixelShader(HandleRef device,
+            [MarshalAs(UnmanagedType.LPStr)] string label, byte shader, IntPtr spirv, uint size);
+
+        [DllImport(Library.Name)]
+        private static extern void Noesis_RenderDeviceVK_ClearPixelShaders(HandleRef device);
+        #endregion
+    }
+
+    /// <summary>
     ///  Creates a D3D11 RenderDevice.
     /// </summary>
     public class RenderDeviceD3D11 : NativeRenderDevice

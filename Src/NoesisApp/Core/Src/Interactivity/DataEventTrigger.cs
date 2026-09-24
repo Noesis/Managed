@@ -4,7 +4,7 @@
 // All other rights reserved.
 
 using Noesis;
-using NoesisApp;
+using Noesis.Interactivity;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -26,14 +26,14 @@ namespace NoesisGUIExtensions
         /// </summary>
         public object Source
         {
-            get { return this.GetValue(DataEventTrigger.SourceProperty); }
-            set { this.SetValue(DataEventTrigger.SourceProperty, value); }
+            get { return GetValue(SourceProperty); }
+            set { SetValue(SourceProperty, value); }
         }
 
         /// <summary>Backing DP for the Source property</summary>
         public static readonly DependencyProperty SourceProperty = DependencyProperty.Register(
             "Source", typeof(object), typeof(DataEventTrigger),
-            new PropertyMetadata(null, DataEventTrigger.OnSourceChanged));
+            new PropertyMetadata(null, OnSourceChanged));
 
         private static void OnSourceChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
@@ -45,14 +45,14 @@ namespace NoesisGUIExtensions
         /// </summary>
         public string EventName
         {
-            get { return (string)this.GetValue(DataEventTrigger.EventNameProperty); }
-            set { this.SetValue(DataEventTrigger.EventNameProperty, value); }
+            get { return (string)GetValue(EventNameProperty); }
+            set { SetValue(EventNameProperty, value); }
         }
 
         /// <summary>Backing DP for the EventName property</summary>
         public static readonly DependencyProperty EventNameProperty = DependencyProperty.Register(
             "EventName", typeof(string), typeof(DataEventTrigger),
-            new PropertyMetadata(null, DataEventTrigger.OnEventNameChanged));
+            new PropertyMetadata(null, OnEventNameChanged));
 
         private static void OnEventNameChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {

@@ -10,8 +10,6 @@
     <PackageIconUrl>https://www.noesisengine.com/images/logos/Icon-256.png</PackageIconUrl>
     <PackageIcon>Icon-256.png</PackageIcon>
     <PackageTags>NoesisGUI XAML GUI C# Linux</PackageTags>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <RootNamespace>NoesisApp</RootNamespace>
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -26,9 +24,16 @@
     <Content Include="build\**" PackagePath="build" Pack="true" />
     <Content Include="runtimes\**" PackagePath="runtimes" Pack="true" />
   </ItemGroup>
-
+<!--
+  <PropertyGroup>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+  </PropertyGroup>
   <ItemGroup>
     <Content Include="$(SolutionDir)LICENSE.txt" PackagePath="" Pack="true" />
+  </ItemGroup>
+-->
+  <ItemGroup>
     <Content Include="$(SolutionDir)THIRD_PARTY.txt" PackagePath="" Pack="true" />
     <None Include="$(SolutionDir)Icon-256.png" Pack="true" PackagePath="\"/>
   </ItemGroup>

@@ -1,6 +1,7 @@
 ﻿using Noesis;
+using Noesis.Interactivity;
 
-namespace NoesisApp
+namespace Noesis.Interactivity
 {
     /// <summary>
     /// A trigger that is triggered by a specified event and fires after a delay.

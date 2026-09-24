@@ -19,15 +19,15 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageOutputPath>$(SolutionDir)NuGet\</PackageOutputPath>
   </PropertyGroup>
-
+<!--
   <PropertyGroup>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
   </PropertyGroup>
-  
   <ItemGroup>
     <Content Include="$(SolutionDir)LICENSE.txt" PackagePath="" Pack="true" />
   </ItemGroup>
+-->
   <ItemGroup>
     <None Include="$(SolutionDir)Icon-256.png" Pack="true" PackagePath="\" />
   </ItemGroup>
