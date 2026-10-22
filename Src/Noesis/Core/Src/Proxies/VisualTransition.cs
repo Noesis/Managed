@@ -61,17 +61,14 @@ public class VisualTransition : DependencyObject {
     set {
       NoesisGUI_PINVOKE.VisualTransition_GeneratedDuration_set(swigCPtr, ref value);
     }
-
     get {
-      IntPtr ret = NoesisGUI_PINVOKE.VisualTransition_GeneratedDuration_get(swigCPtr);
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<Duration>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.VisualTransition_GeneratedDuration_get(swigCPtr);
+      Duration retDst = new Duration();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_Duration(retSrc, ref retDst);
       }
-      else {
-        return new Duration();
-      }
+      return retDst;
     }
-
   }
 
   public EasingFunctionBase GeneratedEasingFunction {

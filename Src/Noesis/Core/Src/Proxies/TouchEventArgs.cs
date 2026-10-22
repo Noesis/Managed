@@ -53,13 +53,12 @@ public class TouchEventArgs : InputEventArgs {
   }
 
   public Point GetTouchPoint(UIElement relativeTo) {
-    IntPtr ret = NoesisGUI_PINVOKE.TouchEventArgs_GetTouchPoint(swigCPtr, UIElement.getCPtr(relativeTo));
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Point>(ret);
+    IntPtr retSrc = NoesisGUI_PINVOKE.TouchEventArgs_GetTouchPoint(swigCPtr, UIElement.getCPtr(relativeTo));
+    Point retDst = new Point();
+    if (retSrc != IntPtr.Zero) {
+      NoesisGUI_.Copy_Point(retSrc, ref retDst);
     }
-    else {
-      return new Point();
-    }
+    return retDst;
   }
 
   public TouchEventArgs(object source, RoutedEvent event_, Point p, ulong device) : this(NoesisGUI_PINVOKE.new_TouchEventArgs(Noesis.Extend.GetInstanceHandle(source), RoutedEvent.getCPtr(event_), ref p, device), true) {

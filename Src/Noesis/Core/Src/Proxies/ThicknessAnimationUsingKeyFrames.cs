@@ -47,13 +47,12 @@ public sealed class ThicknessAnimationUsingKeyFrames : ThicknessAnimationBase {
   }
 
   private Thickness GetCurrentValueCoreHelper(Thickness src, Thickness dst, AnimationClock clock) {
-    IntPtr ret = NoesisGUI_PINVOKE.ThicknessAnimationUsingKeyFrames_GetCurrentValueCoreHelper(swigCPtr, ref src, ref dst, AnimationClock.getCPtr(clock));
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Thickness>(ret);
+    IntPtr retSrc = NoesisGUI_PINVOKE.ThicknessAnimationUsingKeyFrames_GetCurrentValueCoreHelper(swigCPtr, ref src, ref dst, AnimationClock.getCPtr(clock));
+    Thickness retDst = new Thickness();
+    if (retSrc != IntPtr.Zero) {
+      NoesisGUI_.Copy_Thickness(retSrc, ref retDst);
     }
-    else {
-      return new Thickness();
-    }
+    return retDst;
   }
 
 }

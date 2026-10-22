@@ -85,13 +85,12 @@ public class MouseEventArgs : InputEventArgs {
   }
 
   public Point GetPosition(UIElement relativeTo) {
-    IntPtr ret = NoesisGUI_PINVOKE.MouseEventArgs_GetPosition(swigCPtr, UIElement.getCPtr(relativeTo));
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Point>(ret);
+    IntPtr retSrc = NoesisGUI_PINVOKE.MouseEventArgs_GetPosition(swigCPtr, UIElement.getCPtr(relativeTo));
+    Point retDst = new Point();
+    if (retSrc != IntPtr.Zero) {
+      NoesisGUI_.Copy_Point(retSrc, ref retDst);
     }
-    else {
-      return new Point();
-    }
+    return retDst;
   }
 
 }

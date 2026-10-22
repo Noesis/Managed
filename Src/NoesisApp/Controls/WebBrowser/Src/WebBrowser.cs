@@ -680,7 +680,7 @@ namespace NoesisApp
 
             if (TextureSource == null)
             {
-                TextureSource = new DynamicTextureSource(_width, _height, TextureRender, null);
+                TextureSource = new DynamicTextureSource(_width, _height, new TextureRenderer(this));
             }
             else
             {
@@ -688,7 +688,32 @@ namespace NoesisApp
             }
         }
 
-        public Texture TextureRender(RenderDevice device, object user)
+        private class TextureRenderer : DynamicTextureSource.Renderer
+        {
+            public TextureRenderer(NoesisRenderHandler handler)
+            {
+                _handler = handler;
+            }
+
+            public override void Init(RenderDevice device)
+            {
+                _device = device;
+            }
+
+            public override Texture Render(uint width, uint height)
+            {
+                return _handler.TextureRender(_device);
+            }
+
+            public override void Shutdown()
+            {
+            }
+
+            private NoesisRenderHandler _handler;
+            private RenderDevice _device;
+        }
+
+        public Texture TextureRender(RenderDevice device)
         {
             lock (_pixels)
             {
@@ -781,6 +806,8 @@ namespace NoesisApp
                         _pixels[i * 4 + 3] = System.Runtime.InteropServices.Marshal.ReadByte(buffer, i * 4 + 3);
                     }
                 }
+
+                TextureSource.Update();
             }
         }
 

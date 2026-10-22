@@ -55,15 +55,13 @@ public class RequestBringIntoViewEventArgs : RoutedEventArgs {
 
   public Rect TargetRect {
     get {
-      IntPtr ret = NoesisGUI_PINVOKE.RequestBringIntoViewEventArgs_TargetRect_get(swigCPtr);
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<Rect>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.RequestBringIntoViewEventArgs_TargetRect_get(swigCPtr);
+      Rect retDst = new Rect();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_Rect(retSrc, ref retDst);
       }
-      else {
-        return new Rect();
-      }
+      return retDst;
     }
-
   }
 
   public RequestBringIntoViewEventArgs(object source, DependencyObject object_, Rect targetRect) : this(NoesisGUI_PINVOKE.new_RequestBringIntoViewEventArgs(Noesis.Extend.GetInstanceHandle(source), DependencyObject.getCPtr(object_), ref targetRect), true) {

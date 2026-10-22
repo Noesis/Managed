@@ -59,15 +59,13 @@ public class ManipulationDeltaEventArgs : InputEventArgs {
 
   public Point ManipulationOrigin {
     get {
-      IntPtr ret = NoesisGUI_PINVOKE.ManipulationDeltaEventArgs_ManipulationOrigin_get(swigCPtr);
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<Point>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.ManipulationDeltaEventArgs_ManipulationOrigin_get(swigCPtr);
+      Point retDst = new Point();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_Point(retSrc, ref retDst);
       }
-      else {
-        return new Point();
-      }
+      return retDst;
     }
-
   }
 
   public ManipulationDelta DeltaManipulation {

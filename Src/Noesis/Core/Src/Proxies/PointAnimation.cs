@@ -125,13 +125,12 @@ public class PointAnimation : PointAnimationBase {
   }
 
   private Point GetCurrentValueCoreHelper(Point src, Point dst, AnimationClock clock) {
-    IntPtr ret = NoesisGUI_PINVOKE.PointAnimation_GetCurrentValueCoreHelper(swigCPtr, ref src, ref dst, AnimationClock.getCPtr(clock));
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Point>(ret);
+    IntPtr retSrc = NoesisGUI_PINVOKE.PointAnimation_GetCurrentValueCoreHelper(swigCPtr, ref src, ref dst, AnimationClock.getCPtr(clock));
+    Point retDst = new Point();
+    if (retSrc != IntPtr.Zero) {
+      NoesisGUI_.Copy_Point(retSrc, ref retDst);
     }
-    else {
-      return new Point();
-    }
+    return retDst;
   }
 
   [DynamicDependency("Extend")]

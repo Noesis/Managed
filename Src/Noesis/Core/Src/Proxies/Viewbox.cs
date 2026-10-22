@@ -65,23 +65,21 @@ public class Viewbox : FrameworkElement {
   }
 
   public static Point GetStretchScale(Size elementSize, Size availableSize, Stretch stretch, StretchDirection stretchDirection) {
-    IntPtr ret = NoesisGUI_PINVOKE.Viewbox_GetStretchScale__SWIG_0(ref elementSize, ref availableSize, (int)stretch, (int)stretchDirection);
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Point>(ret);
+    IntPtr retSrc = NoesisGUI_PINVOKE.Viewbox_GetStretchScale__SWIG_0(ref elementSize, ref availableSize, (int)stretch, (int)stretchDirection);
+    Point retDst = new Point();
+    if (retSrc != IntPtr.Zero) {
+      NoesisGUI_.Copy_Point(retSrc, ref retDst);
     }
-    else {
-      return new Point();
-    }
+    return retDst;
   }
 
   public static Point GetStretchScale(Size elementSize, Size availableSize, Stretch stretch) {
-    IntPtr ret = NoesisGUI_PINVOKE.Viewbox_GetStretchScale__SWIG_1(ref elementSize, ref availableSize, (int)stretch);
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Point>(ret);
+    IntPtr retSrc = NoesisGUI_PINVOKE.Viewbox_GetStretchScale__SWIG_1(ref elementSize, ref availableSize, (int)stretch);
+    Point retDst = new Point();
+    if (retSrc != IntPtr.Zero) {
+      NoesisGUI_.Copy_Point(retSrc, ref retDst);
     }
-    else {
-      return new Point();
-    }
+    return retDst;
   }
 
   public static DependencyProperty StretchDirectionProperty {

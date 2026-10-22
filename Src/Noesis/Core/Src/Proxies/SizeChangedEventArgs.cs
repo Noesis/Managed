@@ -48,28 +48,24 @@ public class SizeChangedEventArgs : RoutedEventArgs {
 
   public Size NewSize {
     get {
-      IntPtr ret = NoesisGUI_PINVOKE.SizeChangedEventArgs_NewSize_get(swigCPtr);
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<Size>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.SizeChangedEventArgs_NewSize_get(swigCPtr);
+      Size retDst = new Size();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_Size(retSrc, ref retDst);
       }
-      else {
-        return new Size();
-      }
+      return retDst;
     }
-
   }
 
   public Size PreviousSize {
     get {
-      IntPtr ret = NoesisGUI_PINVOKE.SizeChangedEventArgs_PreviousSize_get(swigCPtr);
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<Size>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.SizeChangedEventArgs_PreviousSize_get(swigCPtr);
+      Size retDst = new Size();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_Size(retSrc, ref retDst);
       }
-      else {
-        return new Size();
-      }
+      return retDst;
     }
-
   }
 
   public bool WidthChanged {

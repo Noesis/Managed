@@ -47,34 +47,28 @@ public class RectKeyFrame : Freezable {
     set {
       NoesisGUI_PINVOKE.RectKeyFrame_KeyTime_set(swigCPtr, ref value);
     }
-
     get {
-      IntPtr ret = NoesisGUI_PINVOKE.RectKeyFrame_KeyTime_get(swigCPtr);
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<KeyTime>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.RectKeyFrame_KeyTime_get(swigCPtr);
+      KeyTime retDst = new KeyTime();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_KeyTime(retSrc, ref retDst);
       }
-      else {
-        return new KeyTime();
-      }
+      return retDst;
     }
-
   }
 
   public Rect Value {
     set {
       NoesisGUI_PINVOKE.RectKeyFrame_Value_set(swigCPtr, ref value);
     }
-
     get {
-      IntPtr ret = NoesisGUI_PINVOKE.RectKeyFrame_Value_get(swigCPtr);
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<Rect>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.RectKeyFrame_Value_get(swigCPtr);
+      Rect retDst = new Rect();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_Rect(retSrc, ref retDst);
       }
-      else {
-        return new Rect();
-      }
+      return retDst;
     }
-
   }
 
 }

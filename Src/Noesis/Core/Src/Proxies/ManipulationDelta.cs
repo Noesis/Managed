@@ -83,23 +83,21 @@ public class ManipulationDelta : IDisposable {
   }
 
   private Point GetTranslationHelper() {
-    IntPtr ret = NoesisGUI_PINVOKE.ManipulationDelta_GetTranslationHelper(swigCPtr);
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Point>(ret);
+    IntPtr retSrc = NoesisGUI_PINVOKE.ManipulationDelta_GetTranslationHelper(swigCPtr);
+    Point retDst = new Point();
+    if (retSrc != IntPtr.Zero) {
+      NoesisGUI_.Copy_Point(retSrc, ref retDst);
     }
-    else {
-      return new Point();
-    }
+    return retDst;
   }
 
   private Point GetExpansionHelper() {
-    IntPtr ret = NoesisGUI_PINVOKE.ManipulationDelta_GetExpansionHelper(swigCPtr);
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Point>(ret);
+    IntPtr retSrc = NoesisGUI_PINVOKE.ManipulationDelta_GetExpansionHelper(swigCPtr);
+    Point retDst = new Point();
+    if (retSrc != IntPtr.Zero) {
+      NoesisGUI_.Copy_Point(retSrc, ref retDst);
     }
-    else {
-      return new Point();
-    }
+    return retDst;
   }
 
   public ManipulationDelta() : this(NoesisGUI_PINVOKE.new_ManipulationDelta(), true) {

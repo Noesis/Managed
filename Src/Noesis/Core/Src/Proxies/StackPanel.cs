@@ -127,13 +127,12 @@ public class StackPanel : Panel, Noesis.IScrollInfo {
   }
 
   public Rect MakeVisible(Visual visual, Rect rect) {
-    IntPtr ret = NoesisGUI_PINVOKE.StackPanel_MakeVisible(swigCPtr, Visual.getCPtr(visual), ref rect);
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Rect>(ret);
+    IntPtr retSrc = NoesisGUI_PINVOKE.StackPanel_MakeVisible(swigCPtr, Visual.getCPtr(visual), ref rect);
+    Rect retDst = new Rect();
+    if (retSrc != IntPtr.Zero) {
+      NoesisGUI_.Copy_Rect(retSrc, ref retDst);
     }
-    else {
-      return new Rect();
-    }
+    return retDst;
   }
 
   public static DependencyProperty OrientationProperty {

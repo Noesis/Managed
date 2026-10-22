@@ -2463,7 +2463,10 @@ namespace Noesis
             {
                 if (_assemblies == null)
                 {
+                    #pragma warning disable UAC0005
                     var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+                    #pragma warning restore UAC0005
+
                     _assemblies = new List<Assembly>(assemblies.Length);
                     _assemblies.AddRange(assemblies);
 

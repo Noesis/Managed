@@ -787,7 +787,7 @@ namespace Noesis
                 RenderDevice device = (RenderDevice)Noesis.Extend.GetExtendInstance(cPtr);
                 if (device != null)
                 {
-                    RenderTarget surface = (RenderTarget)Noesis.Extend.GetExtendInstance(surfacePtr);
+                    RenderTarget surface = (RenderTarget)Noesis.Extend.GetProxy(surfacePtr, false);
                     RenderTarget rt = device.CloneRenderTarget(label, surface);
                     HandleRef rtPtr = Noesis.Extend.GetInstanceHandle(rt);
                     BaseComponent.AddReference(rtPtr.Handle); // released by native bindings
@@ -813,7 +813,7 @@ namespace Noesis
                 RenderDevice device = (RenderDevice)Noesis.Extend.GetExtendInstance(cPtr);
                 if (device != null)
                 {
-                    RenderTarget surface = (RenderTarget)Noesis.Extend.GetExtendInstance(surfacePtr);
+                    RenderTarget surface = (RenderTarget)Noesis.Extend.GetProxy(surfacePtr, false);
                     device.SetRenderTarget(surface);
                 }
             }
@@ -834,7 +834,7 @@ namespace Noesis
                 RenderDevice device = (RenderDevice)Noesis.Extend.GetExtendInstance(cPtr);
                 if (device != null)
                 {
-                    RenderTarget surface = (RenderTarget)Noesis.Extend.GetExtendInstance(surfacePtr);
+                    RenderTarget surface = (RenderTarget)Noesis.Extend.GetProxy(surfacePtr, false);
                     device.BeginTile(surface, tile);
                 }
             }
@@ -855,7 +855,7 @@ namespace Noesis
                 RenderDevice device = (RenderDevice)Noesis.Extend.GetExtendInstance(cPtr);
                 if (device != null)
                 {
-                    RenderTarget surface = (RenderTarget)Noesis.Extend.GetExtendInstance(surfacePtr);
+                    RenderTarget surface = (RenderTarget)Noesis.Extend.GetProxy(surfacePtr, false);
                     device.EndTile(surface);
                 }
             }
@@ -877,7 +877,7 @@ namespace Noesis
                 RenderDevice device = (RenderDevice)Noesis.Extend.GetExtendInstance(cPtr);
                 if (device != null)
                 {
-                    RenderTarget surface = (RenderTarget)Noesis.Extend.GetExtendInstance(surfacePtr);
+                    RenderTarget surface = (RenderTarget)Noesis.Extend.GetProxy(surfacePtr, false);
                     device.ResolveRenderTarget(surface, tiles);
                 }
             }
@@ -928,7 +928,7 @@ namespace Noesis
                 RenderDevice device = (RenderDevice)Noesis.Extend.GetExtendInstance(cPtr);
                 if (device != null)
                 {
-                    Texture tex = (Texture)Noesis.Extend.GetExtendInstance(texPtr);
+                    Texture tex = (Texture)Noesis.Extend.GetProxy(texPtr, false);
                     device.UpdateTexture(tex, level, x, y, width, height, data);
                 }
             }
@@ -1590,10 +1590,10 @@ namespace Noesis
         /// <param name="nativePointer">ID3D11Texture2D native pointer</param>
         /// </summary>
         public static Texture WrapTexture(object texture, IntPtr nativePointer,
-            int width, int height, int numMipMaps, bool isInverted, bool hasAlpha)
+            int width, int height, int numMipMaps, bool isInverted, bool hasAlpha, uint srvFormat)
         {
             return WrapTexture(texture, Noesis_RenderDeviceD3D11_WrapTexture(nativePointer,
-                width, height, numMipMaps, isInverted, hasAlpha));
+                width, height, numMipMaps, isInverted, hasAlpha, srvFormat));
         }
 
         /// <summary>
@@ -1626,7 +1626,7 @@ namespace Noesis
 
         [DllImport(Library.Name)]
         private static extern IntPtr Noesis_RenderDeviceD3D11_WrapTexture(IntPtr nativePointer,
-            int width, int height, int numMipMaps, bool isInverted, bool hasAlpha);
+            int width, int height, int numMipMaps, bool isInverted, bool hasAlpha, uint srvFormat);
 
         [DllImport(Library.Name)]
         private static extern IntPtr Noesis_RenderDeviceD3D11_GetTextureNativePointer(HandleRef texture);
@@ -1644,13 +1644,13 @@ namespace Noesis
     /// </summary>
     public class RenderDeviceD3D12 : NativeRenderDevice
     {
-        public RenderDeviceD3D12(IntPtr device, IntPtr frameFence, int colorFormat, int stencilFormat, int samples) :
-            this(device, frameFence, colorFormat, stencilFormat, samples, false)
+        public RenderDeviceD3D12(IntPtr device, int colorFormat, int stencilFormat, int samples) :
+            this(device, colorFormat, stencilFormat, samples, false)
         {
         }
 
-        public RenderDeviceD3D12(IntPtr device, IntPtr frameFence, int colorFormat, int stencilFormat, int samples, bool sRGB) :
-            base(Noesis_RenderDeviceD3D12_Create(device, frameFence, colorFormat, stencilFormat, samples, sRGB), true)
+        public RenderDeviceD3D12(IntPtr device, int colorFormat, int stencilFormat, int samples, bool sRGB) :
+            base(Noesis_RenderDeviceD3D12_Create(device, colorFormat, stencilFormat, samples, sRGB), true)
         {
         }
 
@@ -1659,10 +1659,10 @@ namespace Noesis
         /// <param name="nativePointer">ID3D12Resource native pointer</param>
         /// </summary>
         public static Texture WrapTexture(object texture, IntPtr nativePointer,
-            int width, int height, int numMipMaps, bool isInverted, bool hasAlpha)
+            int width, int height, int numMipMaps, bool isInverted, bool hasAlpha, uint srvFormat)
         {
             return WrapTexture(texture, Noesis_RenderDeviceD3D12_WrapTexture(nativePointer,
-                width, height, numMipMaps, isInverted, hasAlpha));
+                width, height, numMipMaps, isInverted, hasAlpha, srvFormat));
         }
 
         /// <summary>
@@ -1676,19 +1676,20 @@ namespace Noesis
         /// <summary>
         /// Sets active command list
         /// </summary>
-        public void SetCommandList(IntPtr commands, long fenceValue)
+        public void SetCommandList(IntPtr commands, long completedFenceValue, long nextFrameFenceValue)
         {
-            Noesis_RenderDeviceD3D12_SetCommandList(swigCPtr, commands, (ulong)fenceValue);
+            Noesis_RenderDeviceD3D12_SetCommandList(swigCPtr, commands, (ulong)completedFenceValue,
+                (ulong)nextFrameFenceValue);
         }
 
         #region Imports
         [DllImport(Library.Name)]
-        static extern IntPtr Noesis_RenderDeviceD3D12_Create(IntPtr device, IntPtr frameFence,
+        static extern IntPtr Noesis_RenderDeviceD3D12_Create(IntPtr device,
             int colorFormat, int stencilFormat, int samples, bool sRGB);
 
         [DllImport(Library.Name)]
         static extern IntPtr Noesis_RenderDeviceD3D12_WrapTexture(IntPtr nativePointer,
-            int width, int height, int numMipMaps, bool isInverted, bool hasAlpha);
+            int width, int height, int numMipMaps, bool isInverted, bool hasAlpha, uint srvFormat);
 
         [DllImport(Library.Name)]
         private static extern IntPtr Noesis_RenderDeviceD3D12_GetTextureNativePointer(HandleRef texture);
@@ -1696,7 +1697,7 @@ namespace Noesis
 
         [DllImport(Library.Name)]
         static extern void Noesis_RenderDeviceD3D12_SetCommandList(HandleRef device, IntPtr commands,
-            ulong fenceValue);
+            ulong completedFenceValue, ulong nextFrameFenceValue);
     }
 
     /// <summary>

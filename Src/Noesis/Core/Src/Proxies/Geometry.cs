@@ -50,13 +50,12 @@ public class Geometry : Animatable {
   }
 
   public Rect GetRenderBounds(Pen pen) {
-    IntPtr ret = NoesisGUI_PINVOKE.Geometry_GetRenderBounds(swigCPtr, Pen.getCPtr(pen));
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Rect>(ret);
+    IntPtr retSrc = NoesisGUI_PINVOKE.Geometry_GetRenderBounds(swigCPtr, Pen.getCPtr(pen));
+    Rect retDst = new Rect();
+    if (retSrc != IntPtr.Zero) {
+      NoesisGUI_.Copy_Rect(retSrc, ref retDst);
     }
-    else {
-      return new Rect();
-    }
+    return retDst;
   }
 
   public bool FillContains(Point point) {

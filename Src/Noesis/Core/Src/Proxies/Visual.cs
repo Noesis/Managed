@@ -84,61 +84,56 @@ public class Visual : DependencyObject {
   }
 
   public Point PointFromScreen(Point point) {
-    IntPtr ret = NoesisGUI_PINVOKE.Visual_PointFromScreen(swigCPtr, ref point);
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Point>(ret);
+    IntPtr retSrc = NoesisGUI_PINVOKE.Visual_PointFromScreen(swigCPtr, ref point);
+    Point retDst = new Point();
+    if (retSrc != IntPtr.Zero) {
+      NoesisGUI_.Copy_Point(retSrc, ref retDst);
     }
-    else {
-      return new Point();
-    }
+    return retDst;
   }
 
   public Point PointToScreen(Point point) {
-    IntPtr ret = NoesisGUI_PINVOKE.Visual_PointToScreen(swigCPtr, ref point);
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Point>(ret);
+    IntPtr retSrc = NoesisGUI_PINVOKE.Visual_PointToScreen(swigCPtr, ref point);
+    Point retDst = new Point();
+    if (retSrc != IntPtr.Zero) {
+      NoesisGUI_.Copy_Point(retSrc, ref retDst);
     }
-    else {
-      return new Point();
-    }
+    return retDst;
   }
 
   public Matrix4 TransformToAncestor(Visual ancestor) {
     if (ancestor == null) throw new ArgumentNullException("ancestor");
     {
-      IntPtr ret = NoesisGUI_PINVOKE.Visual_TransformToAncestor(swigCPtr, Visual.getCPtr(ancestor));
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<Matrix4>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.Visual_TransformToAncestor(swigCPtr, Visual.getCPtr(ancestor));
+      Matrix4 retDst = new Matrix4();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_Matrix4(retSrc, ref retDst);
       }
-      else {
-        return new Matrix4();
-      }
+      return retDst;
     }
   }
 
   public Matrix4 TransformToDescendant(Visual descendant) {
     if (descendant == null) throw new ArgumentNullException("descendant");
     {
-      IntPtr ret = NoesisGUI_PINVOKE.Visual_TransformToDescendant(swigCPtr, Visual.getCPtr(descendant));
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<Matrix4>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.Visual_TransformToDescendant(swigCPtr, Visual.getCPtr(descendant));
+      Matrix4 retDst = new Matrix4();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_Matrix4(retSrc, ref retDst);
       }
-      else {
-        return new Matrix4();
-      }
+      return retDst;
     }
   }
 
   public Matrix4 TransformToVisual(Visual visual) {
     if (visual == null) throw new ArgumentNullException("visual");
     {
-      IntPtr ret = NoesisGUI_PINVOKE.Visual_TransformToVisual(swigCPtr, Visual.getCPtr(visual));
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<Matrix4>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.Visual_TransformToVisual(swigCPtr, Visual.getCPtr(visual));
+      Matrix4 retDst = new Matrix4();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_Matrix4(retSrc, ref retDst);
       }
-      else {
-        return new Matrix4();
-      }
+      return retDst;
     }
   }
 

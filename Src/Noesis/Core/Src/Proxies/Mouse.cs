@@ -39,13 +39,12 @@ public class Mouse : BaseComponent {
   }
 
   public static Point GetPosition(UIElement relativeTo) {
-    IntPtr ret = NoesisGUI_PINVOKE.Mouse_GetPosition(UIElement.getCPtr(relativeTo));
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Point>(ret);
+    IntPtr retSrc = NoesisGUI_PINVOKE.Mouse_GetPosition(UIElement.getCPtr(relativeTo));
+    Point retDst = new Point();
+    if (retSrc != IntPtr.Zero) {
+      NoesisGUI_.Copy_Point(retSrc, ref retDst);
     }
-    else {
-      return new Point();
-    }
+    return retDst;
   }
 
   public MouseButtonState GetButtonState(MouseButton button) {

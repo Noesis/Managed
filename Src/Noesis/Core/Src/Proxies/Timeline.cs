@@ -229,17 +229,14 @@ public class Timeline : Animatable {
     set {
       NoesisGUI_PINVOKE.Timeline_Duration_set(swigCPtr, ref value);
     }
-
     get {
-      IntPtr ret = NoesisGUI_PINVOKE.Timeline_Duration_get(swigCPtr);
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<Duration>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.Timeline_Duration_get(swigCPtr);
+      Duration retDst = new Duration();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_Duration(retSrc, ref retDst);
       }
-      else {
-        return new Duration();
-      }
+      return retDst;
     }
-
   }
 
   public FillBehavior FillBehavior {
@@ -267,17 +264,14 @@ public class Timeline : Animatable {
     set {
       NoesisGUI_PINVOKE.Timeline_RepeatBehavior_set(swigCPtr, ref value);
     }
-
     get {
-      IntPtr ret = NoesisGUI_PINVOKE.Timeline_RepeatBehavior_get(swigCPtr);
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<RepeatBehavior>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.Timeline_RepeatBehavior_get(swigCPtr);
+      RepeatBehavior retDst = new RepeatBehavior();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_RepeatBehavior(retSrc, ref retDst);
       }
-      else {
-        return new RepeatBehavior();
-      }
+      return retDst;
     }
-
   }
 
   public float SpeedRatio {

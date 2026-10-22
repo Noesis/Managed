@@ -256,18 +256,21 @@ public class NoesisGUI_ {
   }
 
   public static Size Unbox_Size(IntPtr val) {
-    IntPtr ret = NoesisGUI_PINVOKE.Unbox_Size(val);
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Size>(ret);
+    IntPtr retSrc = NoesisGUI_PINVOKE.Unbox_Size(val);
+    Size retDst = new Size();
+    if (retSrc != IntPtr.Zero) {
+      NoesisGUI_.Copy_Size(retSrc, ref retDst);
     }
-    else {
-      return new Size();
-    }
+    return retDst;
   }
 
   public static IntPtr Box_Size(Size val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_Size(ref val);
     return ret;
+  }
+
+  public static void Copy_Size(IntPtr src, ref Size dst) {
+    NoesisGUI_PINVOKE.Copy_Size(src, ref dst);
   }
 
   public static IntPtr Point_GetStaticType() {
@@ -281,18 +284,21 @@ public class NoesisGUI_ {
   }
 
   public static Point Unbox_Point(IntPtr val) {
-    IntPtr ret = NoesisGUI_PINVOKE.Unbox_Point(val);
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Point>(ret);
+    IntPtr retSrc = NoesisGUI_PINVOKE.Unbox_Point(val);
+    Point retDst = new Point();
+    if (retSrc != IntPtr.Zero) {
+      NoesisGUI_.Copy_Point(retSrc, ref retDst);
     }
-    else {
-      return new Point();
-    }
+    return retDst;
   }
 
   public static IntPtr Box_Point(Point val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_Point(ref val);
     return ret;
+  }
+
+  public static void Copy_Point(IntPtr src, ref Point dst) {
+    NoesisGUI_PINVOKE.Copy_Point(src, ref dst);
   }
 
   public static IntPtr Rect_GetStaticType() {
@@ -306,18 +312,21 @@ public class NoesisGUI_ {
   }
 
   public static Rect Unbox_Rect(IntPtr val) {
-    IntPtr ret = NoesisGUI_PINVOKE.Unbox_Rect(val);
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Rect>(ret);
+    IntPtr retSrc = NoesisGUI_PINVOKE.Unbox_Rect(val);
+    Rect retDst = new Rect();
+    if (retSrc != IntPtr.Zero) {
+      NoesisGUI_.Copy_Rect(retSrc, ref retDst);
     }
-    else {
-      return new Rect();
-    }
+    return retDst;
   }
 
   public static IntPtr Box_Rect(Rect val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_Rect(ref val);
     return ret;
+  }
+
+  public static void Copy_Rect(IntPtr src, ref Rect dst) {
+    NoesisGUI_PINVOKE.Copy_Rect(src, ref dst);
   }
 
   public static IntPtr Int32Rect_GetStaticType() {
@@ -331,18 +340,21 @@ public class NoesisGUI_ {
   }
 
   public static Int32Rect Unbox_Int32Rect(IntPtr val) {
-    IntPtr ret = NoesisGUI_PINVOKE.Unbox_Int32Rect(val);
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Int32Rect>(ret);
+    IntPtr retSrc = NoesisGUI_PINVOKE.Unbox_Int32Rect(val);
+    Int32Rect retDst = new Int32Rect();
+    if (retSrc != IntPtr.Zero) {
+      NoesisGUI_.Copy_Int32Rect(retSrc, ref retDst);
     }
-    else {
-      return new Int32Rect();
-    }
+    return retDst;
   }
 
   public static IntPtr Box_Int32Rect(Int32Rect val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_Int32Rect(ref val);
     return ret;
+  }
+
+  public static void Copy_Int32Rect(IntPtr src, ref Int32Rect dst) {
+    NoesisGUI_PINVOKE.Copy_Int32Rect(src, ref dst);
   }
 
   public static IntPtr Thickness_GetStaticType() {
@@ -356,18 +368,21 @@ public class NoesisGUI_ {
   }
 
   public static Thickness Unbox_Thickness(IntPtr val) {
-    IntPtr ret = NoesisGUI_PINVOKE.Unbox_Thickness(val);
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Thickness>(ret);
+    IntPtr retSrc = NoesisGUI_PINVOKE.Unbox_Thickness(val);
+    Thickness retDst = new Thickness();
+    if (retSrc != IntPtr.Zero) {
+      NoesisGUI_.Copy_Thickness(retSrc, ref retDst);
     }
-    else {
-      return new Thickness();
-    }
+    return retDst;
   }
 
   public static IntPtr Box_Thickness(Thickness val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_Thickness(ref val);
     return ret;
+  }
+
+  public static void Copy_Thickness(IntPtr src, ref Thickness dst) {
+    NoesisGUI_PINVOKE.Copy_Thickness(src, ref dst);
   }
 
   public static IntPtr CornerRadius_GetStaticType() {
@@ -381,18 +396,21 @@ public class NoesisGUI_ {
   }
 
   public static CornerRadius Unbox_CornerRadius(IntPtr val) {
-    IntPtr ret = NoesisGUI_PINVOKE.Unbox_CornerRadius(val);
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<CornerRadius>(ret);
+    IntPtr retSrc = NoesisGUI_PINVOKE.Unbox_CornerRadius(val);
+    CornerRadius retDst = new CornerRadius();
+    if (retSrc != IntPtr.Zero) {
+      NoesisGUI_.Copy_CornerRadius(retSrc, ref retDst);
     }
-    else {
-      return new CornerRadius();
-    }
+    return retDst;
   }
 
   public static IntPtr Box_CornerRadius(CornerRadius val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_CornerRadius(ref val);
     return ret;
+  }
+
+  public static void Copy_CornerRadius(IntPtr src, ref CornerRadius dst) {
+    NoesisGUI_PINVOKE.Copy_CornerRadius(src, ref dst);
   }
 
   public static IntPtr Color_GetStaticType() {
@@ -406,18 +424,21 @@ public class NoesisGUI_ {
   }
 
   public static Color Unbox_Color(IntPtr val) {
-    IntPtr ret = NoesisGUI_PINVOKE.Unbox_Color(val);
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Color>(ret);
+    IntPtr retSrc = NoesisGUI_PINVOKE.Unbox_Color(val);
+    Color retDst = new Color();
+    if (retSrc != IntPtr.Zero) {
+      NoesisGUI_.Copy_Color(retSrc, ref retDst);
     }
-    else {
-      return new Color();
-    }
+    return retDst;
   }
 
   public static IntPtr Box_Color(Color val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_Color(ref val);
     return ret;
+  }
+
+  public static void Copy_Color(IntPtr src, ref Color dst) {
+    NoesisGUI_PINVOKE.Copy_Color(src, ref dst);
   }
 
   public static IntPtr Matrix_GetStaticType() {
@@ -445,6 +466,10 @@ public class NoesisGUI_ {
     return ret;
   }
 
+  public static void Copy_Matrix(IntPtr src, ref Matrix dst) {
+    NoesisGUI_PINVOKE.Copy_Matrix(src, ref dst);
+  }
+
   public static IntPtr Vector4_GetStaticType() {
     IntPtr ret = NoesisGUI_PINVOKE.Vector4_GetStaticType();
     return ret;
@@ -456,18 +481,21 @@ public class NoesisGUI_ {
   }
 
   public static Vector4 Unbox_Vector4(IntPtr val) {
-    IntPtr ret = NoesisGUI_PINVOKE.Unbox_Vector4(val);
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Vector4>(ret);
+    IntPtr retSrc = NoesisGUI_PINVOKE.Unbox_Vector4(val);
+    Vector4 retDst = new Vector4();
+    if (retSrc != IntPtr.Zero) {
+      NoesisGUI_.Copy_Vector4(retSrc, ref retDst);
     }
-    else {
-      return new Vector4();
-    }
+    return retDst;
   }
 
   public static IntPtr Box_Vector4(Vector4 val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_Vector4(ref val);
     return ret;
+  }
+
+  public static void Copy_Vector4(IntPtr src, ref Vector4 dst) {
+    NoesisGUI_PINVOKE.Copy_Vector4(src, ref dst);
   }
 
   public static IntPtr Matrix4_GetStaticType() {
@@ -481,18 +509,21 @@ public class NoesisGUI_ {
   }
 
   public static Matrix4 Unbox_Matrix4(IntPtr val) {
-    IntPtr ret = NoesisGUI_PINVOKE.Unbox_Matrix4(val);
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Matrix4>(ret);
+    IntPtr retSrc = NoesisGUI_PINVOKE.Unbox_Matrix4(val);
+    Matrix4 retDst = new Matrix4();
+    if (retSrc != IntPtr.Zero) {
+      NoesisGUI_.Copy_Matrix4(retSrc, ref retDst);
     }
-    else {
-      return new Matrix4();
-    }
+    return retDst;
   }
 
   public static IntPtr Box_Matrix4(Matrix4 val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_Matrix4(ref val);
     return ret;
+  }
+
+  public static void Copy_Matrix4(IntPtr src, ref Matrix4 dst) {
+    NoesisGUI_PINVOKE.Copy_Matrix4(src, ref dst);
   }
 
   public static IntPtr Matrix3D_GetStaticType() {
@@ -518,6 +549,10 @@ public class NoesisGUI_ {
   public static IntPtr Box_Matrix3D(Matrix3D val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_Matrix3D(ref val);
     return ret;
+  }
+
+  public static void Copy_Matrix3D(IntPtr src, ref Matrix3D dst) {
+    NoesisGUI_PINVOKE.Copy_Matrix3D(src, ref dst);
   }
 
   public static IntPtr NullableBool_GetStaticType() {
@@ -1166,6 +1201,10 @@ public class NoesisGUI_ {
     return ret;
   }
 
+  public static void Copy_GeneratorPosition(IntPtr src, ref GeneratorPosition dst) {
+    NoesisGUI_PINVOKE.Copy_GeneratorPosition(src, ref dst);
+  }
+
   public static IntPtr GridLength_GetStaticType() {
     IntPtr ret = NoesisGUI_PINVOKE.GridLength_GetStaticType();
     return ret;
@@ -1177,18 +1216,21 @@ public class NoesisGUI_ {
   }
 
   public static GridLength Unbox_GridLength(IntPtr val) {
-    IntPtr ret = NoesisGUI_PINVOKE.Unbox_GridLength(val);
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<GridLength>(ret);
+    IntPtr retSrc = NoesisGUI_PINVOKE.Unbox_GridLength(val);
+    GridLength retDst = new GridLength();
+    if (retSrc != IntPtr.Zero) {
+      NoesisGUI_.Copy_GridLength(retSrc, ref retDst);
     }
-    else {
-      return new GridLength();
-    }
+    return retDst;
   }
 
   public static IntPtr Box_GridLength(GridLength val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_GridLength(ref val);
     return ret;
+  }
+
+  public static void Copy_GridLength(IntPtr src, ref GridLength dst) {
+    NoesisGUI_PINVOKE.Copy_GridLength(src, ref dst);
   }
 
   public static PanningMode Unbox_PanningMode(IntPtr val) {
@@ -1212,18 +1254,21 @@ public class NoesisGUI_ {
   }
 
   public static VirtualizationCacheLength Unbox_VirtualizationCacheLength(IntPtr val) {
-    IntPtr ret = NoesisGUI_PINVOKE.Unbox_VirtualizationCacheLength(val);
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<VirtualizationCacheLength>(ret);
+    IntPtr retSrc = NoesisGUI_PINVOKE.Unbox_VirtualizationCacheLength(val);
+    VirtualizationCacheLength retDst = new VirtualizationCacheLength();
+    if (retSrc != IntPtr.Zero) {
+      NoesisGUI_.Copy_VirtualizationCacheLength(retSrc, ref retDst);
     }
-    else {
-      return new VirtualizationCacheLength();
-    }
+    return retDst;
   }
 
   public static IntPtr Box_VirtualizationCacheLength(VirtualizationCacheLength val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_VirtualizationCacheLength(ref val);
     return ret;
+  }
+
+  public static void Copy_VirtualizationCacheLength(IntPtr src, ref VirtualizationCacheLength dst) {
+    NoesisGUI_PINVOKE.Copy_VirtualizationCacheLength(src, ref dst);
   }
 
   public static VirtualizationCacheLengthUnit Unbox_VirtualizationCacheLengthUnit(IntPtr val) {
@@ -1305,18 +1350,21 @@ public class NoesisGUI_ {
   }
 
   public static Duration Unbox_Duration(IntPtr val) {
-    IntPtr ret = NoesisGUI_PINVOKE.Unbox_Duration(val);
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Duration>(ret);
+    IntPtr retSrc = NoesisGUI_PINVOKE.Unbox_Duration(val);
+    Duration retDst = new Duration();
+    if (retSrc != IntPtr.Zero) {
+      NoesisGUI_.Copy_Duration(retSrc, ref retDst);
     }
-    else {
-      return new Duration();
-    }
+    return retDst;
   }
 
   public static IntPtr Box_Duration(Duration val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_Duration(ref val);
     return ret;
+  }
+
+  public static void Copy_Duration(IntPtr src, ref Duration dst) {
+    NoesisGUI_PINVOKE.Copy_Duration(src, ref dst);
   }
 
   public static IntPtr KeyTime_GetStaticType() {
@@ -1330,18 +1378,21 @@ public class NoesisGUI_ {
   }
 
   public static KeyTime Unbox_KeyTime(IntPtr val) {
-    IntPtr ret = NoesisGUI_PINVOKE.Unbox_KeyTime(val);
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<KeyTime>(ret);
+    IntPtr retSrc = NoesisGUI_PINVOKE.Unbox_KeyTime(val);
+    KeyTime retDst = new KeyTime();
+    if (retSrc != IntPtr.Zero) {
+      NoesisGUI_.Copy_KeyTime(retSrc, ref retDst);
     }
-    else {
-      return new KeyTime();
-    }
+    return retDst;
   }
 
   public static IntPtr Box_KeyTime(KeyTime val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_KeyTime(ref val);
     return ret;
+  }
+
+  public static void Copy_KeyTime(IntPtr src, ref KeyTime dst) {
+    NoesisGUI_PINVOKE.Copy_KeyTime(src, ref dst);
   }
 
   public static IntPtr RepeatBehavior_GetStaticType() {
@@ -1355,18 +1406,21 @@ public class NoesisGUI_ {
   }
 
   public static RepeatBehavior Unbox_RepeatBehavior(IntPtr val) {
-    IntPtr ret = NoesisGUI_PINVOKE.Unbox_RepeatBehavior(val);
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<RepeatBehavior>(ret);
+    IntPtr retSrc = NoesisGUI_PINVOKE.Unbox_RepeatBehavior(val);
+    RepeatBehavior retDst = new RepeatBehavior();
+    if (retSrc != IntPtr.Zero) {
+      NoesisGUI_.Copy_RepeatBehavior(retSrc, ref retDst);
     }
-    else {
-      return new RepeatBehavior();
-    }
+    return retDst;
   }
 
   public static IntPtr Box_RepeatBehavior(RepeatBehavior val) {
     IntPtr ret = NoesisGUI_PINVOKE.Box_RepeatBehavior(ref val);
     return ret;
+  }
+
+  public static void Copy_RepeatBehavior(IntPtr src, ref RepeatBehavior dst) {
+    NoesisGUI_PINVOKE.Copy_RepeatBehavior(src, ref dst);
   }
 
   public static ClockState Unbox_ClockState(IntPtr val) {

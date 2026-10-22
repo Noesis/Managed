@@ -89,7 +89,8 @@ namespace Noesis
             // Check dependency property with the same name is not already registered
             if (Noesis_ExistsDependencyProperty(ownerTypePtr, name))
             {
-                throw new ArgumentException($"DependencyProperty '{name}' already registered to type '{ownerType}'");
+                throw new ArgumentException($"DependencyProperty '{name}' already registered to type '{ownerType}'",
+                    nameof(name));
             }
 
             // Check property type is supported and get the registered native type
@@ -101,6 +102,14 @@ namespace Noesis
             // Create and register dependency property
             IntPtr dependencyPtr = Noesis_RegisterDependencyProperty(ownerTypePtr,
                 name, nativeType, PropertyMetadata.getCPtr(propertyMetadata));
+
+            if (dependencyPtr == IntPtr.Zero)
+            {
+                throw new ArgumentException(
+                    $"Type '{originalPropertyType.FullName}' is not supported when registering " +
+                    $"dependency property '{ownerType.FullName}.{name}'",
+                    nameof(propertyType));
+            }
 
             DependencyProperty dependencyProperty = existingProperty;
             if (!ReferenceEquals(dependencyProperty, null))

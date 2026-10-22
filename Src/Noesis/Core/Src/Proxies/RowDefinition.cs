@@ -60,17 +60,14 @@ public class RowDefinition : DefinitionBase {
     set {
       NoesisGUI_PINVOKE.RowDefinition_Height_set(swigCPtr, ref value);
     }
-
     get {
-      IntPtr ret = NoesisGUI_PINVOKE.RowDefinition_Height_get(swigCPtr);
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<GridLength>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.RowDefinition_Height_get(swigCPtr);
+      GridLength retDst = new GridLength();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_GridLength(retSrc, ref retDst);
       }
-      else {
-        return new GridLength();
-      }
+      return retDst;
     }
-
   }
 
   public new float MaxHeight {

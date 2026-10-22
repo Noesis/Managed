@@ -185,17 +185,14 @@ public class ContextMenu : MenuBase {
     set {
       NoesisGUI_PINVOKE.ContextMenu_PlacementRectangle_set(swigCPtr, ref value);
     }
-
     get {
-      IntPtr ret = NoesisGUI_PINVOKE.ContextMenu_PlacementRectangle_get(swigCPtr);
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<Rect>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.ContextMenu_PlacementRectangle_get(swigCPtr);
+      Rect retDst = new Rect();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_Rect(retSrc, ref retDst);
       }
-      else {
-        return new Rect();
-      }
+      return retDst;
     }
-
   }
 
   public UIElement PlacementTarget {

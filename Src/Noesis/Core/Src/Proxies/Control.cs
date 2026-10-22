@@ -255,17 +255,14 @@ public class Control : FrameworkElement {
     set {
       NoesisGUI_PINVOKE.Control_BorderThickness_set(swigCPtr, ref value);
     }
-
     get {
-      IntPtr ret = NoesisGUI_PINVOKE.Control_BorderThickness_get(swigCPtr);
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<Thickness>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.Control_BorderThickness_get(swigCPtr);
+      Thickness retDst = new Thickness();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_Thickness(retSrc, ref retDst);
       }
-      else {
-        return new Thickness();
-      }
+      return retDst;
     }
-
   }
 
   public FontFamily FontFamily {
@@ -352,17 +349,14 @@ public class Control : FrameworkElement {
     set {
       NoesisGUI_PINVOKE.Control_Padding_set(swigCPtr, ref value);
     }
-
     get {
-      IntPtr ret = NoesisGUI_PINVOKE.Control_Padding_get(swigCPtr);
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<Thickness>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.Control_Padding_get(swigCPtr);
+      Thickness retDst = new Thickness();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_Thickness(retSrc, ref retDst);
       }
-      else {
-        return new Thickness();
-      }
+      return retDst;
     }
-
   }
 
   public int TabIndex {

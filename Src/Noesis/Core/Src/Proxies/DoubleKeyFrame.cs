@@ -47,17 +47,14 @@ public class DoubleKeyFrame : Freezable {
     set {
       NoesisGUI_PINVOKE.DoubleKeyFrame_KeyTime_set(swigCPtr, ref value);
     }
-
     get {
-      IntPtr ret = NoesisGUI_PINVOKE.DoubleKeyFrame_KeyTime_get(swigCPtr);
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<KeyTime>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.DoubleKeyFrame_KeyTime_get(swigCPtr);
+      KeyTime retDst = new KeyTime();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_KeyTime(retSrc, ref retDst);
       }
-      else {
-        return new KeyTime();
-      }
+      return retDst;
     }
-
   }
 
   public float Value {

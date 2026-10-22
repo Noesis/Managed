@@ -64,6 +64,44 @@ public class TextBox : TextBoxBase {
     NoesisGUI_PINVOKE.TextBox_Clear(swigCPtr);
   }
 
+  public bool Undo() {
+    bool ret = NoesisGUI_PINVOKE.TextBox_Undo(swigCPtr);
+    return ret;
+  }
+
+  public bool Redo() {
+    bool ret = NoesisGUI_PINVOKE.TextBox_Redo(swigCPtr);
+    return ret;
+  }
+
+  public void ClearUndo() {
+    NoesisGUI_PINVOKE.TextBox_ClearUndo(swigCPtr);
+  }
+
+  public void LockCurrentUndoUnit() {
+    NoesisGUI_PINVOKE.TextBox_LockCurrentUndoUnit(swigCPtr);
+  }
+
+  public void BeginChange() {
+    NoesisGUI_PINVOKE.TextBox_BeginChange(swigCPtr);
+  }
+
+  public void EndChange() {
+    NoesisGUI_PINVOKE.TextBox_EndChange(swigCPtr);
+  }
+
+  public void BeginComposition() {
+    NoesisGUI_PINVOKE.TextBox_BeginComposition(swigCPtr);
+  }
+
+  public void EndComposition() {
+    NoesisGUI_PINVOKE.TextBox_EndComposition(swigCPtr);
+  }
+
+  public void CancelComposition() {
+    NoesisGUI_PINVOKE.TextBox_CancelComposition(swigCPtr);
+  }
+
   public int GetCharacterIndexFromPoint(Point point, bool snapToText) {
     int ret = NoesisGUI_PINVOKE.TextBox_GetCharacterIndexFromPoint(swigCPtr, ref point, snapToText);
     return ret;
@@ -99,17 +137,30 @@ public class TextBox : TextBoxBase {
   }
 
   public Rect GetRangeBounds(uint start, uint end) {
-    IntPtr ret = NoesisGUI_PINVOKE.TextBox_GetRangeBounds(swigCPtr, start, end);
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Rect>(ret);
+    IntPtr retSrc = NoesisGUI_PINVOKE.TextBox_GetRangeBounds(swigCPtr, start, end);
+    Rect retDst = new Rect();
+    if (retSrc != IntPtr.Zero) {
+      NoesisGUI_.Copy_Rect(retSrc, ref retDst);
     }
-    else {
-      return new Rect();
-    }
+    return retDst;
   }
 
   public void HideCaret() {
     NoesisGUI_PINVOKE.TextBox_HideCaret(swigCPtr);
+  }
+
+  public static DependencyProperty IsUndoEnabledProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.TextBox_IsUndoEnabledProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
+  }
+
+  public static DependencyProperty UndoLimitProperty {
+    get {
+      IntPtr cPtr = NoesisGUI_PINVOKE.TextBox_UndoLimitProperty_get();
+      return (DependencyProperty)Noesis.Extend.GetProxy(cPtr, false);
+    }
   }
 
   public static DependencyProperty MaxLengthProperty {
@@ -279,6 +330,40 @@ public class TextBox : TextBoxBase {
       string str = Noesis.Extend.StringFromNativeUtf8(strPtr);
       return str;
     }
+  }
+
+  public bool CanUndo {
+    get {
+      bool ret = NoesisGUI_PINVOKE.TextBox_CanUndo_get(swigCPtr);
+      return ret;
+    } 
+  }
+
+  public bool CanRedo {
+    get {
+      bool ret = NoesisGUI_PINVOKE.TextBox_CanRedo_get(swigCPtr);
+      return ret;
+    } 
+  }
+
+  public bool IsUndoEnabled {
+    set {
+      NoesisGUI_PINVOKE.TextBox_IsUndoEnabled_set(swigCPtr, value);
+    } 
+    get {
+      bool ret = NoesisGUI_PINVOKE.TextBox_IsUndoEnabled_get(swigCPtr);
+      return ret;
+    } 
+  }
+
+  public int UndoLimit {
+    set {
+      NoesisGUI_PINVOKE.TextBox_UndoLimit_set(swigCPtr, value);
+    } 
+    get {
+      int ret = NoesisGUI_PINVOKE.TextBox_UndoLimit_get(swigCPtr);
+      return ret;
+    } 
   }
 
   private void MeasureOverrideHelper(Size availableSize, ref Size desiredSize) {

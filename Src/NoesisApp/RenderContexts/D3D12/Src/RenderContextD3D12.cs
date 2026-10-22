@@ -36,6 +36,8 @@ namespace NoesisApp
         private SharpDX.Direct3D12.CommandQueue _queue;
         private SharpDX.Direct3D12.DescriptorHeap _heapRTV;
         private SharpDX.Direct3D12.DescriptorHeap _heapDSV;
+        private SharpDX.Direct3D12.QueryHeap _queryHeap;
+        private SharpDX.Direct3D12.Resource _timeStampResults;
         private int _sizeRTV = 0;
 
         private const int FrameCount = 2;
@@ -69,11 +71,11 @@ namespace NoesisApp
             samples = (uint)_sampleDesc.Count;
 
             CreateHeaps();
-            CreateBuffers();
+            CreateQueries();
+            CreateBuffers(true);
             CreateCommandList();
 
-            _device = new RenderDeviceD3D12(_dev.NativePointer, _fence.NativePointer, (int)_format, (int)SharpDX.DXGI.Format.D24_UNorm_S8_UInt,
-                _sampleDesc.Count, sRGB);
+            _device = new RenderDeviceD3D12(_dev.NativePointer, (int)_format, (int)SharpDX.DXGI.Format.D24_UNorm_S8_UInt, _sampleDesc.Count, sRGB);
         }
 
         private void CreateDevice()
@@ -237,8 +239,41 @@ namespace NoesisApp
             }
         }
 
+        void CreateQueries()
+        {
+            SharpDX.Direct3D12.HeapProperties heap = new SharpDX.Direct3D12.HeapProperties();
+            heap.Type = SharpDX.Direct3D12.HeapType.Readback;
+            heap.CPUPageProperty = SharpDX.Direct3D12.CpuPageProperty.Unknown;
+            heap.MemoryPoolPreference = SharpDX.Direct3D12.MemoryPool.Unknown;
+            heap.CreationNodeMask = 0;
+            heap.VisibleNodeMask = 0;
+
+            SharpDX.Direct3D12.ResourceDescription desc = new SharpDX.Direct3D12.ResourceDescription();
+            desc.Dimension = SharpDX.Direct3D12.ResourceDimension.Buffer;
+            desc.Alignment = 0;
+            desc.Width = sizeof(long) * FrameCount * 2;
+            desc.Height = 1;
+            desc.DepthOrArraySize = 1;
+            desc.MipLevels = 1;
+            desc.Format = SharpDX.DXGI.Format.Unknown;
+            desc.SampleDescription = new SampleDescription { Count = 1, Quality = 0 };
+            desc.Layout = SharpDX.Direct3D12.TextureLayout.RowMajor;
+            desc.Flags = SharpDX.Direct3D12.ResourceFlags.None;
+
+            _timeStampResults = _dev.CreateCommittedResource(heap, SharpDX.Direct3D12.HeapFlags.None, desc, SharpDX.Direct3D12.ResourceStates.CopyDestination, null);
+            _timeStampResults.Name = "Noesis_TimeStamp";
+
+            SharpDX.Direct3D12.QueryHeapDescription queryDesc = new SharpDX.Direct3D12.QueryHeapDescription();
+            queryDesc.Type = SharpDX.Direct3D12.QueryHeapType.Timestamp;
+            queryDesc.Count = FrameCount * 2;
+            queryDesc.NodeMask = 0;
+
+            _queryHeap = _dev.CreateQueryHeap(queryDesc);
+            _queryHeap.Name = "Noesis_Query_Heap";
+        }
+
         [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(SharpDX.Direct3D12.Resource))]
-        void CreateBuffers()
+        void CreateBuffers(bool createStencil)
         {
             SharpDX.Direct3D12.CpuDescriptorHandle rtv = _heapRTV.CPUDescriptorHandleForHeapStart;
             SharpDX.Direct3D12.HeapFlags flags = SharpDX.Direct3D12.HeapFlags.None;
@@ -275,38 +310,55 @@ namespace NoesisApp
                 desc.Flags = SharpDX.Direct3D12.ResourceFlags.AllowRenderTarget;
 
                 _backBuffers[i] = _swapChain.GetBackBuffer<SharpDX.Direct3D12.Resource>(i);
+                _backBuffers[i].Name = $"Noesis_FB_Color_{i}";
 
                 if (_sampleDesc.Count != 1)
                 {
                     _backBuffersAA[i] = _dev.CreateCommittedResource(heap, flags, desc, SharpDX.Direct3D12.ResourceStates.ResolveSource, clearValue);
-                    _dev.CreateRenderTargetView(_backBuffersAA[i], null, rtv);
+                    _backBuffersAA[i].Name = $"Noesis_FB_ColorAA_{i}";
+                    
+                    if (_backBuffersAA[i] != null)
+                    {
+                        _dev.CreateRenderTargetView(_backBuffersAA[i], null, rtv);
+                    }
                 }
                 else
                 {
-                    SharpDX.Direct3D12.RenderTargetViewDescription view = new SharpDX.Direct3D12.RenderTargetViewDescription();
-                    view.Format = _format;
-                    view.Dimension = SharpDX.Direct3D12.RenderTargetViewDimension.Texture2D;
-                    view.Texture2D.MipSlice = 0;
-                    view.Texture2D.PlaneSlice = 0;
+                    if (_backBuffers[i] != null)
+                    {
+                        SharpDX.Direct3D12.RenderTargetViewDescription view = new SharpDX.Direct3D12.RenderTargetViewDescription();
+                        view.Format = _format;
+                        view.Dimension = SharpDX.Direct3D12.RenderTargetViewDimension.Texture2D;
+                        view.Texture2D.MipSlice = 0;
+                        view.Texture2D.PlaneSlice = 0;
 
-                    _dev.CreateRenderTargetView(_backBuffers[i], view, rtv);
+                        _dev.CreateRenderTargetView(_backBuffers[i], view, rtv);
+                    }
                 }
 
                 rtv.Ptr += _sizeRTV;
             }
 
             // Stencil buffer
-            clearValue.Format = SharpDX.DXGI.Format.D24_UNorm_S8_UInt;
-            clearValue.DepthStencil.Depth = 0.0f;
-            clearValue.DepthStencil.Stencil = 0;
+            if (createStencil)
+            {
+                SharpDX.Direct3D12.ClearValue depthClearValue = new SharpDX.Direct3D12.ClearValue();
+                depthClearValue.Format = SharpDX.DXGI.Format.D24_UNorm_S8_UInt;
+                depthClearValue.DepthStencil.Depth = 0.0f;
+                depthClearValue.DepthStencil.Stencil = 0;
 
-            desc.Format = SharpDX.DXGI.Format.D24_UNorm_S8_UInt;
-            desc.Flags = SharpDX.Direct3D12.ResourceFlags.AllowDepthStencil;
+                desc.Format = SharpDX.DXGI.Format.D24_UNorm_S8_UInt;
+                desc.Flags = SharpDX.Direct3D12.ResourceFlags.AllowDepthStencil;
 
-            _stencilBuffer = _dev.CreateCommittedResource(heap, flags, desc, SharpDX.Direct3D12.ResourceStates.DepthWrite, clearValue);
+                _stencilBuffer = _dev.CreateCommittedResource(heap, flags, desc, SharpDX.Direct3D12.ResourceStates.DepthWrite, depthClearValue);
+                _stencilBuffer.Name = "Noesis_FB_Stencil";
 
-            SharpDX.Direct3D12.CpuDescriptorHandle dsv = _heapDSV.CPUDescriptorHandleForHeapStart;
-            _dev.CreateDepthStencilView(_stencilBuffer, null, dsv);
+                if (_stencilBuffer != null)
+                {
+                    SharpDX.Direct3D12.CpuDescriptorHandle dsv = _heapDSV.CPUDescriptorHandleForHeapStart;
+                    _dev.CreateDepthStencilView(_stencilBuffer, null, dsv);
+                }
+            }
 
             // Viewport
             _viewport[0].TopLeftX = 0.0f;
@@ -347,10 +399,23 @@ namespace NoesisApp
                 _fenceEvent.WaitOne();
             }
 
+            IntPtr data = _timeStampResults.Map(0);
+            if (data != IntPtr.Zero)
+            {
+                long[] timeStamps = new long[2];
+                System.Runtime.InteropServices.Marshal.Copy(data + sizeof(long) * 2 * _frameIndex, timeStamps, 0, 2);
+                long delta = timeStamps[1] - timeStamps[0];
+                _timeStampResults.Unmap(0);
+            }
+
             _commandAllocators[_frameIndex].Reset();
             _commands.Reset(_commandAllocators[_frameIndex], null);
 
-            _device.SetCommandList(_commands.NativePointer, _fenceValue + 1);            
+            _commands.EndQuery(_queryHeap, SharpDX.Direct3D12.QueryType.Timestamp, 2 * _frameIndex);
+
+            long completedFrame = _fence.CompletedValue;
+            long nextFrame = _fenceValue + 1;
+            _device.SetCommandList(_commands.NativePointer, completedFrame, nextFrame);
         }
 
         public override void EndRender() { }
@@ -360,39 +425,64 @@ namespace NoesisApp
             SharpDX.Direct3D12.ResourceBarrier barrier = new SharpDX.Direct3D12.ResourceBarrier();
             barrier.Type = SharpDX.Direct3D12.ResourceBarrierType.Transition;
             barrier.Flags = SharpDX.Direct3D12.ResourceBarrierFlags.None;
+
+            SharpDX.Direct3D12.Resource color = null;
+
             if (_sampleDesc.Count > 1)
             {
-                barrier.Transition = new SharpDX.Direct3D12.ResourceTransitionBarrier(_backBuffersAA[_frameIndex],
-                    SharpDX.Direct3D12.ResourceStates.ResolveSource,
-                    SharpDX.Direct3D12.ResourceStates.RenderTarget) { Subresource = 0 };
+                color = _backBuffersAA[_frameIndex];
+                if (color != null)
+                {
+                    barrier.Transition = new SharpDX.Direct3D12.ResourceTransitionBarrier(color,
+                        SharpDX.Direct3D12.ResourceStates.ResolveSource,
+                        SharpDX.Direct3D12.ResourceStates.RenderTarget) { Subresource = 0 };
+                }
             }
             else
             {
-                barrier.Transition = new SharpDX.Direct3D12.ResourceTransitionBarrier(_backBuffers[_frameIndex],
-                    SharpDX.Direct3D12.ResourceStates.Present,
-                    SharpDX.Direct3D12.ResourceStates.RenderTarget) { Subresource = 0 };
+                color = _backBuffers[_frameIndex];
+                if (color != null)
+                {
+                    barrier.Transition = new SharpDX.Direct3D12.ResourceTransitionBarrier(color,
+                        SharpDX.Direct3D12.ResourceStates.Present,
+                        SharpDX.Direct3D12.ResourceStates.RenderTarget) { Subresource = 0 };
+                }
             }
-            _commands.ResourceBarrier(barrier);
 
             SharpDX.Direct3D12.CpuDescriptorHandle rtv = _heapRTV.CPUDescriptorHandleForHeapStart;
-            rtv.Ptr += _frameIndex * _sizeRTV;
+            SharpDX.Direct3D12.CpuDescriptorHandle dsv = new SharpDX.Direct3D12.CpuDescriptorHandle();
 
-            if (doClearColor)
+            if (color != null)
             {
-                SharpDX.Mathematics.Interop.RawColor4 clearColor = new SharpDX.Mathematics.Interop.RawColor4(0.0f, 0.0f, 0.0f, 0.0f);
-                _commands.ClearRenderTargetView(rtv, clearColor, 0, null);
+                _commands.ResourceBarrier(barrier);
+
+                rtv.Ptr += _frameIndex * _sizeRTV;
+
+                if (doClearColor)
+                {
+                    SharpDX.Mathematics.Interop.RawColor4 clearColor = new SharpDX.Mathematics.Interop.RawColor4(0.0f, 0.0f, 0.0f, 0.0f);
+                    _commands.ClearRenderTargetView(rtv, clearColor, 0, null);
+                }
             }
 
-            SharpDX.Direct3D12.CpuDescriptorHandle dsv = _heapDSV.CPUDescriptorHandleForHeapStart;
-            _commands.ClearDepthStencilView(dsv, SharpDX.Direct3D12.ClearFlags.FlagsStencil, 0.0f, 0, 0, null);
-            _commands.SetRenderTargets(1, rtv, dsv);
-            _commands.SetViewports(1, _viewport );
+            if (_stencilBuffer != null)
+            {
+                dsv = _heapDSV.CPUDescriptorHandleForHeapStart;
+                _commands.ClearDepthStencilView(dsv, SharpDX.Direct3D12.ClearFlags.FlagsStencil, 0.0f, 0, 0, null);
+            }
+
+            if (color != null && _stencilBuffer != null)
+            {
+                _commands.SetRenderTargets(1, rtv, dsv);
+            }
+
+            _commands.SetViewports(1, _viewport);
             _commands.SetScissorRectangles(_scissorRect);
         }
 
         public override ImageCapture CaptureRenderTarget(RenderTarget surface)
         {
-            IntPtr texNativePtr = RenderDeviceD3D11.GetTextureNativePointer(surface.Texture);
+            IntPtr texNativePtr = RenderDeviceD3D12.GetTextureNativePointer(surface.Texture);
             SharpDX.Direct3D12.Resource texture = new SharpDX.Direct3D12.Resource(texNativePtr);
             SharpDX.Direct3D12.ResourceDescription texDesc = texture.Description;
 
@@ -412,14 +502,14 @@ namespace NoesisApp
             long pitch = (rowSize[0] + 255) & ~255;
 
             // Create staging texture
-            SharpDX.Direct3D12.HeapProperties heap;
+            SharpDX.Direct3D12.HeapProperties heap = new SharpDX.Direct3D12.HeapProperties();
             heap.Type = SharpDX.Direct3D12.HeapType.Readback;
             heap.CPUPageProperty = SharpDX.Direct3D12.CpuPageProperty.Unknown;
             heap.MemoryPoolPreference = SharpDX.Direct3D12.MemoryPool.Unknown;
             heap.CreationNodeMask = 0;
             heap.VisibleNodeMask = 0;
 
-            SharpDX.Direct3D12.ResourceDescription desc;
+            SharpDX.Direct3D12.ResourceDescription desc = new SharpDX.Direct3D12.ResourceDescription();
             desc.Dimension = SharpDX.Direct3D12.ResourceDimension.Buffer;
             desc.Alignment = 0;
             desc.Width = pitch * texDesc.Height * 4;
@@ -435,7 +525,7 @@ namespace NoesisApp
                 desc, SharpDX.Direct3D12.ResourceStates.CopyDestination, null);
 
             SharpDX.Direct3D12.TextureCopyLocation copySrc = new SharpDX.Direct3D12.TextureCopyLocation(texture, 0);
-            SharpDX.Direct3D12.TextureCopyLocation copyDst = new SharpDX.Direct3D12.TextureCopyLocation(texture,
+            SharpDX.Direct3D12.TextureCopyLocation copyDst = new SharpDX.Direct3D12.TextureCopyLocation(stagingTex,
                 new SharpDX.Direct3D12.PlacedSubResourceFootprint
                 {
                     Offset = 0,
@@ -481,45 +571,59 @@ namespace NoesisApp
             }
 
             stagingTex.Unmap(0);
+            stagingTex.Dispose();
 
             return _imageCapture;
         }
 
         public override void Swap()
         {
+            _commands.EndQuery(_queryHeap, SharpDX.Direct3D12.QueryType.Timestamp, 2 * _frameIndex + 1);
+            _commands.ResolveQueryData(_queryHeap, SharpDX.Direct3D12.QueryType.Timestamp, 2 * _frameIndex, 2, _timeStampResults, _frameIndex * sizeof(long) * 2);
+
             SharpDX.Direct3D12.ResourceBarrier barrier = new SharpDX.Direct3D12.ResourceBarrier();
             barrier.Type = SharpDX.Direct3D12.ResourceBarrierType.Transition;
             barrier.Flags = SharpDX.Direct3D12.ResourceBarrierFlags.None;
 
+            SharpDX.Direct3D12.Resource dst = _backBuffers[_frameIndex];
+
             if (_sampleDesc.Count > 1)
             {
-                barrier.Transition = new SharpDX.Direct3D12.ResourceTransitionBarrier(_backBuffersAA[_frameIndex],
-                    SharpDX.Direct3D12.ResourceStates.RenderTarget,
-                    SharpDX.Direct3D12.ResourceStates.ResolveSource) { Subresource = 0 };
+                SharpDX.Direct3D12.Resource src = _backBuffersAA[_frameIndex];
 
-                _commands.ResourceBarrier(barrier);
+                if (src != null && dst != null)
+                {
+                    barrier.Transition = new SharpDX.Direct3D12.ResourceTransitionBarrier(src,
+                        SharpDX.Direct3D12.ResourceStates.RenderTarget,
+                        SharpDX.Direct3D12.ResourceStates.ResolveSource) { Subresource = 0 };
 
-                barrier.Transition = new SharpDX.Direct3D12.ResourceTransitionBarrier(_backBuffers[_frameIndex],
-                    SharpDX.Direct3D12.ResourceStates.Present,
-                    SharpDX.Direct3D12.ResourceStates.ResolveDestination) { Subresource = 0 };
+                    _commands.ResourceBarrier(barrier);
 
-                _commands.ResourceBarrier(barrier);
+                    barrier.Transition = new SharpDX.Direct3D12.ResourceTransitionBarrier(dst,
+                        SharpDX.Direct3D12.ResourceStates.Present,
+                        SharpDX.Direct3D12.ResourceStates.ResolveDestination) { Subresource = 0 };
 
-                _commands.ResolveSubresource(_backBuffers[_frameIndex], 0, _backBuffersAA[_frameIndex], 0, _format);
+                    _commands.ResourceBarrier(barrier);
 
-                barrier.Transition = new SharpDX.Direct3D12.ResourceTransitionBarrier(_backBuffers[_frameIndex],
-                    SharpDX.Direct3D12.ResourceStates.ResolveDestination,
-                    SharpDX.Direct3D12.ResourceStates.Present) { Subresource = 0 };
+                    _commands.ResolveSubresource(dst, 0, src, 0, _format);
 
-                _commands.ResourceBarrier(barrier);
+                    barrier.Transition = new SharpDX.Direct3D12.ResourceTransitionBarrier(dst,
+                        SharpDX.Direct3D12.ResourceStates.ResolveDestination,
+                        SharpDX.Direct3D12.ResourceStates.Present) { Subresource = 0 };
+
+                    _commands.ResourceBarrier(barrier);
+                }
             }
             else
             {
-                barrier.Transition = new SharpDX.Direct3D12.ResourceTransitionBarrier(_backBuffers[_frameIndex],
-                    SharpDX.Direct3D12.ResourceStates.RenderTarget,
-                    SharpDX.Direct3D12.ResourceStates.Present) { Subresource = 0 };
+                if (dst != null)
+                {
+                    barrier.Transition = new SharpDX.Direct3D12.ResourceTransitionBarrier(dst,
+                        SharpDX.Direct3D12.ResourceStates.RenderTarget,
+                        SharpDX.Direct3D12.ResourceStates.Present) { Subresource = 0 };
 
-                _commands.ResourceBarrier(barrier);
+                    _commands.ResourceBarrier(barrier);
+                }
             }
 
             // TODO: transition video textures
@@ -535,6 +639,11 @@ namespace NoesisApp
             _frameIndex = _swapChain.CurrentBackBufferIndex;
         }
 
+        public void InsertWait(SharpDX.Direct3D12.CommandQueue queue)
+        {
+            queue.Wait(_fence, _fenceValue);
+        }
+
         public override void Resize()
         {
             WaitForGpu();
@@ -542,14 +651,17 @@ namespace NoesisApp
             for (int i = 0; i < FrameCount; i++)
             {
                 _backBuffers[i]?.Dispose();
+                _backBuffers[i] = null;
                 _backBuffersAA[i]?.Dispose();
+                _backBuffersAA[i] = null;
             }
 
             _stencilBuffer?.Dispose();
+            _stencilBuffer = null;
 
             _swapChain.ResizeBuffers(0, 0, 0, SharpDX.DXGI.Format.Unknown, _swapChainFlags);
 
-            CreateBuffers();
+            CreateBuffers(true);
         }
 
         void WaitForGpu()

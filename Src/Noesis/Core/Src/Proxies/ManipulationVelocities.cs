@@ -63,34 +63,28 @@ public class ManipulationVelocities : IDisposable {
     set {
       NoesisGUI_PINVOKE.ManipulationVelocities_ExpansionVelocity_set(swigCPtr, ref value);
     }
-
     get {
-      IntPtr ret = NoesisGUI_PINVOKE.ManipulationVelocities_ExpansionVelocity_get(swigCPtr);
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<Point>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.ManipulationVelocities_ExpansionVelocity_get(swigCPtr);
+      Point retDst = new Point();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_Point(retSrc, ref retDst);
       }
-      else {
-        return new Point();
-      }
+      return retDst;
     }
-
   }
 
   public Point LinearVelocity {
     set {
       NoesisGUI_PINVOKE.ManipulationVelocities_LinearVelocity_set(swigCPtr, ref value);
     }
-
     get {
-      IntPtr ret = NoesisGUI_PINVOKE.ManipulationVelocities_LinearVelocity_get(swigCPtr);
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<Point>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.ManipulationVelocities_LinearVelocity_get(swigCPtr);
+      Point retDst = new Point();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_Point(retSrc, ref retDst);
       }
-      else {
-        return new Point();
-      }
+      return retDst;
     }
-
   }
 
   public ManipulationVelocities() : this(NoesisGUI_PINVOKE.new_ManipulationVelocities(), true) {

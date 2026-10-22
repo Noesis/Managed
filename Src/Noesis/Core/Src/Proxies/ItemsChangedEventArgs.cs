@@ -56,28 +56,24 @@ public class ItemsChangedEventArgs : EventArgs {
 
   public GeneratorPosition Position {
     get {
-      IntPtr ret = NoesisGUI_PINVOKE.ItemsChangedEventArgs_Position_get(swigCPtr);
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<GeneratorPosition>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.ItemsChangedEventArgs_Position_get(swigCPtr);
+      GeneratorPosition retDst = new GeneratorPosition();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_GeneratorPosition(retSrc, ref retDst);
       }
-      else {
-        return new GeneratorPosition();
-      }
+      return retDst;
     }
-
   }
 
   public GeneratorPosition OldPosition {
     get {
-      IntPtr ret = NoesisGUI_PINVOKE.ItemsChangedEventArgs_OldPosition_get(swigCPtr);
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<GeneratorPosition>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.ItemsChangedEventArgs_OldPosition_get(swigCPtr);
+      GeneratorPosition retDst = new GeneratorPosition();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_GeneratorPosition(retSrc, ref retDst);
       }
-      else {
-        return new GeneratorPosition();
-      }
+      return retDst;
     }
-
   }
 
   public int ItemCount {

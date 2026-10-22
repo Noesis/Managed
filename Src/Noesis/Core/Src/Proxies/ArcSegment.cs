@@ -77,34 +77,28 @@ public class ArcSegment : PathSegment {
     set {
       NoesisGUI_PINVOKE.ArcSegment_Point_set(swigCPtr, ref value);
     }
-
     get {
-      IntPtr ret = NoesisGUI_PINVOKE.ArcSegment_Point_get(swigCPtr);
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<Point>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.ArcSegment_Point_get(swigCPtr);
+      Point retDst = new Point();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_Point(retSrc, ref retDst);
       }
-      else {
-        return new Point();
-      }
+      return retDst;
     }
-
   }
 
   public Size Size {
     set {
       NoesisGUI_PINVOKE.ArcSegment_Size_set(swigCPtr, ref value);
     }
-
     get {
-      IntPtr ret = NoesisGUI_PINVOKE.ArcSegment_Size_get(swigCPtr);
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<Size>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.ArcSegment_Size_get(swigCPtr);
+      Size retDst = new Size();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_Size(retSrc, ref retDst);
       }
-      else {
-        return new Size();
-      }
+      return retDst;
     }
-
   }
 
   public float RotationAngle {

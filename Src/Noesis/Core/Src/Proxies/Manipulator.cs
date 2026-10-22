@@ -63,17 +63,14 @@ public class Manipulator : IDisposable {
     set {
       NoesisGUI_PINVOKE.Manipulator_position_set(swigCPtr, ref value);
     }
-
     get {
-      IntPtr ret = NoesisGUI_PINVOKE.Manipulator_position_get(swigCPtr);
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<Point>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.Manipulator_position_get(swigCPtr);
+      Point retDst = new Point();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_Point(retSrc, ref retDst);
       }
-      else {
-        return new Point();
-      }
+      return retDst;
     }
-
   }
 
   public Manipulator() : this(NoesisGUI_PINVOKE.new_Manipulator(), true) {

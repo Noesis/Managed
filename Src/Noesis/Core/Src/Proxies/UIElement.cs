@@ -798,13 +798,12 @@ public class UIElement : Visual {
   }
 
   public Point TranslatePoint(Point point, UIElement relativeTo) {
-    IntPtr ret = NoesisGUI_PINVOKE.UIElement_TranslatePoint(swigCPtr, ref point, UIElement.getCPtr(relativeTo));
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Point>(ret);
+    IntPtr retSrc = NoesisGUI_PINVOKE.UIElement_TranslatePoint(swigCPtr, ref point, UIElement.getCPtr(relativeTo));
+    Point retDst = new Point();
+    if (retSrc != IntPtr.Zero) {
+      NoesisGUI_.Copy_Point(retSrc, ref retDst);
     }
-    else {
-      return new Point();
-    }
+    return retDst;
   }
 
   private bool CaptureTouch(ulong touchDevice) {
@@ -1714,17 +1713,14 @@ public class UIElement : Visual {
     set {
       NoesisGUI_PINVOKE.UIElement_RenderTransformOrigin_set(swigCPtr, ref value);
     }
-
     get {
-      IntPtr ret = NoesisGUI_PINVOKE.UIElement_RenderTransformOrigin_get(swigCPtr);
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<Point>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.UIElement_RenderTransformOrigin_get(swigCPtr);
+      Point retDst = new Point();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_Point(retSrc, ref retDst);
       }
-      else {
-        return new Point();
-      }
+      return retDst;
     }
-
   }
 
   public Transform RenderTransform {
@@ -1773,28 +1769,24 @@ public class UIElement : Visual {
 
   public Size DesiredSize {
     get {
-      IntPtr ret = NoesisGUI_PINVOKE.UIElement_DesiredSize_get(swigCPtr);
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<Size>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.UIElement_DesiredSize_get(swigCPtr);
+      Size retDst = new Size();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_Size(retSrc, ref retDst);
       }
-      else {
-        return new Size();
-      }
+      return retDst;
     }
-
   }
 
   public Size RenderSize {
     get {
-      IntPtr ret = NoesisGUI_PINVOKE.UIElement_RenderSize_get(swigCPtr);
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<Size>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.UIElement_RenderSize_get(swigCPtr);
+      Size retDst = new Size();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_Size(retSrc, ref retDst);
       }
-      else {
-        return new Size();
-      }
+      return retDst;
     }
-
   }
 
   public Mouse Mouse {

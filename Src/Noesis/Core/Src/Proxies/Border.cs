@@ -120,51 +120,42 @@ public class Border : Decorator {
     set {
       NoesisGUI_PINVOKE.Border_BorderThickness_set(swigCPtr, ref value);
     }
-
     get {
-      IntPtr ret = NoesisGUI_PINVOKE.Border_BorderThickness_get(swigCPtr);
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<Thickness>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.Border_BorderThickness_get(swigCPtr);
+      Thickness retDst = new Thickness();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_Thickness(retSrc, ref retDst);
       }
-      else {
-        return new Thickness();
-      }
+      return retDst;
     }
-
   }
 
   public CornerRadius CornerRadius {
     set {
       NoesisGUI_PINVOKE.Border_CornerRadius_set(swigCPtr, ref value);
     }
-
     get {
-      IntPtr ret = NoesisGUI_PINVOKE.Border_CornerRadius_get(swigCPtr);
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<CornerRadius>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.Border_CornerRadius_get(swigCPtr);
+      CornerRadius retDst = new CornerRadius();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_CornerRadius(retSrc, ref retDst);
       }
-      else {
-        return new CornerRadius();
-      }
+      return retDst;
     }
-
   }
 
   public Thickness Padding {
     set {
       NoesisGUI_PINVOKE.Border_Padding_set(swigCPtr, ref value);
     }
-
     get {
-      IntPtr ret = NoesisGUI_PINVOKE.Border_Padding_get(swigCPtr);
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<Thickness>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.Border_Padding_get(swigCPtr);
+      Thickness retDst = new Thickness();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_Thickness(retSrc, ref retDst);
       }
-      else {
-        return new Thickness();
-      }
+      return retDst;
     }
-
   }
 
   private void OnRenderHelper(DrawingContext context) {

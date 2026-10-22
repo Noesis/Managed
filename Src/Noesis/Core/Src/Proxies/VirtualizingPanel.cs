@@ -46,13 +46,12 @@ public class VirtualizingPanel : Panel {
   public static VirtualizationCacheLength GetCacheLength(DependencyObject element) {
     if (element == null) throw new ArgumentNullException("element");
     {
-      IntPtr ret = NoesisGUI_PINVOKE.VirtualizingPanel_GetCacheLength(DependencyObject.getCPtr(element));
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<VirtualizationCacheLength>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.VirtualizingPanel_GetCacheLength(DependencyObject.getCPtr(element));
+      VirtualizationCacheLength retDst = new VirtualizationCacheLength();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_VirtualizationCacheLength(retSrc, ref retDst);
       }
-      else {
-        return new VirtualizationCacheLength();
-      }
+      return retDst;
     }
   }
 

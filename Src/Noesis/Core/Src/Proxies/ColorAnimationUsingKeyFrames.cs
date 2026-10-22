@@ -47,13 +47,12 @@ public sealed class ColorAnimationUsingKeyFrames : ColorAnimationBase {
   }
 
   private Color GetCurrentValueCoreHelper(Color src, Color dst, AnimationClock clock) {
-    IntPtr ret = NoesisGUI_PINVOKE.ColorAnimationUsingKeyFrames_GetCurrentValueCoreHelper(swigCPtr, ref src, ref dst, AnimationClock.getCPtr(clock));
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Color>(ret);
+    IntPtr retSrc = NoesisGUI_PINVOKE.ColorAnimationUsingKeyFrames_GetCurrentValueCoreHelper(swigCPtr, ref src, ref dst, AnimationClock.getCPtr(clock));
+    Color retDst = new Color();
+    if (retSrc != IntPtr.Zero) {
+      NoesisGUI_.Copy_Color(retSrc, ref retDst);
     }
-    else {
-      return new Color();
-    }
+    return retDst;
   }
 
 }

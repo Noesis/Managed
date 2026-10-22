@@ -39,6 +39,10 @@ public class VirtualizingStackPanel : VirtualizingPanel, Noesis.IScrollInfo {
     return renderSize;
   }
 
+  protected override void BringIndexIntoView(int index) {
+    BringIndexIntoViewHelper(index);
+  }
+
   public VirtualizingStackPanel() {
   }
 
@@ -120,13 +124,12 @@ public class VirtualizingStackPanel : VirtualizingPanel, Noesis.IScrollInfo {
   }
 
   public Rect MakeVisible(Visual visual, Rect rect) {
-    IntPtr ret = NoesisGUI_PINVOKE.VirtualizingStackPanel_MakeVisible(swigCPtr, Visual.getCPtr(visual), ref rect);
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Rect>(ret);
+    IntPtr retSrc = NoesisGUI_PINVOKE.VirtualizingStackPanel_MakeVisible(swigCPtr, Visual.getCPtr(visual), ref rect);
+    Rect retDst = new Rect();
+    if (retSrc != IntPtr.Zero) {
+      NoesisGUI_.Copy_Rect(retSrc, ref retDst);
     }
-    else {
-      return new Rect();
-    }
+    return retDst;
   }
 
   public static DependencyProperty OrientationProperty {
@@ -224,6 +227,10 @@ public class VirtualizingStackPanel : VirtualizingPanel, Noesis.IScrollInfo {
 
   private void ArrangeOverrideHelper(Size finalSize, ref Size renderSize) {
     NoesisGUI_PINVOKE.VirtualizingStackPanel_ArrangeOverrideHelper(swigCPtr, ref finalSize, ref renderSize);
+  }
+
+  private void BringIndexIntoViewHelper(int index) {
+    NoesisGUI_PINVOKE.VirtualizingStackPanel_BringIndexIntoViewHelper(swigCPtr, index);
   }
 
 }

@@ -27,6 +27,9 @@ public class NameScope : BaseComponent {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
+  protected NameScope() {
+  }
+
   public object this[string key] {
     get {
       if (key == null) {
@@ -45,12 +48,7 @@ public class NameScope : BaseComponent {
     }
   }
 
-  public NameScope() {
-  }
-
-  protected override IntPtr CreateCPtr(Type type, out bool registerExtend) {
-    registerExtend = false;
-    return NoesisGUI_PINVOKE.new_NameScope();
+  public NameScope(object owner) : this(NoesisGUI_PINVOKE.new_NameScope(Noesis.Extend.GetInstanceHandle(owner)), true) {
   }
 
   public static NameScope GetNameScope(DependencyObject element) {

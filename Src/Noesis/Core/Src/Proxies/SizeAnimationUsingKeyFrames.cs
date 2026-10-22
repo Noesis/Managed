@@ -47,13 +47,12 @@ public sealed class SizeAnimationUsingKeyFrames : SizeAnimationBase {
   }
 
   private Size GetCurrentValueCoreHelper(Size src, Size dst, AnimationClock clock) {
-    IntPtr ret = NoesisGUI_PINVOKE.SizeAnimationUsingKeyFrames_GetCurrentValueCoreHelper(swigCPtr, ref src, ref dst, AnimationClock.getCPtr(clock));
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Size>(ret);
+    IntPtr retSrc = NoesisGUI_PINVOKE.SizeAnimationUsingKeyFrames_GetCurrentValueCoreHelper(swigCPtr, ref src, ref dst, AnimationClock.getCPtr(clock));
+    Size retDst = new Size();
+    if (retSrc != IntPtr.Zero) {
+      NoesisGUI_.Copy_Size(retSrc, ref retDst);
     }
-    else {
-      return new Size();
-    }
+    return retDst;
   }
 
 }

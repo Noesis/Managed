@@ -316,17 +316,14 @@ public class TextBlock : FrameworkElement {
     set {
       NoesisGUI_PINVOKE.TextBlock_Padding_set(swigCPtr, ref value);
     }
-
     get {
-      IntPtr ret = NoesisGUI_PINVOKE.TextBlock_Padding_get(swigCPtr);
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<Thickness>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.TextBlock_Padding_get(swigCPtr);
+      Thickness retDst = new Thickness();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_Thickness(retSrc, ref retDst);
       }
-      else {
-        return new Thickness();
-      }
+      return retDst;
     }
-
   }
 
   public Brush Stroke {

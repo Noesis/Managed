@@ -104,13 +104,12 @@ public class FormattedText : BaseComponent {
   }
 
   public Size Measure(TextAlignment alignment, TextWrapping wrapping, TextTrimming trimming, float maxWidth, float maxHeight, float lineHeight, LineStackingStrategy lineStacking, FlowDirection flowDirection) {
-    IntPtr ret = NoesisGUI_PINVOKE.FormattedText_Measure(swigCPtr, (int)alignment, (int)wrapping, (int)trimming, maxWidth, maxHeight, lineHeight, (int)lineStacking, (int)flowDirection);
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Size>(ret);
+    IntPtr retSrc = NoesisGUI_PINVOKE.FormattedText_Measure(swigCPtr, (int)alignment, (int)wrapping, (int)trimming, maxWidth, maxHeight, lineHeight, (int)lineStacking, (int)flowDirection);
+    Size retDst = new Size();
+    if (retSrc != IntPtr.Zero) {
+      NoesisGUI_.Copy_Size(retSrc, ref retDst);
     }
-    else {
-      return new Size();
-    }
+    return retDst;
   }
 
   public void Layout(TextAlignment alignment, TextWrapping wrapping, TextTrimming trimming, float maxWidth, float maxHeight, Thickness padding, float lineHeight, LineStackingStrategy lineStacking, FlowDirection flowDirection, bool discardNonVisibleGlyphs) {

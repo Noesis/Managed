@@ -146,26 +146,24 @@ public static class VisualTreeHelper {
   public static Rect GetContentBounds(Visual visual) {
     if (visual == null) throw new ArgumentNullException("visual");
     {
-      IntPtr ret = NoesisGUI_PINVOKE.VisualTreeHelper_GetContentBounds(Visual.getCPtr(visual));
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<Rect>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.VisualTreeHelper_GetContentBounds(Visual.getCPtr(visual));
+      Rect retDst = new Rect();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_Rect(retSrc, ref retDst);
       }
-      else {
-        return new Rect();
-      }
+      return retDst;
     }
   }
 
   public static Rect GetDescendantBounds(Visual visual) {
     if (visual == null) throw new ArgumentNullException("visual");
     {
-      IntPtr ret = NoesisGUI_PINVOKE.VisualTreeHelper_GetDescendantBounds(Visual.getCPtr(visual));
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<Rect>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.VisualTreeHelper_GetDescendantBounds(Visual.getCPtr(visual));
+      Rect retDst = new Rect();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_Rect(retSrc, ref retDst);
       }
-      else {
-        return new Rect();
-      }
+      return retDst;
     }
   }
 
@@ -188,26 +186,24 @@ public static class VisualTreeHelper {
   public static Point GetOffset(Visual visual) {
     if (visual == null) throw new ArgumentNullException("visual");
     {
-      IntPtr ret = NoesisGUI_PINVOKE.VisualTreeHelper_GetOffset(Visual.getCPtr(visual));
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<Point>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.VisualTreeHelper_GetOffset(Visual.getCPtr(visual));
+      Point retDst = new Point();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_Point(retSrc, ref retDst);
       }
-      else {
-        return new Point();
-      }
+      return retDst;
     }
   }
 
   public static Size GetSize(Visual visual) {
     if (visual == null) throw new ArgumentNullException("visual");
     {
-      IntPtr ret = NoesisGUI_PINVOKE.VisualTreeHelper_GetSize(Visual.getCPtr(visual));
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<Size>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.VisualTreeHelper_GetSize(Visual.getCPtr(visual));
+      Size retDst = new Size();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_Size(retSrc, ref retDst);
       }
-      else {
-        return new Size();
-      }
+      return retDst;
     }
   }
 

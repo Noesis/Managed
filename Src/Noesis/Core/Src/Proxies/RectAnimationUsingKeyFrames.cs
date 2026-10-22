@@ -47,13 +47,12 @@ public sealed class RectAnimationUsingKeyFrames : RectAnimationBase {
   }
 
   private Rect GetCurrentValueCoreHelper(Rect src, Rect dst, AnimationClock clock) {
-    IntPtr ret = NoesisGUI_PINVOKE.RectAnimationUsingKeyFrames_GetCurrentValueCoreHelper(swigCPtr, ref src, ref dst, AnimationClock.getCPtr(clock));
-    if (ret != IntPtr.Zero) {
-      return Marshal.PtrToStructure<Rect>(ret);
+    IntPtr retSrc = NoesisGUI_PINVOKE.RectAnimationUsingKeyFrames_GetCurrentValueCoreHelper(swigCPtr, ref src, ref dst, AnimationClock.getCPtr(clock));
+    Rect retDst = new Rect();
+    if (retSrc != IntPtr.Zero) {
+      NoesisGUI_.Copy_Rect(retSrc, ref retDst);
     }
-    else {
-      return new Rect();
-    }
+    return retDst;
   }
 
 }

@@ -57,17 +57,14 @@ public class SolidColorBrush : Brush {
     set {
       NoesisGUI_PINVOKE.SolidColorBrush_Color_set(swigCPtr, ref value);
     }
-
     get {
-      IntPtr ret = NoesisGUI_PINVOKE.SolidColorBrush_Color_get(swigCPtr);
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<Color>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.SolidColorBrush_Color_get(swigCPtr);
+      Color retDst = new Color();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_Color(retSrc, ref retDst);
       }
-      else {
-        return new Color();
-      }
+      return retDst;
     }
-
   }
 
 }

@@ -643,17 +643,14 @@ public partial class FrameworkElement : UIElement {
     set {
       NoesisGUI_PINVOKE.FrameworkElement_Margin_set(swigCPtr, ref value);
     }
-
     get {
-      IntPtr ret = NoesisGUI_PINVOKE.FrameworkElement_Margin_get(swigCPtr);
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<Thickness>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.FrameworkElement_Margin_get(swigCPtr);
+      Thickness retDst = new Thickness();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_Thickness(retSrc, ref retDst);
       }
-      else {
-        return new Thickness();
-      }
+      return retDst;
     }
-
   }
 
   public float MaxHeight {

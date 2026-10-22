@@ -73,17 +73,14 @@ public class CroppedBitmap : BitmapSource {
     set {
       NoesisGUI_PINVOKE.CroppedBitmap_SourceRect_set(swigCPtr, ref value);
     }
-
     get {
-      IntPtr ret = NoesisGUI_PINVOKE.CroppedBitmap_SourceRect_get(swigCPtr);
-      if (ret != IntPtr.Zero) {
-        return Marshal.PtrToStructure<Int32Rect>(ret);
+      IntPtr retSrc = NoesisGUI_PINVOKE.CroppedBitmap_SourceRect_get(swigCPtr);
+      Int32Rect retDst = new Int32Rect();
+      if (retSrc != IntPtr.Zero) {
+        NoesisGUI_.Copy_Int32Rect(retSrc, ref retDst);
       }
-      else {
-        return new Int32Rect();
-      }
+      return retDst;
     }
-
   }
 
   internal new static IntPtr Extend(string typeName) {
